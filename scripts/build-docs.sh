@@ -34,6 +34,7 @@ DOCS=(
   docs/12-multi-agent-research.md
   docs/13-documentation-review.md
   docs/14-memory.md
+  docs/15-skill-evaluations.md
   AGENTS.md
 )
 

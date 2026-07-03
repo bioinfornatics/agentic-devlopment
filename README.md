@@ -54,6 +54,9 @@ intent → spec → Beads graph → TDD/implementation → review → validation
 | `ui-ux-quality` | Unified UI/UX quality framework |
 | `webapp-testing` | Browser automation and local web-app verification method |
 
+
+Skill evaluations live beside each skill as `EVALUATION.md`; see `docs/15-skill-evaluations.md` for the eval/iteration workflow.
+
 ## Named agents
 
 Named agents live in `.agents/agents/` and can be invoked through Goose Summon:
