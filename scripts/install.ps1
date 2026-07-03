@@ -187,7 +187,8 @@ function Update-SlashCommands([string]$ConfigPath, [string]$RecipeDir, [string]$
     }
 }
 
-$Root = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$Root = Split-Path -Parent $ScriptDir
 $Stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 
 $SourceRecipes = Join-Path $Root '.goose/recipes'

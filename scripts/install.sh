@@ -5,7 +5,7 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: ./install.sh [options]
+Usage: ./scripts/install.sh [options]
 
 Install project-local harness files into:
   ~/.config/goose/recipes
@@ -23,9 +23,9 @@ Options:
   -h, --help             Show this help
 
 Examples:
-  ./install.sh
-  ./install.sh --dry-run
-  ./install.sh --no-backup
+  ./scripts/install.sh
+  ./scripts/install.sh --dry-run
+  ./scripts/install.sh --no-backup
 USAGE
 }
 
@@ -56,7 +56,8 @@ while [[ -L "$script_path" ]]; do
     script_path="$script_dir/$link_target"
   fi
 done
-ROOT="$(cd -P "$(dirname "$script_path")" >/dev/null 2>&1 && pwd)"
+SCRIPT_DIR="$(cd -P "$(dirname "$script_path")" >/dev/null 2>&1 && pwd)"
+ROOT="$(cd -P "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
 
 SRC_RECIPES="$ROOT/.goose/recipes"
 SRC_SKILLS="$ROOT/.agents/skills"

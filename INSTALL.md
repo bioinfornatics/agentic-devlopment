@@ -36,29 +36,29 @@ cd ~/Codes/agentic-devlopment
 Linux/macOS/Git Bash:
 
 ```bash
-./install.sh
+./scripts/install.sh
 ```
 
 PowerShell:
 
 ```powershell
-./install.ps1
+./scripts/install.ps1
 ```
 
 Useful flags:
 
 ```bash
-./install.sh --dry-run
-./install.sh --no-backup
-./install.sh --skip-validate
-./install.sh --skip-slash-commands
+./scripts/install.sh --dry-run
+./scripts/install.sh --no-backup
+./scripts/install.sh --skip-validate
+./scripts/install.sh --skip-slash-commands
 ```
 
 ```powershell
-./install.ps1 -DryRun
-./install.ps1 -NoBackup
-./install.ps1 -SkipValidate
-./install.ps1 -SkipSlashCommands
+./scripts/install.ps1 -DryRun
+./scripts/install.ps1 -NoBackup
+./scripts/install.ps1 -SkipValidate
+./scripts/install.ps1 -SkipSlashCommands
 ```
 
 #### Slash command installation

@@ -68,13 +68,13 @@ goose run --recipe ./.goose/recipes/harness-master.yaml \
 To install this repository's harness into the active Goose config:
 
 ```bash
-./install.sh
+./scripts/install.sh
 ```
 
 PowerShell:
 
 ```powershell
-./install.ps1
+./scripts/install.ps1
 ```
 
 The install scripts must keep slash command idempotence: rerunning install should replace the managed `/harness`, `/review`, `/sdd`, etc. mappings, not append duplicates.

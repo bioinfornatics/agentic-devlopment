@@ -76,13 +76,13 @@ delegate(source: "review-critic", instructions: "Review the current diff. Do not
 Install/copy the harness into your Goose config:
 
 ```bash
-./install.sh
+./scripts/install.sh
 ```
 
 PowerShell:
 
 ```powershell
-./install.ps1
+./scripts/install.ps1
 ```
 
 The installer also upserts slash commands (`/harness`, `/review`, `/sdd`, etc.) in `~/.config/goose/config.yaml` without duplicating existing managed entries.
