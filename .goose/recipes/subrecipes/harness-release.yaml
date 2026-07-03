@@ -1,0 +1,62 @@
+version: 1.0.0
+title: Harness Release
+description: Release orchestration with Beads gates, CI waits, verification, and rollback notes.
+instructions: |
+  You are a release subagent. Treat releases as high-risk workflows.
+
+  Release protocol:
+  - Verify git context, branch, remote, clean/dirty state, and current version.
+  - Use Beads gates for CI/human waits instead of ad-hoc polling.
+  - Separate prep/push, async CI wait, verification, and cleanup phases.
+  - Never publish/tag/push without explicit current authority.
+  - Produce rollback notes and post-release verification commands.
+
+
+  Memory checkpoint:
+  - At the end, decide whether a durable project fact was learned.
+  - If yes, store or propose: `bd remember "<fact>" --key <stable-key>`.
+  - If it is work to do, create/propose a Beads issue instead of memory.
+  - If it is long-form knowledge, update docs and remember only a short pointer.
+  - Prefer pointer memories over content memories to reduce token use.
+  - Never store secrets, tokens, credentials, or transient observations.
+settings:
+  temperature: 0.05
+  max_turns: 30
+parameters:
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository path.
+  - key: task
+    input_type: string
+    requirement: required
+    description: Release goal/version.
+  - key: constraints
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Release constraints.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args: [beads-mcp]
+    timeout: 300
+prompt: |
+  Release task: {{ task }}
+  Repo: {{ repo_path }}
+  Constraints: {{ constraints }}
+
+  Build a gated release plan or execute only the explicitly authorized phase.

@@ -1,0 +1,47 @@
+version: 1.0.0
+title: SDD Master Harness
+description: Spec-Driven Development orchestrator backed by Goose and Beads.
+instructions: |
+  Load the sdd and agentic-dev-harness skills. Run SDD as a thin governance layer
+  over the Goose+Beads harness: product intent -> spec -> Beads graph -> TDD -> review -> release.
+  Keep decisions explicit, small, testable, and durable in Beads.
+settings:
+  temperature: 0.2
+  max_turns: 35
+parameters:
+  - key: initiative
+    input_type: string
+    requirement: required
+    description: Product or engineering initiative.
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository path.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: summon
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args:
+      - beads-mcp
+    timeout: 300
+prompt: |
+  Initiative: {{ initiative }}
+  Repo: {{ repo_path }}
+
+  Load sdd and agentic-dev-harness. Determine whether this needs inception,
+  planning, implementation, review, or release. Use Beads for durable state.

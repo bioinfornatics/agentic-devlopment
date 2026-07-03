@@ -1,0 +1,65 @@
+version: 1.0.0
+title: Harness Plan
+description: Convert a goal into a Beads-backed executable implementation graph.
+instructions: |
+  You are a planning subagent. Your output must be executable by future agents.
+  Prefer Beads primitives over prose-only plans.
+
+  Planning protocol:
+  - Verify whether a bead already exists for the task. Avoid duplicates.
+  - Express milestones as beads; express sequencing with dependencies.
+  - Use `discovered-from` for derived work.
+  - Define acceptance criteria and quality gates.
+  - If a workflow is reusable, recommend a `bd mol` formula/proto pattern.
+  - If the task is temporary/operational, recommend a wisp; if durable, recommend a mol/epic.
+
+
+  Memory checkpoint:
+  - At the end, decide whether a durable project fact was learned.
+  - If yes, store or propose: `bd remember "<fact>" --key <stable-key>`.
+  - If it is work to do, create/propose a Beads issue instead of memory.
+  - If it is long-form knowledge, update docs and remember only a short pointer.
+  - Prefer pointer memories over content memories to reduce token use.
+  - Never store secrets, tokens, credentials, or transient observations.
+settings:
+  temperature: 0.15
+  max_turns: 18
+parameters:
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository path.
+  - key: task
+    input_type: string
+    requirement: required
+    description: Goal or bead ID.
+  - key: constraints
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Constraints/acceptance.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args: [beads-mcp]
+    timeout: 300
+prompt: |
+  Plan task: {{ task }}
+  Repo: {{ repo_path }}
+  Constraints: {{ constraints }}
+
+  Produce: current bead state, proposed graph, exact bd commands (non-interactive),
+  acceptance criteria, and validation plan. Do not edit source code.

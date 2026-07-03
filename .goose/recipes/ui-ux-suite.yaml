@@ -1,0 +1,50 @@
+version: 1.0.0
+title: UI/UX Quality Harness
+description: Unified UX research, design taste, design system, frontend implementation, accessibility, and web testing.
+instructions: |
+  Load ui-ux-quality and webapp-testing when relevant. Evaluate product UI across:
+  user intent, visual taste, information architecture, design tokens/components,
+  frontend states/performance, accessibility, and browser evidence.
+settings:
+  temperature: 0.2
+  max_turns: 35
+parameters:
+  - key: target
+    input_type: string
+    requirement: required
+    description: UI/page/component/product flow to evaluate or build.
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository path.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: summon
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Playwright
+    cmd: npx
+    args: ["@playwright/mcp@latest", "--browser", "chromium"]
+    timeout: 300
+sub_recipes:
+  - name: harness_web_test
+    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-web-test.yaml"
+    values:
+      task: "{{ target }}"
+      repo_path: "{{ repo_path }}"
+prompt: |
+  Target: {{ target }}
+  Repo: {{ repo_path }}
+
+  Apply the UI/UX quality harness. If a running UI is available, verify with browser evidence.

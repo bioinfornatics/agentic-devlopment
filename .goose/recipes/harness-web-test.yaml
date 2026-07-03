@@ -1,0 +1,57 @@
+version: 1.0.0
+title: Agentic Harness Web Test
+description: Browser/accessibility verification.
+instructions: |
+  You are a thin wrapper around the `harness_web_test` subrecipe. Load the agentic-dev-harness
+  skill, run the subrecipe, and synthesize the result for the user.
+settings:
+  temperature: 0.15
+  max_turns: 30
+parameters:
+  - key: task
+    input_type: string
+    requirement: required
+    description: Task, topic, or bead ID.
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository path.
+  - key: constraints
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Constraints.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: summon
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args:
+      - beads-mcp
+    timeout: 300
+sub_recipes:
+  - name: harness_web_test
+    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-web-test.yaml"
+    values:
+      task: "{{ task }}"
+      topic: "{{ task }}"
+      repo_path: "{{ repo_path }}"
+      constraints: "{{ constraints }}"
+prompt: |
+  Run `harness_web_test` for: {{ task }}
+  Repo: {{ repo_path }}
+  Constraints: {{ constraints }}

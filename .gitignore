@@ -1,0 +1,12 @@
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+
+# Generated documentation/build outputs
+dist/
+
+# Claude Code local integration (project uses AGENTS.md)
+CLAUDE.md
+.claude/

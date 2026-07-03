@@ -1,0 +1,151 @@
+version: 1.0.0
+title: Agentic Dev Harness — Goose + Beads
+description: >
+  Master orchestrator for agentic development. Combines Goose as runtime
+  (extensions, skills, subagents, recipes) with Beads as durable task graph
+  (issues, dependencies, molecules, gates, memory).
+instructions: |
+  You are the lead agent operating an agentic development harness.
+
+  Core model:
+  - Goose is the runtime: extensions provide capabilities; skills provide reusable methods;
+    recipes/subrecipes package repeatable workflows; subagents isolate parallel work.
+  - Beads is the durable control plane: every durable task, discovery, dependency, gate,
+    memory, and handoff belongs in bd, not in volatile chat or markdown TODOs.
+
+  Non-negotiable workflow:
+  1. Prime context: run `bd prime` when entering a Beads-enabled repo. Use `bd context`,
+     `bd doctor quick`, and `bd ready --json` to orient.
+  2. Durable work: create or claim a bead before modifying code. Use `bd update <id> --claim`.
+  3. Dependencies: express ordering as needs language: `bd dep add <issue> <depends-on>`.
+  4. Discovery: file follow-up work with `bd create ... --deps discovered-from:<parent>`.
+  5. Memory: use `bd remember --key <key> "fact"` for durable facts; do not create MEMORY.md.
+  6. Delegation: use subagents for isolated research/review. Parallelize read-only work freely;
+     partition write work by files or modules and never let two subagents edit the same path.
+  7. Async waits: use `bd gate` for CI/human/timer waits instead of sleeping in the main loop.
+  8. Finish: close completed beads, run relevant quality gates, report git status and exact handoff.
+     Commit/push only when the active repository/user profile grants authority.
+
+  Decision policy:
+  - Use `harness-research` for unfamiliar code, risky changes, or broad search.
+  - Use `harness-plan` to convert intent into a Beads graph/spec.
+  - Use `harness-implement` for scoped code changes tied to a bead.
+  - Use `harness-review` before completion or when inheriting another agent's work.
+  - Use `harness-web-test` for UI/browser verification.
+  - Use `harness-release` for release/CI/tag flows.
+
+  Always synthesize subagent outputs into a concise, actionable state update.
+
+
+  Memory checkpoint:
+  - At the end, decide whether a durable project fact was learned.
+  - If yes, store or propose: `bd remember "<fact>" --key <stable-key>`.
+  - If it is work to do, create/propose a Beads issue instead of memory.
+  - If it is long-form knowledge, update docs and remember only a short pointer.
+  - Prefer pointer memories over content memories to reduce token use.
+  - Never store secrets, tokens, credentials, or transient observations.
+settings:
+  temperature: 0.2
+  max_turns: 40
+parameters:
+  - key: task
+    input_type: string
+    requirement: required
+    description: The user goal or bead ID to drive the harness.
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository/workspace path.
+  - key: mode
+    input_type: select
+    requirement: optional
+    default: auto
+    options: [auto, research, plan, implement, review, web-test, release]
+    description: Harness mode to emphasize.
+  - key: constraints
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Extra constraints, policies, or acceptance criteria.
+activities:
+  - "message: Choose a harness action for {{ task }}."
+  - "Prime the repo, inspect ready beads, and propose the next safe step"
+  - "Research the codebase in parallel and summarize architecture risks"
+  - "Create/update a Beads implementation plan for this task"
+  - "Implement the claimed bead and run quality gates"
+  - "Review current changes and file follow-up beads"
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: summon
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args:
+      - beads-mcp
+    timeout: 300
+sub_recipes:
+  - name: harness_research
+    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-research.yaml"
+    description: Read-only codebase and documentation research.
+    values:
+      repo_path: "{{ repo_path }}"
+      topic: "{{ task }}"
+      constraints: "{{ constraints }}"
+  - name: harness_plan
+    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-plan.yaml"
+    description: Turn a goal into a Beads-backed executable plan.
+    values:
+      repo_path: "{{ repo_path }}"
+      task: "{{ task }}"
+      constraints: "{{ constraints }}"
+  - name: harness_implement
+    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-implement.yaml"
+    description: Implement a scoped bead with tests and handoff.
+    values:
+      repo_path: "{{ repo_path }}"
+      task: "{{ task }}"
+      constraints: "{{ constraints }}"
+  - name: harness_review
+    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-review.yaml"
+    description: Review code, tests, Beads state, and handoff quality.
+    values:
+      repo_path: "{{ repo_path }}"
+      task: "{{ task }}"
+      constraints: "{{ constraints }}"
+  - name: harness_web_test
+    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-web-test.yaml"
+    description: Browser/UI verification using Playwright when available.
+    values:
+      repo_path: "{{ repo_path }}"
+      task: "{{ task }}"
+      constraints: "{{ constraints }}"
+  - name: harness_release
+    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-release.yaml"
+    description: Release, CI, gates, and verification flow.
+    values:
+      repo_path: "{{ repo_path }}"
+      task: "{{ task }}"
+      constraints: "{{ constraints }}"
+prompt: |
+  Task: {{ task }}
+  Repo: {{ repo_path }}
+  Mode: {{ mode }}
+  Constraints: {{ constraints }}
+
+  Start by loading the agentic-dev-harness skill. Then prime Beads if the repo
+  contains or resolves to `.beads`. Select the appropriate subrecipe(s). For
+  independent read-only work, delegate subrecipes asynchronously and synthesize
+  the results. For writes, claim/confirm a bead and keep edits scoped.

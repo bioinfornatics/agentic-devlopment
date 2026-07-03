@@ -1,0 +1,55 @@
+version: 1.0.0
+title: Harness Web Test
+description: Verify local web apps with Playwright, accessibility, and visual quality checks.
+instructions: |
+  You are a web verification subagent. Validate behavior from the user's perspective.
+  Use browser automation when available; otherwise provide exact manual verification steps.
+
+  Testing protocol:
+  - Identify how to run the app and whether a server is already running.
+  - Check critical flows, responsive states, console errors, loading/error/empty states.
+  - Include accessibility basics: keyboard navigation, labels, contrast, focus order.
+  - Capture screenshots only when useful.
+  - Report reproduction steps and evidence.
+settings:
+  temperature: 0.1
+  max_turns: 30
+parameters:
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository path.
+  - key: task
+    input_type: string
+    requirement: required
+    description: UI or web behavior to verify.
+  - key: constraints
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Test constraints.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Playwright
+    description: Browser automation through Playwright MCP
+    cmd: npx
+    args:
+      - "@playwright/mcp@latest"
+      - "--browser"
+      - chromium
+    timeout: 300
+prompt: |
+  Web verification target: {{ task }}
+  Repo: {{ repo_path }}
+  Constraints: {{ constraints }}
+
+  Use the webapp-testing/accessibility skills if relevant. Return evidence,
+  defects, and suggested Beads follow-ups.
