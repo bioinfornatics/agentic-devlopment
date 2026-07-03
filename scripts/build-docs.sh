@@ -11,6 +11,9 @@ if ! command -v pandoc >/dev/null 2>&1; then
 fi
 
 mkdir -p dist
+ASSETS_DIR="dist/assets"
+mkdir -p "$ASSETS_DIR"
+cp docs/assets/site.css "$ASSETS_DIR/site.css"
 
 DOCS=(
   README.md
@@ -37,8 +40,10 @@ DOCS=(
 pandoc "${DOCS[@]}" \
   --from gfm \
   --toc \
+  --toc-depth=2 \
   --standalone \
   --metadata title="Agentic Development Harness" \
+  --css assets/site.css \
   -o dist/agentic-development-harness.html
 
 cp dist/agentic-development-harness.html dist/index.html
