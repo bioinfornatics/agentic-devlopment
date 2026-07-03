@@ -41,6 +41,8 @@ pandoc "${DOCS[@]}" \
   --metadata title="Agentic Development Harness" \
   -o dist/agentic-development-harness.html
 
+cp dist/agentic-development-harness.html dist/index.html
+
 if command -v xelatex >/dev/null 2>&1; then
   pandoc "${DOCS[@]}" \
     --from gfm \
