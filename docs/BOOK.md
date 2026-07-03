@@ -1,0 +1,23 @@
+# Agentic Development Harness — Book Order
+
+This file defines the canonical order used to build the HTML/PDF documentation bundle.
+
+1. [`README.md`](../README.md)
+2. [`INSTALL.md`](../INSTALL.md)
+3. [`USE_CASES.md`](../USE_CASES.md)
+4. [`00-index.md`](00-index.md)
+5. [`01-init-project.md`](01-init-project.md)
+6. [`02-code-review.md`](02-code-review.md)
+7. [`03-security-review.md`](03-security-review.md)
+8. [`04-uxr-simulation.md`](04-uxr-simulation.md)
+9. [`05-ui-review.md`](05-ui-review.md)
+10. [`06-test-review.md`](06-test-review.md)
+11. [`07-spec-review.md`](07-spec-review.md)
+12. [`08-project-judge-score.md`](08-project-judge-score.md)
+13. [`09-implementation-loop.md`](09-implementation-loop.md)
+14. [`10-release-readiness.md`](10-release-readiness.md)
+15. [`11-incident-sre.md`](11-incident-sre.md)
+16. [`12-multi-agent-research.md`](12-multi-agent-research.md)
+17. [`13-documentation-review.md`](13-documentation-review.md)
+18. [`14-memory.md`](14-memory.md)
+19. [`AGENTS.md`](../AGENTS.md)
