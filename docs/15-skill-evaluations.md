@@ -80,13 +80,13 @@ python scripts/run-skill-ab-eval.py \
   --skill code-review \
   --runs-per-config 1
 
-xdg-open dist/evals/<timestamp>/skills/code-review/review.html
+xdg-open dist/evals/<content-hash>/skills/code-review/review.html
 ```
 
 The generated workspace follows the shape expected by skill-creator:
 
 ```text
-dist/evals/<timestamp>/skills/<skill-name>/
+dist/evals/<content-hash>/skills/<skill-name>/
   eval-0/
     eval_metadata.json
     with_skill/
@@ -121,14 +121,14 @@ python scripts/run-skill-ab-eval.py \
 
 Use the suite runner when you want every `evals/skills/*.json` file executed and summarized in one visual index.
 
-By default, runtime outputs are timestamp-partitioned under `dist/evals/<timestamp>/skills/`. Pass `--workspace-root` to override the output root completely.
+By default, runtime outputs are content-hash-partitioned under `dist/evals/<content-hash>/skills/`. The hash covers the selected eval definitions and referenced skill directories, so uncommitted skill/eval edits are reflected without requiring a commit. Pass `--run-id-source git` to use the current commit instead; this requires a clean working tree. Pass `--workspace-root` to override the output root completely.
 
 ```bash
 python scripts/run-skill-ab-suite.py \
   --runs-per-config 1 \
   --continue-on-failure
 
-xdg-open dist/evals/<timestamp>/skills/index.html
+xdg-open dist/evals/<content-hash>/skills/index.html
 ```
 
 Use `--goose-cli` or `GOOSE_EVAL_CLI` to force a specific Goose binary for both task and grader runs, for example:
@@ -153,10 +153,12 @@ python scripts/run-skill-ab-suite.py \
 The suite index links to each per-skill review and benchmark:
 
 ```text
-dist/evals/<timestamp>/skills/index.html
-dist/evals/<timestamp>/skills/<skill-name>/review.html
-dist/evals/<timestamp>/skills/<skill-name>/benchmark.json
+dist/evals/<content-hash>/skills/index.html
+dist/evals/<content-hash>/skills/<skill-name>/review.html
+dist/evals/<content-hash>/skills/<skill-name>/benchmark.json
 ```
+
+The runners also append a lightweight SQLite history database at `dist/evals/eval-history.sqlite3` by default. It records the run id, kind (`skills` for the current runner), subject, content hash, git commit, dirty flag, workspace path, benchmark summary JSON, and pass-rate improvement rows. Use `--no-history` to disable this or `--history-db <path>` to write elsewhere.
 
 ### Editor shortcuts
 
@@ -193,9 +195,9 @@ python scripts/run-skill-ab-eval.py \
   --mode old-new \
   --baseline-git-ref HEAD~1 \
   --runs-per-config 1 \
-  --previous-workspace dist/evals/<timestamp>/skills/code-review
+  --previous-workspace dist/evals/<content-hash>/skills/code-review
 
-xdg-open dist/evals/<timestamp>/skills/code-review/review.html
+xdg-open dist/evals/<content-hash>/skills/code-review/review.html
 ```
 
 The runner materializes `.agents/skills/<skill-name>` from `--baseline-git-ref` into the generated workspace and compares it against the working-tree candidate at `.agents/skills/<skill-name>`. You can also compare two refs directly:

@@ -27,23 +27,26 @@ import tarfile
 import textwrap
 import time
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT / "scripts") not in sys.path:
+    sys.path.insert(0, str(ROOT / "scripts"))
+
+from eval_utils import (  # noqa: E402
+    DEFAULT_EVAL_KIND,
+    DEFAULT_HISTORY_DB,
+    content_hash,
+    default_workspace_root,
+    git_commit,
+    git_is_dirty,
+    record_eval_run,
+    skill_eval_hash_inputs,
+)
+
 DEFAULT_SKILL_CREATOR_DIR = Path.home() / ".agents" / "skills" / "skill-creator"
 DEFAULT_GOOSE_CLI_ENV = "GOOSE_EVAL_CLI"
-DEFAULT_EVAL_KIND = "skills"
-
-
-def current_eval_timestamp() -> str:
-    return datetime.now().strftime("%Y%m%d-%H%M%S")
-
-
-def default_workspace_root() -> Path:
-    return ROOT / "dist" / "evals" / current_eval_timestamp() / DEFAULT_EVAL_KIND
-
 
 
 @dataclass(frozen=True)
@@ -610,6 +613,22 @@ def aggregate_and_render(args: argparse.Namespace, workspace: Path) -> None:
     print(f"Review written to {review_output}")
 
 
+def resolve_run_id(args: argparse.Namespace, eval_file: Path) -> str:
+    if args.run_id:
+        return args.run_id
+    if args.run_id_source == "git":
+        if git_is_dirty():
+            raise SystemExit("--run-id-source git requires a clean git working tree; use the default content hash while developing.")
+        commit = git_commit()
+        if not commit:
+            raise SystemExit("Cannot resolve git commit for --run-id-source git")
+        return commit[:12]
+
+    if args.require_clean_git and git_is_dirty():
+        raise SystemExit("Working tree is dirty; commit/stash changes or omit --require-clean-git.")
+    return content_hash(skill_eval_hash_inputs(args.skill, eval_file))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run real A/B evals for one project skill.")
     parser.add_argument("--skill", required=True, help="Skill/eval name, e.g. code-review")
@@ -620,7 +639,12 @@ def main() -> int:
     parser.add_argument("--baseline-git-ref", help="Git ref to use as old_skill in old-new mode, e.g. HEAD, HEAD~1, origin/main, or a tag.")
     parser.add_argument("--candidate-git-ref", help="Git ref to use as new_skill in old-new mode. Defaults to the working-tree skill directory.")
     parser.add_argument("--runs-per-config", type=int, default=1)
-    parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/<timestamp>/skills")
+    parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/<content-hash>/skills")
+    parser.add_argument("--run-id", help="Run id used for metadata/history. Usually passed by the suite runner.")
+    parser.add_argument("--run-id-source", choices=["content", "git"], default="content", help="How to derive the default dist/evals/<run-id> directory. Default: content hash of this eval definition and referenced skills.")
+    parser.add_argument("--require-clean-git", action="store_true", help="Fail if the git working tree is dirty before running evals.")
+    parser.add_argument("--history-db", type=Path, default=DEFAULT_HISTORY_DB, help="SQLite DB used to record eval history. Default: dist/evals/eval-history.sqlite3")
+    parser.add_argument("--no-history", action="store_true", help="Do not record this run in the eval history database.")
     parser.add_argument("--skill-creator-dir", type=Path, default=DEFAULT_SKILL_CREATOR_DIR)
     parser.add_argument("--previous-workspace", type=Path)
     parser.add_argument("--review-output", type=Path)
@@ -649,10 +673,12 @@ def main() -> int:
         help="Debug mode: include expected_behavior and baseline_gaps in task prompts. By default these are grader-only to avoid contaminating the baseline.",
     )
     args = parser.parse_args()
-    if args.workspace_root is None:
-        args.workspace_root = default_workspace_root()
 
     eval_file = args.eval_file or (ROOT / "evals" / "skills" / f"{args.skill}.json")
+    run_id = resolve_run_id(args, eval_file)
+    content_hash_value = content_hash(skill_eval_hash_inputs(args.skill, eval_file))
+    if args.workspace_root is None:
+        args.workspace_root = default_workspace_root(run_id, DEFAULT_EVAL_KIND)
     scenarios = read_json(eval_file)
     if not isinstance(scenarios, list):
         raise SystemExit(f"{eval_file} must contain a JSON array")
@@ -751,9 +777,22 @@ def main() -> int:
                     shutil.rmtree(worktree)
 
     aggregate_and_render(args, workspace)
+    benchmark_path = workspace / "benchmark.json"
+    benchmark = read_json(benchmark_path) if benchmark_path.exists() else {}
+    if not args.no_history:
+        record_eval_run(
+            db_path=args.history_db,
+            run_id=run_id,
+            kind=DEFAULT_EVAL_KIND,
+            subject=args.skill,
+            content_hash_value=content_hash_value,
+            workspace=workspace,
+            summary=benchmark,
+        )
     print(f"Workspace: {workspace}")
     print(f"Mode: {args.mode}; grader=llm; ambient_goose={args.ambient_goose}")
     print(f"Goose CLI: {shlex.quote(resolve_goose_cli(args))}")
+    print(f"Run id: {run_id}")
     return 0
 
 

@@ -11,7 +11,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_EVAL_KIND = "skills"
 ITERATION_RE = re.compile(r"^iteration-(\d+)$")
-TIMESTAMP_RE = re.compile(r"^\d{8}-\d{6}$")
 
 
 def latest_workspace_root() -> Path:
@@ -20,8 +19,8 @@ def latest_workspace_root() -> Path:
     if evals_root.exists():
         for path in evals_root.iterdir():
             workspace = path / DEFAULT_EVAL_KIND
-            if path.is_dir() and TIMESTAMP_RE.match(path.name) and workspace.exists():
-                candidates.append((path.name, workspace))
+            if path.is_dir() and workspace.exists():
+                candidates.append((workspace.stat().st_mtime, workspace))
     if candidates:
         return sorted(candidates)[-1][1]
 
@@ -64,7 +63,7 @@ def open_file(path: Path, *, print_path: bool) -> int:
         print(f"Review artifact not found: {resolved}", file=sys.stderr)
         print("Run an eval first, for example:", file=sys.stderr)
         print("  python scripts/run-skill-ab-suite.py --continue-on-failure", file=sys.stderr)
-        print("Then open the latest timestamped workspace with:", file=sys.stderr)
+        print("Then open the latest eval workspace with:", file=sys.stderr)
         print("  python scripts/open-skill-eval-review.py", file=sys.stderr)
         return 1
 
@@ -81,7 +80,7 @@ def open_file(path: Path, *, print_path: bool) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Open generated skill A/B eval suite review artifacts.")
-    parser.add_argument("--workspace-root", type=Path, help="Default: latest dist/evals/<timestamp>/skills workspace, falling back to legacy dist/evals/skills")
+    parser.add_argument("--workspace-root", type=Path, help="Default: latest dist/evals/<run-id>/skills workspace, falling back to legacy dist/evals/skills")
     parser.add_argument("--skill", help="Open a single skill review instead of the suite index.")
     parser.add_argument(
         "--artifact",

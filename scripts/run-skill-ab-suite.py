@@ -13,16 +13,21 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT / "scripts") not in sys.path:
+    sys.path.insert(0, str(ROOT / "scripts"))
+
+from eval_utils import (  # noqa: E402
+    DEFAULT_EVAL_KIND,
+    DEFAULT_HISTORY_DB,
+    content_hash,
+    default_workspace_root,
+    git_commit,
+    git_is_dirty,
+    record_eval_run,
+    suite_hash_inputs,
+)
+
 DEFAULT_GOOSE_CLI_ENV = "GOOSE_EVAL_CLI"
-DEFAULT_EVAL_KIND = "skills"
-
-
-def current_eval_timestamp() -> str:
-    return datetime.now().strftime("%Y%m%d-%H%M%S")
-
-
-def default_workspace_root() -> Path:
-    return ROOT / "dist" / "evals" / current_eval_timestamp() / DEFAULT_EVAL_KIND
 
 
 def read_json(path: Path) -> Any:
@@ -52,6 +57,20 @@ def fmt_pct(value: float | int | None) -> str:
     if value is None:
         return "—"
     return f"{float(value) * 100:.0f}%"
+
+
+def resolve_run_id(args: argparse.Namespace, skills: list[str]) -> str:
+    if args.run_id_source == "git":
+        if git_is_dirty():
+            raise SystemExit("--run-id-source git requires a clean git working tree; use the default content hash while developing.")
+        commit = git_commit()
+        if not commit:
+            raise SystemExit("Cannot resolve git commit for --run-id-source git")
+        return commit[:12]
+
+    if args.require_clean_git and git_is_dirty():
+        raise SystemExit("Working tree is dirty; commit/stash changes or omit --require-clean-git.")
+    return content_hash(suite_hash_inputs(skills, args.evals_dir))
 
 
 def generate_index(
@@ -168,7 +187,11 @@ def generate_index(
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run all skill A/B evals and build a visual index.")
     parser.add_argument("--evals-dir", type=Path, default=ROOT / "evals" / "skills")
-    parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/<timestamp>/skills")
+    parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/<content-hash>/skills")
+    parser.add_argument("--run-id-source", choices=["content", "git"], default="content", help="How to derive the default dist/evals/<run-id> directory. Default: content hash of selected eval definitions and referenced skills.")
+    parser.add_argument("--require-clean-git", action="store_true", help="Fail if the git working tree is dirty before running evals.")
+    parser.add_argument("--history-db", type=Path, default=DEFAULT_HISTORY_DB, help="SQLite DB used to record eval history. Default: dist/evals/eval-history.sqlite3")
+    parser.add_argument("--no-history", action="store_true", help="Do not record this run in the eval history database.")
     parser.add_argument("--runs-per-config", type=int, default=1)
     parser.add_argument("--skills", nargs="*", help="Optional subset. Defaults to every evals/skills/*.json file.")
     parser.add_argument("--mode", choices=["with-without"], default="with-without", help="Suite currently supports the with/without baseline mode.")
@@ -197,12 +220,14 @@ def main() -> int:
     )
     parser.add_argument("--output", type=Path, help="Default: <workspace-root>/index.html")
     args = parser.parse_args()
-    if args.workspace_root is None:
-        args.workspace_root = default_workspace_root()
-
     skills = args.skills or discover_skills(args.evals_dir)
     if not skills:
         raise SystemExit(f"No skill evals found under {args.evals_dir}")
+
+    run_id = resolve_run_id(args, skills)
+    content_hash_value = content_hash(suite_hash_inputs(skills, args.evals_dir))
+    if args.workspace_root is None:
+        args.workspace_root = default_workspace_root(run_id, DEFAULT_EVAL_KIND)
 
     runner = ROOT / "scripts" / "run-skill-ab-eval.py"
     if not runner.exists():
@@ -219,6 +244,10 @@ def main() -> int:
             str(args.runs_per_config),
             "--workspace-root",
             str(args.workspace_root),
+            "--run-id",
+            run_id,
+            "--run-id-source",
+            args.run_id_source,
             "--max-turns",
             str(args.max_turns),
             "--timeout",
@@ -240,6 +269,10 @@ def main() -> int:
             cmd.append("--ambient-goose")
         if args.include_grading_hints:
             cmd.append("--include-grading-hints")
+        if args.no_history:
+            cmd.append("--no-history")
+        else:
+            cmd.extend(["--history-db", str(args.history_db)])
 
         print(f"== Running skill eval suite item: {skill} ==")
         proc = subprocess.run(cmd, cwd=ROOT)
@@ -257,8 +290,19 @@ def main() -> int:
     latest = args.workspace_root / "index.html"
     if output.resolve() != latest.resolve():
         latest.write_text(output.read_text())
+    if not args.no_history:
+        record_eval_run(
+            db_path=args.history_db,
+            run_id=run_id,
+            kind=DEFAULT_EVAL_KIND,
+            subject="__suite__",
+            content_hash_value=content_hash_value,
+            workspace=args.workspace_root,
+            summary={"results": results},
+        )
     print(f"Suite index written to {output}")
     print(f"Latest suite index written to {latest}")
+    print(f"Run id: {run_id}")
     return 0 if all(item["returncode"] == 0 for item in results.values()) else 1
 
 

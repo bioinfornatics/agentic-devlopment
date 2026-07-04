@@ -45,23 +45,23 @@ Run a real A/B skill eval with:
 
 ```bash
 python scripts/run-skill-ab-eval.py --skill code-review
-xdg-open dist/evals/<timestamp>/skills/code-review/review.html
+xdg-open dist/evals/<content-hash>/skills/code-review/review.html
 ```
 
 Compare the working-tree skill against a committed baseline with:
 
 ```bash
 python scripts/run-skill-ab-eval.py --skill code-review --mode old-new --baseline-git-ref HEAD~1
-xdg-open dist/evals/<timestamp>/skills/code-review/review.html
+xdg-open dist/evals/<content-hash>/skills/code-review/review.html
 ```
 
-The A/B runners use isolated Goose homes by default, so installed skills, agents, and recipes are hidden for `without_skill` baselines. Use `--ambient-goose` only when debugging with the normal Goose environment.
+Runtime outputs use `dist/evals/<content-hash>/skills/` by default, and run history is appended to `dist/evals/eval-history.sqlite3`. The A/B runners use isolated Goose homes by default, so installed skills, agents, and recipes are hidden for `without_skill` baselines. Use `--ambient-goose` only when debugging with the normal Goose environment.
 
 Run the full skill suite and open the suite index with:
 
 ```bash
 python scripts/run-skill-ab-suite.py --continue-on-failure
-xdg-open dist/evals/<timestamp>/skills/index.html
+xdg-open dist/evals/<content-hash>/skills/index.html
 ```
 
 Editor shortcuts:
