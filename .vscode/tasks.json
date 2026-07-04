@@ -1,0 +1,62 @@
+{
+  "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "skillEvalIteration",
+      "type": "promptString",
+      "description": "Skill eval iteration number",
+      "default": "1"
+    },
+    {
+      "id": "skillEvalSubset",
+      "type": "promptString",
+      "description": "Optional skill subset, e.g. code-review sdd. Leave empty for full suite.",
+      "default": ""
+    }
+  ],
+  "tasks": [
+    {
+      "label": "Eval Skills: Full A/B Suite",
+      "type": "shell",
+      "command": "python scripts/run-skill-ab-suite.py --iteration ${input:skillEvalIteration} --continue-on-failure",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval Skills: A/B Suite Subset",
+      "type": "shell",
+      "command": "python scripts/run-skill-ab-suite.py --iteration ${input:skillEvalIteration} --continue-on-failure --skills ${input:skillEvalSubset}",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval Skills: Open Suite Results",
+      "type": "shell",
+      "command": "xdg-open dist/evals/skills/index.html",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Eval Skills: Definition Review",
+      "type": "shell",
+      "command": "python scripts/render-skill-eval-review.py && xdg-open dist/skill-eval-review/index.html",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}

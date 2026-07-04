@@ -64,6 +64,11 @@ python scripts/run-skill-ab-suite.py --iteration 1 --continue-on-failure
 xdg-open dist/evals/skills/index.html
 ```
 
+Editor shortcuts:
+
+- VS Code: **Terminal → Run Task… → Eval Skills: Full A/B Suite**.
+- JetBrains: run configuration **Eval Skills - Full A/B Suite**.
+
 ## Files
 
 - `agentic-dev-harness.json`

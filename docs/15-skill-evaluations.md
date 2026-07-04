@@ -149,6 +149,25 @@ dist/evals/skills/<skill-name>/iteration-1/review.html
 dist/evals/skills/<skill-name>/iteration-1/benchmark.json
 ```
 
+### Editor shortcuts
+
+VS Code tasks are defined in `.vscode/tasks.json`:
+
+- **Eval Skills: Full A/B Suite** — runs the full suite;
+- **Eval Skills: A/B Suite Subset** — prompts for a skill subset;
+- **Eval Skills: Open Suite Results** — opens `dist/evals/skills/index.html`;
+- **Eval Skills: Definition Review** — renders and opens the eval-definition review.
+
+Run them from **Terminal → Run Task…**.
+
+JetBrains shared run configurations live in `.run/`:
+
+- **Eval Skills - Full A/B Suite**;
+- **Eval Skills - Open Suite Results**;
+- **Eval Skills - Definition Review**.
+
+They appear in the Run/Debug configuration selector after the project reloads.
+
 ### 4. Execute old/new A/B after changing a skill
 
 Prefer a git ref for the original baseline when the previous version is committed. This avoids manual snapshot directories:

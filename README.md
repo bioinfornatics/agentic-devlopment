@@ -57,6 +57,8 @@ intent → spec → Beads graph → TDD/implementation → review → validation
 
 Skill evaluations live outside the skill packages in `evals/skills/`; see `docs/15-skill-evaluations.md` for the evaluation-driven workflow, visual definition review, and real A/B runner. Quick definition review: `python scripts/render-skill-eval-review.py`, then open `dist/skill-eval-review/index.html`. Real A/B example: `python scripts/run-skill-ab-eval.py --skill code-review --iteration 1`; old/new from git: `python scripts/run-skill-ab-eval.py --skill code-review --mode old-new --baseline-git-ref HEAD~1`. Full suite: `python scripts/run-skill-ab-suite.py --iteration 1 --continue-on-failure`, then open `dist/evals/skills/index.html`. A/B runners use isolated Goose homes by default so `without_skill` hides installed project skills, agents, and recipes.
 
+Editor shortcuts are available as VS Code tasks in `.vscode/tasks.json` and JetBrains shared run configurations in `.run/`.
+
 ## Named agents
 
 Named agents live in `.agents/agents/` and can be invoked through Goose Summon:
