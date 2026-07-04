@@ -207,6 +207,7 @@ def main() -> int:
     parser.add_argument("--require-clean-git", action="store_true", help="Fail if the git working tree is dirty before running evals.")
     parser.add_argument("--history-db", type=Path, default=DEFAULT_HISTORY_DB, help="SQLite DB used to record eval history. Default: dist/evals/evaluation.db")
     parser.add_argument("--no-history", action="store_true", help="Do not record this run in the eval history database.")
+    parser.add_argument("--no-feedback", action="store_true", help="Skip automatic feedback generation for each eval run.")
     parser.add_argument("--runs-per-config", type=int, default=1)
     parser.add_argument("--skills", nargs="*", help="Optional subset. Defaults to every evals/skills/*.json file.")
     parser.add_argument("--mode", choices=["with-without"], default="with-without", help="Suite currently supports the with/without baseline mode.")
@@ -293,6 +294,8 @@ def main() -> int:
             cmd.append("--no-history")
         else:
             cmd.extend(["--history-db", str(args.history_db)])
+        if args.no_feedback:
+            cmd.append("--no-feedback")
 
         started = datetime.now(timezone.utc)
         print(f"== Running skill eval suite item: {skill} ==", flush=True)

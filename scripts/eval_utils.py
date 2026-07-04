@@ -231,6 +231,27 @@ def init_history_db(path: Path = DEFAULT_HISTORY_DB) -> None:
             )
             """
         )
+        db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS eval_feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                run_id TEXT NOT NULL,
+                kind TEXT NOT NULL,
+                subject TEXT NOT NULL,
+                eval_id INTEGER,
+                configuration TEXT,
+                run_number INTEGER,
+                recommendation_type TEXT,
+                severity TEXT,
+                message TEXT,
+                evidence TEXT,
+                git_commit TEXT,
+                provider TEXT,
+                model TEXT,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
         _ensure_column(db, "eval_runs", "provider", "TEXT")
         _ensure_column(db, "eval_runs", "model", "TEXT")
         _ensure_column(db, "eval_runs", "turns_used_mean", "REAL")
@@ -248,6 +269,12 @@ def init_history_db(path: Path = DEFAULT_HISTORY_DB) -> None:
         _ensure_column(db, "eval_run_results", "max_turns_reached", "INTEGER")
         _ensure_column(db, "eval_run_results", "provider", "TEXT")
         _ensure_column(db, "eval_run_results", "model", "TEXT")
+        _ensure_column(db, "eval_feedback", "recommendation_type", "TEXT")
+        _ensure_column(db, "eval_feedback", "severity", "TEXT")
+        _ensure_column(db, "eval_feedback", "message", "TEXT")
+        _ensure_column(db, "eval_feedback", "evidence", "TEXT")
+        _ensure_column(db, "eval_feedback", "provider", "TEXT")
+        _ensure_column(db, "eval_feedback", "model", "TEXT")
 
 
 def _ensure_column(db: sqlite3.Connection, table: str, column: str, column_type: str) -> None:
@@ -325,6 +352,7 @@ def record_eval_run(
         )
         _record_improvements(db, run_id, kind, subject, summary or {}, commit, created, resolved_provider, resolved_model)
         _record_run_results(db, run_id, kind, subject, summary or {}, commit, created, resolved_provider, resolved_model)
+        _record_feedback(db, run_id, kind, subject, summary or {}, commit, created, resolved_provider, resolved_model)
 
 
 def _record_run_results(
@@ -370,6 +398,56 @@ def _record_run_results(
                 created,
             ),
         )
+
+
+def _record_feedback(
+    db: sqlite3.Connection,
+    run_id: str,
+    kind: str,
+    subject: str,
+    summary: dict[str, Any],
+    commit: str | None,
+    created: str,
+    provider: str | None,
+    model: str | None,
+) -> None:
+    runs = summary.get("runs", []) if isinstance(summary, dict) else []
+    if not isinstance(runs, list):
+        return
+    for run in runs:
+        if not isinstance(run, dict):
+            continue
+        feedback = run.get("feedback", {}) if isinstance(run.get("feedback"), dict) else {}
+        recommendations = feedback.get("recommendations", []) if isinstance(feedback.get("recommendations"), list) else []
+        for recommendation in recommendations:
+            if not isinstance(recommendation, dict):
+                continue
+            db.execute(
+                """
+                INSERT INTO eval_feedback(
+                    run_id, kind, subject, eval_id, configuration, run_number,
+                    recommendation_type, severity, message, evidence,
+                    git_commit, provider, model, created_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    run_id,
+                    kind,
+                    subject,
+                    run.get("eval_id"),
+                    run.get("configuration"),
+                    run.get("run_number"),
+                    recommendation.get("type"),
+                    recommendation.get("severity"),
+                    recommendation.get("message"),
+                    recommendation.get("evidence"),
+                    commit,
+                    provider,
+                    model,
+                    created,
+                ),
+            )
 
 
 def _record_improvements(

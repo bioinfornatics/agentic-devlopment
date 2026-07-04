@@ -375,6 +375,23 @@ def count_turns(output: str, max_turns: int) -> tuple[int, bool]:
     return turns_used, max_reached
 
 
+def count_turns_from_events(events: list[dict[str, Any]], output: str, max_turns: int) -> tuple[int, bool]:
+    _text_turns, max_reached = count_turns(output, max_turns)
+    assistant_ids: set[str] = set()
+    assistant_messages = 0
+    for event in events:
+        message = event.get("message") if isinstance(event.get("message"), dict) else {}
+        if message.get("role") != "assistant":
+            continue
+        assistant_messages += 1
+        message_id = message.get("id")
+        if message_id:
+            assistant_ids.add(str(message_id))
+    event_turns = len(assistant_ids) or assistant_messages
+    turns_used = max(max_turns if max_reached else 0, event_turns, 1 if output.strip() else 0)
+    return turns_used, max_reached
+
+
 def calculate_stats(values: list[float]) -> dict[str, float]:
     if not values:
         return {"mean": 0.0, "stddev": 0.0, "min": 0.0, "max": 0.0}
@@ -385,6 +402,224 @@ def calculate_stats(values: list[float]) -> dict[str, float]:
     else:
         stddev = 0.0
     return {"mean": round(mean, 4), "stddev": round(stddev, 4), "min": round(min(values), 4), "max": round(max(values), 4)}
+
+
+def parse_stream_json_output(raw: str) -> tuple[list[dict[str, Any]], str, str]:
+    events: list[dict[str, Any]] = []
+    transcript: list[str] = []
+    text_parts: list[str] = []
+    for line in raw.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("{"):
+            continue
+        try:
+            event = json.loads(stripped)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(event, dict):
+            continue
+        events.append(event)
+        message = event.get("message") if isinstance(event.get("message"), dict) else {}
+        role = message.get("role", event.get("type", "event"))
+        for item in message.get("content", []) if isinstance(message.get("content"), list) else []:
+            item_type = item.get("type")
+            if item_type == "text":
+                text = str(item.get("text", ""))
+                text_parts.append(text)
+                transcript.append(f"[{role}] {text}")
+            elif item_type == "toolRequest":
+                tool_call = item.get("toolCall", {}).get("value", {}) if isinstance(item.get("toolCall"), dict) else {}
+                name = tool_call.get("name", "tool")
+                arguments = tool_call.get("arguments", {})
+                transcript.append(f"[tool request] {name} {json.dumps(arguments, ensure_ascii=False)}")
+            elif item_type == "toolResponse":
+                result = item.get("toolResult", {}).get("value", {}) if isinstance(item.get("toolResult"), dict) else {}
+                structured = result.get("structuredContent", {}) if isinstance(result, dict) else {}
+                if structured:
+                    transcript.append(f"[tool response] {json.dumps(structured, ensure_ascii=False)[:4000]}")
+                else:
+                    transcript.append(f"[tool response] {json.dumps(result, ensure_ascii=False)[:4000]}")
+        if event.get("type") == "complete":
+            transcript.append(f"[complete] {json.dumps(event, ensure_ascii=False)}")
+    return events, "\n".join(transcript).strip(), "".join(text_parts).strip()
+
+
+def write_events(path: Path, events: list[dict[str, Any]]) -> None:
+    path.write_text("".join(json.dumps(event, ensure_ascii=False) + "\n" for event in events))
+
+
+def build_audit(
+    *,
+    events: list[dict[str, Any]],
+    raw_stdout: str,
+    transcript: str,
+    worktree: Path,
+    turns_used: int,
+    max_turns: int,
+    max_turns_reached: bool,
+    returncode: int,
+    duration: float,
+) -> dict[str, Any]:
+    tool_calls = extract_tool_calls(events)
+    commands = [call["arguments"].get("command") for call in tool_calls if call.get("name") in {"shell", "Developer.shell"} and isinstance(call.get("arguments"), dict) and call["arguments"].get("command")]
+    return {
+        "turns_used": turns_used,
+        "max_turns": max_turns,
+        "max_turns_reached": max_turns_reached,
+        "returncode": returncode,
+        "duration_seconds": round(duration, 3),
+        "events_count": len(events),
+        "tool_calls": tool_calls,
+        "commands": commands,
+        "validations": [command for command in commands if re.search(r"\b(test|validate|build|fmt|clippy|pytest|pnpm|cargo)\b", command)],
+        "beads_actions": [command for command in commands if re.search(r"(^|&&|;)\s*bd\s+", command)],
+        "files_changed": git_changed_files(worktree),
+        "git_status": git_status(worktree),
+        "token_usage": extract_token_usage(events),
+        "raw_stdout_chars": len(raw_stdout),
+        "transcript_chars": len(transcript),
+    }
+
+
+def extract_tool_calls(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    calls: list[dict[str, Any]] = []
+    for event in events:
+        message = event.get("message") if isinstance(event.get("message"), dict) else {}
+        for item in message.get("content", []) if isinstance(message.get("content"), list) else []:
+            if item.get("type") != "toolRequest":
+                continue
+            tool_call = item.get("toolCall", {}).get("value", {}) if isinstance(item.get("toolCall"), dict) else {}
+            calls.append({
+                "id": item.get("id"),
+                "name": tool_call.get("name"),
+                "arguments": tool_call.get("arguments", {}),
+                "extension": item.get("_meta", {}).get("goose_extension") if isinstance(item.get("_meta"), dict) else None,
+            })
+    return calls
+
+
+def extract_token_usage(events: list[dict[str, Any]]) -> dict[str, int]:
+    for event in reversed(events):
+        if event.get("type") == "complete":
+            return {
+                "total_tokens": int(event.get("total_tokens", 0) or 0),
+                "input_tokens": int(event.get("input_tokens", 0) or 0),
+                "output_tokens": int(event.get("output_tokens", 0) or 0),
+            }
+    return {}
+
+
+def git_status(worktree: Path) -> str:
+    proc = subprocess.run(["git", "status", "--short"], cwd=worktree, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+    return proc.stdout.strip() if proc.returncode == 0 else ""
+
+
+def git_changed_files(worktree: Path) -> list[str]:
+    proc = subprocess.run(["git", "status", "--short"], cwd=worktree, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+    if proc.returncode != 0:
+        return []
+    files: list[str] = []
+    for line in proc.stdout.splitlines():
+        if len(line) > 3:
+            files.append(line[3:].strip())
+    return sorted(files)
+
+
+def build_feedback_prompt(scenario: dict[str, Any], config_name: str, grading: dict[str, Any], audit: dict[str, Any]) -> str:
+    failed = [item for item in grading.get("expectations", []) if not item.get("passed")]
+    return textwrap.dedent(
+        f"""
+        Produce improvement feedback for this skill evaluation run. Return JSON only.
+
+        Scenario query: {scenario.get('query', '')}
+        Configuration: {config_name}
+        Expected behavior: {json.dumps(scenario.get('expected_behavior', []), indent=2, ensure_ascii=False)}
+        Failed expectations: {json.dumps(failed, indent=2, ensure_ascii=False)}
+        Audit summary: {json.dumps({k: audit.get(k) for k in ['turns_used', 'max_turns', 'max_turns_reached', 'commands', 'validations', 'beads_actions', 'files_changed', 'token_usage']}, indent=2, ensure_ascii=False)}
+
+        Required JSON schema:
+        {{
+          "recommendations": [
+            {{"type": "skill_instruction|scenario_quality|runner|validation", "severity": "high|medium|low", "message": "specific recommendation", "evidence": "brief evidence"}}
+          ],
+          "summary": "one sentence"
+        }}
+        Focus on actionable changes to the skill, scenario, runner, or validation. Do not invent facts not supported by the grading/audit.
+        """
+    ).strip()
+
+
+def generate_feedback(
+    *,
+    args: argparse.Namespace,
+    scenario: dict[str, Any],
+    config_name: str,
+    grading: dict[str, Any],
+    audit: dict[str, Any],
+    goose_cwd: Path,
+    goose_env: dict[str, str],
+    heartbeat_label: str,
+) -> dict[str, Any]:
+    if args.no_feedback:
+        return fallback_feedback(grading, audit, disabled=True)
+    prompt = build_feedback_prompt(scenario, config_name, grading, audit)
+    try:
+        rc, out, err, _duration = run_command(
+            goose_cmd(args, prompt),
+            cwd=goose_cwd,
+            timeout=args.grade_timeout,
+            env=goose_env,
+            heartbeat_label=heartbeat_label,
+            heartbeat_seconds=args.heartbeat_seconds,
+        )
+    except Exception as exc:  # noqa: BLE001
+        feedback = fallback_feedback(grading, audit)
+        feedback.setdefault("notes", []).append(f"Feedback generation failed: {exc}")
+        return feedback
+    parsed = extract_json_object(out)
+    if rc != 0 or not parsed or not isinstance(parsed.get("recommendations"), list):
+        feedback = fallback_feedback(grading, audit)
+        feedback.setdefault("notes", []).append(f"Feedback generation returned invalid JSON; rc={rc}; stderr={err[-300:]}")
+        return feedback
+    parsed.setdefault("notes", [])
+    return parsed
+
+
+def fallback_feedback(grading: dict[str, Any], audit: dict[str, Any], disabled: bool = False) -> dict[str, Any]:
+    recommendations = []
+    if disabled:
+        return {"summary": "Feedback generation disabled.", "recommendations": [], "notes": []}
+    for item in grading.get("expectations", []):
+        if item.get("passed"):
+            continue
+        recommendations.append({
+            "type": "skill_instruction",
+            "severity": "medium",
+            "message": f"Improve behavior for expectation: {item.get('text')}",
+            "evidence": item.get("evidence", "Expectation failed."),
+        })
+    if audit.get("max_turns_reached"):
+        recommendations.append({
+            "type": "scenario_quality",
+            "severity": "medium",
+            "message": "The run reached max turns; narrow the scenario or increase its turn budget.",
+            "evidence": f"turns_used={audit.get('turns_used')} max_turns={audit.get('max_turns')}",
+        })
+    return {"summary": "Fallback feedback generated from failed expectations and audit signals.", "recommendations": recommendations, "notes": []}
+
+
+def write_feedback_markdown(path: Path, feedback: dict[str, Any]) -> None:
+    lines = ["# Eval Feedback", "", feedback.get("summary", ""), "", "| Severity | Type | Recommendation | Evidence |", "|---|---|---|---|"]
+    for rec in feedback.get("recommendations", []):
+        lines.append(
+            "| {severity} | {type} | {message} | {evidence} |".format(
+                severity=str(rec.get("severity", "")),
+                type=str(rec.get("type", "")),
+                message=str(rec.get("message", "")).replace("|", "\\|"),
+                evidence=str(rec.get("evidence", "")).replace("|", "\\|").replace("\n", " "),
+            )
+        )
+    path.write_text("\n".join(lines) + "\n")
 
 
 def run_command(
@@ -430,8 +665,18 @@ def resolve_goose_cli(args: argparse.Namespace) -> str:
     return str(path.resolve() if path.is_absolute() else (ROOT / path).resolve())
 
 
-def goose_cmd(args: argparse.Namespace, prompt: str, max_turns: int | None = None) -> list[str]:
-    cmd = [resolve_goose_cli(args), "run", "--no-session", "--text", prompt, "--max-turns", str(max_turns or args.max_turns)]
+def goose_cmd(args: argparse.Namespace, prompt: str, max_turns: int | None = None, output_format: str = "text") -> list[str]:
+    cmd = [
+        resolve_goose_cli(args),
+        "run",
+        "--no-session",
+        "--text",
+        prompt,
+        "--max-turns",
+        str(max_turns or args.max_turns),
+        "--output-format",
+        output_format,
+    ]
     if args.no_profile:
         cmd.append("--no-profile")
     if args.provider:
@@ -586,12 +831,21 @@ def write_run_artifacts(
     turns_used: int,
     max_turns: int,
     max_turns_reached: bool,
+    events: list[dict[str, Any]],
+    raw_stdout: str,
+    audit: dict[str, Any],
+    feedback: dict[str, Any],
 ) -> None:
     outputs_dir = run_dir / "outputs"
     outputs_dir.mkdir(parents=True, exist_ok=True)
     write_json(run_dir / "eval_metadata.json", metadata)
     (outputs_dir / "prompt.md").write_text(prompt)
     (outputs_dir / "response.md").write_text(stdout or "")
+    (outputs_dir / "raw_stdout.txt").write_text(raw_stdout or "")
+    write_events(outputs_dir / "events.jsonl", events)
+    write_json(run_dir / "audit.json", audit)
+    write_json(run_dir / "feedback.json", feedback)
+    write_feedback_markdown(run_dir / "feedback.md", feedback)
     if stderr:
         (outputs_dir / "stderr.txt").write_text(stderr)
     write_json(
@@ -676,10 +930,33 @@ def patch_benchmark_turn_metrics(workspace: Path) -> None:
         run_summary.setdefault(config, {})["max_turns"] = calculate_stats(max_values.get(config, []))
         run_summary.setdefault(config, {})["max_turns_reached"] = calculate_stats(hit_values.get(config, []))
     write_json(benchmark_path, benchmark)
-    patch_benchmark_markdown(workspace, run_summary)
+    patch_benchmark_markdown(workspace, run_summary, [])
 
 
-def patch_benchmark_markdown(workspace: Path, run_summary: dict[str, Any]) -> None:
+def patch_benchmark_feedback(workspace: Path, benchmark: dict[str, Any]) -> None:
+    for run in benchmark.get("runs", []):
+        eval_id = run.get("eval_id")
+        config = run.get("configuration")
+        run_number = run.get("run_number")
+        if eval_id is None or not config or run_number is None:
+            continue
+        feedback_path = workspace / f"eval-{eval_id}" / config / f"run-{run_number}" / "feedback.json"
+        if feedback_path.exists():
+            run["feedback"] = read_json(feedback_path)
+
+
+def feedback_summary(benchmark: dict[str, Any]) -> list[dict[str, Any]]:
+    counts: dict[tuple[str, str, str], dict[str, Any]] = {}
+    for run in benchmark.get("runs", []):
+        feedback = run.get("feedback", {}) if isinstance(run.get("feedback"), dict) else {}
+        for rec in feedback.get("recommendations", []):
+            key = (str(rec.get("severity", "")), str(rec.get("type", "")), str(rec.get("message", "")))
+            item = counts.setdefault(key, {"severity": key[0], "type": key[1], "message": key[2], "count": 0, "evidence": str(rec.get("evidence", ""))})
+            item["count"] += 1
+    return sorted(counts.values(), key=lambda item: (-int(item["count"]), item["severity"], item["type"], item["message"]))
+
+
+def patch_benchmark_markdown(workspace: Path, run_summary: dict[str, Any], feedback_items: list[dict[str, Any]]) -> None:
     path = workspace / "benchmark.md"
     if not path.exists():
         return
@@ -726,7 +1003,10 @@ def aggregate_and_render(args: argparse.Namespace, workspace: Path) -> None:
         for run in benchmark.get("runs", []):
             if run.get("eval_id") in id_to_name:
                 run["eval_name"] = id_to_name[run.get("eval_id")]
+        patch_benchmark_feedback(workspace, benchmark)
+        benchmark["feedback_summary"] = feedback_summary(benchmark)
         write_json(benchmark_path, benchmark)
+        patch_benchmark_markdown(workspace, benchmark.get("run_summary", {}), benchmark.get("feedback_summary", []))
 
     review_output = args.review_output or (workspace / "review.html")
     cmd = [
@@ -778,6 +1058,7 @@ def main() -> int:
     parser.add_argument("--require-clean-git", action="store_true", help="Fail if the git working tree is dirty before running evals.")
     parser.add_argument("--history-db", type=Path, default=DEFAULT_HISTORY_DB, help="SQLite DB used to record eval history. Default: dist/evals/evaluation.db")
     parser.add_argument("--no-history", action="store_true", help="Do not record this run in the eval history database.")
+    parser.add_argument("--no-feedback", action="store_true", help="Skip automatic feedback generation for each eval run.")
     parser.add_argument("--skill-creator-dir", type=Path, default=DEFAULT_SKILL_CREATOR_DIR)
     parser.add_argument("--previous-workspace", type=Path)
     parser.add_argument("--review-output", type=Path)
@@ -881,7 +1162,7 @@ def main() -> int:
                 print(f"[start] {task_label} max_turns={task_max_turns}", flush=True)
                 try:
                     returncode, stdout, stderr, duration = run_command(
-                        goose_cmd(args, prompt, max_turns=task_max_turns),
+                        goose_cmd(args, prompt, max_turns=task_max_turns, output_format="stream-json"),
                         cwd=goose_cwd,
                         timeout=args.timeout,
                         env=goose_env,
@@ -895,9 +1176,23 @@ def main() -> int:
                     stderr = (exc.stderr or "") + f"\nTimed out after {args.timeout}s"
                     duration = float(args.timeout)
 
+                raw_stdout = stdout or ""
+                events, transcript, response_text = parse_stream_json_output(raw_stdout)
+                stdout = transcript or response_text or raw_stdout
+                turns_used, max_turns_reached = count_turns_from_events(events, raw_stdout + "\n" + stdout + "\n" + (stderr or ""), task_max_turns)
+                audit = build_audit(
+                    events=events,
+                    raw_stdout=raw_stdout,
+                    transcript=stdout,
+                    worktree=worktree,
+                    turns_used=turns_used,
+                    max_turns=task_max_turns,
+                    max_turns_reached=max_turns_reached,
+                    returncode=returncode,
+                    duration=duration,
+                )
                 grader_label = f"{args.skill} eval-{eval_id} {config.name} run-{run_number} grader"
                 print(f"[start] {grader_label}", flush=True)
-                turns_used, max_turns_reached = count_turns((stdout or "") + "\n" + (stderr or ""), task_max_turns)
                 grading = grade_run(
                     args=args,
                     scenario=scenario,
@@ -910,6 +1205,19 @@ def main() -> int:
                     heartbeat_label=grader_label,
                 )
                 print(f"[done] {grader_label}", flush=True)
+                feedback_label = f"{args.skill} eval-{eval_id} {config.name} run-{run_number} feedback"
+                print(f"[start] {feedback_label}", flush=True)
+                feedback = generate_feedback(
+                    args=args,
+                    scenario=scenario,
+                    config_name=config.name,
+                    grading=grading,
+                    audit=audit,
+                    goose_cwd=goose_cwd,
+                    goose_env=goose_env,
+                    heartbeat_label=feedback_label,
+                )
+                print(f"[done] {feedback_label}", flush=True)
                 write_run_artifacts(
                     run_dir=run_dir,
                     metadata=metadata,
@@ -922,6 +1230,10 @@ def main() -> int:
                     turns_used=turns_used,
                     max_turns=task_max_turns,
                     max_turns_reached=max_turns_reached,
+                    events=events,
+                    raw_stdout=raw_stdout,
+                    audit=audit,
+                    feedback=feedback,
                 )
                 if goose_home and goose_home.exists() and not args.keep_goose_home:
                     shutil.rmtree(goose_home)
