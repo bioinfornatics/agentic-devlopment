@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_EVAL_KIND = "skills"
 ITERATION_RE = re.compile(r"^iteration-(\d+)$")
+TIMESTAMP_RE = re.compile(r"^\d{8}-\d{6}$")
 
 
 def latest_workspace_root() -> Path:
@@ -19,7 +20,7 @@ def latest_workspace_root() -> Path:
     if evals_root.exists():
         for path in evals_root.iterdir():
             workspace = path / DEFAULT_EVAL_KIND
-            if path.is_dir() and workspace.exists():
+            if path.is_dir() and TIMESTAMP_RE.match(path.name) and workspace.exists():
                 candidates.append((path.name, workspace))
     if candidates:
         return sorted(candidates)[-1][1]
@@ -45,17 +46,15 @@ def target_path(args: argparse.Namespace) -> Path:
     workspace_root = args.workspace_root
     if args.skill:
         skill_dir = workspace_root / args.skill
-        iteration_dir = skill_dir / f"iteration-{args.iteration}" if args.iteration is not None else latest_iteration_dir(skill_dir)
-        if iteration_dir is None:
-            raise SystemExit(f"No iteration-* directories found for skill: {args.skill}")
+        artifact_root = skill_dir if (skill_dir / "review.html").exists() else latest_iteration_dir(skill_dir)
+        if artifact_root is None:
+            raise SystemExit(f"No review artifacts found for skill: {args.skill}")
         if args.artifact == "benchmark-md":
-            return iteration_dir / "benchmark.md"
+            return artifact_root / "benchmark.md"
         if args.artifact == "benchmark-json":
-            return iteration_dir / "benchmark.json"
-        return iteration_dir / "review.html"
+            return artifact_root / "benchmark.json"
+        return artifact_root / "review.html"
 
-    if args.iteration is not None:
-        return workspace_root / f"iteration-{args.iteration}-index.html"
     return workspace_root / "index.html"
 
 
@@ -64,7 +63,7 @@ def open_file(path: Path, *, print_path: bool) -> int:
     if not resolved.exists():
         print(f"Review artifact not found: {resolved}", file=sys.stderr)
         print("Run an eval first, for example:", file=sys.stderr)
-        print("  python scripts/run-skill-ab-suite.py --iteration 1 --continue-on-failure", file=sys.stderr)
+        print("  python scripts/run-skill-ab-suite.py --continue-on-failure", file=sys.stderr)
         print("Then open the latest timestamped workspace with:", file=sys.stderr)
         print("  python scripts/open-skill-eval-review.py", file=sys.stderr)
         return 1
@@ -84,7 +83,6 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Open generated skill A/B eval suite review artifacts.")
     parser.add_argument("--workspace-root", type=Path, help="Default: latest dist/evals/<timestamp>/skills workspace, falling back to legacy dist/evals/skills")
     parser.add_argument("--skill", help="Open a single skill review instead of the suite index.")
-    parser.add_argument("--iteration", type=int, help="Iteration to open. Defaults to latest suite index, or latest skill iteration.")
     parser.add_argument(
         "--artifact",
         choices=["review", "benchmark-md", "benchmark-json"],

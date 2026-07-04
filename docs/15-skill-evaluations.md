@@ -78,16 +78,15 @@ Single-skill `with_skill` / `without_skill` run:
 ```bash
 python scripts/run-skill-ab-eval.py \
   --skill code-review \
-  --iteration 1 \
   --runs-per-config 1
 
-xdg-open dist/evals/<timestamp>/skills/code-review/iteration-1/review.html
+xdg-open dist/evals/<timestamp>/skills/code-review/review.html
 ```
 
 The generated workspace follows the shape expected by skill-creator:
 
 ```text
-dist/evals/<timestamp>/skills/<skill-name>/iteration-1/
+dist/evals/<timestamp>/skills/<skill-name>/
   eval-0/
     eval_metadata.json
     with_skill/
@@ -114,7 +113,6 @@ If the isolated home cannot use your default provider, pass explicit provider/mo
 ```bash
 python scripts/run-skill-ab-eval.py \
   --skill code-review \
-  --iteration 1 \
   --provider custom_claude_from_azure \
   --model claude-sonnet-4-6
 ```
@@ -127,7 +125,6 @@ By default, runtime outputs are timestamp-partitioned under `dist/evals/<timesta
 
 ```bash
 python scripts/run-skill-ab-suite.py \
-  --iteration 1 \
   --runs-per-config 1 \
   --continue-on-failure
 
@@ -138,7 +135,6 @@ Use `--goose-cli` or `GOOSE_EVAL_CLI` to force a specific Goose binary for both 
 
 ```bash
 python scripts/run-skill-ab-suite.py \
-  --iteration 1 \
   --continue-on-failure \
   --goose-cli ../third-parties/goose/target/debug/goose
 ```
@@ -151,7 +147,6 @@ The suite runner uses the same strict isolated Goose baseline by default. Pass `
 
 ```bash
 python scripts/run-skill-ab-suite.py \
-  --iteration 1 \
   --skills code-review sdd
 ```
 
@@ -159,9 +154,8 @@ The suite index links to each per-skill review and benchmark:
 
 ```text
 dist/evals/<timestamp>/skills/index.html
-dist/evals/<timestamp>/skills/iteration-1-index.html
-dist/evals/<timestamp>/skills/<skill-name>/iteration-1/review.html
-dist/evals/<timestamp>/skills/<skill-name>/iteration-1/benchmark.json
+dist/evals/<timestamp>/skills/<skill-name>/review.html
+dist/evals/<timestamp>/skills/<skill-name>/benchmark.json
 ```
 
 ### Editor shortcuts
@@ -198,11 +192,10 @@ python scripts/run-skill-ab-eval.py \
   --skill code-review \
   --mode old-new \
   --baseline-git-ref HEAD~1 \
-  --iteration 2 \
   --runs-per-config 1 \
-  --previous-workspace dist/evals/<timestamp>/skills/code-review/iteration-1
+  --previous-workspace dist/evals/<timestamp>/skills/code-review
 
-xdg-open dist/evals/<timestamp>/skills/code-review/iteration-2/review.html
+xdg-open dist/evals/<timestamp>/skills/code-review/review.html
 ```
 
 The runner materializes `.agents/skills/<skill-name>` from `--baseline-git-ref` into the generated workspace and compares it against the working-tree candidate at `.agents/skills/<skill-name>`. You can also compare two refs directly:
@@ -212,8 +205,7 @@ python scripts/run-skill-ab-eval.py \
   --skill code-review \
   --mode old-new \
   --baseline-git-ref v1.0.0 \
-  --candidate-git-ref HEAD \
-  --iteration 2
+  --candidate-git-ref HEAD
 ```
 
 Fallbacks remain available:

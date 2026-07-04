@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Eval Skills - Full A/B Suite" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="python scripts/run-skill-ab-suite.py --iteration 1 --continue-on-failure" />
+    <option name="SCRIPT_TEXT" value="python scripts/run-skill-ab-suite.py --continue-on-failure" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />

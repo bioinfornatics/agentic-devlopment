@@ -2,12 +2,6 @@
   "version": "2.0.0",
   "inputs": [
     {
-      "id": "skillEvalIteration",
-      "type": "promptString",
-      "description": "Skill eval iteration number",
-      "default": "1"
-    },
-    {
       "id": "skillEvalSubset",
       "type": "promptString",
       "description": "Optional skill subset, e.g. code-review sdd. Leave empty for full suite.",
@@ -24,7 +18,7 @@
     {
       "label": "Eval Skills: Full A/B Suite",
       "type": "shell",
-      "command": "python scripts/run-skill-ab-suite.py --iteration ${input:skillEvalIteration} --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "command": "python scripts/run-skill-ab-suite.py --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
@@ -35,7 +29,7 @@
     {
       "label": "Eval Skills: A/B Suite Subset",
       "type": "shell",
-      "command": "python scripts/run-skill-ab-suite.py --iteration ${input:skillEvalIteration} --continue-on-failure --skills ${input:skillEvalSubset} --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "command": "python scripts/run-skill-ab-suite.py --continue-on-failure --skills ${input:skillEvalSubset} --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
@@ -67,7 +61,7 @@
     {
       "label": "Eval Skills: Full A/B Suite + Open Review",
       "type": "shell",
-      "command": "python scripts/run-skill-ab-suite.py --iteration ${input:skillEvalIteration} --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"; python scripts/open-skill-eval-review.py",
+      "command": "python scripts/run-skill-ab-suite.py --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"; python scripts/open-skill-eval-review.py",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -78,7 +72,7 @@
     {
       "label": "Eval Skills: A/B Suite Subset + Open Review",
       "type": "shell",
-      "command": "python scripts/run-skill-ab-suite.py --iteration ${input:skillEvalIteration} --continue-on-failure --skills ${input:skillEvalSubset} --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"; python scripts/open-skill-eval-review.py",
+      "command": "python scripts/run-skill-ab-suite.py --continue-on-failure --skills ${input:skillEvalSubset} --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"; python scripts/open-skill-eval-review.py",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",

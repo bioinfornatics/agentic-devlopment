@@ -619,7 +619,6 @@ def main() -> int:
     parser.add_argument("--candidate-skill-dir", type=Path, help="New skill directory for old-new mode. Mutually exclusive with --candidate-git-ref.")
     parser.add_argument("--baseline-git-ref", help="Git ref to use as old_skill in old-new mode, e.g. HEAD, HEAD~1, origin/main, or a tag.")
     parser.add_argument("--candidate-git-ref", help="Git ref to use as new_skill in old-new mode. Defaults to the working-tree skill directory.")
-    parser.add_argument("--iteration", type=int, default=1)
     parser.add_argument("--runs-per-config", type=int, default=1)
     parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/<timestamp>/skills")
     parser.add_argument("--skill-creator-dir", type=Path, default=DEFAULT_SKILL_CREATOR_DIR)
@@ -658,7 +657,7 @@ def main() -> int:
     if not isinstance(scenarios, list):
         raise SystemExit(f"{eval_file} must contain a JSON array")
 
-    workspace = args.workspace_root / args.skill / f"iteration-{args.iteration}"
+    workspace = args.workspace_root / args.skill
     if workspace.exists():
         shutil.rmtree(workspace)
     workspace.mkdir(parents=True, exist_ok=True)

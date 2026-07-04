@@ -58,7 +58,6 @@ def generate_index(
     *,
     output: Path,
     skills: list[str],
-    iteration: int,
     workspace_root: Path,
     results: dict[str, dict[str, Any]],
     command: list[str],
@@ -69,7 +68,7 @@ def generate_index(
     overall_rates: list[float] = []
 
     for skill in skills:
-        workspace = workspace_root / skill / f"iteration-{iteration}"
+        workspace = workspace_root / skill
         benchmark = load_benchmark(workspace)
         review = workspace / "review.html"
         benchmark_md = workspace / "benchmark.md"
@@ -120,7 +119,7 @@ def generate_index(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Skill A/B eval suite — iteration {iteration}</title>
+  <title>Skill A/B eval suite</title>
   <style>
     body {{ font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 2rem; line-height: 1.5; color: #1f2937; }}
     h1 {{ margin-bottom: 0.25rem; }}
@@ -139,7 +138,7 @@ def generate_index(
 </head>
 <body>
   <h1>Skill A/B eval suite</h1>
-  <p class="muted">Iteration {iteration} · generated {html.escape(generated)}</p>
+  <p class="muted">Generated {html.escape(generated)}</p>
   <div class="summary">
     <div class="card"><strong>Skills</strong><br>{len(skills)}</div>
     <div class="card"><strong>Mean pass rate across configs</strong><br>{fmt_pct(overall)}</div>
@@ -170,7 +169,6 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run all skill A/B evals and build a visual index.")
     parser.add_argument("--evals-dir", type=Path, default=ROOT / "evals" / "skills")
     parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/<timestamp>/skills")
-    parser.add_argument("--iteration", type=int, default=1)
     parser.add_argument("--runs-per-config", type=int, default=1)
     parser.add_argument("--skills", nargs="*", help="Optional subset. Defaults to every evals/skills/*.json file.")
     parser.add_argument("--mode", choices=["with-without"], default="with-without", help="Suite currently supports the with/without baseline mode.")
@@ -197,7 +195,7 @@ def main() -> int:
         action="store_true",
         help="Debug mode: forward expected_behavior and baseline_gaps into task prompts. Default keeps them grader-only.",
     )
-    parser.add_argument("--output", type=Path, help="Default: <workspace-root>/iteration-<N>-index.html")
+    parser.add_argument("--output", type=Path, help="Default: <workspace-root>/index.html")
     args = parser.parse_args()
     if args.workspace_root is None:
         args.workspace_root = default_workspace_root()
@@ -217,8 +215,6 @@ def main() -> int:
             str(runner),
             "--skill",
             skill,
-            "--iteration",
-            str(args.iteration),
             "--runs-per-config",
             str(args.runs_per_config),
             "--workspace-root",
@@ -249,16 +245,18 @@ def main() -> int:
         proc = subprocess.run(cmd, cwd=ROOT)
         results[skill] = {"returncode": proc.returncode, "command": cmd}
         if proc.returncode != 0 and not args.continue_on_failure:
-            output = args.output or (args.workspace_root / f"iteration-{args.iteration}-index.html")
-            generate_index(output=output, skills=skills, iteration=args.iteration, workspace_root=args.workspace_root, results=results, command=sys.argv)
+            output = args.output or (args.workspace_root / "index.html")
+            generate_index(output=output, skills=skills, workspace_root=args.workspace_root, results=results, command=sys.argv)
             latest = args.workspace_root / "index.html"
-            latest.write_text(output.read_text())
+            if output.resolve() != latest.resolve():
+                latest.write_text(output.read_text())
             raise SystemExit(proc.returncode)
 
-    output = args.output or (args.workspace_root / f"iteration-{args.iteration}-index.html")
-    generate_index(output=output, skills=skills, iteration=args.iteration, workspace_root=args.workspace_root, results=results, command=sys.argv)
+    output = args.output or (args.workspace_root / "index.html")
+    generate_index(output=output, skills=skills, workspace_root=args.workspace_root, results=results, command=sys.argv)
     latest = args.workspace_root / "index.html"
-    latest.write_text(output.read_text())
+    if output.resolve() != latest.resolve():
+        latest.write_text(output.read_text())
     print(f"Suite index written to {output}")
     print(f"Latest suite index written to {latest}")
     return 0 if all(item["returncode"] == 0 for item in results.values()) else 1

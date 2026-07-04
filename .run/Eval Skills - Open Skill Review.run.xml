@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Eval Skills - Open Skill Review" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="read -r -p &quot;Skill: &quot; SKILL; read -r -p &quot;Iteration [latest]: &quot; ITERATION; if [ -n &quot;$ITERATION&quot; ]; then python scripts/open-skill-eval-review.py --skill &quot;$SKILL&quot; --iteration &quot;$ITERATION&quot;; else python scripts/open-skill-eval-review.py --skill &quot;$SKILL&quot;; fi" />
+    <option name="SCRIPT_TEXT" value="read -r -p &quot;Skill: &quot; SKILL; python scripts/open-skill-eval-review.py --skill &quot;$SKILL&quot;" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />
