@@ -117,7 +117,11 @@ def generate_index(
                 mean = stat.get("mean")
                 if mean is not None:
                     overall_rates.append(float(mean))
-                config_cells.append(f"<strong>{html.escape(config)}</strong>: {fmt_pct(mean)}")
+                turns = summary.get(config, {}).get("turns_used", {}).get("mean")
+                hit = summary.get(config, {}).get("max_turns_reached", {}).get("mean")
+                turn_text = "" if turns is None else f"; turns: {float(turns):.1f}"
+                hit_text = "" if hit is None else f"; max-turn hit: {float(hit) * 100:.0f}%"
+                config_cells.append(f"<strong>{html.escape(config)}</strong>: {fmt_pct(mean)}{turn_text}{hit_text}")
             delta = summary.get("delta", {}).get("pass_rate", "—")
             config_summary = "<br>".join(config_cells) + f"<br><span class='muted'>Δ pass-rate: {html.escape(str(delta))}</span>"
 
@@ -201,7 +205,7 @@ def main() -> int:
     parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/skills. Per-skill workspaces are <workspace-root>/<skill>/<content-hash>")
     parser.add_argument("--run-id-source", choices=["content", "git"], default="content", help="How to derive the default dist/evals/<run-id> directory. Default: content hash of selected eval definitions and referenced skills.")
     parser.add_argument("--require-clean-git", action="store_true", help="Fail if the git working tree is dirty before running evals.")
-    parser.add_argument("--history-db", type=Path, default=DEFAULT_HISTORY_DB, help="SQLite DB used to record eval history. Default: dist/evals/eval-history.sqlite3")
+    parser.add_argument("--history-db", type=Path, default=DEFAULT_HISTORY_DB, help="SQLite DB used to record eval history. Default: dist/evals/evaluation.db")
     parser.add_argument("--no-history", action="store_true", help="Do not record this run in the eval history database.")
     parser.add_argument("--runs-per-config", type=int, default=1)
     parser.add_argument("--skills", nargs="*", help="Optional subset. Defaults to every evals/skills/*.json file.")

@@ -58,7 +58,7 @@ python scripts/run-skill-ab-eval.py --skill code-review --mode old-new --baselin
 xdg-open dist/evals/skills/code-review/<content-hash>/review.html
 ```
 
-Runtime outputs use `dist/evals/skills/<skill-name>/<content-hash>/` by default, and run history is appended to `dist/evals/eval-history.sqlite3`. The A/B runners use isolated Goose homes by default, so installed skills, agents, and recipes are hidden for `without_skill` baselines. Use `--ambient-goose` only when debugging with the normal Goose environment.
+Runtime outputs use `dist/evals/skills/<skill-name>/<content-hash>/` by default, and run history is appended to `dist/evals/evaluation.db`. The A/B runners use isolated Goose homes by default, so installed skills, agents, and recipes are hidden for `without_skill` baselines. Use `--ambient-goose` only when debugging with the normal Goose environment.
 
 Run the full skill suite and open the suite index with:
 

@@ -358,6 +358,35 @@ def summarize_grading(expectations: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+MAX_TURN_PATTERNS = (
+    "maximum number of actions",
+    "maximum number of turns",
+    "max turns",
+    "max_turns",
+)
+
+
+def count_turns(output: str, max_turns: int) -> tuple[int, bool]:
+    lower = output.lower()
+    max_reached = any(pattern in lower for pattern in MAX_TURN_PATTERNS)
+    tool_markers = len(re.findall(r"(?m)^\s*▸\s+", output))
+    response_turn = 1 if output.strip() else 0
+    turns_used = max(max_turns if max_reached else 0, tool_markers, response_turn)
+    return turns_used, max_reached
+
+
+def calculate_stats(values: list[float]) -> dict[str, float]:
+    if not values:
+        return {"mean": 0.0, "stddev": 0.0, "min": 0.0, "max": 0.0}
+    mean = sum(values) / len(values)
+    if len(values) > 1:
+        variance = sum((value - mean) ** 2 for value in values) / (len(values) - 1)
+        stddev = variance ** 0.5
+    else:
+        stddev = 0.0
+    return {"mean": round(mean, 4), "stddev": round(stddev, 4), "min": round(min(values), 4), "max": round(max(values), 4)}
+
+
 def run_command(
     cmd: list[str],
     *,
@@ -554,6 +583,9 @@ def write_run_artifacts(
     returncode: int,
     duration: float,
     grading: dict[str, Any],
+    turns_used: int,
+    max_turns: int,
+    max_turns_reached: bool,
 ) -> None:
     outputs_dir = run_dir / "outputs"
     outputs_dir.mkdir(parents=True, exist_ok=True)
@@ -568,6 +600,9 @@ def write_run_artifacts(
             "duration_ms": round(duration * 1000),
             "total_duration_seconds": round(duration, 3),
             "total_tokens": max(0, len(stdout) // 4),
+            "turns_used": turns_used,
+            "max_turns": max_turns,
+            "max_turns_reached": max_turns_reached,
             "returncode": returncode,
         },
     )
@@ -597,10 +632,69 @@ def write_run_artifacts(
         "execution_metrics": {
             "output_chars": len(stdout),
             "stderr_chars": len(stderr),
+            "total_tool_calls": turns_used,
+            "turns_used": turns_used,
+            "max_turns": max_turns,
+            "max_turns_reached": max_turns_reached,
             "errors_encountered": 0 if returncode == 0 else 1,
         },
     }
     write_json(run_dir / "grading.json", grading_out)
+
+
+def patch_benchmark_turn_metrics(workspace: Path) -> None:
+    benchmark_path = workspace / "benchmark.json"
+    if not benchmark_path.exists():
+        return
+    benchmark = read_json(benchmark_path)
+    turn_values: dict[str, list[float]] = {}
+    hit_values: dict[str, list[float]] = {}
+    max_values: dict[str, list[float]] = {}
+    for run in benchmark.get("runs", []):
+        eval_id = run.get("eval_id")
+        config = run.get("configuration")
+        run_number = run.get("run_number")
+        if eval_id is None or not config or run_number is None:
+            continue
+        timing_path = workspace / f"eval-{eval_id}" / config / f"run-{run_number}" / "timing.json"
+        if not timing_path.exists():
+            continue
+        timing = read_json(timing_path)
+        result = run.setdefault("result", {})
+        turns_used = int(timing.get("turns_used", 0))
+        max_turns = int(timing.get("max_turns", 0))
+        max_reached = bool(timing.get("max_turns_reached", False))
+        result["turns_used"] = turns_used
+        result["max_turns"] = max_turns
+        result["max_turns_reached"] = max_reached
+        turn_values.setdefault(config, []).append(float(turns_used))
+        max_values.setdefault(config, []).append(float(max_turns))
+        hit_values.setdefault(config, []).append(1.0 if max_reached else 0.0)
+    run_summary = benchmark.setdefault("run_summary", {})
+    for config, values in turn_values.items():
+        run_summary.setdefault(config, {})["turns_used"] = calculate_stats(values)
+        run_summary.setdefault(config, {})["max_turns"] = calculate_stats(max_values.get(config, []))
+        run_summary.setdefault(config, {})["max_turns_reached"] = calculate_stats(hit_values.get(config, []))
+    write_json(benchmark_path, benchmark)
+    patch_benchmark_markdown(workspace, run_summary)
+
+
+def patch_benchmark_markdown(workspace: Path, run_summary: dict[str, Any]) -> None:
+    path = workspace / "benchmark.md"
+    if not path.exists():
+        return
+    configs = [name for name in run_summary.keys() if name != "delta"]
+    lines = ["", "## Turn Usage", "", "| Configuration | Avg turns | Max turns reached |", "|---|---:|---:|"]
+    for config in configs:
+        turns = run_summary.get(config, {}).get("turns_used", {}).get("mean")
+        hit = run_summary.get(config, {}).get("max_turns_reached", {}).get("mean")
+        turn_text = "—" if turns is None else f"{float(turns):.1f}"
+        hit_text = "—" if hit is None else f"{float(hit) * 100:.0f}%"
+        lines.append(f"| {config} | {turn_text} | {hit_text} |")
+    content = path.read_text()
+    if "## Turn Usage" in content:
+        content = content.split("## Turn Usage", 1)[0].rstrip()
+    path.write_text(content.rstrip() + "\n" + "\n".join(lines) + "\n")
 
 
 def aggregate_and_render(args: argparse.Namespace, workspace: Path) -> None:
@@ -616,6 +710,7 @@ def aggregate_and_render(args: argparse.Namespace, workspace: Path) -> None:
         cwd=skill_creator_dir,
         check=True,
     )
+    patch_benchmark_turn_metrics(workspace)
 
     # Patch eval names into benchmark.json for a clearer per-eval table.
     benchmark_path = workspace / "benchmark.json"
@@ -681,7 +776,7 @@ def main() -> int:
     parser.add_argument("--run-id", help="Run id used for metadata/history. Usually passed by the suite runner.")
     parser.add_argument("--run-id-source", choices=["content", "git"], default="content", help="How to derive the default dist/evals/<run-id> directory. Default: content hash of this eval definition and referenced skills.")
     parser.add_argument("--require-clean-git", action="store_true", help="Fail if the git working tree is dirty before running evals.")
-    parser.add_argument("--history-db", type=Path, default=DEFAULT_HISTORY_DB, help="SQLite DB used to record eval history. Default: dist/evals/eval-history.sqlite3")
+    parser.add_argument("--history-db", type=Path, default=DEFAULT_HISTORY_DB, help="SQLite DB used to record eval history. Default: dist/evals/evaluation.db")
     parser.add_argument("--no-history", action="store_true", help="Do not record this run in the eval history database.")
     parser.add_argument("--skill-creator-dir", type=Path, default=DEFAULT_SKILL_CREATOR_DIR)
     parser.add_argument("--previous-workspace", type=Path)
@@ -802,6 +897,7 @@ def main() -> int:
 
                 grader_label = f"{args.skill} eval-{eval_id} {config.name} run-{run_number} grader"
                 print(f"[start] {grader_label}", flush=True)
+                turns_used, max_turns_reached = count_turns((stdout or "") + "\n" + (stderr or ""), task_max_turns)
                 grading = grade_run(
                     args=args,
                     scenario=scenario,
@@ -823,6 +919,9 @@ def main() -> int:
                     returncode=returncode,
                     duration=duration,
                     grading=grading,
+                    turns_used=turns_used,
+                    max_turns=task_max_turns,
+                    max_turns_reached=max_turns_reached,
                 )
                 if goose_home and goose_home.exists() and not args.keep_goose_home:
                     shutil.rmtree(goose_home)

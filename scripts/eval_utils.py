@@ -14,7 +14,7 @@ from typing import Any, Iterable
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_EVAL_KIND = "skills"
-DEFAULT_HISTORY_DB = ROOT / "dist" / "evals" / "eval-history.sqlite3"
+DEFAULT_HISTORY_DB = ROOT / "dist" / "evals" / "evaluation.db"
 
 
 def read_json(path: Path) -> Any:
@@ -161,6 +161,9 @@ def utc_now() -> str:
 
 
 def init_history_db(path: Path = DEFAULT_HISTORY_DB) -> None:
+    legacy = path.with_name("eval-history.sqlite3")
+    if path.name == "evaluation.db" and legacy.exists() and not path.exists():
+        legacy.rename(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(path) as db:
         db.execute(
@@ -175,6 +178,10 @@ def init_history_db(path: Path = DEFAULT_HISTORY_DB) -> None:
                 git_dirty INTEGER,
                 provider TEXT,
                 model TEXT,
+                turns_used_mean REAL,
+                max_turns_mean REAL,
+                max_turns_reached INTEGER,
+                max_turns_reached_rate REAL,
                 workspace TEXT NOT NULL,
                 summary_json TEXT,
                 created_at TEXT NOT NULL
@@ -195,20 +202,78 @@ def init_history_db(path: Path = DEFAULT_HISTORY_DB) -> None:
                 git_commit TEXT,
                 provider TEXT,
                 model TEXT,
+                baseline_turns_used_mean REAL,
+                candidate_turns_used_mean REAL,
+                baseline_max_turns_reached_rate REAL,
+                candidate_max_turns_reached_rate REAL,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
+        db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS eval_run_results (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                run_id TEXT NOT NULL,
+                kind TEXT NOT NULL,
+                subject TEXT NOT NULL,
+                eval_id INTEGER,
+                configuration TEXT,
+                run_number INTEGER,
+                pass_rate REAL,
+                turns_used INTEGER,
+                max_turns INTEGER,
+                max_turns_reached INTEGER,
+                git_commit TEXT,
+                provider TEXT,
+                model TEXT,
                 created_at TEXT NOT NULL
             )
             """
         )
         _ensure_column(db, "eval_runs", "provider", "TEXT")
         _ensure_column(db, "eval_runs", "model", "TEXT")
+        _ensure_column(db, "eval_runs", "turns_used_mean", "REAL")
+        _ensure_column(db, "eval_runs", "max_turns_mean", "REAL")
+        _ensure_column(db, "eval_runs", "max_turns_reached", "INTEGER")
+        _ensure_column(db, "eval_runs", "max_turns_reached_rate", "REAL")
         _ensure_column(db, "eval_improvements", "provider", "TEXT")
         _ensure_column(db, "eval_improvements", "model", "TEXT")
+        _ensure_column(db, "eval_improvements", "baseline_turns_used_mean", "REAL")
+        _ensure_column(db, "eval_improvements", "candidate_turns_used_mean", "REAL")
+        _ensure_column(db, "eval_improvements", "baseline_max_turns_reached_rate", "REAL")
+        _ensure_column(db, "eval_improvements", "candidate_max_turns_reached_rate", "REAL")
+        _ensure_column(db, "eval_run_results", "turns_used", "INTEGER")
+        _ensure_column(db, "eval_run_results", "max_turns", "INTEGER")
+        _ensure_column(db, "eval_run_results", "max_turns_reached", "INTEGER")
+        _ensure_column(db, "eval_run_results", "provider", "TEXT")
+        _ensure_column(db, "eval_run_results", "model", "TEXT")
 
 
 def _ensure_column(db: sqlite3.Connection, table: str, column: str, column_type: str) -> None:
     columns = {row[1] for row in db.execute(f"PRAGMA table_info({table})")}
     if column not in columns:
         db.execute(f"ALTER TABLE {table} ADD COLUMN {column} {column_type}")
+
+
+def extract_turn_summary(summary: dict[str, Any]) -> dict[str, Any]:
+    run_summary = summary.get("run_summary", summary) if isinstance(summary, dict) else {}
+    if not isinstance(run_summary, dict):
+        return {}
+    configs = [value for key, value in run_summary.items() if key != "delta" and isinstance(value, dict)]
+    turns = [_stat_mean(config, "turns_used") for config in configs]
+    max_turns = [_stat_mean(config, "max_turns") for config in configs]
+    hit_rates = [_stat_mean(config, "max_turns_reached") for config in configs]
+    turns = [value for value in turns if value is not None]
+    max_turns = [value for value in max_turns if value is not None]
+    hit_rates = [value for value in hit_rates if value is not None]
+    hit_rate = _mean(hit_rates)
+    return {
+        "turns_used_mean": _mean(turns),
+        "max_turns_mean": _mean(max_turns),
+        "max_turns_reached": None if hit_rate is None else int(hit_rate > 0),
+        "max_turns_reached_rate": hit_rate,
+    }
 
 
 def record_eval_run(
@@ -228,12 +293,17 @@ def record_eval_run(
     dirty = git_is_dirty()
     created = utc_now()
     resolved_provider, resolved_model = resolve_provider_model(provider, model)
+    turn_summary = extract_turn_summary(summary or {})
     summary_json = json.dumps(summary or {}, sort_keys=True)
     with sqlite3.connect(db_path) as db:
         db.execute(
             """
-            INSERT INTO eval_runs(run_id, kind, subject, content_hash, git_commit, git_dirty, provider, model, workspace, summary_json, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO eval_runs(
+                run_id, kind, subject, content_hash, git_commit, git_dirty, provider, model,
+                turns_used_mean, max_turns_mean, max_turns_reached, max_turns_reached_rate,
+                workspace, summary_json, created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 run_id,
@@ -244,12 +314,62 @@ def record_eval_run(
                 None if dirty is None else int(dirty),
                 resolved_provider,
                 resolved_model,
+                turn_summary.get("turns_used_mean"),
+                turn_summary.get("max_turns_mean"),
+                turn_summary.get("max_turns_reached"),
+                turn_summary.get("max_turns_reached_rate"),
                 str(workspace),
                 summary_json,
                 created,
             ),
         )
         _record_improvements(db, run_id, kind, subject, summary or {}, commit, created, resolved_provider, resolved_model)
+        _record_run_results(db, run_id, kind, subject, summary or {}, commit, created, resolved_provider, resolved_model)
+
+
+def _record_run_results(
+    db: sqlite3.Connection,
+    run_id: str,
+    kind: str,
+    subject: str,
+    summary: dict[str, Any],
+    commit: str | None,
+    created: str,
+    provider: str | None,
+    model: str | None,
+) -> None:
+    runs = summary.get("runs", []) if isinstance(summary, dict) else []
+    if not isinstance(runs, list):
+        return
+    for run in runs:
+        if not isinstance(run, dict):
+            continue
+        result = run.get("result", {}) if isinstance(run.get("result"), dict) else {}
+        db.execute(
+            """
+            INSERT INTO eval_run_results(
+                run_id, kind, subject, eval_id, configuration, run_number, pass_rate,
+                turns_used, max_turns, max_turns_reached, git_commit, provider, model, created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                run_id,
+                kind,
+                subject,
+                run.get("eval_id"),
+                run.get("configuration"),
+                run.get("run_number"),
+                result.get("pass_rate"),
+                result.get("turns_used"),
+                result.get("max_turns"),
+                None if result.get("max_turns_reached") is None else int(bool(result.get("max_turns_reached"))),
+                commit,
+                provider,
+                model,
+                created,
+            ),
+        )
 
 
 def _record_improvements(
@@ -277,15 +397,35 @@ def _record_improvements(
     candidate = _metric_mean(run_summary, candidate_name, "pass_rate")
     if baseline is None or candidate is None:
         return
+    baseline_turns = _metric_mean(run_summary, baseline_name, "turns_used")
+    candidate_turns = _metric_mean(run_summary, candidate_name, "turns_used")
+    baseline_hit_rate = _metric_mean(run_summary, baseline_name, "max_turns_reached")
+    candidate_hit_rate = _metric_mean(run_summary, candidate_name, "max_turns_reached")
     db.execute(
         """
-        INSERT INTO eval_improvements(run_id, kind, subject, metric, baseline, candidate, delta, git_commit, provider, model, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO eval_improvements(
+            run_id, kind, subject, metric, baseline, candidate, delta, git_commit, provider, model,
+            baseline_turns_used_mean, candidate_turns_used_mean,
+            baseline_max_turns_reached_rate, candidate_max_turns_reached_rate,
+            created_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
-        (run_id, kind, subject, "pass_rate", baseline, candidate, candidate - baseline, commit, provider, model, created),
+        (
+            run_id, kind, subject, "pass_rate", baseline, candidate, candidate - baseline,
+            commit, provider, model, baseline_turns, candidate_turns, baseline_hit_rate, candidate_hit_rate, created,
+        ),
     )
 
 
 def _metric_mean(run_summary: dict[str, Any], config: str, metric: str) -> float | None:
-    value = run_summary.get(config, {}).get(metric, {}).get("mean")
+    return _stat_mean(run_summary.get(config, {}), metric)
+
+
+def _stat_mean(config_summary: dict[str, Any], metric: str) -> float | None:
+    value = config_summary.get(metric, {}).get("mean")
     return float(value) if value is not None else None
+
+
+def _mean(values: list[float]) -> float | None:
+    return round(sum(values) / len(values), 4) if values else None
