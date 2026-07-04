@@ -30,6 +30,17 @@ Each file is a JSON array. Each scenario follows this shape:
 }
 ```
 
+## Visual review
+
+Render all eval definitions in the skill-creator review UI:
+
+```bash
+python scripts/render-skill-eval-review.py
+xdg-open dist/skill-eval-review/index.html
+```
+
+This checks that prompts, baseline gaps, and expected behaviors are reviewable. It does not execute model runs. For runtime with-skill/baseline evaluation and grading, see `docs/15-skill-evaluations.md`.
+
 ## Files
 
 - `agentic-dev-harness.json`
