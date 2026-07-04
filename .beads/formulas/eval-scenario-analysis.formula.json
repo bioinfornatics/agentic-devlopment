@@ -1,0 +1,19 @@
+{
+  "formula": "eval-scenario-analysis",
+  "description": "Analyze one evaluated subject scenario from generated eval artifacts.",
+  "variables": {
+    "kind": {"default": "skills", "description": "Evaluation kind: skills, agents, or recipes"},
+    "subject": {"description": "Evaluated subject name, e.g. code-review"},
+    "hash": {"description": "Content hash directory for the subject"},
+    "eval_id": {"description": "Scenario number"},
+    "workspace_root": {"default": "dist/evals/skills", "description": "Workspace root for the kind"}
+  },
+  "steps": [
+    {
+      "id": "analyze-scenario",
+      "title": "Analyze {{kind}}/{{subject}} eval-{{eval_id}}",
+      "type": "task",
+      "description": "Run `python scripts/analyze-skill-eval-results.py --workspace-root {{workspace_root}} --skill {{subject}} --hash {{hash}} --scenario {{eval_id}}`, inspect analysis.md/json and sequence.mmd, then summarize bad actions, blockage, root cause, and recommendations."
+    }
+  ]
+}

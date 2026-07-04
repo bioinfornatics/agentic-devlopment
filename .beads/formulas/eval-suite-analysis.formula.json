@@ -1,0 +1,23 @@
+{
+  "formula": "eval-suite-analysis",
+  "description": "Analyze all generated skill eval artifacts and publish a suite-level report.",
+  "variables": {
+    "workspace_root": {"default": "dist/evals/skills", "description": "Skill eval workspace root"},
+    "db": {"default": "dist/evals/evaluation.db", "description": "Evaluation SQLite database"}
+  },
+  "steps": [
+    {
+      "id": "run-suite-analysis",
+      "title": "Run suite eval analysis",
+      "type": "task",
+      "description": "Run `python scripts/analyze-skill-eval-results.py --workspace-root {{workspace_root}} --db {{db}}`."
+    },
+    {
+      "id": "triage-results",
+      "title": "Triage suite analysis results",
+      "type": "task",
+      "depends_on": ["run-suite-analysis"],
+      "description": "Inspect `{{workspace_root}}/analysis-summary.md` and `analysis-index.html`; identify P0/P1 skill, scenario, runner, and grader follow-ups."
+    }
+  ]
+}

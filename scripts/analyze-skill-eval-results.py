@@ -1,0 +1,697 @@
+#!/usr/bin/env python3
+"""Analyze skill eval artifacts into timelines, sequence diagrams, reports, and SQLite rows."""
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sqlite3
+import os
+import subprocess
+import sys
+from collections import Counter, defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_WORKSPACE_ROOT = ROOT / "dist" / "evals" / "skills"
+DEFAULT_DB = ROOT / "dist" / "evals" / "evaluation.db"
+
+ROOT_CAUSES = {
+    "skill_gap",
+    "scenario_too_easy",
+    "scenario_too_broad",
+    "scenario_too_strict",
+    "baseline_contamination",
+    "fixture_issue",
+    "grader_issue",
+    "runner_audit_issue",
+    "turn_budget_issue",
+    "tool_error_loop",
+    "validation_loop",
+    "beads_state_confusion",
+    "browser_setup_failure",
+    "over_exploration",
+    "final_answer_omitted",
+    "model_variance",
+}
+
+
+def read_json(path: Path, default: Any = None) -> Any:
+    if not path.exists():
+        return default
+    try:
+        return json.loads(path.read_text(errors="replace"))
+    except json.JSONDecodeError:
+        return default
+
+
+def write_json(path: Path, data: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def discover_subjects(workspace_root: Path, subject_filter: str | None) -> list[Path]:
+    subjects = [p for p in workspace_root.iterdir() if p.is_dir()]
+    if subject_filter:
+        subjects = [p for p in subjects if p.name == subject_filter]
+    return sorted(subjects)
+
+
+def latest_hash_dir(subject_dir: Path, hash_filter: str | None) -> Path | None:
+    candidates = [p for p in subject_dir.iterdir() if p.is_dir() and (p / "benchmark.json").exists()]
+    if hash_filter:
+        candidates = [p for p in candidates if p.name == hash_filter]
+    if not candidates:
+        return None
+    return sorted(candidates, key=lambda p: (p / "benchmark.json").stat().st_mtime)[-1]
+
+
+def parse_events(path: Path) -> list[dict[str, Any]]:
+    events: list[dict[str, Any]] = []
+    if not path.exists():
+        return events
+    for line in path.read_text(errors="replace").splitlines():
+        line = line.strip()
+        if not line.startswith("{"):
+            continue
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(event, dict):
+            events.append(event)
+    return events
+
+
+def command_kind(command: str) -> str:
+    if re.search(r"(^|[;&|])\s*bd\s+", command):
+        if re.search(r"\bbd\s+(create|update|close|remember|dep\s+add|delete|reopen)\b", command):
+            return "beads_write"
+        return "beads_read"
+    if re.search(r"\b(goose\s+recipe\s+validate|cargo\s+test|cargo\s+clippy|cargo\s+fmt|pnpm\s+test|python\s+-m\s+py_compile|build-docs\.sh)\b", command):
+        return "validation"
+    if re.search(r"\b(cat\s+>|tee\s+|python\s+-\s*<<|apply_patch|sed\s+-i|cp\s+|mv\s+|rm\s+)\b", command):
+        return "file_write"
+    if re.search(r"\b(git\s+diff|git\s+status|find\s+|grep\s+|sed\s+-n|cat\s+)\b", command):
+        return "inspection"
+    return "tool"
+
+
+def timeline_from_events(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    timeline: list[dict[str, Any]] = []
+    step = 0
+    for event in events:
+        message = event.get("message") if isinstance(event.get("message"), dict) else {}
+        role = message.get("role", event.get("type", "event"))
+        for item in message.get("content", []) if isinstance(message.get("content"), list) else []:
+            item_type = item.get("type")
+            if item_type == "toolRequest":
+                tool = item.get("toolCall", {}).get("value", {}) if isinstance(item.get("toolCall"), dict) else {}
+                name = tool.get("name", "tool")
+                arguments = tool.get("arguments", {}) if isinstance(tool.get("arguments"), dict) else {}
+                command = arguments.get("command") if isinstance(arguments, dict) else None
+                step += 1
+                timeline.append({
+                    "step": step,
+                    "actor": "assistant",
+                    "type": "tool_request",
+                    "tool": name,
+                    "command": command,
+                    "classification": command_kind(command) if command else browser_kind(name),
+                })
+            elif item_type == "toolResponse":
+                result = item.get("toolResult", {}).get("value", {}) if isinstance(item.get("toolResult"), dict) else {}
+                structured = result.get("structuredContent", {}) if isinstance(result, dict) else {}
+                step += 1
+                timeline.append({
+                    "step": step,
+                    "actor": "tool",
+                    "type": "tool_response",
+                    "exit_code": structured.get("exit_code"),
+                    "stdout_preview": str(structured.get("stdout", ""))[:240],
+                    "stderr_preview": str(structured.get("stderr", ""))[:240],
+                    "classification": "tool_result",
+                })
+            elif item_type == "text":
+                text = str(item.get("text", "")).strip()
+                if text:
+                    step += 1
+                    timeline.append({
+                        "step": step,
+                        "actor": role,
+                        "type": "message",
+                        "text_preview": text[:240],
+                        "classification": message_kind(text),
+                    })
+        if event.get("type") == "complete":
+            step += 1
+            timeline.append({
+                "step": step,
+                "actor": "goose",
+                "type": "complete",
+                "total_tokens": event.get("total_tokens"),
+                "classification": "complete",
+            })
+    return timeline
+
+
+def browser_kind(name: str) -> str:
+    lowered = name.lower()
+    if "browser" in lowered or "playwright" in lowered:
+        return "browser_action"
+    if "delegate" in lowered:
+        return "delegation"
+    return "tool"
+
+
+def message_kind(text: str) -> str:
+    lowered = text.lower()
+    if any(word in lowered for word in ["handoff", "remaining risks", "files changed", "validation"]):
+        return "handoff"
+    if "plan" in lowered or "acceptance" in lowered:
+        return "planning"
+    return "assistant_message"
+
+
+def mermaid_sequence(timeline: list[dict[str, Any]], title: str) -> str:
+    lines = ["sequenceDiagram", f"    %% {title}", "    participant Agent", "    participant Tool", "    participant FS as Worktree", "    participant Beads", "    participant Browser"]
+    for item in timeline[:80]:
+        cls = item.get("classification")
+        label = item.get("command") or item.get("tool") or item.get("text_preview") or item.get("type")
+        label = sanitize_mermaid(str(label))[:120]
+        if cls in {"beads_read", "beads_write"}:
+            lines.append(f"    Agent->>Beads: {label}")
+        elif cls in {"file_write", "inspection", "validation", "tool", "tool_result"}:
+            target = "FS" if cls in {"file_write", "inspection"} else "Tool"
+            arrow = "-->>" if item.get("actor") == "tool" else "->>"
+            left = "Tool" if item.get("actor") == "tool" else "Agent"
+            lines.append(f"    {left}{arrow}{target}: {label}")
+        elif cls == "browser_action":
+            lines.append(f"    Agent->>Browser: {label}")
+        elif cls == "handoff":
+            lines.append(f"    Agent-->>Agent: {label}")
+        else:
+            lines.append(f"    Agent-->>Agent: {label}")
+    return "\n".join(lines) + "\n"
+
+
+def sanitize_mermaid(value: str) -> str:
+    return value.replace("\n", " ").replace(":", " -").replace("|", "/")
+
+
+def detect_bad_actions(timeline: list[dict[str, Any]], audit: dict[str, Any], grading: dict[str, Any], timing: dict[str, Any], scenario: dict[str, Any]) -> list[dict[str, Any]]:
+    bad: list[dict[str, Any]] = []
+    query = scenario.get("query", "").lower()
+    commands = audit.get("commands", []) if isinstance(audit, dict) else []
+    files_changed = audit.get("files_changed", []) if isinstance(audit, dict) else []
+    if timing.get("max_turns_reached"):
+        bad.append({"type": "max_turn_exhaustion", "severity": "high", "evidence": f"turns_used={timing.get('turns_used')} max_turns={timing.get('max_turns')}"})
+    if "read-only" in query and files_changed:
+        bad.append({"type": "read_only_write", "severity": "high", "evidence": ", ".join(files_changed[:8])})
+    if "read-only" in query and any(re.search(r"\bbd\s+(create|update|close|remember|dep\s+add)\b", c) for c in commands):
+        bad.append({"type": "read_only_beads_mutation", "severity": "high", "evidence": "Beads mutation command in read-only scenario"})
+    if files_changed and not audit.get("validations"):
+        bad.append({"type": "missing_validation", "severity": "medium", "evidence": "Files changed but audit.validations is empty"})
+    if any("TODO.md" in f or "MEMORY.md" in f for f in files_changed):
+        bad.append({"type": "markdown_todo_or_memory_file", "severity": "high", "evidence": ", ".join(files_changed)})
+    failed = [e for e in grading.get("expectations", []) if not e.get("passed")]
+    for item in failed:
+        text = item.get("text", "")
+        if "handoff" in text.lower() or "reports git status" in text.lower():
+            bad.append({"type": "missing_handoff", "severity": "medium", "evidence": text})
+    repeated = repeated_commands(commands)
+    for command, count in repeated[:3]:
+        if count >= 3:
+            bad.append({"type": "repeated_command", "severity": "low", "evidence": f"{count}x {command[:160]}"})
+    return bad
+
+
+def repeated_commands(commands: list[str]) -> list[tuple[str, int]]:
+    counts = Counter(commands)
+    return counts.most_common()
+
+
+def classify_root_causes(bad_actions: list[dict[str, Any]], grading: dict[str, Any], timing: dict[str, Any], feedback: dict[str, Any]) -> list[str]:
+    causes: set[str] = set()
+    if timing.get("max_turns_reached"):
+        causes.add("turn_budget_issue")
+    bad_types = {item.get("type") for item in bad_actions}
+    if {"read_only_write", "read_only_beads_mutation"} & bad_types:
+        causes.add("scenario_too_strict")
+    if {"missing_validation", "missing_handoff"} & bad_types:
+        causes.add("skill_gap")
+    for rec in feedback.get("recommendations", []) if isinstance(feedback.get("recommendations"), list) else []:
+        rec_type = rec.get("type")
+        if rec_type == "runner":
+            causes.add("runner_audit_issue")
+        elif rec_type == "scenario_quality":
+            causes.add("scenario_too_broad")
+        elif rec_type == "validation":
+            causes.add("grader_issue")
+        elif rec_type == "skill_instruction":
+            causes.add("skill_gap")
+    if grading.get("summary", {}).get("pass_rate") == 1.0 and timing.get("max_turns_reached"):
+        causes.add("over_exploration")
+    return sorted(causes)
+
+
+def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: int, configuration: str) -> dict[str, Any]:
+    events = parse_events(run_dir / "outputs" / "events.jsonl")
+    timeline = timeline_from_events(events)
+    audit = read_json(run_dir / "audit.json", {}) or {}
+    grading = read_json(run_dir / "grading.json", {}) or {}
+    timing = read_json(run_dir / "timing.json", {}) or {}
+    feedback = read_json(run_dir / "feedback.json", {}) or {}
+    bad_actions = detect_bad_actions(timeline, audit, grading, timing, scenario)
+    root_causes = classify_root_causes(bad_actions, grading, timing, feedback)
+    analysis = {
+        "subject": subject,
+        "eval_id": eval_id,
+        "configuration": configuration,
+        "run_number": int(run_dir.name.split("-")[-1]) if run_dir.name.startswith("run-") else 1,
+        "score": grading.get("summary", {}),
+        "turns": {
+            "used": timing.get("turns_used"),
+            "max": timing.get("max_turns"),
+            "reached_max": timing.get("max_turns_reached"),
+        },
+        "timeline": timeline,
+        "bad_actions": bad_actions,
+        "root_causes": root_causes,
+        "feedback": feedback,
+        "confidence": confidence_for_run(grading, timing, events),
+    }
+    write_json(run_dir / "analysis.json", analysis)
+    (run_dir / "sequence.mmd").write_text(mermaid_sequence(timeline, f"{subject} eval-{eval_id} {configuration} {run_dir.name}"))
+    (run_dir / "analysis.md").write_text(run_analysis_md(analysis))
+    return analysis
+
+
+def confidence_for_run(grading: dict[str, Any], timing: dict[str, Any], events: list[dict[str, Any]]) -> float:
+    confidence = 0.75
+    if timing.get("max_turns_reached"):
+        confidence -= 0.25
+    if not events:
+        confidence -= 0.25
+    if grading.get("summary", {}).get("total", 0) == 0:
+        confidence -= 0.25
+    return round(max(0.1, min(1.0, confidence)), 2)
+
+
+def run_analysis_md(analysis: dict[str, Any]) -> str:
+    lines = [f"# Run Analysis — {analysis['subject']} eval-{analysis['eval_id']} {analysis['configuration']}", ""]
+    score = analysis.get("score", {})
+    turns = analysis.get("turns", {})
+    lines.append(f"- Pass rate: {score.get('pass_rate')} ({score.get('passed')}/{score.get('total')})")
+    lines.append(f"- Turns: {turns.get('used')}/{turns.get('max')} max reached={turns.get('reached_max')}")
+    lines.append(f"- Confidence: {analysis.get('confidence')}")
+    lines.append("")
+    lines.append("## Root causes")
+    lines.extend(f"- `{item}`" for item in analysis.get("root_causes", []) or ["none"])
+    lines.append("")
+    lines.append("## Bad actions")
+    for item in analysis.get("bad_actions", []):
+        lines.append(f"- **{item.get('severity')}** `{item.get('type')}` — {item.get('evidence')}")
+    if not analysis.get("bad_actions"):
+        lines.append("- none detected")
+    lines.append("")
+    lines.append("## Timeline preview")
+    for item in analysis.get("timeline", [])[:20]:
+        label = item.get("command") or item.get("tool") or item.get("text_preview") or item.get("type")
+        lines.append(f"- {item.get('step')}. `{item.get('classification')}` {label}")
+    return "\n".join(lines) + "\n"
+
+
+def scenario_quality(with_run: dict[str, Any] | None, without_run: dict[str, Any] | None, scenario: dict[str, Any]) -> str:
+    if not with_run or not without_run:
+        return "inconclusive"
+    if with_run["turns"].get("reached_max") and without_run["turns"].get("reached_max"):
+        return "too_broad"
+    if with_run["score"].get("pass_rate") == 1.0 and without_run["score"].get("pass_rate") == 1.0:
+        return "too_easy"
+    if any(".agents/skills/" in path for path in scenario.get("files", [])):
+        return "contaminated"
+    return "good"
+
+
+def skill_impact(with_run: dict[str, Any] | None, without_run: dict[str, Any] | None) -> str:
+    if not with_run or not without_run:
+        return "inconclusive"
+    w = with_run["score"].get("pass_rate", 0) or 0
+    b = without_run["score"].get("pass_rate", 0) or 0
+    if w > b:
+        return "positive"
+    if w < b:
+        return "negative"
+    return "neutral"
+
+
+def run_llm_analysis(args: argparse.Namespace, subject: str, scenario_analysis: dict[str, Any], with_run: dict[str, Any] | None, without_run: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not args.llm:
+        return None
+    prompt = build_llm_analysis_prompt(subject, scenario_analysis, with_run, without_run)
+    cmd = [resolve_goose_cli(args), "run", "--no-session", "--text", prompt, "--max-turns", str(args.llm_max_turns), "--output-format", "json"]
+    if args.provider:
+        cmd.extend(["--provider", args.provider])
+    if args.model:
+        cmd.extend(["--model", args.model])
+    proc = subprocess.run(cmd, cwd=ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=args.llm_timeout)
+    parsed = extract_json_object(proc.stdout)
+    if proc.returncode != 0 or not isinstance(parsed, dict):
+        return {
+            "error": "llm_analysis_failed",
+            "returncode": proc.returncode,
+            "stderr": proc.stderr[-1000:],
+        }
+    return parsed
+
+
+def resolve_goose_cli(args: argparse.Namespace) -> str:
+    cli = args.goose_cli or os.environ.get("GOOSE_EVAL_CLI") or "goose"
+    if not any(sep in cli for sep in (os.sep, "/")):
+        return cli
+    path = Path(cli).expanduser()
+    return str(path.resolve() if path.is_absolute() else (ROOT / path).resolve())
+
+
+def build_llm_analysis_prompt(subject: str, scenario_analysis: dict[str, Any], with_run: dict[str, Any] | None, without_run: dict[str, Any] | None) -> str:
+    payload = {
+        "subject": subject,
+        "scenario": scenario_analysis,
+        "with_skill": compact_run_for_llm(with_run),
+        "without_skill": compact_run_for_llm(without_run),
+    }
+    return (
+        "You are analyzing an A/B skill evaluation. Return JSON only with keys: "
+        "skill_impact, scenario_quality, root_causes, bad_actions, blockages, "
+        "skill_recommendations, scenario_recommendations, runner_recommendations, confidence.\n\n"
+        f"Input:\n{json.dumps(payload, indent=2, ensure_ascii=False)}"
+    )
+
+
+def compact_run_for_llm(run: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not run:
+        return None
+    return {
+        "configuration": run.get("configuration"),
+        "score": run.get("score"),
+        "turns": run.get("turns"),
+        "bad_actions": run.get("bad_actions"),
+        "root_causes": run.get("root_causes"),
+        "confidence": run.get("confidence"),
+        "feedback_recommendations": (run.get("feedback", {}) or {}).get("recommendations", [])[:8],
+        "timeline_preview": run.get("timeline", [])[:15],
+    }
+
+
+def extract_json_object(text: str) -> dict[str, Any] | None:
+    text = text.strip()
+    if not text:
+        return None
+    try:
+        data = json.loads(text)
+        return data if isinstance(data, dict) else None
+    except json.JSONDecodeError:
+        pass
+    match = re.search(r"\{[\s\S]*\}", text)
+    if not match:
+        return None
+    try:
+        data = json.loads(match.group(0))
+        return data if isinstance(data, dict) else None
+    except json.JSONDecodeError:
+        return None
+
+
+def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, Any] | None:
+    run_dir = latest_hash_dir(subject_dir, args.hash)
+    if not run_dir:
+        return None
+    subject = subject_dir.name
+    eval_def = read_json(ROOT / "evals" / "skills" / f"{subject}.json", []) or []
+    benchmark = read_json(run_dir / "benchmark.json", {}) or {}
+    scenario_analyses = []
+    for eval_path in sorted(run_dir.glob("eval-*")):
+        eval_id = int(eval_path.name.split("-")[-1])
+        if args.scenario is not None and eval_id != args.scenario:
+            continue
+        scenario = eval_def[eval_id] if eval_id < len(eval_def) else {}
+        run_analyses: dict[str, dict[str, Any]] = {}
+        for config_dir in sorted(p for p in eval_path.iterdir() if p.is_dir()):
+            for one_run in sorted(config_dir.glob("run-*")):
+                analysis = analyze_run(one_run, scenario, subject, eval_id, config_dir.name)
+                run_analyses[config_dir.name] = analysis
+        with_run = run_analyses.get("with_skill") or run_analyses.get("new_skill")
+        without_run = run_analyses.get("without_skill") or run_analyses.get("old_skill")
+        scenario_analysis = {
+            "subject": subject,
+            "content_hash": run_dir.name,
+            "eval_id": eval_id,
+            "query": scenario.get("query"),
+            "skill_impact": skill_impact(with_run, without_run),
+            "scenario_quality": scenario_quality(with_run, without_run, scenario),
+            "with_score": with_run.get("score", {}).get("pass_rate") if with_run else None,
+            "without_score": without_run.get("score", {}).get("pass_rate") if without_run else None,
+            "with_turns": with_run.get("turns", {}).get("used") if with_run else None,
+            "without_turns": without_run.get("turns", {}).get("used") if without_run else None,
+            "root_causes": sorted(set(sum((run.get("root_causes", []) for run in run_analyses.values()), []))),
+            "bad_actions": sum((run.get("bad_actions", []) for run in run_analyses.values()), []),
+            "confidence": round(sum(run.get("confidence", 0.0) for run in run_analyses.values()) / max(1, len(run_analyses)), 2),
+        }
+        llm_analysis = run_llm_analysis(args, subject, scenario_analysis, with_run, without_run)
+        if llm_analysis is not None:
+            scenario_analysis["llm_analysis"] = llm_analysis
+        write_json(eval_path / "analysis.json", scenario_analysis)
+        (eval_path / "analysis.md").write_text(scenario_analysis_md(scenario_analysis))
+        scenario_analyses.append(scenario_analysis)
+    subject_analysis = {
+        "subject": subject,
+        "content_hash": run_dir.name,
+        "benchmark": benchmark.get("run_summary", {}),
+        "scenarios": scenario_analyses,
+        "recurring_root_causes": Counter(cause for item in scenario_analyses for cause in item.get("root_causes", [])).most_common(),
+        "generated_at": utc_now(),
+    }
+    write_json(run_dir / "analysis.json", subject_analysis)
+    (run_dir / "analysis.md").write_text(subject_analysis_md(subject_analysis))
+    return subject_analysis
+
+
+def scenario_analysis_md(analysis: dict[str, Any]) -> str:
+    lines = [f"# Scenario Analysis — {analysis['subject']} eval-{analysis['eval_id']}", ""]
+    for key in ["skill_impact", "scenario_quality", "with_score", "without_score", "with_turns", "without_turns", "confidence"]:
+        lines.append(f"- {key}: {analysis.get(key)}")
+    lines.append("")
+    lines.append("## Root causes")
+    lines.extend(f"- `{cause}`" for cause in analysis.get("root_causes", []) or ["none"])
+    lines.append("")
+    lines.append("## Bad actions")
+    for item in analysis.get("bad_actions", [])[:20]:
+        lines.append(f"- **{item.get('severity')}** `{item.get('type')}` — {item.get('evidence')}")
+    if not analysis.get("bad_actions"):
+        lines.append("- none detected")
+    if analysis.get("llm_analysis"):
+        lines.append("")
+        lines.append("## LLM comparative analysis")
+        lines.append("```json")
+        lines.append(json.dumps(analysis["llm_analysis"], indent=2, ensure_ascii=False))
+        lines.append("```")
+    return "\n".join(lines) + "\n"
+
+
+def subject_analysis_md(analysis: dict[str, Any]) -> str:
+    lines = [f"# Evaluation Analysis — {analysis['subject']}", "", f"Content hash: `{analysis['content_hash']}`", ""]
+    lines.append("| Eval | Impact | Quality | With | Without | Turns W/B | Confidence | Root causes |")
+    lines.append("|---:|---|---|---:|---:|---:|---:|---|")
+    for item in analysis.get("scenarios", []):
+        lines.append(
+            f"| {item['eval_id']} | {item['skill_impact']} | {item['scenario_quality']} | {item.get('with_score')} | {item.get('without_score')} | {item.get('with_turns')}/{item.get('without_turns')} | {item.get('confidence')} | {', '.join(item.get('root_causes', []))} |"
+        )
+    lines.append("")
+    lines.append("## Recurring root causes")
+    for cause, count in analysis.get("recurring_root_causes", []):
+        lines.append(f"- `{cause}`: {count}")
+    return "\n".join(lines) + "\n"
+
+
+def init_analysis_tables(db_path: Path) -> None:
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    with sqlite3.connect(db_path) as db:
+        db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS eval_analysis (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                run_id TEXT,
+                kind TEXT NOT NULL,
+                subject TEXT NOT NULL,
+                eval_id INTEGER,
+                configuration TEXT,
+                run_number INTEGER,
+                skill_impact TEXT,
+                scenario_quality TEXT,
+                root_causes_json TEXT,
+                bad_actions_json TEXT,
+                confidence REAL,
+                analysis_path TEXT,
+                sequence_path TEXT,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
+        db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS eval_scenario_analysis (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                run_id TEXT,
+                kind TEXT NOT NULL,
+                subject TEXT NOT NULL,
+                eval_id INTEGER NOT NULL,
+                with_score REAL,
+                without_score REAL,
+                with_turns REAL,
+                without_turns REAL,
+                root_cause TEXT,
+                skill_impact TEXT,
+                scenario_quality TEXT,
+                recommended_action TEXT,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
+
+
+def persist_analysis(db_path: Path, analyses: list[dict[str, Any]], workspace_root: Path) -> None:
+    init_analysis_tables(db_path)
+    created = utc_now()
+    with sqlite3.connect(db_path) as db:
+        for subject_analysis in analyses:
+            subject = subject_analysis["subject"]
+            run_id = subject_analysis["content_hash"]
+            for scenario in subject_analysis.get("scenarios", []):
+                root_causes = scenario.get("root_causes", [])
+                db.execute(
+                    """
+                    INSERT INTO eval_scenario_analysis(
+                        run_id, kind, subject, eval_id, with_score, without_score, with_turns, without_turns,
+                        root_cause, skill_impact, scenario_quality, recommended_action, created_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        run_id,
+                        "skills",
+                        subject,
+                        scenario.get("eval_id"),
+                        scenario.get("with_score"),
+                        scenario.get("without_score"),
+                        scenario.get("with_turns"),
+                        scenario.get("without_turns"),
+                        ",".join(root_causes),
+                        scenario.get("skill_impact"),
+                        scenario.get("scenario_quality"),
+                        recommended_action(scenario),
+                        created,
+                    ),
+                )
+                eval_dir = workspace_root / subject / run_id / f"eval-{scenario.get('eval_id')}"
+                for run_analysis_path in eval_dir.glob("*/run-*/analysis.json"):
+                    run = read_json(run_analysis_path, {}) or {}
+                    db.execute(
+                        """
+                        INSERT INTO eval_analysis(
+                            run_id, kind, subject, eval_id, configuration, run_number, skill_impact, scenario_quality,
+                            root_causes_json, bad_actions_json, confidence, analysis_path, sequence_path, created_at
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        """,
+                        (
+                            run_id,
+                            "skills",
+                            subject,
+                            run.get("eval_id"),
+                            run.get("configuration"),
+                            run.get("run_number"),
+                            scenario.get("skill_impact"),
+                            scenario.get("scenario_quality"),
+                            json.dumps(run.get("root_causes", [])),
+                            json.dumps(run.get("bad_actions", [])),
+                            run.get("confidence"),
+                            str(run_analysis_path),
+                            str(run_analysis_path.with_name("sequence.mmd")),
+                            created,
+                        ),
+                    )
+
+
+def recommended_action(scenario: dict[str, Any]) -> str:
+    causes = set(scenario.get("root_causes", []))
+    if "runner_audit_issue" in causes:
+        return "Improve runner audit extraction before changing skill text."
+    if "turn_budget_issue" in causes:
+        return "Add stop rules or split the scenario before judging skill quality."
+    if "skill_gap" in causes:
+        return "Update skill instructions and rerun this scenario."
+    if scenario.get("scenario_quality") != "good":
+        return "Revise scenario design and rerun."
+    return "Review feedback and rerun if needed."
+
+
+def write_suite_summary(workspace_root: Path, analyses: list[dict[str, Any]]) -> None:
+    summary = {"generated_at": utc_now(), "subjects": analyses}
+    write_json(workspace_root / "analysis-summary.json", summary)
+    lines = ["# Skill Evaluation Analysis Summary", ""]
+    lines.append("| Subject | Hash | Scenarios | Recurring root causes |")
+    lines.append("|---|---|---:|---|")
+    for item in analyses:
+        causes = ", ".join(f"{cause}({count})" for cause, count in item.get("recurring_root_causes", []))
+        lines.append(f"| {item['subject']} | `{item['content_hash']}` | {len(item.get('scenarios', []))} | {causes} |")
+    (workspace_root / "analysis-summary.md").write_text("\n".join(lines) + "\n")
+    (workspace_root / "analysis-index.html").write_text(render_html_summary(analyses))
+
+
+def render_html_summary(analyses: list[dict[str, Any]]) -> str:
+    rows = []
+    for item in analyses:
+        causes = ", ".join(f"{cause}({count})" for cause, count in item.get("recurring_root_causes", []))
+        rows.append(f"<tr><td>{item['subject']}</td><td><code>{item['content_hash']}</code></td><td>{len(item.get('scenarios', []))}</td><td>{causes}</td><td><a href='{item['subject']}/{item['content_hash']}/analysis.md'>analysis.md</a></td></tr>")
+    return f"""<!doctype html>
+<html><head><meta charset='utf-8'><title>Skill Eval Analysis</title>
+<style>body{{font-family:system-ui;margin:2rem}}table{{border-collapse:collapse;width:100%}}td,th{{border:1px solid #ddd;padding:.5rem;text-align:left}}code{{background:#eee;padding:.1rem .25rem}}</style>
+</head><body><h1>Skill Evaluation Analysis</h1><table><thead><tr><th>Subject</th><th>Hash</th><th>Scenarios</th><th>Root causes</th><th>Links</th></tr></thead><tbody>{''.join(rows)}</tbody></table></body></html>"""
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Analyze generated skill eval artifacts.")
+    parser.add_argument("--workspace-root", type=Path, default=DEFAULT_WORKSPACE_ROOT)
+    parser.add_argument("--db", type=Path, default=DEFAULT_DB)
+    parser.add_argument("--skill")
+    parser.add_argument("--hash")
+    parser.add_argument("--scenario", type=int)
+    parser.add_argument("--no-sqlite", action="store_true")
+    parser.add_argument("--llm", action="store_true", help="Run comparative LLM root-cause analysis for each scenario.")
+    parser.add_argument("--goose-cli", help="Goose CLI binary for --llm analysis. Defaults to $GOOSE_EVAL_CLI or goose.")
+    parser.add_argument("--provider")
+    parser.add_argument("--model")
+    parser.add_argument("--llm-timeout", type=int, default=300)
+    parser.add_argument("--llm-max-turns", type=int, default=2)
+    args = parser.parse_args()
+
+    analyses = []
+    for subject_dir in discover_subjects(args.workspace_root, args.skill):
+        analysis = analyze_subject(subject_dir, args)
+        if analysis:
+            analyses.append(analysis)
+    write_suite_summary(args.workspace_root, analyses)
+    if not args.no_sqlite:
+        persist_analysis(args.db, analyses, args.workspace_root)
+    print(f"Analyzed {len(analyses)} subjects under {args.workspace_root}")
+    print(f"Summary: {args.workspace_root / 'analysis-summary.md'}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

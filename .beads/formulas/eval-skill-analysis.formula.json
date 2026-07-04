@@ -1,0 +1,24 @@
+{
+  "formula": "eval-skill-analysis",
+  "description": "Analyze all scenarios for one evaluated skill.",
+  "variables": {
+    "subject": {"description": "Skill name, e.g. code-review"},
+    "hash": {"description": "Content hash directory for the skill"},
+    "workspace_root": {"default": "dist/evals/skills", "description": "Skill eval workspace root"}
+  },
+  "steps": [
+    {
+      "id": "run-analysis",
+      "title": "Run analysis for {{subject}}",
+      "type": "task",
+      "description": "Run `python scripts/analyze-skill-eval-results.py --workspace-root {{workspace_root}} --skill {{subject}} --hash {{hash}}`."
+    },
+    {
+      "id": "review-analysis",
+      "title": "Review analysis outputs for {{subject}}",
+      "type": "task",
+      "depends_on": ["run-analysis"],
+      "description": "Inspect `{{workspace_root}}/{{subject}}/{{hash}}/analysis.md`, scenario analyses, and sequence diagrams. File Beads follow-ups for skill, scenario, runner, or grader changes."
+    }
+  ]
+}
