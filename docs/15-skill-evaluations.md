@@ -69,90 +69,102 @@ python scripts/render-skill-eval-review.py \
   --output dist/skill-eval-review/index.html
 ```
 
-### 2. Execute real with-skill / baseline runs
+### 2. Execute real A/B runs
 
-1. Open the relevant JSON file under `evals/skills/`.
-2. For each scenario, run the `query` in the target agent runtime:
-   - **with skill**: load or point the run at `.agents/skills/<skill-name>`;
-   - **baseline**: run the same prompt without that skill when practical.
-3. Save outputs in a skill-creator-compatible workspace shape:
+Use `scripts/run-skill-ab-eval.py` for real behavioral review. It creates isolated copied worktrees under `dist/evals/`, runs Goose for each scenario, grades each output, aggregates `benchmark.json`, and renders the skill-creator HTML review.
 
-   ```text
-   <skill-name>-workspace/
-     iteration-1/
-       eval-0/
-         eval_metadata.json
-         with_skill/
-           outputs/
-         without_skill/
-           outputs/
-   ```
-
-4. Write `eval_metadata.json` for each eval directory:
-
-   ```json
-   {
-     "eval_id": 0,
-     "eval_name": "short-descriptive-name",
-     "prompt": "User request from evals/skills/<skill-name>.json",
-     "assertions": [
-       {"text": "Expected behavior to check"}
-     ]
-   }
-   ```
-
-5. Grade each run against `expected_behavior` and save `grading.json` next to the run. The viewer expects the exact fields `text`, `passed`, and `evidence`:
-
-   ```json
-   {
-     "expectations": [
-       {
-         "text": "Expected behavior to check",
-         "passed": true,
-         "evidence": "Observed output that supports the grade"
-       }
-     ]
-   }
-   ```
-
-6. Generate the visual review with skill-creator:
-
-   ```bash
-   SKILL_CREATOR_DIR=${SKILL_CREATOR_DIR:-$HOME/.agents/skills/skill-creator}
-
-   python "$SKILL_CREATOR_DIR/eval-viewer/generate_review.py" \
-     <skill-name>-workspace/iteration-1 \
-     --skill-name "<skill-name>" \
-     --static <skill-name>-workspace/iteration-1-review.html
-
-   xdg-open <skill-name>-workspace/iteration-1-review.html
-   ```
-
-7. Compare behavior against `baseline_gaps` and `expected_behavior`.
-8. Record durable follow-up work as Beads issues.
-9. Fix the smallest instruction surface: eval, skill, recipe, then docs.
-10. Re-run the failed scenario and one neighboring scenario.
-
-### Optional benchmark tab
-
-If runs include timing and grading data, aggregate them before launching the viewer:
+Plan-only smoke test, useful for checking workspace shape without model calls:
 
 ```bash
-SKILL_CREATOR_DIR=${SKILL_CREATOR_DIR:-$HOME/.agents/skills/skill-creator}
+python scripts/run-skill-ab-eval.py \
+  --skill code-review \
+  --iteration 0 \
+  --grade-mode heuristic
 
-(
-  cd "$SKILL_CREATOR_DIR"
-  python -m scripts.aggregate_benchmark \
-    /absolute/path/to/<skill-name>-workspace/iteration-1 \
-    --skill-name "<skill-name>"
-)
-
-python "$SKILL_CREATOR_DIR/eval-viewer/generate_review.py" \
-  <skill-name>-workspace/iteration-1 \
-  --skill-name "<skill-name>" \
-  --benchmark <skill-name>-workspace/iteration-1/benchmark.json \
-  --static <skill-name>-workspace/iteration-1-review.html
+xdg-open dist/evals/skills/code-review/iteration-0/review.html
 ```
+
+Real `with_skill` / `without_skill` run:
+
+```bash
+python scripts/run-skill-ab-eval.py \
+  --skill code-review \
+  --iteration 1 \
+  --runs-per-config 1 \
+  --execute \
+  --grade-mode llm
+
+xdg-open dist/evals/skills/code-review/iteration-1/review.html
+```
+
+The generated workspace follows the shape expected by skill-creator:
+
+```text
+dist/evals/skills/<skill-name>/iteration-1/
+  eval-0/
+    eval_metadata.json
+    with_skill/
+      run-1/
+        outputs/
+        grading.json
+        timing.json
+    without_skill/
+      run-1/
+        outputs/
+        grading.json
+        timing.json
+  benchmark.json
+  benchmark.md
+  review.html
+```
+
+The runner injects the listed skill material into `with_skill`; `without_skill` receives the same task without project skill material. If your global Goose profile auto-discovers these skills, treat the baseline as best-effort rather than perfectly blind; for stricter isolation, run with a clean Goose profile/provider environment and pass the needed `--provider` / `--model` flags.
+
+### 3. Execute old/new A/B after changing a skill
+
+Before editing a skill, snapshot the current version:
+
+```bash
+mkdir -p dist/evals/snapshots
+cp -a .agents/skills/code-review dist/evals/snapshots/code-review-before
+```
+
+After editing `.agents/skills/code-review`, compare the candidate against the snapshot:
+
+```bash
+python scripts/run-skill-ab-eval.py \
+  --skill code-review \
+  --mode old-new \
+  --baseline-skill-dir dist/evals/snapshots/code-review-before \
+  --candidate-skill-dir .agents/skills/code-review \
+  --iteration 2 \
+  --runs-per-config 1 \
+  --execute \
+  --grade-mode llm \
+  --previous-workspace dist/evals/skills/code-review/iteration-1
+
+xdg-open dist/evals/skills/code-review/iteration-2/review.html
+```
+
+The benchmark tab supports dynamic configuration names, so the same viewer works for `with_skill` / `without_skill` and `new_skill` / `old_skill`. No project-local viewer fork is needed unless we want UI features beyond the upstream skill-creator viewer.
+
+### 4. Interpret and iterate
+
+1. Compare behavior against `baseline_gaps` and `expected_behavior`.
+2. Inspect both the output tab and benchmark tab.
+3. Treat low pass-rate deltas or noisy assertions as eval-design feedback, not only skill failures.
+4. Record durable follow-up work as Beads issues.
+5. Fix the smallest instruction surface: eval, skill, recipe, then docs.
+6. Re-run the failed scenario and one neighboring scenario.
+
+### Manual workspace rules
+
+If you create workspaces by hand instead of using the runner, the viewer expects:
+
+- `eval_metadata.json` with `eval_id`, `eval_name`, `prompt`, and `assertions`;
+- one or more configuration directories containing `run-*` directories;
+- each run directory containing `outputs/`, `grading.json`, and optionally `timing.json`;
+- `grading.json.expectations[]` fields named exactly `text`, `passed`, and `evidence`.
 
 ## Current skill eval map
 

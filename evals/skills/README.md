@@ -41,6 +41,13 @@ xdg-open dist/skill-eval-review/index.html
 
 This checks that prompts, baseline gaps, and expected behaviors are reviewable. It does not execute model runs. For runtime with-skill/baseline evaluation and grading, see `docs/15-skill-evaluations.md`.
 
+Run a real A/B skill eval with:
+
+```bash
+python scripts/run-skill-ab-eval.py --skill code-review --iteration 1 --execute --grade-mode llm
+xdg-open dist/evals/skills/code-review/iteration-1/review.html
+```
+
 ## Files
 
 - `agentic-dev-harness.json`

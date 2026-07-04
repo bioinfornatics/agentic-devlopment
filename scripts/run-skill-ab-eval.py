@@ -1,0 +1,589 @@
+#!/usr/bin/env python3
+"""Run real A/B evaluations for project skills.
+
+The canonical eval definitions live in evals/skills/<skill>.json. This runner
+executes each scenario with two configurations and writes a workspace compatible
+with skill-creator's eval viewer and benchmark aggregator.
+
+Supported comparisons:
+- with-without: with_skill vs without_skill
+- old-new:      new_skill vs old_skill
+
+Runs execute in copied worktrees under the eval workspace so prompts that edit
+files do not mutate the source checkout.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import textwrap
+import time
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_SKILL_CREATOR_DIR = Path.home() / ".agents" / "skills" / "skill-creator"
+
+
+@dataclass(frozen=True)
+class Config:
+    name: str
+    description: str
+    skill_dirs: tuple[Path, ...] = ()
+    baseline_note: str = ""
+
+
+def slug(value: str, limit: int = 64) -> str:
+    text = re.sub(r"[^a-zA-Z0-9]+", "-", value.lower()).strip("-")
+    return (text or "eval")[:limit]
+
+
+def read_json(path: Path) -> Any:
+    return json.loads(path.read_text())
+
+
+def write_json(path: Path, data: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+
+
+def load_skill_bundle(skill_dir: Path) -> str:
+    skill_md = skill_dir / "SKILL.md"
+    if not skill_md.exists():
+        raise FileNotFoundError(f"Missing SKILL.md in {skill_dir}")
+    sections = [f"## Skill: {skill_dir.name}\n\n```markdown\n{skill_md.read_text()}\n```"]
+    # Keep bundled references available, but cap size to avoid huge prompts.
+    references = skill_dir / "references"
+    if references.exists():
+        for ref in sorted(references.rglob("*")):
+            if ref.is_file() and ref.stat().st_size <= 40_000:
+                sections.append(
+                    f"## Reference: {skill_dir.name}/{ref.relative_to(skill_dir)}\n\n"
+                    f"```text\n{ref.read_text(errors='replace')}\n```"
+                )
+    return "\n\n".join(sections)
+
+
+def scenario_assertions(scenario: dict[str, Any]) -> list[dict[str, str]]:
+    return [{"text": item} for item in scenario.get("expected_behavior", [])]
+
+
+def build_eval_prompt(
+    *,
+    skill_name: str,
+    scenario: dict[str, Any],
+    config: Config,
+    repo_root: Path,
+) -> str:
+    skill_content = ""
+    if config.skill_dirs:
+        skill_content = "\n\n".join(load_skill_bundle(path) for path in config.skill_dirs)
+    else:
+        skill_content = (
+            "No project skill content is provided for this baseline run. "
+            "Do not load or intentionally follow the target project skill."
+        )
+
+    files = scenario.get("files", [])
+    expected = scenario.get("expected_behavior", [])
+    gaps = scenario.get("baseline_gaps", [])
+
+    return textwrap.dedent(
+        f"""
+        You are running a controlled A/B evaluation for the `{skill_name}` skill in this repository.
+
+        Configuration: {config.name}
+        Configuration description: {config.description}
+        {config.baseline_note}
+
+        Repository worktree: {repo_root}
+
+        Safety and isolation rules:
+        - You are inside an isolated copied worktree for this eval run.
+        - Complete the user task as realistically as possible for this configuration.
+        - If the task asks for repository changes, make only the minimum relevant changes in the isolated worktree.
+        - Do not access or modify the source checkout outside the isolated worktree.
+        - When you finish, report exactly what you did, what evidence you inspected, validation commands run, and remaining risks.
+
+        Skill material for this configuration:
+        {skill_content}
+
+        Eval input files or paths of interest:
+        {json.dumps(files, indent=2, ensure_ascii=False)}
+
+        Expected behaviors that the grader will check:
+        {json.dumps(expected, indent=2, ensure_ascii=False)}
+
+        Baseline gaps this scenario is meant to expose:
+        {json.dumps(gaps, indent=2, ensure_ascii=False)}
+
+        User task:
+        {scenario.get('query', '')}
+        """
+    ).strip()
+
+
+def build_grader_prompt(
+    *,
+    scenario: dict[str, Any],
+    config_name: str,
+    stdout: str,
+    stderr: str,
+    returncode: int,
+) -> str:
+    expectations = scenario.get("expected_behavior", [])
+    return textwrap.dedent(
+        f"""
+        Grade this skill evaluation run. Return JSON only, with no Markdown fences.
+
+        Configuration: {config_name}
+        User query: {scenario.get('query', '')}
+
+        Expected behaviors to grade:
+        {json.dumps(expectations, indent=2, ensure_ascii=False)}
+
+        Run return code: {returncode}
+
+        Run stdout:
+        ```text
+        {stdout[-24000:]}
+        ```
+
+        Run stderr:
+        ```text
+        {stderr[-8000:]}
+        ```
+
+        Required JSON schema:
+        {{
+          "expectations": [
+            {{"text": "same expected behavior text", "passed": true, "evidence": "brief concrete evidence from the run output"}}
+          ],
+          "notes": ["brief note if useful"]
+        }}
+
+        Grade strictly. A behavior passes only if the run output demonstrates it. If the process failed before producing a usable answer, mark expectations false unless the output still proves them.
+        """
+    ).strip()
+
+
+def extract_json_object(text: str) -> dict[str, Any] | None:
+    text = text.strip()
+    if not text:
+        return None
+    try:
+        data = json.loads(text)
+        if isinstance(data, dict):
+            return data
+    except json.JSONDecodeError:
+        pass
+    match = re.search(r"\{[\s\S]*\}", text)
+    if not match:
+        return None
+    try:
+        data = json.loads(match.group(0))
+        if isinstance(data, dict):
+            return data
+    except json.JSONDecodeError:
+        return None
+    return None
+
+
+def heuristic_grade(scenario: dict[str, Any], stdout: str, stderr: str, returncode: int) -> dict[str, Any]:
+    combined = (stdout + "\n" + stderr).lower()
+    expectations = []
+    for text in scenario.get("expected_behavior", []):
+        words = [w for w in re.findall(r"[a-zA-Z][a-zA-Z0-9_-]{3,}", text.lower())]
+        if not words:
+            passed = returncode == 0 and bool(stdout.strip())
+        else:
+            # Lenient deterministic fallback: enough expectation terms appear.
+            hits = sum(1 for word in set(words) if word in combined)
+            passed = returncode == 0 and hits >= max(1, min(3, len(set(words)) // 3))
+        expectations.append(
+            {
+                "text": text,
+                "passed": bool(passed),
+                "evidence": "Heuristic fallback grade based on run success and keyword overlap; prefer --grade-mode llm for review-quality grading.",
+            }
+        )
+    return {"expectations": expectations, "notes": ["heuristic grader used"]}
+
+
+def summarize_grading(expectations: list[dict[str, Any]]) -> dict[str, Any]:
+    total = len(expectations)
+    passed = sum(1 for exp in expectations if exp.get("passed") is True)
+    failed = total - passed
+    return {
+        "total": total,
+        "passed": passed,
+        "failed": failed,
+        "pass_rate": round(passed / total, 4) if total else 0.0,
+    }
+
+
+def run_command(
+    cmd: list[str],
+    *,
+    cwd: Path,
+    timeout: int,
+    env: dict[str, str] | None = None,
+) -> tuple[int, str, str, float]:
+    started = time.monotonic()
+    proc = subprocess.run(
+        cmd,
+        cwd=cwd,
+        env=env,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=timeout,
+    )
+    duration = time.monotonic() - started
+    return proc.returncode, proc.stdout, proc.stderr, duration
+
+
+def goose_cmd(args: argparse.Namespace, prompt: str) -> list[str]:
+    cmd = ["goose", "run", "--no-session", "--text", prompt, "--max-turns", str(args.max_turns)]
+    if args.no_profile:
+        cmd.append("--no-profile")
+    if args.provider:
+        cmd.extend(["--provider", args.provider])
+    if args.model:
+        cmd.extend(["--model", args.model])
+    if args.quiet:
+        cmd.append("--quiet")
+    return cmd
+
+
+def copy_worktree(source: Path, dest: Path) -> None:
+    ignore_names = {
+        ".git",
+        "dist/evals",
+        "dist/skill-eval-review",
+        "__pycache__",
+        ".pytest_cache",
+        "node_modules",
+    }
+
+    def ignore(dir_path: str, names: list[str]) -> set[str]:
+        ignored: set[str] = set()
+        base = Path(dir_path)
+        for name in names:
+            rel = (base / name).relative_to(source) if (base / name).is_relative_to(source) else Path(name)
+            rel_posix = rel.as_posix()
+            if name in {".git", "__pycache__", ".pytest_cache", "node_modules"} or rel_posix in ignore_names:
+                ignored.add(name)
+        return ignored
+
+    if dest.exists():
+        shutil.rmtree(dest)
+    shutil.copytree(source, dest, ignore=ignore)
+
+
+def prepare_configs(args: argparse.Namespace, scenario: dict[str, Any]) -> list[Config]:
+    if args.mode == "with-without":
+        skill_names = scenario.get("skills") or [args.skill]
+        skill_dirs = tuple(ROOT / ".agents" / "skills" / name for name in skill_names)
+        return [
+            Config(
+                name="with_skill",
+                description=f"Run with project skill material for: {', '.join(skill_names)}.",
+                skill_dirs=skill_dirs,
+            ),
+            Config(
+                name="without_skill",
+                description="Baseline run without project skill material injected into the prompt.",
+                baseline_note=f"Do not load or intentionally follow `{args.skill}` or the scenario's listed project skills.",
+            ),
+        ]
+    if args.mode == "old-new":
+        if not args.baseline_skill_dir or not args.candidate_skill_dir:
+            raise SystemExit("--mode old-new requires --baseline-skill-dir and --candidate-skill-dir")
+        return [
+            Config(
+                name="new_skill",
+                description=f"Candidate skill from {args.candidate_skill_dir}.",
+                skill_dirs=(args.candidate_skill_dir.resolve(),),
+            ),
+            Config(
+                name="old_skill",
+                description=f"Baseline skill from {args.baseline_skill_dir}.",
+                skill_dirs=(args.baseline_skill_dir.resolve(),),
+            ),
+        ]
+    raise SystemExit(f"Unsupported mode: {args.mode}")
+
+
+def grade_run(
+    *,
+    args: argparse.Namespace,
+    scenario: dict[str, Any],
+    config_name: str,
+    stdout: str,
+    stderr: str,
+    returncode: int,
+    repo_root: Path,
+) -> dict[str, Any]:
+    if args.grade_mode == "none":
+        expectations = [
+            {"text": item, "passed": False, "evidence": "Not graded; run with --grade-mode llm or heuristic."}
+            for item in scenario.get("expected_behavior", [])
+        ]
+        return {"expectations": expectations, "notes": ["grading skipped"]}
+    if args.grade_mode == "heuristic":
+        return heuristic_grade(scenario, stdout, stderr, returncode)
+
+    prompt = build_grader_prompt(
+        scenario=scenario,
+        config_name=config_name,
+        stdout=stdout,
+        stderr=stderr,
+        returncode=returncode,
+    )
+    try:
+        rc, out, err, _duration = run_command(
+            goose_cmd(args, prompt),
+            cwd=repo_root,
+            timeout=args.grade_timeout,
+        )
+    except Exception as exc:  # noqa: BLE001 - preserve eval output instead of crashing late
+        fallback = heuristic_grade(scenario, stdout, stderr, returncode)
+        fallback["notes"].append(f"llm grader failed to start: {exc}")
+        return fallback
+
+    parsed = extract_json_object(out)
+    if rc != 0 or not parsed or "expectations" not in parsed:
+        fallback = heuristic_grade(scenario, stdout, stderr, returncode)
+        fallback["notes"].append(
+            "llm grader failed or returned invalid JSON; heuristic fallback used. "
+            f"grader_rc={rc}; grader_stderr={err[-500:]}"
+        )
+        return fallback
+    return parsed
+
+
+def write_run_artifacts(
+    *,
+    run_dir: Path,
+    metadata: dict[str, Any],
+    prompt: str,
+    stdout: str,
+    stderr: str,
+    returncode: int,
+    duration: float,
+    grading: dict[str, Any],
+) -> None:
+    outputs_dir = run_dir / "outputs"
+    outputs_dir.mkdir(parents=True, exist_ok=True)
+    write_json(run_dir / "eval_metadata.json", metadata)
+    (outputs_dir / "prompt.md").write_text(prompt)
+    (outputs_dir / "response.md").write_text(stdout or "")
+    if stderr:
+        (outputs_dir / "stderr.txt").write_text(stderr)
+    write_json(
+        run_dir / "timing.json",
+        {
+            "duration_ms": round(duration * 1000),
+            "total_duration_seconds": round(duration, 3),
+            "total_tokens": max(0, len(stdout) // 4),
+            "returncode": returncode,
+        },
+    )
+    expectations = grading.get("expectations", [])
+    normalized = []
+    for exp in expectations:
+        if not isinstance(exp, dict):
+            continue
+        normalized.append(
+            {
+                "text": str(exp.get("text", "")),
+                "passed": bool(exp.get("passed", False)),
+                "evidence": str(exp.get("evidence", "")),
+            }
+        )
+    # Preserve missing expectations as failed so pass rates stay meaningful.
+    seen = {exp["text"] for exp in normalized}
+    for assertion in metadata.get("assertions", []):
+        text = assertion.get("text", "")
+        if text and text not in seen:
+            normalized.append({"text": text, "passed": False, "evidence": "No grade returned for this assertion."})
+
+    grading_out = {
+        "summary": summarize_grading(normalized),
+        "expectations": normalized,
+        "user_notes_summary": {"needs_review": grading.get("notes", [])},
+        "execution_metrics": {
+            "output_chars": len(stdout),
+            "stderr_chars": len(stderr),
+            "errors_encountered": 0 if returncode == 0 else 1,
+        },
+    }
+    write_json(run_dir / "grading.json", grading_out)
+
+
+def aggregate_and_render(args: argparse.Namespace, workspace: Path) -> None:
+    skill_creator_dir = args.skill_creator_dir.resolve()
+    aggregate = skill_creator_dir / "scripts" / "aggregate_benchmark.py"
+    generate_review = skill_creator_dir / "eval-viewer" / "generate_review.py"
+    if not aggregate.exists() or not generate_review.exists():
+        print(f"warning: skill-creator scripts not found under {skill_creator_dir}; skipping viewer", file=sys.stderr)
+        return
+
+    subprocess.run(
+        [sys.executable, "-m", "scripts.aggregate_benchmark", str(workspace.resolve()), "--skill-name", args.skill],
+        cwd=skill_creator_dir,
+        check=True,
+    )
+
+    # Patch eval names into benchmark.json for a clearer per-eval table.
+    benchmark_path = workspace / "benchmark.json"
+    if benchmark_path.exists():
+        benchmark = read_json(benchmark_path)
+        id_to_name = {}
+        for meta in workspace.glob("eval-*/eval_metadata.json"):
+            try:
+                data = read_json(meta)
+                id_to_name[data.get("eval_id")] = data.get("eval_name")
+            except Exception:
+                pass
+        for run in benchmark.get("runs", []):
+            if run.get("eval_id") in id_to_name:
+                run["eval_name"] = id_to_name[run.get("eval_id")]
+        write_json(benchmark_path, benchmark)
+
+    review_output = args.review_output or (workspace / "review.html")
+    cmd = [
+        sys.executable,
+        str(generate_review),
+        str(workspace),
+        "--skill-name",
+        args.skill,
+        "--benchmark",
+        str(benchmark_path),
+        "--static",
+        str(review_output),
+    ]
+    if args.previous_workspace:
+        cmd.extend(["--previous-workspace", str(args.previous_workspace)])
+    subprocess.run(cmd, check=True)
+    print(f"Review written to {review_output}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Run real A/B evals for one project skill.")
+    parser.add_argument("--skill", required=True, help="Skill/eval name, e.g. code-review")
+    parser.add_argument("--eval-file", type=Path, help="Defaults to evals/skills/<skill>.json")
+    parser.add_argument("--mode", choices=["with-without", "old-new"], default="with-without")
+    parser.add_argument("--baseline-skill-dir", type=Path)
+    parser.add_argument("--candidate-skill-dir", type=Path)
+    parser.add_argument("--iteration", type=int, default=1)
+    parser.add_argument("--runs-per-config", type=int, default=1)
+    parser.add_argument("--workspace-root", type=Path, default=Path("dist/evals/skills"))
+    parser.add_argument("--skill-creator-dir", type=Path, default=DEFAULT_SKILL_CREATOR_DIR)
+    parser.add_argument("--previous-workspace", type=Path)
+    parser.add_argument("--review-output", type=Path)
+    parser.add_argument("--execute", action="store_true", help="Actually run Goose. Without this, only writes plan metadata.")
+    parser.add_argument("--grade-mode", choices=["llm", "heuristic", "none"], default="llm")
+    parser.add_argument("--max-turns", type=int, default=8)
+    parser.add_argument("--timeout", type=int, default=900)
+    parser.add_argument("--grade-timeout", type=int, default=300)
+    parser.add_argument("--provider")
+    parser.add_argument("--model")
+    parser.add_argument("--no-profile", action="store_true")
+    parser.add_argument("--quiet", action="store_true")
+    parser.add_argument("--keep-worktrees", action="store_true")
+    args = parser.parse_args()
+
+    eval_file = args.eval_file or (ROOT / "evals" / "skills" / f"{args.skill}.json")
+    scenarios = read_json(eval_file)
+    if not isinstance(scenarios, list):
+        raise SystemExit(f"{eval_file} must contain a JSON array")
+
+    workspace = args.workspace_root / args.skill / f"iteration-{args.iteration}"
+    if workspace.exists():
+        shutil.rmtree(workspace)
+    workspace.mkdir(parents=True, exist_ok=True)
+
+    for eval_id, scenario in enumerate(scenarios):
+        query = scenario.get("query", "")
+        eval_name = f"{args.skill}-{eval_id}-{slug(query)}"
+        eval_dir = workspace / f"eval-{eval_id}"
+        eval_dir.mkdir(parents=True, exist_ok=True)
+        metadata = {
+            "eval_id": eval_id,
+            "eval_name": eval_name,
+            "prompt": query,
+            "assertions": scenario_assertions(scenario),
+        }
+        write_json(eval_dir / "eval_metadata.json", metadata)
+
+        for config in prepare_configs(args, scenario):
+            for run_number in range(1, args.runs_per_config + 1):
+                run_dir = eval_dir / config.name / f"run-{run_number}"
+                worktree = run_dir / "worktree"
+                copy_worktree(ROOT, worktree)
+                prompt = build_eval_prompt(
+                    skill_name=args.skill,
+                    scenario=scenario,
+                    config=config,
+                    repo_root=worktree,
+                )
+
+                if args.execute:
+                    try:
+                        returncode, stdout, stderr, duration = run_command(
+                            goose_cmd(args, prompt),
+                            cwd=worktree,
+                            timeout=args.timeout,
+                        )
+                    except subprocess.TimeoutExpired as exc:
+                        returncode = 124
+                        stdout = exc.stdout or ""
+                        stderr = (exc.stderr or "") + f"\nTimed out after {args.timeout}s"
+                        duration = float(args.timeout)
+                else:
+                    returncode = 0
+                    stdout = (
+                        f"PLAN ONLY: Goose was not executed. Re-run with --execute for a real A/B model run.\n\n"
+                        f"Configuration: {config.name}\nEval: {eval_name}\n"
+                    )
+                    stderr = ""
+                    duration = 0.0
+
+                grading = grade_run(
+                    args=args,
+                    scenario=scenario,
+                    config_name=config.name,
+                    stdout=stdout,
+                    stderr=stderr,
+                    returncode=returncode,
+                    repo_root=worktree,
+                )
+                write_run_artifacts(
+                    run_dir=run_dir,
+                    metadata=metadata,
+                    prompt=prompt,
+                    stdout=stdout,
+                    stderr=stderr,
+                    returncode=returncode,
+                    duration=duration,
+                    grading=grading,
+                )
+                if not args.keep_worktrees and worktree.exists():
+                    shutil.rmtree(worktree)
+
+    aggregate_and_render(args, workspace)
+    print(f"Workspace: {workspace}")
+    print(f"Mode: {args.mode}; executed={args.execute}; grade_mode={args.grade_mode}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
