@@ -12,6 +12,12 @@
       "type": "promptString",
       "description": "Optional skill subset, e.g. code-review sdd. Leave empty for full suite.",
       "default": ""
+    },
+    {
+      "id": "skillEvalReviewSkill",
+      "type": "promptString",
+      "description": "Skill review to open, e.g. code-review or sdd.",
+      "default": "code-review"
     }
   ],
   "tasks": [
@@ -40,7 +46,7 @@
     {
       "label": "Eval Skills: Open Suite Results",
       "type": "shell",
-      "command": "xdg-open dist/evals/skills/index.html",
+      "command": "python scripts/open-skill-eval-review.py",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -56,6 +62,38 @@
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval Skills: Full A/B Suite + Open Review",
+      "type": "shell",
+      "command": "python scripts/run-skill-ab-suite.py --iteration ${input:skillEvalIteration} --continue-on-failure; python scripts/open-skill-eval-review.py",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "group": "test"
+    },
+    {
+      "label": "Eval Skills: A/B Suite Subset + Open Review",
+      "type": "shell",
+      "command": "python scripts/run-skill-ab-suite.py --iteration ${input:skillEvalIteration} --continue-on-failure --skills ${input:skillEvalSubset}; python scripts/open-skill-eval-review.py",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "group": "test"
+    },
+    {
+      "label": "Eval Skills: Open Skill Review",
+      "type": "shell",
+      "command": "python scripts/open-skill-eval-review.py --skill ${input:skillEvalReviewSkill}",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
       }
     }
   ]

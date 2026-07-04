@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Eval Skills - Open Suite Results" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="python scripts/open-skill-eval-review.py" />
+  <configuration default="false" name="Eval Skills - Subset A/B Suite and Open Review" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="read -r -p &quot;Iteration [1]: &quot; ITERATION; ITERATION=${ITERATION:-1}; read -r -p &quot;Skills subset (space-separated): &quot; SKILLS; python scripts/run-skill-ab-suite.py --iteration &quot;$ITERATION&quot; --continue-on-failure --skills $SKILLS; python scripts/open-skill-eval-review.py" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />
