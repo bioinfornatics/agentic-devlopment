@@ -198,6 +198,7 @@ def main() -> int:
     parser.add_argument("--max-turns", type=int, default=8)
     parser.add_argument("--timeout", type=int, default=900)
     parser.add_argument("--grade-timeout", type=int, default=300)
+    parser.add_argument("--heartbeat-seconds", type=int, default=30, help="Forward heartbeat interval to per-skill runs. Use 0 to disable.")
     parser.add_argument("--provider")
     parser.add_argument("--model")
     parser.add_argument(
@@ -254,6 +255,8 @@ def main() -> int:
             str(args.timeout),
             "--grade-timeout",
             str(args.grade_timeout),
+            "--heartbeat-seconds",
+            str(args.heartbeat_seconds),
         ]
         if args.provider:
             cmd.extend(["--provider", args.provider])
@@ -274,8 +277,12 @@ def main() -> int:
         else:
             cmd.extend(["--history-db", str(args.history_db)])
 
-        print(f"== Running skill eval suite item: {skill} ==")
+        started = datetime.now(timezone.utc)
+        print(f"== Running skill eval suite item: {skill} ==", flush=True)
+        print(f"[start] suite skill={skill} workspace={args.workspace_root / skill}", flush=True)
         proc = subprocess.run(cmd, cwd=ROOT)
+        elapsed = (datetime.now(timezone.utc) - started).total_seconds()
+        print(f"[done] suite skill={skill} rc={proc.returncode} duration={elapsed:.1f}s", flush=True)
         results[skill] = {"returncode": proc.returncode, "command": cmd}
         if proc.returncode != 0 and not args.continue_on_failure:
             output = args.output or (args.workspace_root / "index.html")
@@ -300,9 +307,9 @@ def main() -> int:
             workspace=args.workspace_root,
             summary={"results": results},
         )
-    print(f"Suite index written to {output}")
-    print(f"Latest suite index written to {latest}")
-    print(f"Run id: {run_id}")
+    print(f"Suite index written to {output}", flush=True)
+    print(f"Latest suite index written to {latest}", flush=True)
+    print(f"Run id: {run_id}", flush=True)
     return 0 if all(item["returncode"] == 0 for item in results.values()) else 1
 
 

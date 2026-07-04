@@ -361,19 +361,33 @@ def run_command(
     cwd: Path,
     timeout: int,
     env: dict[str, str] | None = None,
+    heartbeat_label: str | None = None,
+    heartbeat_seconds: int = 30,
 ) -> tuple[int, str, str, float]:
     started = time.monotonic()
-    proc = subprocess.run(
+    proc = subprocess.Popen(
         cmd,
         cwd=cwd,
         env=env,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        timeout=timeout,
     )
-    duration = time.monotonic() - started
-    return proc.returncode, proc.stdout, proc.stderr, duration
+    while True:
+        elapsed = time.monotonic() - started
+        remaining = timeout - elapsed
+        if remaining <= 0:
+            proc.kill()
+            stdout, stderr = proc.communicate()
+            raise subprocess.TimeoutExpired(cmd, timeout, output=stdout, stderr=stderr)
+        wait_for = min(heartbeat_seconds if heartbeat_seconds > 0 else remaining, remaining)
+        try:
+            stdout, stderr = proc.communicate(timeout=wait_for)
+            duration = time.monotonic() - started
+            return proc.returncode or 0, stdout, stderr, duration
+        except subprocess.TimeoutExpired:
+            if heartbeat_label and heartbeat_seconds > 0:
+                print(f"[heartbeat] {heartbeat_label} still running after {int(time.monotonic() - started)}s", flush=True)
 
 
 def resolve_goose_cli(args: argparse.Namespace) -> str:
@@ -466,6 +480,7 @@ def grade_run(
     returncode: int,
     goose_cwd: Path,
     goose_env: dict[str, str],
+    heartbeat_label: str,
 ) -> dict[str, Any]:
     prompt = build_grader_prompt(
         scenario=scenario,
@@ -480,6 +495,8 @@ def grade_run(
             cwd=goose_cwd,
             timeout=args.grade_timeout,
             env=goose_env,
+            heartbeat_label=heartbeat_label,
+            heartbeat_seconds=args.heartbeat_seconds,
         )
     except Exception as exc:  # noqa: BLE001 - preserve eval output instead of crashing late
         return {
@@ -651,6 +668,7 @@ def main() -> int:
     parser.add_argument("--max-turns", type=int, default=8)
     parser.add_argument("--timeout", type=int, default=900)
     parser.add_argument("--grade-timeout", type=int, default=300)
+    parser.add_argument("--heartbeat-seconds", type=int, default=30, help="Print progress heartbeats while Goose task/grader subprocesses are running. Use 0 to disable.")
     parser.add_argument("--provider")
     parser.add_argument("--model")
     parser.add_argument(
@@ -738,19 +756,26 @@ def main() -> int:
                     repo_root=worktree,
                 )
 
+                task_label = f"{args.skill} eval-{eval_id} {config.name} run-{run_number} task"
+                print(f"[start] {task_label}", flush=True)
                 try:
                     returncode, stdout, stderr, duration = run_command(
                         goose_cmd(args, prompt),
                         cwd=goose_cwd,
                         timeout=args.timeout,
                         env=goose_env,
+                        heartbeat_label=task_label,
+                        heartbeat_seconds=args.heartbeat_seconds,
                     )
+                    print(f"[done] {task_label} rc={returncode} duration={duration:.1f}s", flush=True)
                 except subprocess.TimeoutExpired as exc:
                     returncode = 124
                     stdout = exc.stdout or ""
                     stderr = (exc.stderr or "") + f"\nTimed out after {args.timeout}s"
                     duration = float(args.timeout)
 
+                grader_label = f"{args.skill} eval-{eval_id} {config.name} run-{run_number} grader"
+                print(f"[start] {grader_label}", flush=True)
                 grading = grade_run(
                     args=args,
                     scenario=scenario,
@@ -760,7 +785,9 @@ def main() -> int:
                     returncode=returncode,
                     goose_cwd=goose_cwd,
                     goose_env=goose_env,
+                    heartbeat_label=grader_label,
                 )
+                print(f"[done] {grader_label}", flush=True)
                 write_run_artifacts(
                     run_dir=run_dir,
                     metadata=metadata,

@@ -160,6 +160,8 @@ dist/evals/<content-hash>/skills/<skill-name>/benchmark.json
 
 The runners also append a lightweight SQLite history database at `dist/evals/eval-history.sqlite3` by default. It records the run id, kind (`skills` for the current runner), subject, content hash, git commit, dirty flag, workspace path, benchmark summary JSON, and pass-rate improvement rows. Use `--no-history` to disable this or `--history-db <path>` to write elsewhere.
 
+Long runs print `[start]`, `[heartbeat]`, and `[done]` lines while task and grader subprocesses are running. The default heartbeat interval is 30 seconds; change it with `--heartbeat-seconds N` or disable it with `--heartbeat-seconds 0`.
+
 ### Editor shortcuts
 
 VS Code tasks are defined in `.vscode/tasks.json`:
