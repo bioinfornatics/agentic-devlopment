@@ -4,7 +4,6 @@ description: >
   Beads operating manual for agents: prime, ready/claim/close, dependencies, memory, molecules, wisps, gates, and Dolt sync.
 metadata:
   version: 1.0.0
-  evals: references/evals.json
 ---
 
 # Beads Harness

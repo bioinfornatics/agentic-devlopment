@@ -5,7 +5,6 @@ description: >
   Beads persists tasks, dependencies, gates, memory, and handoffs.
 metadata:
   version: 1.0.0
-  evals: references/evals.json
 ---
 
 # Agentic Development Harness

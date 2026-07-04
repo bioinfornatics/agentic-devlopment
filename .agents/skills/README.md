@@ -16,4 +16,4 @@ Old copies are available in `~/.agents/skills.old`.
 
 ## Evaluations
 
-Canonical skill evaluations live in `evals/skills/`. Each packaged skill also carries a mirrored `references/evals.json` so evaluation scenarios travel with the skill; update the canonical eval first, refresh the mirror, then keep each `SKILL.md` minimal enough to pass the observed scenarios.
+Skill evaluations live outside the production skill packages in `evals/skills/`. Build or update those evals before expanding skill instructions, then keep each `SKILL.md` minimal enough to pass the observed scenarios.

@@ -4,7 +4,6 @@ description: >
   Spec-Driven Development: product intent, spec-driven development, TDD, operational readiness, and continuous learning.
 metadata:
   version: 2.0.0
-  evals: references/evals.json
 ---
 
 # SDD — Spec-Driven Development

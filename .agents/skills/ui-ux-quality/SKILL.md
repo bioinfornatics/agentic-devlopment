@@ -4,7 +4,6 @@ description: >
   Unified UI/UX quality method: research, design taste, design systems, frontend states, accessibility, and visual verification.
 metadata:
   version: 1.0.0
-  evals: references/evals.json
 ---
 
 # UI/UX Quality Skill

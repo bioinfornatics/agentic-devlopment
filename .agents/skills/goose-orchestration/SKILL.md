@@ -4,7 +4,6 @@ description: >
   Goose orchestration manual: extensions, recipes, subrecipes, subagents, Summon load/delegate, skills, sessions, and guardrails.
 metadata:
   version: 1.0.0
-  evals: references/evals.json
 ---
 
 # Goose Orchestration
