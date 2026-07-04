@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -12,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_GOOSE_CLI_ENV = "GOOSE_EVAL_CLI"
 
 
 def read_json(path: Path) -> Any:
@@ -168,6 +170,11 @@ def main() -> int:
     parser.add_argument("--grade-timeout", type=int, default=300)
     parser.add_argument("--provider")
     parser.add_argument("--model")
+    parser.add_argument(
+        "--goose-cli",
+        default=os.environ.get(DEFAULT_GOOSE_CLI_ENV),
+        help=f"Goose CLI binary forwarded to per-skill runs. Defaults to ${DEFAULT_GOOSE_CLI_ENV} when set, otherwise 'goose'.",
+    )
     parser.add_argument("--no-profile", action="store_true")
     parser.add_argument("--quiet", action="store_true")
     parser.add_argument(
@@ -176,6 +183,11 @@ def main() -> int:
         help="Forward --ambient-goose to per-skill runs. By default runs use isolated Goose homes that hide installed skills, agents, and recipes.",
     )
     parser.add_argument("--continue-on-failure", action="store_true", help="Continue remaining skills if one runner exits non-zero.")
+    parser.add_argument(
+        "--include-grading-hints",
+        action="store_true",
+        help="Debug mode: forward expected_behavior and baseline_gaps into task prompts. Default keeps them grader-only.",
+    )
     parser.add_argument("--output", type=Path, help="Default: dist/evals/skills/iteration-<N>-index.html")
     args = parser.parse_args()
 
@@ -211,12 +223,16 @@ def main() -> int:
             cmd.extend(["--provider", args.provider])
         if args.model:
             cmd.extend(["--model", args.model])
+        if args.goose_cli:
+            cmd.extend(["--goose-cli", args.goose_cli])
         if args.no_profile:
             cmd.append("--no-profile")
         if args.quiet:
             cmd.append("--quiet")
         if args.ambient_goose:
             cmd.append("--ambient-goose")
+        if args.include_grading_hints:
+            cmd.append("--include-grading-hints")
 
         print(f"== Running skill eval suite item: {skill} ==")
         proc = subprocess.run(cmd, cwd=ROOT)

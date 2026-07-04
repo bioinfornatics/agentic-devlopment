@@ -18,6 +18,7 @@ import argparse
 import io
 import json
 import os
+import shlex
 import re
 import shutil
 import subprocess
@@ -31,6 +32,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SKILL_CREATOR_DIR = Path.home() / ".agents" / "skills" / "skill-creator"
+DEFAULT_GOOSE_CLI_ENV = "GOOSE_EVAL_CLI"
+
 
 
 @dataclass(frozen=True)
@@ -39,6 +42,7 @@ class Config:
     description: str
     skill_dirs: tuple[Path, ...] = ()
     baseline_note: str = ""
+    include_grading_hints: bool = False
 
 
 def slug(value: str, limit: int = 64) -> str:
@@ -216,8 +220,18 @@ def build_eval_prompt(
         )
 
     files = scenario.get("files", [])
-    expected = scenario.get("expected_behavior", [])
-    gaps = scenario.get("baseline_gaps", [])
+    grading_hints = ""
+    if getattr(config, "include_grading_hints", False):
+        grading_hints = textwrap.dedent(
+            f"""
+
+            Expected behaviors that the grader will check:
+            {json.dumps(scenario.get("expected_behavior", []), indent=2, ensure_ascii=False)}
+
+            Baseline gaps this scenario is meant to expose:
+            {json.dumps(scenario.get("baseline_gaps", []), indent=2, ensure_ascii=False)}
+            """
+        )
 
     return textwrap.dedent(
         f"""
@@ -241,12 +255,7 @@ def build_eval_prompt(
 
         Eval input files or paths of interest:
         {json.dumps(files, indent=2, ensure_ascii=False)}
-
-        Expected behaviors that the grader will check:
-        {json.dumps(expected, indent=2, ensure_ascii=False)}
-
-        Baseline gaps this scenario is meant to expose:
-        {json.dumps(gaps, indent=2, ensure_ascii=False)}
+        {grading_hints}
 
         User task:
         {scenario.get('query', '')}
@@ -354,8 +363,16 @@ def run_command(
     return proc.returncode, proc.stdout, proc.stderr, duration
 
 
+def resolve_goose_cli(args: argparse.Namespace) -> str:
+    cli = args.goose_cli or os.environ.get(DEFAULT_GOOSE_CLI_ENV) or "goose"
+    if not any(sep in cli for sep in (os.sep, "/")):
+        return cli
+    path = Path(cli).expanduser()
+    return str(path.resolve() if path.is_absolute() else (ROOT / path).resolve())
+
+
 def goose_cmd(args: argparse.Namespace, prompt: str) -> list[str]:
-    cmd = ["goose", "run", "--no-session", "--text", prompt, "--max-turns", str(args.max_turns)]
+    cmd = [resolve_goose_cli(args), "run", "--no-session", "--text", prompt, "--max-turns", str(args.max_turns)]
     if args.no_profile:
         cmd.append("--no-profile")
     if args.provider:
@@ -603,6 +620,11 @@ def main() -> int:
     parser.add_argument("--grade-timeout", type=int, default=300)
     parser.add_argument("--provider")
     parser.add_argument("--model")
+    parser.add_argument(
+        "--goose-cli",
+        default=os.environ.get(DEFAULT_GOOSE_CLI_ENV),
+        help=f"Goose CLI binary to execute. Defaults to ${DEFAULT_GOOSE_CLI_ENV} when set, otherwise 'goose'.",
+    )
     parser.add_argument("--no-profile", action="store_true")
     parser.add_argument("--quiet", action="store_true")
     parser.add_argument(
@@ -612,6 +634,11 @@ def main() -> int:
     )
     parser.add_argument("--keep-goose-home", action="store_true", help="Keep the temporary isolated Goose home for debugging.")
     parser.add_argument("--keep-worktrees", action="store_true")
+    parser.add_argument(
+        "--include-grading-hints",
+        action="store_true",
+        help="Debug mode: include expected_behavior and baseline_gaps in task prompts. By default these are grader-only to avoid contaminating the baseline.",
+    )
     args = parser.parse_args()
 
     eval_file = args.eval_file or (ROOT / "evals" / "skills" / f"{args.skill}.json")
@@ -654,6 +681,14 @@ def main() -> int:
         write_json(eval_dir / "eval_metadata.json", metadata)
 
         for config in prepare_configs(args, scenario):
+            if args.include_grading_hints:
+                config = Config(
+                    name=config.name,
+                    description=config.description,
+                    skill_dirs=config.skill_dirs,
+                    baseline_note=config.baseline_note,
+                    include_grading_hints=True,
+                )
             for run_number in range(1, args.runs_per_config + 1):
                 run_dir = eval_dir / config.name / f"run-{run_number}"
                 worktree = run_dir / "worktree"
@@ -707,6 +742,7 @@ def main() -> int:
     aggregate_and_render(args, workspace)
     print(f"Workspace: {workspace}")
     print(f"Mode: {args.mode}; grader=llm; ambient_goose={args.ambient_goose}")
+    print(f"Goose CLI: {shlex.quote(resolve_goose_cli(args))}")
     return 0
 
 

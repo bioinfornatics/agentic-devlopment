@@ -132,6 +132,19 @@ python scripts/run-skill-ab-suite.py \
 xdg-open dist/evals/skills/index.html
 ```
 
+Use `--goose-cli` or `GOOSE_EVAL_CLI` to force a specific Goose binary for both task and grader runs, for example:
+
+```bash
+python scripts/run-skill-ab-suite.py \
+  --iteration 1 \
+  --continue-on-failure \
+  --goose-cli ../third-parties/goose/target/debug/goose
+```
+
+VS Code suite tasks forward the `agenticDevelopment.gooseEvalCli` setting from `.vscode/settings.json`. Keep it as `goose` for PATH resolution or set it locally to a debug binary, for example `/home/jmercier/Codes/third-parties/goose/target/debug/goose`. JetBrains run configurations can use the same mechanism by setting the `GOOSE_EVAL_CLI` environment variable in the run configuration.
+
+The task prompt intentionally does **not** include `expected_behavior` or `baseline_gaps`; those fields are grader-only. Use `--include-grading-hints` only while debugging an eval definition, because it leaks the answer key into both A/B arms and can erase the measured skill delta.
+
 The suite runner uses the same strict isolated Goose baseline by default. Pass `--ambient-goose` only to debug with your normal installed skills/agents/recipes visible. Use `--skills` to run a subset while developing an eval:
 
 ```bash
