@@ -48,6 +48,13 @@ python scripts/run-skill-ab-eval.py --skill code-review --iteration 1 --execute 
 xdg-open dist/evals/skills/code-review/iteration-1/review.html
 ```
 
+Compare the working-tree skill against a committed baseline with:
+
+```bash
+python scripts/run-skill-ab-eval.py --skill code-review --mode old-new --baseline-git-ref HEAD~1 --execute --grade-mode llm
+xdg-open dist/evals/skills/code-review/iteration-1/review.html
+```
+
 The A/B runners use isolated Goose homes by default, so installed skills, agents, and recipes are hidden for `without_skill` baselines. Use `--ambient-goose` only when debugging with the normal Goose environment.
 
 Run the full skill suite and open the suite index with:

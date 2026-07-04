@@ -171,21 +171,13 @@ Use `--skills` to run a subset while developing an eval. Omit `--execute` for a 
 
 ### 4. Execute old/new A/B after changing a skill
 
-Before editing a skill, snapshot the current version:
-
-```bash
-mkdir -p dist/evals/snapshots
-cp -a .agents/skills/code-review dist/evals/snapshots/code-review-before
-```
-
-After editing `.agents/skills/code-review`, compare the candidate against the snapshot. If `--baseline-skill-dir` is omitted, the runner uses the installed original skill at `~/.agents/skills/<skill-name>` when present; if `--candidate-skill-dir` is omitted, it uses `.agents/skills/<skill-name>`.
+Prefer a git ref for the original baseline when the previous version is committed. This avoids manual snapshot directories:
 
 ```bash
 python scripts/run-skill-ab-eval.py \
   --skill code-review \
   --mode old-new \
-  --baseline-skill-dir dist/evals/snapshots/code-review-before \
-  --candidate-skill-dir .agents/skills/code-review \
+  --baseline-git-ref HEAD~1 \
   --iteration 2 \
   --runs-per-config 1 \
   --execute \
@@ -194,6 +186,25 @@ python scripts/run-skill-ab-eval.py \
 
 xdg-open dist/evals/skills/code-review/iteration-2/review.html
 ```
+
+The runner materializes `.agents/skills/<skill-name>` from `--baseline-git-ref` into the generated workspace and compares it against the working-tree candidate at `.agents/skills/<skill-name>`. You can also compare two refs directly:
+
+```bash
+python scripts/run-skill-ab-eval.py \
+  --skill code-review \
+  --mode old-new \
+  --baseline-git-ref v1.0.0 \
+  --candidate-git-ref HEAD \
+  --iteration 2 \
+  --execute \
+  --grade-mode llm
+```
+
+Fallbacks remain available:
+
+- `--baseline-skill-dir <path>` for a manual snapshot;
+- no baseline option, which uses the installed original at `~/.agents/skills/<skill-name>` when present;
+- no candidate option, which uses `.agents/skills/<skill-name>`.
 
 The benchmark tab supports dynamic configuration names, so the same viewer works for `with_skill` / `without_skill` and `new_skill` / `old_skill`. No project-local viewer fork is needed unless we want UI features beyond the upstream skill-creator viewer.
 

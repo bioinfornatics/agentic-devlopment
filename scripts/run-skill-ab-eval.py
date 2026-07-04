@@ -15,12 +15,14 @@ files do not mutate the source checkout.
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import os
 import re
 import shutil
 import subprocess
 import sys
+import tarfile
 import textwrap
 import time
 from dataclasses import dataclass
@@ -96,6 +98,84 @@ def prepare_goose_environment(args: argparse.Namespace, run_dir: Path) -> tuple[
     env["HOME"] = str(home)
     env["XDG_CONFIG_HOME"] = str(home / ".config")
     return env, neutral_cwd, home
+
+
+def safe_extract_tar(data: bytes, dest: Path) -> None:
+    """Extract a git archive tar into dest without allowing path traversal."""
+    dest = dest.resolve()
+    with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as tar:
+        for member in tar.getmembers():
+            target = (dest / member.name).resolve()
+            if not str(target).startswith(str(dest) + os.sep) and target != dest:
+                raise RuntimeError(f"Refusing unsafe tar member: {member.name}")
+        tar.extractall(dest)
+
+
+def materialize_skill_from_git(ref: str, skill: str, dest_root: Path) -> Path:
+    """Export .agents/skills/<skill> from a git ref into dest_root and return the skill dir."""
+    rel = Path(".agents") / "skills" / skill
+    if dest_root.exists():
+        shutil.rmtree(dest_root)
+    dest_root.mkdir(parents=True, exist_ok=True)
+
+    # Verify the path exists at the requested ref so git archive errors are clearer.
+    check = subprocess.run(
+        ["git", "cat-file", "-e", f"{ref}:{rel.as_posix()}/SKILL.md"],
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    if check.returncode != 0:
+        raise SystemExit(f"Skill {rel} not found at git ref {ref!r}")
+
+    archive = subprocess.run(
+        ["git", "archive", "--format=tar", ref, rel.as_posix()],
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
+    )
+    safe_extract_tar(archive.stdout, dest_root)
+    skill_dir = dest_root / rel
+    if not (skill_dir / "SKILL.md").exists():
+        raise SystemExit(f"Git ref {ref!r} did not produce {skill_dir / 'SKILL.md'}")
+    return skill_dir.resolve()
+
+
+def resolve_old_new_skill_dirs(args: argparse.Namespace, workspace: Path) -> tuple[Path, Path]:
+    """Resolve candidate and baseline skill dirs for old-new mode."""
+    if args.candidate_git_ref and args.candidate_skill_dir:
+        raise SystemExit("Use either --candidate-git-ref or --candidate-skill-dir, not both")
+    if args.baseline_git_ref and args.baseline_skill_dir:
+        raise SystemExit("Use either --baseline-git-ref or --baseline-skill-dir, not both")
+
+    if args.candidate_git_ref:
+        candidate = materialize_skill_from_git(
+            args.candidate_git_ref,
+            args.skill,
+            workspace / "_git-candidate" / slug(args.candidate_git_ref, 32),
+        )
+    else:
+        candidate = (args.candidate_skill_dir or (ROOT / ".agents" / "skills" / args.skill)).resolve()
+
+    if args.baseline_git_ref:
+        baseline = materialize_skill_from_git(
+            args.baseline_git_ref,
+            args.skill,
+            workspace / "_git-baseline" / slug(args.baseline_git_ref, 32),
+        )
+    else:
+        baseline = (args.baseline_skill_dir or (Path.home() / ".agents" / "skills" / args.skill)).resolve()
+
+    if not candidate.exists():
+        raise SystemExit(f"Candidate skill directory not found: {candidate}")
+    if not baseline.exists():
+        raise SystemExit(
+            f"Baseline skill directory not found: {baseline}. "
+            "Pass --baseline-skill-dir, --baseline-git-ref, or install the original skill under ~/.agents/skills."
+        )
+    return candidate, baseline
 
 
 def load_skill_bundle(skill_dir: Path) -> str:
@@ -349,15 +429,8 @@ def prepare_configs(args: argparse.Namespace, scenario: dict[str, Any]) -> list[
             ),
         ]
     if args.mode == "old-new":
-        candidate = (args.candidate_skill_dir or (ROOT / ".agents" / "skills" / args.skill)).resolve()
-        baseline = (args.baseline_skill_dir or (Path.home() / ".agents" / "skills" / args.skill)).resolve()
-        if not candidate.exists():
-            raise SystemExit(f"Candidate skill directory not found: {candidate}")
-        if not baseline.exists():
-            raise SystemExit(
-                f"Baseline skill directory not found: {baseline}. "
-                "Pass --baseline-skill-dir with a snapshot or install the original skill under ~/.agents/skills."
-            )
+        candidate = args._resolved_candidate_skill_dir
+        baseline = args._resolved_baseline_skill_dir
         return [
             Config(
                 name="new_skill",
@@ -366,7 +439,7 @@ def prepare_configs(args: argparse.Namespace, scenario: dict[str, Any]) -> list[
             ),
             Config(
                 name="old_skill",
-                description=f"Baseline/original installed skill from {baseline}.",
+                description=f"Baseline/original skill from {baseline}.",
                 skill_dirs=(baseline,),
             ),
         ]
@@ -535,8 +608,10 @@ def main() -> int:
     parser.add_argument("--skill", required=True, help="Skill/eval name, e.g. code-review")
     parser.add_argument("--eval-file", type=Path, help="Defaults to evals/skills/<skill>.json")
     parser.add_argument("--mode", choices=["with-without", "old-new"], default="with-without")
-    parser.add_argument("--baseline-skill-dir", type=Path)
-    parser.add_argument("--candidate-skill-dir", type=Path)
+    parser.add_argument("--baseline-skill-dir", type=Path, help="Old skill directory for old-new mode. Mutually exclusive with --baseline-git-ref.")
+    parser.add_argument("--candidate-skill-dir", type=Path, help="New skill directory for old-new mode. Mutually exclusive with --candidate-git-ref.")
+    parser.add_argument("--baseline-git-ref", help="Git ref to use as old_skill in old-new mode, e.g. HEAD, HEAD~1, origin/main, or a tag.")
+    parser.add_argument("--candidate-git-ref", help="Git ref to use as new_skill in old-new mode. Defaults to the working-tree skill directory.")
     parser.add_argument("--iteration", type=int, default=1)
     parser.add_argument("--runs-per-config", type=int, default=1)
     parser.add_argument("--workspace-root", type=Path, default=Path("dist/evals/skills"))
@@ -570,6 +645,22 @@ def main() -> int:
     if workspace.exists():
         shutil.rmtree(workspace)
     workspace.mkdir(parents=True, exist_ok=True)
+
+    if args.mode == "old-new":
+        candidate, baseline = resolve_old_new_skill_dirs(args, workspace)
+        args._resolved_candidate_skill_dir = candidate
+        args._resolved_baseline_skill_dir = baseline
+        write_json(
+            workspace / "comparison.json",
+            {
+                "mode": args.mode,
+                "skill": args.skill,
+                "candidate_skill_dir": str(candidate),
+                "baseline_skill_dir": str(baseline),
+                "candidate_git_ref": args.candidate_git_ref,
+                "baseline_git_ref": args.baseline_git_ref,
+            },
+        )
 
     for eval_id, scenario in enumerate(scenarios):
         query = scenario.get("query", "")
