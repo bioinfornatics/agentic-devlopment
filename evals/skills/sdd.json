@@ -1,0 +1,44 @@
+[
+  {
+    "skills": ["sdd", "beads-harness"],
+    "query": "Add notifications.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may implement from vague requirements.",
+      "Agent may skip non-goals and acceptance criteria."
+    ],
+    "expected_behavior": [
+      "Clarifies user, outcome, constraints, and non-goals before implementation.",
+      "Defines acceptance criteria and risks.",
+      "Proposes a dependency-aware Beads graph."
+    ]
+  },
+  {
+    "skills": ["sdd"],
+    "query": "Implement retry logic for failed uploads.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may skip a failing test/spec check.",
+      "Agent may propose a large irreversible change."
+    ],
+    "expected_behavior": [
+      "Identifies a small reversible implementation slice.",
+      "Proposes a failing test or spec check first when practical.",
+      "Defines implementation and verification steps."
+    ]
+  },
+  {
+    "skills": ["sdd"],
+    "query": "Is this ready to release?",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may treat release checks as optional cleanup.",
+      "Agent may omit rollback or observability."
+    ],
+    "expected_behavior": [
+      "Evaluates tests, docs, migrations, rollback, observability, and open blockers.",
+      "Treats quality gates as product requirements.",
+      "Reports explicit release done criteria."
+    ]
+  }
+]

@@ -14,13 +14,6 @@ This directory was rewritten as a compact skill library for Goose + Beads.
 
 Old copies are available in `~/.agents/skills.old`.
 
-## Evaluation files
+## Evaluations
 
-Each project skill includes an `EVALUATION.md` file following the skill evaluation/iteration practice described in Claude skill guidance:
-
-- realistic prompts that should trigger the skill;
-- expected behavior for each prompt;
-- passing criteria and failure indicators;
-- a small iteration loop for improving the skill after failures.
-
-When a skill changes, run the relevant eval prompts manually or through the target agent runtime, then update the smallest instruction surface that fixes the failure. Keep evals next to the skill so future agents can maintain them with the skill.
+Skill evaluations live outside the production skill packages in `evals/skills/`. Build or update those evals before expanding skill instructions, then keep each `SKILL.md` minimal enough to pass the observed scenarios.

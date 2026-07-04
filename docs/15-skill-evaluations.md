@@ -2,59 +2,80 @@
 
 ## Why
 
-Skills are instruction surfaces. They need lightweight evals so changes can be tested against realistic prompts instead of relying on intuition.
+Skills are production instruction surfaces. Evaluations are development artifacts. Keep them separate so skills stay compact and so evals can be created before the skill grows.
 
-This harness keeps evals beside each skill:
+This harness stores skill evals outside `.agents/skills/`:
 
 ```text
-.agents/skills/<skill-name>/EVALUATION.md
+evals/skills/<skill-name>.json
 ```
 
-## What each eval includes
+## Evaluation-driven development
 
-- realistic prompts that should activate the skill;
-- expected behavior for each prompt;
-- passing criteria;
-- failure indicators;
-- an iteration loop for updating the skill after failures.
+Build evaluations before writing extensive skill documentation:
+
+1. **Identify gaps** — run representative tasks without the skill and document concrete failures or missing context.
+2. **Create evaluations** — build three scenarios that test those gaps.
+3. **Establish baseline** — record behavior without the skill.
+4. **Write minimal instructions** — add just enough skill content to address the gaps and pass evals.
+5. **Iterate** — execute evals, compare against baseline, and refine.
+
+## Evaluation schema
+
+Each eval file is a JSON array. Each scenario follows this shape:
+
+```json
+{
+  "skills": ["skill-name"],
+  "query": "Representative user request",
+  "files": ["optional/context/file"],
+  "baseline_gaps": [
+    "Observed failure without the skill"
+  ],
+  "expected_behavior": [
+    "Observable behavior that should happen with the skill"
+  ]
+}
+```
 
 ## When to run evals
 
-Run the relevant skill evals when you change:
+Run or update relevant skill evals when you change:
 
 - a skill `SKILL.md`;
 - a recipe or subrecipe that routes into that skill;
 - Beads workflow language used by the skill;
 - delegation rules or output formats;
-- docs that materially change the skill's expected behavior.
+- docs that materially change expected skill behavior.
 
 ## How to run evals
 
-1. Open the relevant `EVALUATION.md`.
-2. Run each eval prompt in the target agent runtime or as a recipe smoke test.
-3. Compare the response against expected behavior and passing criteria.
-4. Record any durable follow-up as a Beads issue.
-5. Fix the smallest instruction surface: eval wording, skill, recipe, then docs.
-6. Re-run the failed prompt and one neighboring prompt.
+1. Open the relevant JSON file under `evals/skills/`.
+2. Run each `query` in the target agent runtime with and without the listed `skills` when practical.
+3. Compare behavior against `baseline_gaps` and `expected_behavior`.
+4. Record durable follow-up work as Beads issues.
+5. Fix the smallest instruction surface: eval, skill, recipe, then docs.
+6. Re-run the failed scenario and one neighboring scenario.
 
 ## Current skill eval map
 
 | Skill | Eval file |
 | --- | --- |
-| Agentic development harness | `.agents/skills/agentic-dev-harness/EVALUATION.md` |
-| Beads harness | `.agents/skills/beads-harness/EVALUATION.md` |
-| Code review | `.agents/skills/code-review/EVALUATION.md` |
-| Goose orchestration | `.agents/skills/goose-orchestration/EVALUATION.md` |
-| SDD | `.agents/skills/sdd/EVALUATION.md` |
-| UI/UX quality | `.agents/skills/ui-ux-quality/EVALUATION.md` |
-| Webapp testing | `.agents/skills/webapp-testing/EVALUATION.md` |
+| Agentic development harness | `evals/skills/agentic-dev-harness.json` |
+| Beads harness | `evals/skills/beads-harness.json` |
+| Code review | `evals/skills/code-review.json` |
+| Goose orchestration | `evals/skills/goose-orchestration.json` |
+| SDD | `evals/skills/sdd.json` |
+| UI/UX quality | `evals/skills/ui-ux-quality.json` |
+| Webapp testing | `evals/skills/webapp-testing.json` |
 
 ## Done criteria
 
 A skill evaluation update is done when:
 
-- every changed skill has an adjacent eval file;
-- eval prompts cover at least one happy path and one common failure mode;
+- evals live outside `.agents/skills/`;
+- changed skills have corresponding eval scenarios in `evals/skills/`;
+- scenarios capture observed baseline gaps before expanding instructions;
 - docs build successfully;
 - `goose skills list` still discovers project skills;
 - recipe validation still passes if routing changed.

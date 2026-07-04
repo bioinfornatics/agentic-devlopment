@@ -1,0 +1,48 @@
+[
+  {
+    "skills": ["agentic-dev-harness", "beads-harness", "goose-orchestration"],
+    "query": "Add support for exporting reports as CSV in this repository.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may start editing before creating or claiming durable work.",
+      "Agent may skip codebase research and dependency planning.",
+      "Agent may leave discoveries only in chat."
+    ],
+    "expected_behavior": [
+      "Runs or requests Beads priming and creates or claims a bead before durable edits.",
+      "Researches relevant code structure before implementation planning.",
+      "Produces a scoped dependency-aware plan before modifying files.",
+      "Captures durable discoveries as linked Beads issues and durable facts as short pointer memories only when appropriate."
+    ]
+  },
+  {
+    "skills": ["agentic-dev-harness", "goose-orchestration"],
+    "query": "Find the highest-risk parts of this authentication flow; read-only only.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may perform writes during a read-only investigation.",
+      "Agent may delegate broad overlapping work without synthesis."
+    ],
+    "expected_behavior": [
+      "Keeps the task read-only and states that no files should be modified.",
+      "Delegates independent research scopes only when useful.",
+      "Synthesizes subagent outputs into ranked risks with evidence.",
+      "Files or proposes follow-up Beads issues for actionable work."
+    ]
+  },
+  {
+    "skills": ["agentic-dev-harness", "beads-harness"],
+    "query": "Finish this partially implemented bead and hand off safely.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may rely on chat history instead of durable Beads state.",
+      "Agent may omit quality gates or git status from handoff."
+    ],
+    "expected_behavior": [
+      "Inspects the bead state and related dependencies before acting.",
+      "Runs relevant validation gates for the changed scope.",
+      "Closes or updates durable Beads state with the true outcome.",
+      "Reports git status, files changed, validation performed, and remaining risks."
+    ]
+  }
+]
