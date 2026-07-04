@@ -23,7 +23,7 @@ Each file is a JSON array. Each scenario follows this shape:
   "files": ["optional/context/file"],
   "fixture_patch": "optional/path/to.patch",
   "fixture_description": "Optional explanation of prepared changes",
-  "max_turns": 12,
+  "max_turns": 100,
   "baseline_gaps": [
     "Observed failure without the skill"
   ],
@@ -92,4 +92,4 @@ Editor shortcuts:
 - For Beads workflow scenarios, provide a deterministic issue or allow the agent to create and claim a scoped issue when no exact active issue exists.
 
 - Use `fixture_patch` for deterministic review scenarios instead of relying on the caller's current diff.
-- Use per-scenario `max_turns` for complex planning, review, browser, or Beads workflows rather than raising the whole suite budget.
+- Use per-scenario `max_turns` for complex planning, review, browser, or Beads workflows; current harness evals default to 100 for robust analysis runs.

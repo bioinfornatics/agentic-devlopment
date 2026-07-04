@@ -461,7 +461,15 @@ def build_audit(
     duration: float,
 ) -> dict[str, Any]:
     tool_calls = extract_tool_calls(events)
-    commands = [call["arguments"].get("command") for call in tool_calls if call.get("name") in {"shell", "Developer.shell"} and isinstance(call.get("arguments"), dict) and call["arguments"].get("command")]
+    commands = [
+        call["arguments"].get("command")
+        for call in tool_calls
+        if call.get("name") in {"shell", "Developer.shell"}
+        and isinstance(call.get("arguments"), dict)
+        and call["arguments"].get("command")
+    ]
+    beads_actions = extract_beads_actions(commands)
+    browser_actions = extract_browser_actions(tool_calls)
     return {
         "turns_used": turns_used,
         "max_turns": max_turns,
@@ -471,8 +479,14 @@ def build_audit(
         "events_count": len(events),
         "tool_calls": tool_calls,
         "commands": commands,
-        "validations": [command for command in commands if re.search(r"\b(test|validate|build|fmt|clippy|pytest|pnpm|cargo)\b", command)],
-        "beads_actions": [command for command in commands if re.search(r"(^|&&|;)\s*bd\s+", command)],
+        "validations": [validation for command in commands if (validation := classify_validation(command))],
+        "beads_actions": beads_actions,
+        "beads_action_commands": [action["command"] for action in beads_actions],
+        "browser_actions": browser_actions,
+        "viewports": [action for action in browser_actions if action.get("kind") == "viewport"],
+        "screenshots": [action for action in browser_actions if action.get("kind") == "screenshot"],
+        "console_checks": [action for action in browser_actions if action.get("kind") == "console"],
+        "network_checks": [action for action in browser_actions if action.get("kind") == "network"],
         "files_changed": git_changed_files(worktree),
         "git_status": git_status(worktree),
         "token_usage": extract_token_usage(events),
@@ -480,6 +494,70 @@ def build_audit(
         "transcript_chars": len(transcript),
     }
 
+
+def classify_validation(command: str) -> dict[str, Any] | None:
+    if not re.search(r"\b(test|validate|build|fmt|clippy|pytest|pnpm|cargo|py_compile)\b", command):
+        return None
+    return {"command": command, "kind": "validation"}
+
+
+def extract_beads_actions(commands: list[str]) -> list[dict[str, Any]]:
+    actions: list[dict[str, Any]] = []
+    for command in commands:
+        for match in re.finditer(r"(?:^|[;&|])\s*(bd\s+[^;&|]+)", command):
+            bd_command = match.group(1).strip()
+            actions.append({"command": bd_command, "kind": classify_beads_action(bd_command)})
+    return actions
+
+
+def classify_beads_action(command: str) -> str:
+    if re.search(r"\bbd\s+prime\b", command):
+        return "prime"
+    if re.search(r"\bbd\s+(ready|blocked|show|context|doctor|list|memories|recall)\b", command):
+        return "read"
+    if re.search(r"\bbd\s+update\b.*\b--claim\b", command):
+        return "claim"
+    if re.search(r"\bbd\s+create\b", command):
+        return "create"
+    if re.search(r"\bbd\s+close\b", command):
+        return "close"
+    if re.search(r"\bbd\s+remember\b", command):
+        return "memory"
+    if re.search(r"\bbd\s+dep\s+add\b", command):
+        return "dependency"
+    if re.search(r"\bbd\s+(delete|reopen|update|forget)\b", command):
+        return "write"
+    return "other"
+
+
+def extract_browser_actions(tool_calls: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    actions: list[dict[str, Any]] = []
+    for call in tool_calls:
+        name = str(call.get("name") or "")
+        extension = str(call.get("extension") or "")
+        lowered = f"{extension}.{name}".lower()
+        if "browser" not in lowered and "playwright" not in lowered:
+            continue
+        args = call.get("arguments", {}) if isinstance(call.get("arguments"), dict) else {}
+        actions.append({"tool": name, "extension": extension, "kind": classify_browser_action(name), "arguments": args})
+    return actions
+
+
+def classify_browser_action(name: str) -> str:
+    lowered = name.lower()
+    if "resize" in lowered or "viewport" in lowered:
+        return "viewport"
+    if "screenshot" in lowered:
+        return "screenshot"
+    if "console" in lowered:
+        return "console"
+    if "network" in lowered:
+        return "network"
+    if "navigate" in lowered:
+        return "navigation"
+    if "snapshot" in lowered or "accessibility" in lowered:
+        return "accessibility"
+    return "browser"
 
 def extract_tool_calls(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
     calls: list[dict[str, Any]] = []
@@ -535,7 +613,7 @@ def build_feedback_prompt(scenario: dict[str, Any], config_name: str, grading: d
         Configuration: {config_name}
         Expected behavior: {json.dumps(scenario.get('expected_behavior', []), indent=2, ensure_ascii=False)}
         Failed expectations: {json.dumps(failed, indent=2, ensure_ascii=False)}
-        Audit summary: {json.dumps({k: audit.get(k) for k in ['turns_used', 'max_turns', 'max_turns_reached', 'commands', 'validations', 'beads_actions', 'files_changed', 'token_usage']}, indent=2, ensure_ascii=False)}
+        Audit summary: {json.dumps({k: audit.get(k) for k in ['turns_used', 'max_turns', 'max_turns_reached', 'commands', 'validations', 'beads_actions', 'browser_actions', 'viewports', 'screenshots', 'console_checks', 'network_checks', 'files_changed', 'token_usage']}, indent=2, ensure_ascii=False)}
 
         Required JSON schema:
         {{

@@ -23,7 +23,7 @@
       "Runs recipe validation for changed recipes.",
       "Reports files changed, validation performed, Beads state, git status, and remaining risks."
     ],
-    "max_turns": 50
+    "max_turns": 100
   },
   {
     "skills": [
@@ -47,7 +47,7 @@
       "Ranks risks by severity with concrete evidence from harness files.",
       "Proposes durable follow-up work in Beads-compatible form, such as issue titles or `bd create` commands, without executing them."
     ],
-    "max_turns": 50
+    "max_turns": 100
   },
   {
     "skills": [
@@ -72,6 +72,6 @@
       "Updates or closes the relevant Beads issue with the true outcome.",
       "Reports git status, files changed, validation performed, and remaining risks."
     ],
-    "max_turns": 50
+    "max_turns": 100
   }
 ]

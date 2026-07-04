@@ -7,7 +7,7 @@
     "query": "Review the prepared diff for changes to harness recipes, skills, docs, and install scripts. Focus on correctness, validation, Beads follow-ups, and whether the change violates harness workflow rules.",
     "fixture_patch": "evals/fixtures/code-review/current-diff-regression.patch",
     "fixture_description": "Applied a deterministic mixed diff: lowers harness-review max_turns, adds a code-review shortcut that says to skip validation details, and adds docs guidance to use TODO.md for follow-up tracking.",
-    "max_turns": 50,
+    "max_turns": 100,
     "files": [
       ".goose/recipes/harness-review.yaml",
       ".agents/skills/code-review/SKILL.md",
@@ -32,7 +32,7 @@
     "query": "Review the prepared install-script diff that adds a slash command mapping. Focus on idempotence, missing recipe handling, path safety, backup behavior, and rollback risk.",
     "fixture_patch": "evals/fixtures/code-review/install-missing-recipe.patch",
     "fixture_description": "Applied a deterministic install-script diff that adds a `/security` slash command mapped to `harness-security-review.yaml`, but no such recipe is present.",
-    "max_turns": 50,
+    "max_turns": 100,
     "files": [
       "scripts/install.sh",
       "scripts/install.ps1"
@@ -56,7 +56,7 @@
     "query": "Review the prepared skill-evaluation docs diff and tell me what follow-up work remains. Do not create files; propose durable Beads follow-ups when needed.",
     "fixture_patch": "evals/fixtures/code-review/eval-docs-todo-antipattern.patch",
     "fixture_description": "Applied a deterministic docs diff that recommends TODO.md for follow-up tracking in eval reviews.",
-    "max_turns": 50,
+    "max_turns": 100,
     "files": [
       "docs/15-skill-evaluations.md",
       "evals/skills/README.md"

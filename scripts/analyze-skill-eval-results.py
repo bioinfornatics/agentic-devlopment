@@ -209,15 +209,21 @@ def detect_bad_actions(timeline: list[dict[str, Any]], audit: dict[str, Any], gr
     bad: list[dict[str, Any]] = []
     query = scenario.get("query", "").lower()
     commands = audit.get("commands", []) if isinstance(audit, dict) else []
+    beads_actions = normalize_beads_actions(audit.get("beads_actions", [])) if isinstance(audit, dict) else []
+    browser_actions = audit.get("browser_actions", []) if isinstance(audit, dict) else []
     files_changed = audit.get("files_changed", []) if isinstance(audit, dict) else []
     if timing.get("max_turns_reached"):
         bad.append({"type": "max_turn_exhaustion", "severity": "high", "evidence": f"turns_used={timing.get('turns_used')} max_turns={timing.get('max_turns')}"})
     if "read-only" in query and files_changed:
         bad.append({"type": "read_only_write", "severity": "high", "evidence": ", ".join(files_changed[:8])})
-    if "read-only" in query and any(re.search(r"\bbd\s+(create|update|close|remember|dep\s+add)\b", c) for c in commands):
+    if "read-only" in query and any(action.get("kind") in {"claim", "create", "close", "memory", "dependency", "write"} for action in beads_actions):
         bad.append({"type": "read_only_beads_mutation", "severity": "high", "evidence": "Beads mutation command in read-only scenario"})
     if files_changed and not audit.get("validations"):
         bad.append({"type": "missing_validation", "severity": "medium", "evidence": "Files changed but audit.validations is empty"})
+    if requires_browser_evidence(scenario) and not browser_actions and not any(item.get("classification") == "browser_action" for item in timeline):
+        bad.append({"type": "browser_claim_without_evidence", "severity": "medium", "evidence": "Scenario expects browser/UI evidence but no browser actions were detected"})
+    if requires_beads_evidence(scenario) and not beads_actions:
+        bad.append({"type": "missing_beads_audit", "severity": "medium", "evidence": "Scenario expects Beads behavior but no Beads actions were detected"})
     if any("TODO.md" in f or "MEMORY.md" in f for f in files_changed):
         bad.append({"type": "markdown_todo_or_memory_file", "severity": "high", "evidence": ", ".join(files_changed)})
     failed = [e for e in grading.get("expectations", []) if not e.get("passed")]
@@ -231,6 +237,27 @@ def detect_bad_actions(timeline: list[dict[str, Any]], audit: dict[str, Any], gr
             bad.append({"type": "repeated_command", "severity": "low", "evidence": f"{count}x {command[:160]}"})
     return bad
 
+
+def normalize_beads_actions(items: Any) -> list[dict[str, Any]]:
+    actions: list[dict[str, Any]] = []
+    if not isinstance(items, list):
+        return actions
+    for item in items:
+        if isinstance(item, dict):
+            actions.append(item)
+        elif isinstance(item, str):
+            actions.append({"command": item, "kind": "write" if re.search(r"\bbd\s+(create|update|close|remember|dep\s+add)\b", item) else "read"})
+    return actions
+
+
+def requires_browser_evidence(scenario: dict[str, Any]) -> bool:
+    text = " ".join([scenario.get("query", ""), " ".join(scenario.get("files", []))]).lower()
+    return any(word in text for word in ["browser", "viewport", "accessibility", "screenshot", "ui", "ux", "webapp", "documentation site", "console", "network"])
+
+
+def requires_beads_evidence(scenario: dict[str, Any]) -> bool:
+    text = " ".join([scenario.get("query", ""), " ".join(scenario.get("files", []))]).lower()
+    return "beads" in text or "bd " in text or ".beads" in text
 
 def repeated_commands(commands: list[str]) -> list[tuple[str, int]]:
     counts = Counter(commands)
@@ -246,20 +273,25 @@ def classify_root_causes(bad_actions: list[dict[str, Any]], grading: dict[str, A
         causes.add("scenario_too_strict")
     if {"missing_validation", "missing_handoff"} & bad_types:
         causes.add("skill_gap")
+    if {"missing_beads_audit", "browser_claim_without_evidence"} & bad_types:
+        causes.add("runner_audit_issue")
     for rec in feedback.get("recommendations", []) if isinstance(feedback.get("recommendations"), list) else []:
         rec_type = rec.get("type")
+        severity = rec.get("severity")
+        message = str(rec.get("message", "")).lower()
+        if severity not in {"high", "medium"}:
+            continue
         if rec_type == "runner":
             causes.add("runner_audit_issue")
-        elif rec_type == "scenario_quality":
+        elif rec_type == "scenario_quality" and any(word in message for word in ["broad", "narrow", "split", "turn", "scope", "fixture"]):
             causes.add("scenario_too_broad")
-        elif rec_type == "validation":
+        elif rec_type == "validation" and any(word in message for word in ["grader", "rubric", "evaluator", "validation", "assertion"]):
             causes.add("grader_issue")
-        elif rec_type == "skill_instruction":
+        elif rec_type == "skill_instruction" and any(word in message for word in ["skill", "instruction", "require", "guidance", "checklist", "rule"]):
             causes.add("skill_gap")
     if grading.get("summary", {}).get("pass_rate") == 1.0 and timing.get("max_turns_reached"):
         causes.add("over_exploration")
     return sorted(causes)
-
 
 def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: int, configuration: str) -> dict[str, Any]:
     events = parse_events(run_dir / "outputs" / "events.jsonl")
@@ -331,10 +363,10 @@ def run_analysis_md(analysis: dict[str, Any]) -> str:
 def scenario_quality(with_run: dict[str, Any] | None, without_run: dict[str, Any] | None, scenario: dict[str, Any]) -> str:
     if not with_run or not without_run:
         return "inconclusive"
-    if with_run["turns"].get("reached_max") and without_run["turns"].get("reached_max"):
-        return "too_broad"
     if with_run["score"].get("pass_rate") == 1.0 and without_run["score"].get("pass_rate") == 1.0:
         return "too_easy"
+    if with_run["turns"].get("reached_max") and without_run["turns"].get("reached_max"):
+        return "too_broad"
     if any(".agents/skills/" in path for path in scenario.get("files", [])):
         return "contaminated"
     return "good"
@@ -462,6 +494,7 @@ def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, An
             "without_turns": without_run.get("turns", {}).get("used") if without_run else None,
             "root_causes": sorted(set(sum((run.get("root_causes", []) for run in run_analyses.values()), []))),
             "bad_actions": sum((run.get("bad_actions", []) for run in run_analyses.values()), []),
+            "max_turn_warning": any(run.get("turns", {}).get("reached_max") for run in run_analyses.values()),
             "confidence": round(sum(run.get("confidence", 0.0) for run in run_analyses.values()) / max(1, len(run_analyses)), 2),
         }
         llm_analysis = run_llm_analysis(args, subject, scenario_analysis, with_run, without_run)
@@ -507,11 +540,11 @@ def scenario_analysis_md(analysis: dict[str, Any]) -> str:
 
 def subject_analysis_md(analysis: dict[str, Any]) -> str:
     lines = [f"# Evaluation Analysis — {analysis['subject']}", "", f"Content hash: `{analysis['content_hash']}`", ""]
-    lines.append("| Eval | Impact | Quality | With | Without | Turns W/B | Confidence | Root causes |")
-    lines.append("|---:|---|---|---:|---:|---:|---:|---|")
+    lines.append("| Eval | Impact | Quality | With | Without | Turns W/B | Max-turn | Confidence | Root causes |")
+    lines.append("|---:|---|---|---:|---:|---:|---|---:|---|")
     for item in analysis.get("scenarios", []):
         lines.append(
-            f"| {item['eval_id']} | {item['skill_impact']} | {item['scenario_quality']} | {item.get('with_score')} | {item.get('without_score')} | {item.get('with_turns')}/{item.get('without_turns')} | {item.get('confidence')} | {', '.join(item.get('root_causes', []))} |"
+            f"| {item['eval_id']} | {item['skill_impact']} | {item['scenario_quality']} | {item.get('with_score')} | {item.get('without_score')} | {item.get('with_turns')}/{item.get('without_turns')} | {'⚠' if item.get('max_turn_warning') else ''} | {item.get('confidence')} | {', '.join(item.get('root_causes', []))} |"
         )
     lines.append("")
     lines.append("## Recurring root causes")
@@ -644,11 +677,13 @@ def write_suite_summary(workspace_root: Path, analyses: list[dict[str, Any]]) ->
     summary = {"generated_at": utc_now(), "subjects": analyses}
     write_json(workspace_root / "analysis-summary.json", summary)
     lines = ["# Skill Evaluation Analysis Summary", ""]
-    lines.append("| Subject | Hash | Scenarios | Recurring root causes |")
-    lines.append("|---|---|---:|---|")
+    lines.append("| Subject | Hash | Scenarios | Negative/Neutral | Max-turn warnings | Recurring root causes |")
+    lines.append("|---|---|---:|---:|---:|---|")
     for item in analyses:
         causes = ", ".join(f"{cause}({count})" for cause, count in item.get("recurring_root_causes", []))
-        lines.append(f"| {item['subject']} | `{item['content_hash']}` | {len(item.get('scenarios', []))} | {causes} |")
+        negative_neutral = sum(1 for scenario in item.get('scenarios', []) if scenario.get('skill_impact') in {'negative', 'neutral'})
+        max_warnings = sum(1 for scenario in item.get('scenarios', []) if scenario.get('max_turn_warning'))
+        lines.append(f"| {item['subject']} | `{item['content_hash']}` | {len(item.get('scenarios', []))} | {negative_neutral} | {max_warnings} | {causes} |")
     (workspace_root / "analysis-summary.md").write_text("\n".join(lines) + "\n")
     (workspace_root / "analysis-index.html").write_text(render_html_summary(analyses))
 
@@ -657,12 +692,14 @@ def render_html_summary(analyses: list[dict[str, Any]]) -> str:
     rows = []
     for item in analyses:
         causes = ", ".join(f"{cause}({count})" for cause, count in item.get("recurring_root_causes", []))
-        rows.append(f"<tr><td>{item['subject']}</td><td><code>{item['content_hash']}</code></td><td>{len(item.get('scenarios', []))}</td><td>{causes}</td><td><a href='{item['subject']}/{item['content_hash']}/analysis.md'>analysis.md</a></td></tr>")
+        negative_neutral = sum(1 for scenario in item.get('scenarios', []) if scenario.get('skill_impact') in {'negative', 'neutral'})
+        max_warnings = sum(1 for scenario in item.get('scenarios', []) if scenario.get('max_turn_warning'))
+        row_class = "warn" if max_warnings or negative_neutral else "ok"
+        rows.append(f"<tr class='{row_class}'><td>{item['subject']}</td><td><code>{item['content_hash']}</code></td><td>{len(item.get('scenarios', []))}</td><td>{negative_neutral}</td><td>{max_warnings}</td><td>{causes}</td><td><a href='{item['subject']}/{item['content_hash']}/analysis.md'>analysis.md</a></td></tr>")
     return f"""<!doctype html>
 <html><head><meta charset='utf-8'><title>Skill Eval Analysis</title>
-<style>body{{font-family:system-ui;margin:2rem}}table{{border-collapse:collapse;width:100%}}td,th{{border:1px solid #ddd;padding:.5rem;text-align:left}}code{{background:#eee;padding:.1rem .25rem}}</style>
-</head><body><h1>Skill Evaluation Analysis</h1><table><thead><tr><th>Subject</th><th>Hash</th><th>Scenarios</th><th>Root causes</th><th>Links</th></tr></thead><tbody>{''.join(rows)}</tbody></table></body></html>"""
-
+<style>body{{font-family:system-ui;margin:2rem}}table{{border-collapse:collapse;width:100%}}td,th{{border:1px solid #ddd;padding:.5rem;text-align:left}}code{{background:#eee;padding:.1rem .25rem}}.warn{{background:#fff7ed}}.ok{{background:#f0fdf4}}</style>
+</head><body><h1>Skill Evaluation Analysis</h1><p>Rows are highlighted when scenarios are neutral/negative or hit max turns.</p><table><thead><tr><th>Subject</th><th>Hash</th><th>Scenarios</th><th>Negative/Neutral</th><th>Max-turn warnings</th><th>Root causes</th><th>Links</th></tr></thead><tbody>{''.join(rows)}</tbody></table></body></html>"""
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Analyze generated skill eval artifacts.")

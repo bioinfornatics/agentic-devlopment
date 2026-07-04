@@ -5,7 +5,7 @@
       ".beads/issues.jsonl",
       "AGENTS.md"
     ],
-    "max_turns": 50,
+    "max_turns": 100,
     "baseline_gaps": [
       "Agent may plan from chat context instead of durable Beads state.",
       "Agent may omit dependency direction and claim order."

@@ -19,7 +19,7 @@
       "Requests or captures screenshots/browser evidence when possible.",
       "Ranks the top issues by user impact."
     ],
-    "max_turns": 50
+    "max_turns": 100
   },
   {
     "skills": [
@@ -42,7 +42,7 @@
       "Separates accessibility blockers from content/discovery polish.",
       "Provides reproduction steps or exact locations for issues."
     ],
-    "max_turns": 50
+    "max_turns": 100
   },
   {
     "skills": [
@@ -62,6 +62,6 @@
       "Distinguishes design-system blockers from recommendations.",
       "Creates or proposes Beads follow-ups for product work."
     ],
-    "max_turns": 50
+    "max_turns": 100
   }
 ]

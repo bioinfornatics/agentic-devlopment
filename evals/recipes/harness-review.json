@@ -6,7 +6,7 @@
       ".goose/recipes/subrecipes/harness-review.yaml",
       "AGENTS.md"
     ],
-    "max_turns": 50,
+    "max_turns": 100,
     "baseline_gaps": [
       "Agent may provide a generic review instead of following the recipe routing and handoff contract.",
       "Agent may omit Beads hygiene, validation, or remaining risks."

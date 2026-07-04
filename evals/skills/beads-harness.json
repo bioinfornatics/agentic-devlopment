@@ -18,7 +18,7 @@
       "Claims selected work with `bd update <id> --claim` before modifications.",
       "Summarizes selected scope and blockers."
     ],
-    "max_turns": 50
+    "max_turns": 100
   },
   {
     "skills": [
@@ -37,7 +37,7 @@
       "Uses requirement language rather than ambiguous blocks language.",
       "Verifies the result with a blocked/ready query."
     ],
-    "max_turns": 50
+    "max_turns": 100
   },
   {
     "skills": [
@@ -56,6 +56,6 @@
       "Does not store secrets, transient state, tasks, or long documentation in memory.",
       "Does not create `MEMORY.md` or markdown TODO files."
     ],
-    "max_turns": 50
+    "max_turns": 100
   }
 ]
