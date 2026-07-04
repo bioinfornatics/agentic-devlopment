@@ -9,7 +9,28 @@ import webbrowser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_EVAL_KIND = "skills"
 ITERATION_RE = re.compile(r"^iteration-(\d+)$")
+DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def dated_workspace_root(eval_date: str) -> Path:
+    return ROOT / "dist" / "evals" / eval_date / DEFAULT_EVAL_KIND
+
+
+def latest_workspace_root() -> Path:
+    evals_root = ROOT / "dist" / "evals"
+    candidates = []
+    if evals_root.exists():
+        for path in evals_root.iterdir():
+            workspace = path / DEFAULT_EVAL_KIND
+            if path.is_dir() and DATE_RE.match(path.name) and workspace.exists():
+                candidates.append((path.name, workspace))
+    if candidates:
+        return sorted(candidates)[-1][1]
+
+    legacy = evals_root / DEFAULT_EVAL_KIND
+    return legacy
 
 
 def latest_iteration_dir(skill_dir: Path) -> Path | None:
@@ -49,6 +70,8 @@ def open_file(path: Path, *, print_path: bool) -> int:
         print(f"Review artifact not found: {resolved}", file=sys.stderr)
         print("Run an eval first, for example:", file=sys.stderr)
         print("  python scripts/run-skill-ab-suite.py --iteration 1 --continue-on-failure", file=sys.stderr)
+        print("Then open the latest dated workspace with:", file=sys.stderr)
+        print("  python scripts/open-skill-eval-review.py", file=sys.stderr)
         return 1
 
     print(resolved)
@@ -64,7 +87,8 @@ def open_file(path: Path, *, print_path: bool) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Open generated skill A/B eval suite review artifacts.")
-    parser.add_argument("--workspace-root", type=Path, default=ROOT / "dist" / "evals" / "skills")
+    parser.add_argument("--workspace-root", type=Path, help="Default: latest dist/evals/<date>/skills workspace, falling back to legacy dist/evals/skills")
+    parser.add_argument("--eval-date", help="Date partition under dist/evals to open. Defaults to the latest available date partition.")
     parser.add_argument("--skill", help="Open a single skill review instead of the suite index.")
     parser.add_argument("--iteration", type=int, help="Iteration to open. Defaults to latest suite index, or latest skill iteration.")
     parser.add_argument(
@@ -75,6 +99,8 @@ def main() -> int:
     )
     parser.add_argument("--print-path", action="store_true", help="Only print the resolved artifact path; do not open a browser.")
     args = parser.parse_args()
+    if args.workspace_root is None:
+        args.workspace_root = dated_workspace_root(args.eval_date) if args.eval_date else latest_workspace_root()
     return open_file(target_path(args), print_path=args.print_path)
 
 

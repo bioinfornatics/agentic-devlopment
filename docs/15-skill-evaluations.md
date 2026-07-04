@@ -81,13 +81,13 @@ python scripts/run-skill-ab-eval.py \
   --iteration 1 \
   --runs-per-config 1
 
-xdg-open dist/evals/skills/code-review/iteration-1/review.html
+xdg-open dist/evals/<YYYY-MM-DD>/skills/code-review/iteration-1/review.html
 ```
 
 The generated workspace follows the shape expected by skill-creator:
 
 ```text
-dist/evals/skills/<skill-name>/iteration-1/
+dist/evals/<YYYY-MM-DD>/skills/<skill-name>/iteration-1/
   eval-0/
     eval_metadata.json
     with_skill/
@@ -123,13 +123,15 @@ python scripts/run-skill-ab-eval.py \
 
 Use the suite runner when you want every `evals/skills/*.json` file executed and summarized in one visual index.
 
+By default, runtime outputs are date-partitioned under `dist/evals/<YYYY-MM-DD>/skills/`. Pass `--eval-date YYYY-MM-DD` to choose the partition, or `--workspace-root` to override the output root completely.
+
 ```bash
 python scripts/run-skill-ab-suite.py \
   --iteration 1 \
   --runs-per-config 1 \
   --continue-on-failure
 
-xdg-open dist/evals/skills/index.html
+xdg-open dist/evals/<YYYY-MM-DD>/skills/index.html
 ```
 
 Use `--goose-cli` or `GOOSE_EVAL_CLI` to force a specific Goose binary for both task and grader runs, for example:
@@ -156,10 +158,10 @@ python scripts/run-skill-ab-suite.py \
 The suite index links to each per-skill review and benchmark:
 
 ```text
-dist/evals/skills/index.html
-dist/evals/skills/iteration-1-index.html
-dist/evals/skills/<skill-name>/iteration-1/review.html
-dist/evals/skills/<skill-name>/iteration-1/benchmark.json
+dist/evals/<YYYY-MM-DD>/skills/index.html
+dist/evals/<YYYY-MM-DD>/skills/iteration-1-index.html
+dist/evals/<YYYY-MM-DD>/skills/<skill-name>/iteration-1/review.html
+dist/evals/<YYYY-MM-DD>/skills/<skill-name>/iteration-1/benchmark.json
 ```
 
 ### Editor shortcuts
@@ -198,9 +200,9 @@ python scripts/run-skill-ab-eval.py \
   --baseline-git-ref HEAD~1 \
   --iteration 2 \
   --runs-per-config 1 \
-  --previous-workspace dist/evals/skills/code-review/iteration-1
+  --previous-workspace dist/evals/<YYYY-MM-DD>/skills/code-review/iteration-1
 
-xdg-open dist/evals/skills/code-review/iteration-2/review.html
+xdg-open dist/evals/<YYYY-MM-DD>/skills/code-review/iteration-2/review.html
 ```
 
 The runner materializes `.agents/skills/<skill-name>` from `--baseline-git-ref` into the generated workspace and compares it against the working-tree candidate at `.agents/skills/<skill-name>`. You can also compare two refs directly:

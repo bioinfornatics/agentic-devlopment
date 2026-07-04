@@ -27,12 +27,22 @@ import tarfile
 import textwrap
 import time
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SKILL_CREATOR_DIR = Path.home() / ".agents" / "skills" / "skill-creator"
 DEFAULT_GOOSE_CLI_ENV = "GOOSE_EVAL_CLI"
+DEFAULT_EVAL_KIND = "skills"
+
+
+def current_eval_date() -> str:
+    return date.today().isoformat()
+
+
+def default_workspace_root(eval_date: str) -> Path:
+    return ROOT / "dist" / "evals" / eval_date / DEFAULT_EVAL_KIND
 
 
 
@@ -611,7 +621,8 @@ def main() -> int:
     parser.add_argument("--candidate-git-ref", help="Git ref to use as new_skill in old-new mode. Defaults to the working-tree skill directory.")
     parser.add_argument("--iteration", type=int, default=1)
     parser.add_argument("--runs-per-config", type=int, default=1)
-    parser.add_argument("--workspace-root", type=Path, default=Path("dist/evals/skills"))
+    parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/<eval-date>/skills")
+    parser.add_argument("--eval-date", default=current_eval_date(), help="Date partition under dist/evals when --workspace-root is not provided. Default: today (YYYY-MM-DD).")
     parser.add_argument("--skill-creator-dir", type=Path, default=DEFAULT_SKILL_CREATOR_DIR)
     parser.add_argument("--previous-workspace", type=Path)
     parser.add_argument("--review-output", type=Path)
@@ -640,6 +651,8 @@ def main() -> int:
         help="Debug mode: include expected_behavior and baseline_gaps in task prompts. By default these are grader-only to avoid contaminating the baseline.",
     )
     args = parser.parse_args()
+    if args.workspace_root is None:
+        args.workspace_root = default_workspace_root(args.eval_date)
 
     eval_file = args.eval_file or (ROOT / "evals" / "skills" / f"{args.skill}.json")
     scenarios = read_json(eval_file)

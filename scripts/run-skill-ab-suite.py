@@ -8,12 +8,21 @@ import json
 import os
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_GOOSE_CLI_ENV = "GOOSE_EVAL_CLI"
+DEFAULT_EVAL_KIND = "skills"
+
+
+def current_eval_date() -> str:
+    return date.today().isoformat()
+
+
+def default_workspace_root(eval_date: str) -> Path:
+    return ROOT / "dist" / "evals" / eval_date / DEFAULT_EVAL_KIND
 
 
 def read_json(path: Path) -> Any:
@@ -160,7 +169,8 @@ def generate_index(
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run all skill A/B evals and build a visual index.")
     parser.add_argument("--evals-dir", type=Path, default=ROOT / "evals" / "skills")
-    parser.add_argument("--workspace-root", type=Path, default=ROOT / "dist" / "evals" / "skills")
+    parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/<eval-date>/skills")
+    parser.add_argument("--eval-date", default=current_eval_date(), help="Date partition under dist/evals when --workspace-root is not provided. Default: today (YYYY-MM-DD).")
     parser.add_argument("--iteration", type=int, default=1)
     parser.add_argument("--runs-per-config", type=int, default=1)
     parser.add_argument("--skills", nargs="*", help="Optional subset. Defaults to every evals/skills/*.json file.")
@@ -188,8 +198,10 @@ def main() -> int:
         action="store_true",
         help="Debug mode: forward expected_behavior and baseline_gaps into task prompts. Default keeps them grader-only.",
     )
-    parser.add_argument("--output", type=Path, help="Default: dist/evals/skills/iteration-<N>-index.html")
+    parser.add_argument("--output", type=Path, help="Default: <workspace-root>/iteration-<N>-index.html")
     args = parser.parse_args()
+    if args.workspace_root is None:
+        args.workspace_root = default_workspace_root(args.eval_date)
 
     skills = args.skills or discover_skills(args.evals_dir)
     if not skills:
