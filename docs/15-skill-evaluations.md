@@ -209,6 +209,34 @@ JetBrains shared run configurations live in `.run/`:
 
 They appear in the Run/Debug configuration selector after the project reloads.
 
+
+### Generic agents and recipes runner
+
+The skill runner remains the main path for `evals/skills/`, but the generic harness runner can execute the same A/B harness for named agents and Goose recipes:
+
+```bash
+python scripts/run-harness-ab-eval.py   --kind agents   --subject beads-planner
+
+python scripts/run-harness-ab-eval.py   --kind recipes   --subject harness-review
+```
+
+Suite form:
+
+```bash
+python scripts/run-harness-ab-suite.py   --kind agents   --continue-on-failure
+
+python scripts/run-harness-ab-suite.py   --kind recipes   --continue-on-failure
+```
+
+Default subject layouts are:
+
+```text
+dist/evals/agents/<agent-name>/<content-hash>/
+dist/evals/recipes/<recipe-name>/<content-hash>/
+```
+
+Agent subjects resolve to `.agents/agents/<agent-name>.md`. Recipe subjects resolve to `.goose/recipes/<recipe-name>.yaml`; recipe evals also run `goose recipe validate` and a `--render-recipe` smoke before model execution, writing `recipe_checks.json` in the subject workspace. The generic runner supports `--mode old-new --baseline-git-ref <ref>` for skills, agents, and recipes.
+
 ### 4. Execute old/new A/B after changing a skill
 
 Prefer a git ref for the original baseline when the previous version is committed. This avoids manual snapshot directories:

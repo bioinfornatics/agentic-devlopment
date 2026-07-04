@@ -1,0 +1,20 @@
+[
+  {
+    "query": "Use the harness-review recipe behavior to review a prepared harness change. Focus on correctness, validation, Beads hygiene, and safe handoff.",
+    "files": [
+      ".goose/recipes/harness-review.yaml",
+      ".goose/recipes/subrecipes/harness-review.yaml",
+      "AGENTS.md"
+    ],
+    "max_turns": 50,
+    "baseline_gaps": [
+      "Agent may provide a generic review instead of following the recipe routing and handoff contract.",
+      "Agent may omit Beads hygiene, validation, or remaining risks."
+    ],
+    "expected_behavior": [
+      "Follows the review workflow shape described by the recipe and subrecipe.",
+      "Checks or proposes relevant validation commands for recipe/harness changes.",
+      "Reports Beads state expectations, git status expectations, files reviewed, and remaining risks."
+    ]
+  }
+]

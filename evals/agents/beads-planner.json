@@ -1,0 +1,19 @@
+[
+  {
+    "query": "Plan the next durable Beads-backed harness maintenance task without editing files. Explain dependencies and claim strategy.",
+    "files": [
+      ".beads/issues.jsonl",
+      "AGENTS.md"
+    ],
+    "max_turns": 50,
+    "baseline_gaps": [
+      "Agent may plan from chat context instead of durable Beads state.",
+      "Agent may omit dependency direction and claim order."
+    ],
+    "expected_behavior": [
+      "Inspects or requests Beads ready/blocked state before planning.",
+      "Explains dependency direction using requirement language.",
+      "States a claim strategy without editing files."
+    ]
+  }
+]
