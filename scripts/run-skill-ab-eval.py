@@ -233,6 +233,8 @@ def build_eval_prompt(
         )
 
     files = scenario.get("files", [])
+    fixture_description = scenario.get("fixture_description")
+    fixture_section = f"\nFixture setup already applied before this run:\n{fixture_description}\n" if fixture_description else ""
     grading_hints = ""
     if getattr(config, "include_grading_hints", False):
         grading_hints = textwrap.dedent(
@@ -268,6 +270,7 @@ def build_eval_prompt(
 
         Eval input files or paths of interest:
         {json.dumps(files, indent=2, ensure_ascii=False)}
+        {fixture_section}
         {grading_hints}
 
         User task:
@@ -398,8 +401,8 @@ def resolve_goose_cli(args: argparse.Namespace) -> str:
     return str(path.resolve() if path.is_absolute() else (ROOT / path).resolve())
 
 
-def goose_cmd(args: argparse.Namespace, prompt: str) -> list[str]:
-    cmd = [resolve_goose_cli(args), "run", "--no-session", "--text", prompt, "--max-turns", str(args.max_turns)]
+def goose_cmd(args: argparse.Namespace, prompt: str, max_turns: int | None = None) -> list[str]:
+    cmd = [resolve_goose_cli(args), "run", "--no-session", "--text", prompt, "--max-turns", str(max_turns or args.max_turns)]
     if args.no_profile:
         cmd.append("--no-profile")
     if args.provider:
@@ -434,6 +437,24 @@ def copy_worktree(source: Path, dest: Path) -> None:
     if dest.exists():
         shutil.rmtree(dest)
     shutil.copytree(source, dest, ignore=ignore)
+
+
+def initialize_worktree_git(worktree: Path) -> None:
+    subprocess.run(["git", "init", "-q"], cwd=worktree, check=True)
+    subprocess.run(["git", "config", "user.email", "eval@example.invalid"], cwd=worktree, check=True)
+    subprocess.run(["git", "config", "user.name", "Skill Eval"], cwd=worktree, check=True)
+    subprocess.run(["git", "add", "-A"], cwd=worktree, check=True)
+    subprocess.run(["git", "commit", "-qm", "baseline"], cwd=worktree, check=True)
+
+
+def apply_fixture_patch(scenario: dict[str, Any], worktree: Path) -> None:
+    patch = scenario.get("fixture_patch")
+    if not patch:
+        return
+    patch_path = (ROOT / patch).resolve()
+    if not patch_path.exists():
+        raise FileNotFoundError(f"Fixture patch not found: {patch_path}")
+    subprocess.run(["git", "apply", str(patch_path)], cwd=worktree, check=True)
 
 
 def prepare_configs(args: argparse.Namespace, scenario: dict[str, Any]) -> list[Config]:
@@ -732,6 +753,8 @@ def main() -> int:
             "eval_name": eval_name,
             "prompt": query,
             "assertions": scenario_assertions(scenario),
+            "fixture_patch": scenario.get("fixture_patch"),
+            "max_turns": scenario.get("max_turns", args.max_turns),
         }
         write_json(eval_dir / "eval_metadata.json", metadata)
 
@@ -748,6 +771,8 @@ def main() -> int:
                 run_dir = eval_dir / config.name / f"run-{run_number}"
                 worktree = run_dir / "worktree"
                 copy_worktree(ROOT, worktree)
+                initialize_worktree_git(worktree)
+                apply_fixture_patch(scenario, worktree)
                 goose_env, goose_cwd, goose_home = prepare_goose_environment(args, run_dir)
                 prompt = build_eval_prompt(
                     skill_name=args.skill,
@@ -756,11 +781,12 @@ def main() -> int:
                     repo_root=worktree,
                 )
 
+                task_max_turns = int(scenario.get("max_turns", args.max_turns))
                 task_label = f"{args.skill} eval-{eval_id} {config.name} run-{run_number} task"
-                print(f"[start] {task_label}", flush=True)
+                print(f"[start] {task_label} max_turns={task_max_turns}", flush=True)
                 try:
                     returncode, stdout, stderr, duration = run_command(
-                        goose_cmd(args, prompt),
+                        goose_cmd(args, prompt, max_turns=task_max_turns),
                         cwd=goose_cwd,
                         timeout=args.timeout,
                         env=goose_env,

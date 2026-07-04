@@ -4,7 +4,7 @@
       "sdd",
       "beads-harness"
     ],
-    "query": "Add support for a security-review recipe to this harness.",
+    "query": "Plan support for a security-review recipe in this harness using SDD. Do not implement yet; produce the spec slice, acceptance criteria, risks, and Beads graph.",
     "files": [
       ".goose/recipes/",
       "docs/03-security-review.md",
@@ -16,15 +16,16 @@
     ],
     "expected_behavior": [
       "Clarifies user, outcome, constraints, and non-goals before implementation.",
-      "Defines acceptance criteria and risks.",
-      "Proposes a dependency-aware Beads graph."
-    ]
+      "Defines acceptance criteria and risks for the security-review recipe slice.",
+      "Proposes a dependency-aware Beads graph without making durable edits."
+    ],
+    "max_turns": 12
   },
   {
     "skills": [
       "sdd"
     ],
-    "query": "Implement idempotence checks for the install scripts that manage `/harness` and `/review` slash-command mappings.",
+    "query": "Plan a small TDD slice for idempotence checks in the install scripts that manage `/harness` and `/review` slash-command mappings. Do not implement yet.",
     "files": [
       "scripts/install.sh",
       "scripts/install.ps1"
@@ -36,8 +37,9 @@
     "expected_behavior": [
       "Identifies a small reversible implementation slice.",
       "Proposes a failing test or spec check first when practical.",
-      "Defines implementation and verification steps."
-    ]
+      "Defines implementation and verification steps without editing files."
+    ],
+    "max_turns": 12
   },
   {
     "skills": [
@@ -58,6 +60,7 @@
       "Evaluates tests, docs, install-script safety, recipe validation, rollback, observability, and open blockers.",
       "Treats quality gates as product requirements.",
       "Reports explicit release done criteria."
-    ]
+    ],
+    "max_turns": 12
   }
 ]

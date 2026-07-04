@@ -17,7 +17,8 @@
       "Inspects `bd ready --json` to find claimable work.",
       "Claims selected work with `bd update <id> --claim` before modifications.",
       "Summarizes selected scope and blockers."
-    ]
+    ],
+    "max_turns": 12
   },
   {
     "skills": [
@@ -41,7 +42,7 @@
     "skills": [
       "beads-harness"
     ],
-    "query": "Remember that the canonical release checklist for this harness is in docs/10-release-readiness.md.",
+    "query": "Store a durable pointer memory that the canonical release checklist for this harness is in docs/10-release-readiness.md; avoid copying the checklist content or creating task files.",
     "files": [
       "docs/10-release-readiness.md"
     ],
@@ -50,9 +51,9 @@
       "Agent may create MEMORY.md."
     ],
     "expected_behavior": [
-      "Stores a short pointer memory with a stable key.",
-      "Does not store secrets, transient state, or long documentation in memory.",
-      "Does not create `MEMORY.md`."
+      "Stores or proposes a short pointer memory with a stable key.",
+      "Does not store secrets, transient state, tasks, or long documentation in memory.",
+      "Does not create `MEMORY.md` or markdown TODO files."
     ]
   }
 ]

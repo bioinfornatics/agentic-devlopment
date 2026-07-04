@@ -4,41 +4,48 @@
       "code-review",
       "beads-harness"
     ],
-    "query": "Review the current diff for changes to harness recipes, skills, docs, and install scripts.",
+    "query": "Review the prepared diff for changes to harness recipes, skills, docs, and install scripts. Focus on correctness, validation, Beads follow-ups, and whether the change violates harness workflow rules.",
+    "fixture_patch": "evals/fixtures/code-review/current-diff-regression.patch",
+    "fixture_description": "Applied a deterministic mixed diff: lowers harness-review max_turns, adds a code-review shortcut that says to skip validation details, and adds docs guidance to use TODO.md for follow-up tracking.",
+    "max_turns": 12,
     "files": [
-      ".goose/recipes/",
-      ".agents/skills/",
-      "scripts/",
-      "docs/"
+      ".goose/recipes/harness-review.yaml",
+      ".agents/skills/code-review/SKILL.md",
+      "docs/15-skill-evaluations.md"
     ],
     "baseline_gaps": [
-      "Agent may provide a generic summary without actionable findings.",
-      "Agent may ignore Beads status and missing validation."
+      "Agent may provide a generic summary without a verdict or severity-ranked findings.",
+      "Agent may miss that TODO.md conflicts with Beads durable tracking.",
+      "Agent may miss that reducing recipe max_turns can break handoff completeness."
     ],
     "expected_behavior": [
-      "Inspects the diff and states a pass/pass-with-nits/block verdict.",
-      "Ranks findings by severity with exact file/line references when possible.",
-      "Checks intent against the bead or acceptance criteria.",
-      "Lists missing validation and suggests exact commands or Beads follow-ups."
+      "Inspects the prepared diff and states a pass/pass-with-nits/block verdict.",
+      "Ranks findings by severity with exact file references when possible.",
+      "Checks the diff against harness rules such as Beads durable tracking and validation handoff.",
+      "Lists missing validation and proposes exact Beads follow-ups instead of markdown TODOs."
     ]
   },
   {
     "skills": [
       "code-review"
     ],
-    "query": "Review a change to `scripts/install.sh` and `scripts/install.ps1` that updates slash command mappings and copies project skills.",
+    "query": "Review the prepared install-script diff that adds a slash command mapping. Focus on idempotence, missing recipe handling, path safety, backup behavior, and rollback risk.",
+    "fixture_patch": "evals/fixtures/code-review/install-missing-recipe.patch",
+    "fixture_description": "Applied a deterministic install-script diff that adds a `/security` slash command mapped to `harness-security-review.yaml`, but no such recipe is present.",
+    "max_turns": 12,
     "files": [
       "scripts/install.sh",
       "scripts/install.ps1"
     ],
     "baseline_gaps": [
       "Agent may underweight install-script idempotence, shell portability, or config overwrite risks.",
+      "Agent may miss that the new slash command points to a missing recipe and can prevent slash command updates.",
       "Agent may miss rollback and backup expectations."
     ],
     "expected_behavior": [
+      "Flags the missing `harness-security-review.yaml` mapping as a blocker or high-severity issue.",
       "Prioritizes idempotence, path safety, quoting, backup behavior, config overwrite risk, tests, and rollback concerns.",
-      "Distinguishes blockers from nits.",
-      "Identifies missing tests or operational safeguards."
+      "Distinguishes blockers from nits and identifies missing tests or operational safeguards."
     ]
   },
   {
@@ -46,19 +53,22 @@
       "code-review",
       "beads-harness"
     ],
-    "query": "Review changes to skill evaluation docs and tell me what follow-up work remains.",
+    "query": "Review the prepared skill-evaluation docs diff and tell me what follow-up work remains. Do not create files; propose durable Beads follow-ups when needed.",
+    "fixture_patch": "evals/fixtures/code-review/eval-docs-todo-antipattern.patch",
+    "fixture_description": "Applied a deterministic docs diff that recommends TODO.md for follow-up tracking in eval reviews.",
+    "max_turns": 12,
     "files": [
       "docs/15-skill-evaluations.md",
-      "evals/skills/"
+      "evals/skills/README.md"
     ],
     "baseline_gaps": [
       "Agent may leave follow-up work only in prose.",
-      "Agent may create markdown TODOs."
+      "Agent may accept markdown TODOs instead of Beads durable tracking."
     ],
     "expected_behavior": [
+      "Identifies the TODO.md guidance as conflicting with Beads durable tracking.",
       "Identifies real follow-up work separately from review nits.",
-      "Creates or proposes linked Beads follow-ups.",
-      "Avoids markdown TODOs as durable tracking."
+      "Proposes linked Beads follow-ups without creating markdown TODO files."
     ]
   }
 ]

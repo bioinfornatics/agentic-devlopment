@@ -21,6 +21,9 @@ Each file is a JSON array. Each scenario follows this shape:
   "skills": ["skill-name"],
   "query": "Representative user request",
   "files": ["optional/context/file"],
+  "fixture_patch": "optional/path/to.patch",
+  "fixture_description": "Optional explanation of prepared changes",
+  "max_turns": 12,
   "baseline_gaps": [
     "Observed failure without the skill"
   ],
@@ -87,3 +90,6 @@ Editor shortcuts:
 - If delegation is optional, grade either useful delegation or an explicit rationale for direct inspection.
 - Avoid putting `.agents/skills/` in `files` for with/without skill evals unless the scenario intentionally allows the baseline to inspect skill text.
 - For Beads workflow scenarios, provide a deterministic issue or allow the agent to create and claim a scoped issue when no exact active issue exists.
+
+- Use `fixture_patch` for deterministic review scenarios instead of relying on the caller's current diff.
+- Use per-scenario `max_turns` for complex planning, review, browser, or Beads workflows rather than raising the whole suite budget.

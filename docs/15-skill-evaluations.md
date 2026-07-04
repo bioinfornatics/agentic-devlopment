@@ -29,6 +29,9 @@ Each eval file is a JSON array. Each scenario follows this shape:
   "skills": ["skill-name"],
   "query": "Representative user request",
   "files": ["optional/context/file"],
+  "fixture_patch": "optional/path/to.patch",
+  "fixture_description": "Optional explanation of prepared changes",
+  "max_turns": 12,
   "baseline_gaps": [
     "Observed failure without the skill"
   ],
@@ -263,3 +266,6 @@ A skill evaluation update is done when:
 - docs build successfully;
 - `goose skills list` still discovers project skills;
 - recipe validation still passes if routing changed.
+
+- Use `fixture_patch` for deterministic review scenarios instead of relying on the caller's current diff.
+- Use per-scenario `max_turns` for complex planning, review, browser, or Beads workflows rather than raising the whole suite budget.

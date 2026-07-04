@@ -25,7 +25,7 @@
       "ui-ux-quality",
       "webapp-testing"
     ],
-    "query": "Review the docs navigation and search/discovery experience for a new contributor installing the harness.",
+    "query": "Review the docs navigation and contributor discovery path for installing the harness. Focus on information architecture, navigation labels, keyboard/focus behavior for navigation, and accessible names; do not perform a broad visual audit.",
     "files": [
       "README.md",
       "INSTALL.md",
@@ -37,10 +37,11 @@
       "Agent may miss navigation states and content discovery states."
     ],
     "expected_behavior": [
-      "Checks labels, navigation clarity, focus order, keyboard behavior, loading/empty/error states where relevant, and accessible names.",
-      "Separates accessibility blockers from visual polish.",
-      "Provides reproduction steps for issues."
-    ]
+      "Checks navigation labels, information scent, focus order for navigation, keyboard behavior, and accessible names.",
+      "Separates accessibility blockers from content/discovery polish.",
+      "Provides reproduction steps or exact locations for issues."
+    ],
+    "max_turns": 12
   },
   {
     "skills": [

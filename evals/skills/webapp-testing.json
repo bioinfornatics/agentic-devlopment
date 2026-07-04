@@ -3,7 +3,7 @@
     "skills": [
       "webapp-testing"
     ],
-    "query": "Run a smoke test for the generated local documentation site for this harness.",
+    "query": "Run a browser-backed smoke test for the generated local documentation site for this harness, including server lifecycle, console/network checks, and evidence.",
     "files": [
       "dist/docs/html/index.html",
       "scripts/build-docs.sh"
@@ -13,11 +13,12 @@
       "Agent may kill unrelated processes."
     ],
     "expected_behavior": [
-      "Identifies the start command and base URL.",
-      "Avoids killing unrelated running servers.",
+      "Identifies the start command and exact base URL.",
+      "Avoids killing unrelated running servers and reports server cleanup.",
       "Tests the critical path in a real browser/tooling path when available.",
-      "Checks console/network errors and reports evidence."
-    ]
+      "Checks console/network errors and reports concrete evidence including status codes or messages."
+    ],
+    "max_turns": 12
   },
   {
     "skills": [

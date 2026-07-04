@@ -22,21 +22,22 @@
     "skills": [
       "goose-orchestration"
     ],
-    "query": "Have three agents inspect recipe, skill, and documentation risks in parallel for this harness.",
+    "query": "Inspect recipe, skill, and documentation risks in this harness efficiently; use delegation only if it improves coverage.",
     "files": [
       ".goose/recipes/",
       ".agents/skills/",
       "docs/"
     ],
     "baseline_gaps": [
-      "Agent may create overlapping vague delegated tasks.",
-      "Agent may not synthesize results."
+      "Agent may create overlapping vague delegated tasks or skip useful parallel research.",
+      "Agent may not synthesize results into one ranked answer."
     ],
     "expected_behavior": [
-      "Creates independent recipe, skill, and documentation scopes with read-only constraints.",
-      "Uses async delegation only for independent work.",
-      "Synthesizes subagent outputs into a single risk-ranked result."
-    ]
+      "Uses async delegation only for independent recipe, skill, and documentation scopes, or explains why direct inspection is sufficient.",
+      "Gives delegated workers read-only constraints and non-overlapping scopes when delegation is used.",
+      "Synthesizes findings into a single risk-ranked result with evidence."
+    ],
+    "max_turns": 12
   },
   {
     "skills": [
@@ -55,6 +56,7 @@
       "Assigns non-overlapping file or module scopes.",
       "States that subagents cannot coordinate with each other.",
       "Defines write permissions, validation expectations, and output format."
-    ]
+    ],
+    "max_turns": 12
   }
 ]

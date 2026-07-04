@@ -5,7 +5,7 @@
       "beads-harness",
       "goose-orchestration"
     ],
-    "query": "Add a new Goose recipe that runs a documentation review workflow for this harness. Follow the harness workflow for durable edits.",
+    "query": "Add a new Goose recipe that runs a documentation review workflow for this harness. Before editing, inspect existing patterns and write a short scoped plan, then follow the harness workflow for durable edits.",
     "files": [
       ".goose/recipes/",
       "docs/",
@@ -22,7 +22,8 @@
       "States a scoped plan before modifying files.",
       "Runs recipe validation for changed recipes.",
       "Reports files changed, validation performed, Beads state, git status, and remaining risks."
-    ]
+    ],
+    "max_turns": 14
   },
   {
     "skills": [
@@ -42,10 +43,11 @@
     ],
     "expected_behavior": [
       "Explicitly keeps the task read-only and does not modify files or Beads state.",
-      "Uses delegation only if useful, or explains why direct inspection is sufficient.",
+      "Uses delegation only if useful, or explicitly states that direct inspection is sufficient for this read-only scope.",
       "Ranks risks by severity with concrete evidence from harness files.",
-      "Proposes exact Beads follow-up issue titles or `bd create` commands without executing them."
-    ]
+      "Proposes durable follow-up work in Beads-compatible form, such as issue titles or `bd create` commands, without executing them."
+    ],
+    "max_turns": 12
   },
   {
     "skills": [
@@ -69,6 +71,7 @@
       "Runs `goose recipe validate .goose/recipes/harness-review.yaml` or equivalent recipe validation.",
       "Updates or closes the relevant Beads issue with the true outcome.",
       "Reports git status, files changed, validation performed, and remaining risks."
-    ]
+    ],
+    "max_turns": 16
   }
 ]
