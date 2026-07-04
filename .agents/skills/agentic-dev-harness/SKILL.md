@@ -3,7 +3,9 @@ name: agentic-dev-harness
 description: >
   Operate Goose and Beads as a unified agentic development harness: Goose runs tools/subagents/recipes;
   Beads persists tasks, dependencies, gates, memory, and handoffs.
-version: 1.0.0
+metadata:
+  version: 1.0.0
+  evals: references/evals.json
 ---
 
 # Agentic Development Harness

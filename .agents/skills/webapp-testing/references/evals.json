@@ -1,0 +1,51 @@
+[
+  {
+    "skills": [
+      "webapp-testing"
+    ],
+    "query": "Run a smoke test for this local web app.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may claim UI behavior without using a browser.",
+      "Agent may kill unrelated processes."
+    ],
+    "expected_behavior": [
+      "Identifies the start command and base URL.",
+      "Avoids killing unrelated running servers.",
+      "Tests the critical path in a real browser/tooling path when available.",
+      "Checks console/network errors and reports evidence."
+    ]
+  },
+  {
+    "skills": [
+      "webapp-testing"
+    ],
+    "query": "Check this page for basic accessibility.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may skip keyboard and focus checks.",
+      "Agent may omit accessible names and error announcements."
+    ],
+    "expected_behavior": [
+      "Verifies keyboard navigation, visible focus, names/labels, contrast risks, and error announcements where relevant.",
+      "Reports exact URLs, viewports, commands, and evidence.",
+      "Distinguishes verified facts from assumptions."
+    ]
+  },
+  {
+    "skills": [
+      "webapp-testing"
+    ],
+    "query": "Verify the dashboard on mobile and desktop.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may test only one viewport.",
+      "Agent may omit screenshots or reproduction details."
+    ],
+    "expected_behavior": [
+      "Tests both mobile and desktop viewports.",
+      "Captures screenshots when possible.",
+      "Reports exact reproduction steps for failures."
+    ]
+  }
+]

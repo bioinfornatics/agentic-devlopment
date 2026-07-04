@@ -2,7 +2,9 @@
 name: webapp-testing
 description: >
   Toolkit for testing local web applications with browser automation, screenshots, console inspection, accessibility checks, and reproducible evidence.
-version: 2.0.0
+metadata:
+  version: 2.0.0
+  evals: references/evals.json
 ---
 
 # Web Application Testing

@@ -1,8 +1,8 @@
 # Skill Evaluations
 
-These evaluations are intentionally **outside** `.agents/skills/`.
+These evaluations are the canonical skill eval sources.
 
-Skills should stay compact and production-focused. Evaluation scenarios are a development artifact used to design and iterate skills before expanding instructions.
+Skills should stay compact and production-focused. Evaluation scenarios are a development artifact used to design and iterate skills before expanding instructions. For portable skill packages, mirror each canonical eval into the matching skill as `references/evals.json`.
 
 ## Evaluation-driven development
 

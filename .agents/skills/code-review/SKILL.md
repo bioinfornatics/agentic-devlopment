@@ -2,7 +2,9 @@
 name: code-review
 description: >
   Practical code review for agentic development: correctness, tests, security, maintainability, Beads hygiene, and handoff quality.
-version: 3.0.0
+metadata:
+  version: 3.0.0
+  evals: references/evals.json
 ---
 
 # Code Review Skill

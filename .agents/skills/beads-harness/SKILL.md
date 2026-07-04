@@ -2,7 +2,9 @@
 name: beads-harness
 description: >
   Beads operating manual for agents: prime, ready/claim/close, dependencies, memory, molecules, wisps, gates, and Dolt sync.
-version: 1.0.0
+metadata:
+  version: 1.0.0
+  evals: references/evals.json
 ---
 
 # Beads Harness

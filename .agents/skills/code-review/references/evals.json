@@ -1,0 +1,53 @@
+[
+  {
+    "skills": [
+      "code-review",
+      "beads-harness"
+    ],
+    "query": "Review the current diff for correctness and maintainability.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may provide a generic summary without actionable findings.",
+      "Agent may ignore Beads status and missing validation."
+    ],
+    "expected_behavior": [
+      "Inspects the diff and states a pass/pass-with-nits/block verdict.",
+      "Ranks findings by severity with exact file/line references when possible.",
+      "Checks intent against the bead or acceptance criteria.",
+      "Lists missing validation and suggests exact commands or Beads follow-ups."
+    ]
+  },
+  {
+    "skills": [
+      "code-review"
+    ],
+    "query": "Review this authentication change.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may underweight security-sensitive edge cases.",
+      "Agent may miss rollback and audit requirements."
+    ],
+    "expected_behavior": [
+      "Prioritizes authn/authz, secret handling, injection, concurrency, audit logs, tests, and rollback concerns.",
+      "Distinguishes blockers from nits.",
+      "Identifies missing tests or operational safeguards."
+    ]
+  },
+  {
+    "skills": [
+      "code-review",
+      "beads-harness"
+    ],
+    "query": "Review these changes and tell me what follow-up work remains.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may leave follow-up work only in prose.",
+      "Agent may create markdown TODOs."
+    ],
+    "expected_behavior": [
+      "Identifies real follow-up work separately from review nits.",
+      "Creates or proposes linked Beads follow-ups.",
+      "Avoids markdown TODOs as durable tracking."
+    ]
+  }
+]

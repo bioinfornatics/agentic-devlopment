@@ -2,13 +2,21 @@
 
 ## Why
 
-Skills are production instruction surfaces. Evaluations are development artifacts. Keep them separate so skills stay compact and so evals can be created before the skill grows.
+Skills are production instruction surfaces. Evaluations are development artifacts. Keep `SKILL.md` compact so evals can be created before the skill grows.
 
-This harness stores skill evals outside `.agents/skills/`:
+This harness stores canonical skill evals outside `.agents/skills/`:
 
 ```text
 evals/skills/<skill-name>.json
 ```
+
+For portable distribution, each skill also carries a mirrored eval resource:
+
+```text
+.agents/skills/<skill-name>/references/evals.json
+```
+
+Update the canonical eval first, then refresh the bundled mirror before packaging.
 
 ## Evaluation-driven development
 
@@ -73,7 +81,8 @@ Run or update relevant skill evals when you change:
 
 A skill evaluation update is done when:
 
-- evals live outside `.agents/skills/`;
+- canonical evals live in `evals/skills/`;
+- packaged skills include refreshed `references/evals.json` mirrors;
 - changed skills have corresponding eval scenarios in `evals/skills/`;
 - scenarios capture observed baseline gaps before expanding instructions;
 - docs build successfully;

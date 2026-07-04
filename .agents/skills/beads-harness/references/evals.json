@@ -1,0 +1,53 @@
+[
+  {
+    "skills": [
+      "beads-harness"
+    ],
+    "query": "Pick the next available issue and start working on it.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may choose work without checking durable ready state.",
+      "Agent may not claim work atomically."
+    ],
+    "expected_behavior": [
+      "Runs or requests `bd prime` for workflow context.",
+      "Inspects `bd ready --json` to find claimable work.",
+      "Claims selected work with `bd update <id> --claim` before modifications.",
+      "Summarizes selected scope and blockers."
+    ]
+  },
+  {
+    "skills": [
+      "beads-harness"
+    ],
+    "query": "Task B must wait for Task A; encode this in Beads.",
+    "files": [],
+    "baseline_gaps": [
+      "Agent may reverse dependency direction.",
+      "Agent may not verify blocked/ready state."
+    ],
+    "expected_behavior": [
+      "Explains that `bd dep add B A` means B needs A.",
+      "Uses requirement language rather than ambiguous blocks language.",
+      "Verifies the result with a blocked/ready query."
+    ]
+  },
+  {
+    "skills": [
+      "beads-harness"
+    ],
+    "query": "Remember that the canonical release checklist is in docs/10-release-readiness.md.",
+    "files": [
+      "docs/10-release-readiness.md"
+    ],
+    "baseline_gaps": [
+      "Agent may store long-form content or tasks in memory.",
+      "Agent may create MEMORY.md."
+    ],
+    "expected_behavior": [
+      "Stores a short pointer memory with a stable key.",
+      "Does not store secrets, transient state, or long documentation in memory.",
+      "Does not create `MEMORY.md`."
+    ]
+  }
+]

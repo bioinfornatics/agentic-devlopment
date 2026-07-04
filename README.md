@@ -55,7 +55,7 @@ intent → spec → Beads graph → TDD/implementation → review → validation
 | `webapp-testing` | Browser automation and local web-app verification method |
 
 
-Skill evaluations live outside the skill packages in `evals/skills/`; see `docs/15-skill-evaluations.md` for the evaluation-driven workflow.
+Canonical skill evaluations live in `evals/skills/` and are mirrored into packaged skills as `references/evals.json`; see `docs/15-skill-evaluations.md` for the evaluation-driven workflow.
 
 ## Named agents
 

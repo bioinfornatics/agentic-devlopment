@@ -2,7 +2,9 @@
 name: ui-ux-quality
 description: >
   Unified UI/UX quality method: research, design taste, design systems, frontend states, accessibility, and visual verification.
-version: 1.0.0
+metadata:
+  version: 1.0.0
+  evals: references/evals.json
 ---
 
 # UI/UX Quality Skill
