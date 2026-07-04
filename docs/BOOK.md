@@ -21,4 +21,5 @@ This file defines the canonical order used to build the HTML/PDF documentation b
 17. [`13-documentation-review.md`](13-documentation-review.md)
 18. [`14-memory.md`](14-memory.md)
 19. [`15-skill-evaluations.md`](15-skill-evaluations.md)
-20. [`AGENTS.md`](../AGENTS.md)
+20. [`16-eval-analysis.md`](16-eval-analysis.md)
+21. [`AGENTS.md`](../AGENTS.md)
