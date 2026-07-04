@@ -69,28 +69,17 @@ python scripts/render-skill-eval-review.py \
   --output dist/skill-eval-review/index.html
 ```
 
-### 2. Execute real A/B runs
+### 2. Execute A/B runs
 
-Use `scripts/run-skill-ab-eval.py` for real behavioral review. It creates isolated copied worktrees under `dist/evals/`, runs Goose for each scenario, grades each output, aggregates `benchmark.json`, and renders the skill-creator HTML review.
+Use `scripts/run-skill-ab-eval.py` for behavioral review. It creates isolated copied worktrees under `dist/evals/`, runs Goose for each scenario, grades each output with an LLM, aggregates `benchmark.json`, and renders the skill-creator HTML review.
 
-Plan-only smoke test, useful for checking workspace shape without Goose task runs or LLM grading:
-
-```bash
-python scripts/run-skill-ab-eval.py \
-  --skill code-review \
-  --iteration 0
-
-xdg-open dist/evals/skills/code-review/iteration-0/review.html
-```
-
-Real `with_skill` / `without_skill` run:
+Single-skill `with_skill` / `without_skill` run:
 
 ```bash
 python scripts/run-skill-ab-eval.py \
   --skill code-review \
   --iteration 1 \
-  --runs-per-config 1 \
-  --execute
+  --runs-per-config 1
 
 xdg-open dist/evals/skills/code-review/iteration-1/review.html
 ```
@@ -116,7 +105,7 @@ dist/evals/skills/<skill-name>/iteration-1/
   review.html
 ```
 
-By default, the runner now uses an isolated Goose home and a neutral cwd for each run. That hides installed project skills, named agents, and recipes from Goose discovery, so `without_skill` is a strict baseline except for built-in Goose skills. The runner still gives every run an isolated copy of the repository path in the prompt, so the task can inspect or edit the copied files without exposing project-local Goose discovery from the source checkout.
+By default, the runner uses an isolated Goose home and a neutral cwd for each run. That hides installed project skills, named agents, and recipes from Goose discovery, so `without_skill` is a strict baseline except for built-in Goose skills. The runner still gives every run an isolated copy of the repository path in the prompt, so the task can inspect or edit the copied files without exposing project-local Goose discovery from the source checkout.
 
 Use `--ambient-goose` only when you intentionally want the caller's normal Goose environment, for example while debugging provider configuration. In ambient mode, `goose skills list` and `goose recipe list` may see installed user/project skills and recipes, so the baseline is no longer strict.
 
@@ -126,7 +115,6 @@ If the isolated home cannot use your default provider, pass explicit provider/mo
 python scripts/run-skill-ab-eval.py \
   --skill code-review \
   --iteration 1 \
-  --execute \
   --provider custom_claude_from_azure \
   --model claude-sonnet-4-6
 ```
@@ -135,29 +123,22 @@ python scripts/run-skill-ab-eval.py \
 
 Use the suite runner when you want every `evals/skills/*.json` file executed and summarized in one visual index.
 
-Plan-only smoke suite for one or more selected skills:
-
-```bash
-python scripts/run-skill-ab-suite.py \
-  --iteration 0 \
-  --skills code-review sdd
-
-xdg-open dist/evals/skills/index.html
-```
-
-Full real suite:
-
 ```bash
 python scripts/run-skill-ab-suite.py \
   --iteration 1 \
   --runs-per-config 1 \
-  --execute \
   --continue-on-failure
 
 xdg-open dist/evals/skills/index.html
 ```
 
-The suite runner uses the same strict isolated Goose baseline by default. Pass `--ambient-goose` only to debug with your normal installed skills/agents/recipes visible.
+The suite runner uses the same strict isolated Goose baseline by default. Pass `--ambient-goose` only to debug with your normal installed skills/agents/recipes visible. Use `--skills` to run a subset while developing an eval:
+
+```bash
+python scripts/run-skill-ab-suite.py \
+  --iteration 1 \
+  --skills code-review sdd
+```
 
 The suite index links to each per-skill review and benchmark:
 
@@ -167,8 +148,6 @@ dist/evals/skills/iteration-1-index.html
 dist/evals/skills/<skill-name>/iteration-1/review.html
 dist/evals/skills/<skill-name>/iteration-1/benchmark.json
 ```
-
-Use `--skills` to run a subset while developing an eval. Omit `--execute` for a fast ungraded shape check; include `--execute` for real model runs with LLM grading.
 
 ### 4. Execute old/new A/B after changing a skill
 
@@ -181,7 +160,6 @@ python scripts/run-skill-ab-eval.py \
   --baseline-git-ref HEAD~1 \
   --iteration 2 \
   --runs-per-config 1 \
-  --execute \
   --previous-workspace dist/evals/skills/code-review/iteration-1
 
 xdg-open dist/evals/skills/code-review/iteration-2/review.html
@@ -195,8 +173,7 @@ python scripts/run-skill-ab-eval.py \
   --mode old-new \
   --baseline-git-ref v1.0.0 \
   --candidate-git-ref HEAD \
-  --iteration 2 \
-  --execute
+  --iteration 2
 ```
 
 Fallbacks remain available:

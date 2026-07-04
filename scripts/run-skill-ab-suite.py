@@ -162,7 +162,6 @@ def main() -> int:
     parser.add_argument("--iteration", type=int, default=1)
     parser.add_argument("--runs-per-config", type=int, default=1)
     parser.add_argument("--skills", nargs="*", help="Optional subset. Defaults to every evals/skills/*.json file.")
-    parser.add_argument("--execute", action="store_true", help="Actually run Goose. Omit for plan-only smoke workspaces.")
     parser.add_argument("--mode", choices=["with-without"], default="with-without", help="Suite currently supports the with/without baseline mode.")
     parser.add_argument("--max-turns", type=int, default=8)
     parser.add_argument("--timeout", type=int, default=900)
@@ -208,8 +207,6 @@ def main() -> int:
             "--grade-timeout",
             str(args.grade_timeout),
         ]
-        if args.execute:
-            cmd.append("--execute")
         if args.provider:
             cmd.extend(["--provider", args.provider])
         if args.model:

@@ -436,21 +436,7 @@ def grade_run(
     returncode: int,
     goose_cwd: Path,
     goose_env: dict[str, str],
-    executed: bool,
 ) -> dict[str, Any]:
-    if not executed:
-        return {
-            "expectations": [
-                {
-                    "text": item,
-                    "passed": False,
-                    "evidence": "Plan-only smoke run: Goose was not executed and no LLM grading was performed.",
-                }
-                for item in scenario.get("expected_behavior", [])
-            ],
-            "notes": ["plan-only smoke run; not graded"],
-        }
-
     prompt = build_grader_prompt(
         scenario=scenario,
         config_name=config_name,
@@ -612,7 +598,6 @@ def main() -> int:
     parser.add_argument("--skill-creator-dir", type=Path, default=DEFAULT_SKILL_CREATOR_DIR)
     parser.add_argument("--previous-workspace", type=Path)
     parser.add_argument("--review-output", type=Path)
-    parser.add_argument("--execute", action="store_true", help="Actually run Goose. Without this, only writes plan metadata.")
     parser.add_argument("--max-turns", type=int, default=8)
     parser.add_argument("--timeout", type=int, default=900)
     parser.add_argument("--grade-timeout", type=int, default=300)
@@ -681,27 +666,18 @@ def main() -> int:
                     repo_root=worktree,
                 )
 
-                if args.execute:
-                    try:
-                        returncode, stdout, stderr, duration = run_command(
-                            goose_cmd(args, prompt),
-                            cwd=goose_cwd,
-                            timeout=args.timeout,
-                            env=goose_env,
-                        )
-                    except subprocess.TimeoutExpired as exc:
-                        returncode = 124
-                        stdout = exc.stdout or ""
-                        stderr = (exc.stderr or "") + f"\nTimed out after {args.timeout}s"
-                        duration = float(args.timeout)
-                else:
-                    returncode = 0
-                    stdout = (
-                        f"PLAN ONLY: Goose was not executed. Re-run with --execute for a real A/B model run.\n\n"
-                        f"Configuration: {config.name}\nEval: {eval_name}\n"
+                try:
+                    returncode, stdout, stderr, duration = run_command(
+                        goose_cmd(args, prompt),
+                        cwd=goose_cwd,
+                        timeout=args.timeout,
+                        env=goose_env,
                     )
-                    stderr = ""
-                    duration = 0.0
+                except subprocess.TimeoutExpired as exc:
+                    returncode = 124
+                    stdout = exc.stdout or ""
+                    stderr = (exc.stderr or "") + f"\nTimed out after {args.timeout}s"
+                    duration = float(args.timeout)
 
                 grading = grade_run(
                     args=args,
@@ -712,7 +688,6 @@ def main() -> int:
                     returncode=returncode,
                     goose_cwd=goose_cwd,
                     goose_env=goose_env,
-                    executed=args.execute,
                 )
                 write_run_artifacts(
                     run_dir=run_dir,
@@ -731,7 +706,7 @@ def main() -> int:
 
     aggregate_and_render(args, workspace)
     print(f"Workspace: {workspace}")
-    print(f"Mode: {args.mode}; executed={args.execute}; grader={'llm' if args.execute else 'not-run'}; ambient_goose={args.ambient_goose}")
+    print(f"Mode: {args.mode}; grader=llm; ambient_goose={args.ambient_goose}")
     return 0
 
 
