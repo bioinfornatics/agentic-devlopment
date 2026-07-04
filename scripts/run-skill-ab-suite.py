@@ -163,7 +163,6 @@ def main() -> int:
     parser.add_argument("--runs-per-config", type=int, default=1)
     parser.add_argument("--skills", nargs="*", help="Optional subset. Defaults to every evals/skills/*.json file.")
     parser.add_argument("--execute", action="store_true", help="Actually run Goose. Omit for plan-only smoke workspaces.")
-    parser.add_argument("--grade-mode", choices=["llm", "heuristic", "none"], default="llm")
     parser.add_argument("--mode", choices=["with-without"], default="with-without", help="Suite currently supports the with/without baseline mode.")
     parser.add_argument("--max-turns", type=int, default=8)
     parser.add_argument("--timeout", type=int, default=900)
@@ -202,8 +201,6 @@ def main() -> int:
             str(args.runs_per_config),
             "--workspace-root",
             str(args.workspace_root),
-            "--grade-mode",
-            args.grade_mode,
             "--max-turns",
             str(args.max_turns),
             "--timeout",

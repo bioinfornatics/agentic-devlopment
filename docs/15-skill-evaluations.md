@@ -73,13 +73,12 @@ python scripts/render-skill-eval-review.py \
 
 Use `scripts/run-skill-ab-eval.py` for real behavioral review. It creates isolated copied worktrees under `dist/evals/`, runs Goose for each scenario, grades each output, aggregates `benchmark.json`, and renders the skill-creator HTML review.
 
-Plan-only smoke test, useful for checking workspace shape without model calls:
+Plan-only smoke test, useful for checking workspace shape without Goose task runs or LLM grading:
 
 ```bash
 python scripts/run-skill-ab-eval.py \
   --skill code-review \
-  --iteration 0 \
-  --grade-mode heuristic
+  --iteration 0
 
 xdg-open dist/evals/skills/code-review/iteration-0/review.html
 ```
@@ -91,8 +90,7 @@ python scripts/run-skill-ab-eval.py \
   --skill code-review \
   --iteration 1 \
   --runs-per-config 1 \
-  --execute \
-  --grade-mode llm
+  --execute
 
 xdg-open dist/evals/skills/code-review/iteration-1/review.html
 ```
@@ -125,7 +123,12 @@ Use `--ambient-goose` only when you intentionally want the caller's normal Goose
 If the isolated home cannot use your default provider, pass explicit provider/model flags that work with the copied minimal Goose config:
 
 ```bash
-python scripts/run-skill-ab-eval.py   --skill code-review   --iteration 1   --execute   --grade-mode llm   --provider custom_claude_from_azure   --model claude-sonnet-4-6
+python scripts/run-skill-ab-eval.py \
+  --skill code-review \
+  --iteration 1 \
+  --execute \
+  --provider custom_claude_from_azure \
+  --model claude-sonnet-4-6
 ```
 
 ### 3. Execute the full skill suite
@@ -137,7 +140,6 @@ Plan-only smoke suite for one or more selected skills:
 ```bash
 python scripts/run-skill-ab-suite.py \
   --iteration 0 \
-  --grade-mode heuristic \
   --skills code-review sdd
 
 xdg-open dist/evals/skills/index.html
@@ -150,7 +152,6 @@ python scripts/run-skill-ab-suite.py \
   --iteration 1 \
   --runs-per-config 1 \
   --execute \
-  --grade-mode llm \
   --continue-on-failure
 
 xdg-open dist/evals/skills/index.html
@@ -167,7 +168,7 @@ dist/evals/skills/<skill-name>/iteration-1/review.html
 dist/evals/skills/<skill-name>/iteration-1/benchmark.json
 ```
 
-Use `--skills` to run a subset while developing an eval. Omit `--execute` for a fast shape check; include `--execute` for real model runs.
+Use `--skills` to run a subset while developing an eval. Omit `--execute` for a fast ungraded shape check; include `--execute` for real model runs with LLM grading.
 
 ### 4. Execute old/new A/B after changing a skill
 
@@ -181,7 +182,6 @@ python scripts/run-skill-ab-eval.py \
   --iteration 2 \
   --runs-per-config 1 \
   --execute \
-  --grade-mode llm \
   --previous-workspace dist/evals/skills/code-review/iteration-1
 
 xdg-open dist/evals/skills/code-review/iteration-2/review.html
@@ -196,8 +196,7 @@ python scripts/run-skill-ab-eval.py \
   --baseline-git-ref v1.0.0 \
   --candidate-git-ref HEAD \
   --iteration 2 \
-  --execute \
-  --grade-mode llm
+  --execute
 ```
 
 Fallbacks remain available:

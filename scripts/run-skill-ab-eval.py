@@ -320,26 +320,6 @@ def extract_json_object(text: str) -> dict[str, Any] | None:
     return None
 
 
-def heuristic_grade(scenario: dict[str, Any], stdout: str, stderr: str, returncode: int) -> dict[str, Any]:
-    combined = (stdout + "\n" + stderr).lower()
-    expectations = []
-    for text in scenario.get("expected_behavior", []):
-        words = [w for w in re.findall(r"[a-zA-Z][a-zA-Z0-9_-]{3,}", text.lower())]
-        if not words:
-            passed = returncode == 0 and bool(stdout.strip())
-        else:
-            # Lenient deterministic fallback: enough expectation terms appear.
-            hits = sum(1 for word in set(words) if word in combined)
-            passed = returncode == 0 and hits >= max(1, min(3, len(set(words)) // 3))
-        expectations.append(
-            {
-                "text": text,
-                "passed": bool(passed),
-                "evidence": "Heuristic fallback grade based on run success and keyword overlap; prefer --grade-mode llm for review-quality grading.",
-            }
-        )
-    return {"expectations": expectations, "notes": ["heuristic grader used"]}
-
 
 def summarize_grading(expectations: list[dict[str, Any]]) -> dict[str, Any]:
     total = len(expectations)
@@ -456,15 +436,20 @@ def grade_run(
     returncode: int,
     goose_cwd: Path,
     goose_env: dict[str, str],
+    executed: bool,
 ) -> dict[str, Any]:
-    if args.grade_mode == "none":
-        expectations = [
-            {"text": item, "passed": False, "evidence": "Not graded; run with --grade-mode llm or heuristic."}
-            for item in scenario.get("expected_behavior", [])
-        ]
-        return {"expectations": expectations, "notes": ["grading skipped"]}
-    if args.grade_mode == "heuristic":
-        return heuristic_grade(scenario, stdout, stderr, returncode)
+    if not executed:
+        return {
+            "expectations": [
+                {
+                    "text": item,
+                    "passed": False,
+                    "evidence": "Plan-only smoke run: Goose was not executed and no LLM grading was performed.",
+                }
+                for item in scenario.get("expected_behavior", [])
+            ],
+            "notes": ["plan-only smoke run; not graded"],
+        }
 
     prompt = build_grader_prompt(
         scenario=scenario,
@@ -481,18 +466,27 @@ def grade_run(
             env=goose_env,
         )
     except Exception as exc:  # noqa: BLE001 - preserve eval output instead of crashing late
-        fallback = heuristic_grade(scenario, stdout, stderr, returncode)
-        fallback["notes"].append(f"llm grader failed to start: {exc}")
-        return fallback
+        return {
+            "expectations": [
+                {"text": item, "passed": False, "evidence": f"LLM grader failed to start: {exc}"}
+                for item in scenario.get("expected_behavior", [])
+            ],
+            "notes": ["LLM grader failed to start"],
+        }
 
     parsed = extract_json_object(out)
     if rc != 0 or not parsed or "expectations" not in parsed:
-        fallback = heuristic_grade(scenario, stdout, stderr, returncode)
-        fallback["notes"].append(
-            "llm grader failed or returned invalid JSON; heuristic fallback used. "
-            f"grader_rc={rc}; grader_stderr={err[-500:]}"
-        )
-        return fallback
+        return {
+            "expectations": [
+                {
+                    "text": item,
+                    "passed": False,
+                    "evidence": "LLM grader failed or returned invalid JSON; no automatic grade was produced.",
+                }
+                for item in scenario.get("expected_behavior", [])
+            ],
+            "notes": [f"LLM grader failed or returned invalid JSON; grader_rc={rc}; grader_stderr={err[-500:]}"]
+        }
     return parsed
 
 
@@ -619,7 +613,6 @@ def main() -> int:
     parser.add_argument("--previous-workspace", type=Path)
     parser.add_argument("--review-output", type=Path)
     parser.add_argument("--execute", action="store_true", help="Actually run Goose. Without this, only writes plan metadata.")
-    parser.add_argument("--grade-mode", choices=["llm", "heuristic", "none"], default="llm")
     parser.add_argument("--max-turns", type=int, default=8)
     parser.add_argument("--timeout", type=int, default=900)
     parser.add_argument("--grade-timeout", type=int, default=300)
@@ -719,6 +712,7 @@ def main() -> int:
                     returncode=returncode,
                     goose_cwd=goose_cwd,
                     goose_env=goose_env,
+                    executed=args.execute,
                 )
                 write_run_artifacts(
                     run_dir=run_dir,
@@ -737,7 +731,7 @@ def main() -> int:
 
     aggregate_and_render(args, workspace)
     print(f"Workspace: {workspace}")
-    print(f"Mode: {args.mode}; executed={args.execute}; grade_mode={args.grade_mode}; ambient_goose={args.ambient_goose}")
+    print(f"Mode: {args.mode}; executed={args.execute}; grader={'llm' if args.execute else 'not-run'}; ambient_goose={args.ambient_goose}")
     return 0
 
 
