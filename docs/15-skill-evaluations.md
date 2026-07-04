@@ -120,7 +120,46 @@ dist/evals/skills/<skill-name>/iteration-1/
 
 The runner injects the listed skill material into `with_skill`; `without_skill` receives the same task without project skill material. If your global Goose profile auto-discovers these skills, treat the baseline as best-effort rather than perfectly blind; for stricter isolation, run with a clean Goose profile/provider environment and pass the needed `--provider` / `--model` flags.
 
-### 3. Execute old/new A/B after changing a skill
+### 3. Execute the full skill suite
+
+Use the suite runner when you want every `evals/skills/*.json` file executed and summarized in one visual index.
+
+Plan-only smoke suite for one or more selected skills:
+
+```bash
+python scripts/run-skill-ab-suite.py \
+  --iteration 0 \
+  --grade-mode heuristic \
+  --skills code-review sdd
+
+xdg-open dist/evals/skills/index.html
+```
+
+Full real suite:
+
+```bash
+python scripts/run-skill-ab-suite.py \
+  --iteration 1 \
+  --runs-per-config 1 \
+  --execute \
+  --grade-mode llm \
+  --continue-on-failure
+
+xdg-open dist/evals/skills/index.html
+```
+
+The suite index links to each per-skill review and benchmark:
+
+```text
+dist/evals/skills/index.html
+dist/evals/skills/iteration-1-index.html
+dist/evals/skills/<skill-name>/iteration-1/review.html
+dist/evals/skills/<skill-name>/iteration-1/benchmark.json
+```
+
+Use `--skills` to run a subset while developing an eval. Omit `--execute` for a fast shape check; include `--execute` for real model runs.
+
+### 4. Execute old/new A/B after changing a skill
 
 Before editing a skill, snapshot the current version:
 
@@ -148,7 +187,7 @@ xdg-open dist/evals/skills/code-review/iteration-2/review.html
 
 The benchmark tab supports dynamic configuration names, so the same viewer works for `with_skill` / `without_skill` and `new_skill` / `old_skill`. No project-local viewer fork is needed unless we want UI features beyond the upstream skill-creator viewer.
 
-### 4. Interpret and iterate
+### 5. Interpret and iterate
 
 1. Compare behavior against `baseline_gaps` and `expected_behavior`.
 2. Inspect both the output tab and benchmark tab.
