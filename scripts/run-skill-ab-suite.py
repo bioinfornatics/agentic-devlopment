@@ -20,10 +20,12 @@ from eval_utils import (  # noqa: E402
     DEFAULT_EVAL_KIND,
     DEFAULT_HISTORY_DB,
     content_hash,
-    default_workspace_root,
+    default_collection_root,
+    default_subject_workspace,
     git_commit,
     git_is_dirty,
     record_eval_run,
+    skill_eval_hash_inputs,
     suite_hash_inputs,
 )
 
@@ -73,6 +75,15 @@ def resolve_run_id(args: argparse.Namespace, skills: list[str]) -> str:
     return content_hash(suite_hash_inputs(skills, args.evals_dir))
 
 
+def resolve_skill_run_id(args: argparse.Namespace, skill: str) -> str:
+    if args.run_id_source == "git":
+        commit = git_commit()
+        if not commit:
+            raise SystemExit("Cannot resolve git commit for --run-id-source git")
+        return commit[:12]
+    return content_hash(skill_eval_hash_inputs(skill, args.evals_dir / f"{skill}.json"))
+
+
 def generate_index(
     *,
     output: Path,
@@ -87,11 +98,11 @@ def generate_index(
     overall_rates: list[float] = []
 
     for skill in skills:
-        workspace = workspace_root / skill
+        run_status = results.get(skill, {})
+        workspace = Path(run_status.get("workspace", workspace_root / skill))
         benchmark = load_benchmark(workspace)
         review = workspace / "review.html"
         benchmark_md = workspace / "benchmark.md"
-        run_status = results.get(skill, {})
         rc = run_status.get("returncode")
         status_label = "pass" if rc == 0 else "fail"
         status_class = "ok" if rc == 0 else "bad"
@@ -187,7 +198,7 @@ def generate_index(
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run all skill A/B evals and build a visual index.")
     parser.add_argument("--evals-dir", type=Path, default=ROOT / "evals" / "skills")
-    parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/<content-hash>/skills")
+    parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/skills. Per-skill workspaces are <workspace-root>/<skill>/<content-hash>")
     parser.add_argument("--run-id-source", choices=["content", "git"], default="content", help="How to derive the default dist/evals/<run-id> directory. Default: content hash of selected eval definitions and referenced skills.")
     parser.add_argument("--require-clean-git", action="store_true", help="Fail if the git working tree is dirty before running evals.")
     parser.add_argument("--history-db", type=Path, default=DEFAULT_HISTORY_DB, help="SQLite DB used to record eval history. Default: dist/evals/eval-history.sqlite3")
@@ -228,7 +239,7 @@ def main() -> int:
     run_id = resolve_run_id(args, skills)
     content_hash_value = content_hash(suite_hash_inputs(skills, args.evals_dir))
     if args.workspace_root is None:
-        args.workspace_root = default_workspace_root(run_id, DEFAULT_EVAL_KIND)
+        args.workspace_root = default_collection_root(DEFAULT_EVAL_KIND)
 
     runner = ROOT / "scripts" / "run-skill-ab-eval.py"
     if not runner.exists():
@@ -236,6 +247,8 @@ def main() -> int:
 
     results: dict[str, dict[str, Any]] = {}
     for skill in skills:
+        skill_run_id = resolve_skill_run_id(args, skill)
+        skill_workspace = default_subject_workspace(skill, skill_run_id, DEFAULT_EVAL_KIND) if args.workspace_root is None else args.workspace_root / skill / skill_run_id
         cmd = [
             sys.executable,
             str(runner),
@@ -244,9 +257,9 @@ def main() -> int:
             "--runs-per-config",
             str(args.runs_per_config),
             "--workspace-root",
-            str(args.workspace_root),
+            str(skill_workspace),
             "--run-id",
-            run_id,
+            skill_run_id,
             "--run-id-source",
             args.run_id_source,
             "--max-turns",
@@ -279,11 +292,11 @@ def main() -> int:
 
         started = datetime.now(timezone.utc)
         print(f"== Running skill eval suite item: {skill} ==", flush=True)
-        print(f"[start] suite skill={skill} workspace={args.workspace_root / skill}", flush=True)
+        print(f"[start] suite skill={skill} workspace={skill_workspace}", flush=True)
         proc = subprocess.run(cmd, cwd=ROOT)
         elapsed = (datetime.now(timezone.utc) - started).total_seconds()
         print(f"[done] suite skill={skill} rc={proc.returncode} duration={elapsed:.1f}s", flush=True)
-        results[skill] = {"returncode": proc.returncode, "command": cmd}
+        results[skill] = {"returncode": proc.returncode, "command": cmd, "workspace": str(skill_workspace), "run_id": skill_run_id}
         if proc.returncode != 0 and not args.continue_on_failure:
             output = args.output or (args.workspace_root / "index.html")
             generate_index(output=output, skills=skills, workspace_root=args.workspace_root, results=results, command=sys.argv)

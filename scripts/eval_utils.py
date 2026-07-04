@@ -84,13 +84,8 @@ def skills_referenced_by_eval(eval_file: Path) -> list[str]:
     return sorted(names)
 
 
-def skill_eval_hash_inputs(skill: str, eval_file: Path, *, root: Path = ROOT) -> list[Path]:
-    paths = [eval_file]
-    names = set(skills_referenced_by_eval(eval_file)) or {skill}
-    names.add(skill)
-    for name in sorted(names):
-        paths.append(root / ".agents" / "skills" / name)
-    return paths
+def skill_eval_hash_inputs(skill: str, eval_file: Path | None = None, *, root: Path = ROOT) -> list[Path]:
+    return [root / ".agents" / "skills" / skill]
 
 
 def suite_hash_inputs(skills: list[str], evals_dir: Path, *, root: Path = ROOT) -> list[Path]:
@@ -101,8 +96,12 @@ def suite_hash_inputs(skills: list[str], evals_dir: Path, *, root: Path = ROOT) 
     return paths
 
 
-def default_workspace_root(run_id: str, kind: str = DEFAULT_EVAL_KIND, *, root: Path = ROOT) -> Path:
-    return root / "dist" / "evals" / run_id / kind
+def default_collection_root(kind: str = DEFAULT_EVAL_KIND, *, root: Path = ROOT) -> Path:
+    return root / "dist" / "evals" / kind
+
+
+def default_subject_workspace(subject: str, run_id: str, kind: str = DEFAULT_EVAL_KIND, *, root: Path = ROOT) -> Path:
+    return default_collection_root(kind, root=root) / subject / run_id
 
 
 def utc_now() -> str:

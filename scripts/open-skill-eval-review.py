@@ -3,39 +3,28 @@
 from __future__ import annotations
 
 import argparse
-import re
 import sys
 import webbrowser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_EVAL_KIND = "skills"
-ITERATION_RE = re.compile(r"^iteration-(\d+)$")
 
 
 def latest_workspace_root() -> Path:
-    evals_root = ROOT / "dist" / "evals"
-    candidates = []
-    if evals_root.exists():
-        for path in evals_root.iterdir():
-            workspace = path / DEFAULT_EVAL_KIND
-            if path.is_dir() and workspace.exists():
-                candidates.append((workspace.stat().st_mtime, workspace))
-    if candidates:
-        return sorted(candidates)[-1][1]
-
-    legacy = evals_root / DEFAULT_EVAL_KIND
-    return legacy
+    return ROOT / "dist" / "evals" / DEFAULT_EVAL_KIND
 
 
-def latest_iteration_dir(skill_dir: Path) -> Path | None:
-    candidates: list[tuple[int, Path]] = []
-    for path in skill_dir.glob("iteration-*"):
-        if not path.is_dir():
-            continue
-        match = ITERATION_RE.match(path.name)
-        if match:
-            candidates.append((int(match.group(1)), path))
+def latest_artifact_dir(skill_dir: Path) -> Path | None:
+    candidates: list[tuple[float, Path]] = []
+    if (skill_dir / "review.html").exists():
+        candidates.append(((skill_dir / "review.html").stat().st_mtime, skill_dir))
+    for path in skill_dir.iterdir() if skill_dir.exists() else []:
+        if path.is_dir() and (path / "review.html").exists():
+            candidates.append(((path / "review.html").stat().st_mtime, path))
+    for path in skill_dir.glob("iteration-*") if skill_dir.exists() else []:
+        if path.is_dir() and (path / "review.html").exists():
+            candidates.append(((path / "review.html").stat().st_mtime, path))
     if not candidates:
         return None
     return sorted(candidates)[-1][1]
@@ -45,7 +34,7 @@ def target_path(args: argparse.Namespace) -> Path:
     workspace_root = args.workspace_root
     if args.skill:
         skill_dir = workspace_root / args.skill
-        artifact_root = skill_dir if (skill_dir / "review.html").exists() else latest_iteration_dir(skill_dir)
+        artifact_root = latest_artifact_dir(skill_dir)
         if artifact_root is None:
             raise SystemExit(f"No review artifacts found for skill: {args.skill}")
         if args.artifact == "benchmark-md":
@@ -80,7 +69,7 @@ def open_file(path: Path, *, print_path: bool) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Open generated skill A/B eval suite review artifacts.")
-    parser.add_argument("--workspace-root", type=Path, help="Default: latest dist/evals/<run-id>/skills workspace, falling back to legacy dist/evals/skills")
+    parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/skills")
     parser.add_argument("--skill", help="Open a single skill review instead of the suite index.")
     parser.add_argument(
         "--artifact",

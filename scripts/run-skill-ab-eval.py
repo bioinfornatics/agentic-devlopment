@@ -38,7 +38,7 @@ from eval_utils import (  # noqa: E402
     DEFAULT_EVAL_KIND,
     DEFAULT_HISTORY_DB,
     content_hash,
-    default_workspace_root,
+    default_subject_workspace,
     git_commit,
     git_is_dirty,
     record_eval_run,
@@ -656,7 +656,7 @@ def main() -> int:
     parser.add_argument("--baseline-git-ref", help="Git ref to use as old_skill in old-new mode, e.g. HEAD, HEAD~1, origin/main, or a tag.")
     parser.add_argument("--candidate-git-ref", help="Git ref to use as new_skill in old-new mode. Defaults to the working-tree skill directory.")
     parser.add_argument("--runs-per-config", type=int, default=1)
-    parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/<content-hash>/skills")
+    parser.add_argument("--workspace-root", type=Path, help="Default: dist/evals/skills/<skill>/<content-hash>. When provided, this is the exact workspace for the skill run.")
     parser.add_argument("--run-id", help="Run id used for metadata/history. Usually passed by the suite runner.")
     parser.add_argument("--run-id-source", choices=["content", "git"], default="content", help="How to derive the default dist/evals/<run-id> directory. Default: content hash of this eval definition and referenced skills.")
     parser.add_argument("--require-clean-git", action="store_true", help="Fail if the git working tree is dirty before running evals.")
@@ -696,12 +696,12 @@ def main() -> int:
     run_id = resolve_run_id(args, eval_file)
     content_hash_value = content_hash(skill_eval_hash_inputs(args.skill, eval_file))
     if args.workspace_root is None:
-        args.workspace_root = default_workspace_root(run_id, DEFAULT_EVAL_KIND)
+        args.workspace_root = default_subject_workspace(args.skill, run_id, DEFAULT_EVAL_KIND)
     scenarios = read_json(eval_file)
     if not isinstance(scenarios, list):
         raise SystemExit(f"{eval_file} must contain a JSON array")
 
-    workspace = args.workspace_root / args.skill
+    workspace = args.workspace_root
     if workspace.exists():
         shutil.rmtree(workspace)
     workspace.mkdir(parents=True, exist_ok=True)
