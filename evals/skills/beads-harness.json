@@ -18,7 +18,7 @@
       "Claims selected work with `bd update <id> --claim` before modifications.",
       "Summarizes selected scope and blockers."
     ],
-    "max_turns": 12
+    "max_turns": 50
   },
   {
     "skills": [
@@ -36,7 +36,8 @@
       "Explains that `bd dep add B A` means B needs A.",
       "Uses requirement language rather than ambiguous blocks language.",
       "Verifies the result with a blocked/ready query."
-    ]
+    ],
+    "max_turns": 50
   },
   {
     "skills": [
@@ -54,6 +55,7 @@
       "Stores or proposes a short pointer memory with a stable key.",
       "Does not store secrets, transient state, tasks, or long documentation in memory.",
       "Does not create `MEMORY.md` or markdown TODO files."
-    ]
+    ],
+    "max_turns": 50
   }
 ]

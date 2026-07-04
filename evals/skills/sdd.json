@@ -19,7 +19,7 @@
       "Defines acceptance criteria and risks for the security-review recipe slice.",
       "Proposes a dependency-aware Beads graph without making durable edits."
     ],
-    "max_turns": 12
+    "max_turns": 50
   },
   {
     "skills": [
@@ -39,7 +39,7 @@
       "Proposes a failing test or spec check first when practical.",
       "Defines implementation and verification steps without editing files."
     ],
-    "max_turns": 12
+    "max_turns": 50
   },
   {
     "skills": [
@@ -61,6 +61,6 @@
       "Treats quality gates as product requirements.",
       "Reports explicit release done criteria."
     ],
-    "max_turns": 12
+    "max_turns": 50
   }
 ]

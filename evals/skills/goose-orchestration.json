@@ -16,7 +16,8 @@
       "Selects a research or review flow and keeps it read-only.",
       "Uses focused extensions and avoids writes.",
       "Returns evidence and next safe steps."
-    ]
+    ],
+    "max_turns": 50
   },
   {
     "skills": [
@@ -37,7 +38,7 @@
       "Gives delegated workers read-only constraints and non-overlapping scopes when delegation is used.",
       "Synthesizes findings into a single risk-ranked result with evidence."
     ],
-    "max_turns": 12
+    "max_turns": 50
   },
   {
     "skills": [
@@ -57,6 +58,6 @@
       "States that subagents cannot coordinate with each other.",
       "Defines write permissions, validation expectations, and output format."
     ],
-    "max_turns": 12
+    "max_turns": 50
   }
 ]

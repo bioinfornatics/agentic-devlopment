@@ -18,7 +18,8 @@
       "Assesses user intent, hierarchy, visual rhythm, accessibility, and responsive behavior.",
       "Requests or captures screenshots/browser evidence when possible.",
       "Ranks the top issues by user impact."
-    ]
+    ],
+    "max_turns": 50
   },
   {
     "skills": [
@@ -41,7 +42,7 @@
       "Separates accessibility blockers from content/discovery polish.",
       "Provides reproduction steps or exact locations for issues."
     ],
-    "max_turns": 12
+    "max_turns": 50
   },
   {
     "skills": [
@@ -60,6 +61,7 @@
       "Checks tokens, variants, layout patterns, theming, docs consistency, accessibility states, and regression risk.",
       "Distinguishes design-system blockers from recommendations.",
       "Creates or proposes Beads follow-ups for product work."
-    ]
+    ],
+    "max_turns": 50
   }
 ]

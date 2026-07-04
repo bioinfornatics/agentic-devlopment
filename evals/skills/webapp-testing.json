@@ -18,7 +18,7 @@
       "Tests the critical path in a real browser/tooling path when available.",
       "Checks console/network errors and reports concrete evidence including status codes or messages."
     ],
-    "max_turns": 12
+    "max_turns": 50
   },
   {
     "skills": [
@@ -37,7 +37,8 @@
       "Verifies keyboard navigation, visible focus, names/labels, contrast risks, and error announcements where relevant.",
       "Reports exact URLs, viewports, commands, and evidence.",
       "Distinguishes verified facts from assumptions."
-    ]
+    ],
+    "max_turns": 50
   },
   {
     "skills": [
@@ -56,6 +57,7 @@
       "Tests both mobile and desktop viewports.",
       "Captures screenshots when possible.",
       "Reports exact reproduction steps for failures."
-    ]
+    ],
+    "max_turns": 50
   }
 ]
