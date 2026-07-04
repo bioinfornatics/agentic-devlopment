@@ -815,6 +815,8 @@ def main() -> int:
             content_hash_value=content_hash_value,
             workspace=workspace,
             summary=benchmark,
+            provider=args.provider,
+            model=args.model,
         )
     print(f"Workspace: {workspace}")
     print(f"Mode: {args.mode}; grader=llm; ambient_goose={args.ambient_goose}")

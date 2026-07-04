@@ -161,7 +161,7 @@ dist/evals/skills/<skill-name>/<content-hash>/benchmark.json
 
 For future agent and recipe eval runners, use the same subject-first pattern: `dist/evals/agents/<agent-name>/<content-hash>/` for `.agents/agents/<agent-name>.md` and `dist/evals/recipes/<recipe-name>/<content-hash>/` for `.goose/recipes/<recipe-name>.yaml`.
 
-The runners also append a lightweight SQLite history database at `dist/evals/eval-history.sqlite3` by default. It records the run id, kind (`skills` for the current runner), subject, content hash, git commit, dirty flag, workspace path, benchmark summary JSON, and pass-rate improvement rows. Use `--no-history` to disable this or `--history-db <path>` to write elsewhere.
+The runners also append a lightweight SQLite history database at `dist/evals/eval-history.sqlite3` by default. It records the run id, kind (`skills` for the current runner), subject, content hash, git commit, dirty flag, provider, model, workspace path, benchmark summary JSON, and pass-rate improvement rows. Use `--no-history` to disable this or `--history-db <path>` to write elsewhere.
 
 Long runs print `[start]`, `[heartbeat]`, and `[done]` lines while task and grader subprocesses are running. The default heartbeat interval is 30 seconds; change it with `--heartbeat-seconds N` or disable it with `--heartbeat-seconds 0`.
 

@@ -319,6 +319,8 @@ def main() -> int:
             content_hash_value=content_hash_value,
             workspace=args.workspace_root,
             summary={"results": results},
+            provider=args.provider,
+            model=args.model,
         )
     print(f"Suite index written to {output}", flush=True)
     print(f"Latest suite index written to {latest}", flush=True)

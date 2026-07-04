@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import re
 import sqlite3
 import subprocess
 from datetime import datetime, timezone
@@ -41,6 +43,56 @@ def git_is_dirty(root: Path = ROOT) -> bool | None:
     if proc.returncode != 0:
         return None
     return bool(proc.stdout.strip())
+
+
+def resolve_provider_model(provider: str | None = None, model: str | None = None) -> tuple[str | None, str | None]:
+    resolved_provider = provider or os.environ.get("GOOSE_PROVIDER")
+    resolved_model = model or os.environ.get("GOOSE_MODEL")
+    config = _read_goose_config()
+    if not resolved_provider:
+        resolved_provider = config.get("active_provider")
+    if not resolved_model and resolved_provider:
+        resolved_model = config.get(f"providers.{resolved_provider}.model")
+    return resolved_provider, resolved_model
+
+
+def _read_goose_config() -> dict[str, str]:
+    config_path = Path.home() / ".config" / "goose" / "config.yaml"
+    if not config_path.exists():
+        return {}
+    result: dict[str, str] = {}
+    current_provider: str | None = None
+    in_providers = False
+    provider_indent: int | None = None
+    try:
+        lines = config_path.read_text(errors="replace").splitlines()
+    except OSError:
+        return {}
+    for line in lines:
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if not line.startswith(" "):
+            in_providers = stripped == "providers:"
+            current_provider = None
+            provider_indent = None
+            match = re.match(r"active_provider:\s*['\"]?([^'\"]+)['\"]?\s*$", stripped)
+            if match:
+                result["active_provider"] = match.group(1)
+            continue
+        if not in_providers:
+            continue
+        indent = len(line) - len(line.lstrip(" "))
+        provider_match = re.match(r"([A-Za-z0-9_.-]+):\s*$", stripped)
+        if provider_match and indent >= 2:
+            current_provider = provider_match.group(1)
+            provider_indent = indent
+            continue
+        if current_provider and provider_indent is not None and indent > provider_indent:
+            model_match = re.match(r"model:\s*['\"]?([^'\"]+)['\"]?\s*$", stripped)
+            if model_match:
+                result[f"providers.{current_provider}.model"] = model_match.group(1)
+    return result
 
 
 def iter_files(paths: Iterable[Path]) -> list[Path]:
@@ -121,6 +173,8 @@ def init_history_db(path: Path = DEFAULT_HISTORY_DB) -> None:
                 content_hash TEXT,
                 git_commit TEXT,
                 git_dirty INTEGER,
+                provider TEXT,
+                model TEXT,
                 workspace TEXT NOT NULL,
                 summary_json TEXT,
                 created_at TEXT NOT NULL
@@ -139,10 +193,22 @@ def init_history_db(path: Path = DEFAULT_HISTORY_DB) -> None:
                 candidate REAL,
                 delta REAL,
                 git_commit TEXT,
+                provider TEXT,
+                model TEXT,
                 created_at TEXT NOT NULL
             )
             """
         )
+        _ensure_column(db, "eval_runs", "provider", "TEXT")
+        _ensure_column(db, "eval_runs", "model", "TEXT")
+        _ensure_column(db, "eval_improvements", "provider", "TEXT")
+        _ensure_column(db, "eval_improvements", "model", "TEXT")
+
+
+def _ensure_column(db: sqlite3.Connection, table: str, column: str, column_type: str) -> None:
+    columns = {row[1] for row in db.execute(f"PRAGMA table_info({table})")}
+    if column not in columns:
+        db.execute(f"ALTER TABLE {table} ADD COLUMN {column} {column_type}")
 
 
 def record_eval_run(
@@ -154,17 +220,20 @@ def record_eval_run(
     content_hash_value: str | None,
     workspace: Path,
     summary: dict[str, Any] | None,
+    provider: str | None = None,
+    model: str | None = None,
 ) -> None:
     init_history_db(db_path)
     commit = git_commit()
     dirty = git_is_dirty()
     created = utc_now()
+    resolved_provider, resolved_model = resolve_provider_model(provider, model)
     summary_json = json.dumps(summary or {}, sort_keys=True)
     with sqlite3.connect(db_path) as db:
         db.execute(
             """
-            INSERT INTO eval_runs(run_id, kind, subject, content_hash, git_commit, git_dirty, workspace, summary_json, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO eval_runs(run_id, kind, subject, content_hash, git_commit, git_dirty, provider, model, workspace, summary_json, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 run_id,
@@ -173,12 +242,14 @@ def record_eval_run(
                 content_hash_value,
                 str(commit) if commit else None,
                 None if dirty is None else int(dirty),
+                resolved_provider,
+                resolved_model,
                 str(workspace),
                 summary_json,
                 created,
             ),
         )
-        _record_improvements(db, run_id, kind, subject, summary or {}, commit, created)
+        _record_improvements(db, run_id, kind, subject, summary or {}, commit, created, resolved_provider, resolved_model)
 
 
 def _record_improvements(
@@ -189,6 +260,8 @@ def _record_improvements(
     summary: dict[str, Any],
     commit: str | None,
     created: str,
+    provider: str | None,
+    model: str | None,
 ) -> None:
     run_summary = summary.get("run_summary", summary) if isinstance(summary, dict) else {}
     if not isinstance(run_summary, dict):
@@ -206,10 +279,10 @@ def _record_improvements(
         return
     db.execute(
         """
-        INSERT INTO eval_improvements(run_id, kind, subject, metric, baseline, candidate, delta, git_commit, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO eval_improvements(run_id, kind, subject, metric, baseline, candidate, delta, git_commit, provider, model, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
-        (run_id, kind, subject, "pass_rate", baseline, candidate, candidate - baseline, commit, created),
+        (run_id, kind, subject, "pass_rate", baseline, candidate, candidate - baseline, commit, provider, model, created),
     )
 
 
