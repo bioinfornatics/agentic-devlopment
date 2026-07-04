@@ -54,7 +54,7 @@ extensions:
     timeout: 300
 sub_recipes:
   - name: harness_research
-    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-research.yaml"
+    path: "subrecipes/harness-research.yaml"
     values:
       task: "{{ task }}"
       topic: "{{ task }}"

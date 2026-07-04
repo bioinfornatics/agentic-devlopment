@@ -45,7 +45,7 @@ extensions:
     timeout: 300
 sub_recipes:
   - name: harness_web_test
-    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-web-test.yaml"
+    path: "subrecipes/harness-web-test.yaml"
     values:
       task: "{{ task }}"
       topic: "{{ task }}"

@@ -98,42 +98,42 @@ extensions:
     timeout: 300
 sub_recipes:
   - name: harness_research
-    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-research.yaml"
+    path: "subrecipes/harness-research.yaml"
     description: Read-only codebase and documentation research.
     values:
       repo_path: "{{ repo_path }}"
       topic: "{{ task }}"
       constraints: "{{ constraints }}"
   - name: harness_plan
-    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-plan.yaml"
+    path: "subrecipes/harness-plan.yaml"
     description: Turn a goal into a Beads-backed executable plan.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
   - name: harness_implement
-    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-implement.yaml"
+    path: "subrecipes/harness-implement.yaml"
     description: Implement a scoped bead with tests and handoff.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
   - name: harness_review
-    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-review.yaml"
+    path: "subrecipes/harness-review.yaml"
     description: Review code, tests, Beads state, and handoff quality.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
   - name: harness_web_test
-    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-web-test.yaml"
+    path: "subrecipes/harness-web-test.yaml"
     description: Browser/UI verification using Playwright when available.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
   - name: harness_release
-    path: "/home/jmercier/.config/goose/recipes/subrecipes/harness-release.yaml"
+    path: "subrecipes/harness-release.yaml"
     description: Release, CI, gates, and verification flow.
     values:
       repo_path: "{{ repo_path }}"
