@@ -5,22 +5,23 @@
       "beads-harness",
       "goose-orchestration"
     ],
-    "query": "Add a new Goose recipe that runs a documentation review workflow for this harness.",
+    "query": "Add a new Goose recipe that runs a documentation review workflow for this harness. Follow the harness workflow for durable edits.",
     "files": [
       ".goose/recipes/",
       "docs/",
       "AGENTS.md"
     ],
     "baseline_gaps": [
-      "Agent may start editing recipe files before creating or claiming durable Beads work.",
-      "Agent may skip researching existing recipe patterns and documentation structure.",
-      "Agent may leave discovered follow-up work only in chat."
+      "Agent may edit recipe files before creating or claiming durable Beads work.",
+      "Agent may skip researching existing recipe patterns and validation guidance.",
+      "Agent may omit recipe validation, Beads state, or git status from the handoff."
     ],
     "expected_behavior": [
       "Runs or requests Beads priming and creates or claims a bead before durable edits.",
-      "Researches relevant harness structure such as `.goose/recipes/`, existing docs workflows, and validation guidance before implementation planning.",
-      "Produces a scoped dependency-aware plan before modifying files.",
-      "Captures durable discoveries as linked Beads issues and durable facts as short pointer memories only when appropriate."
+      "Inspects existing recipe and documentation workflow patterns before editing.",
+      "States a scoped plan before modifying files.",
+      "Runs recipe validation for changed recipes.",
+      "Reports files changed, validation performed, Beads state, git status, and remaining risks."
     ]
   },
   {
@@ -28,21 +29,22 @@
       "agentic-dev-harness",
       "goose-orchestration"
     ],
-    "query": "Find the highest-risk parts of the recipe and skill orchestration in this harness; read-only only.",
+    "query": "Find the highest-risk parts of the recipe and agent orchestration in this harness; read-only only.",
     "files": [
       ".goose/recipes/",
-      ".agents/skills/",
-      ".agents/agents/"
+      ".agents/agents/",
+      "AGENTS.md"
     ],
     "baseline_gaps": [
       "Agent may perform writes during a read-only investigation.",
-      "Agent may delegate broad overlapping work without synthesis."
+      "Agent may provide generic risks without evidence from harness files.",
+      "Agent may fail to propose durable follow-up work in a read-only-safe way."
     ],
     "expected_behavior": [
-      "Keeps the task read-only and states that no files should be modified.",
-      "Delegates independent research scopes only when useful.",
-      "Synthesizes subagent outputs into ranked risks with evidence from harness files.",
-      "Files or proposes follow-up Beads issues for actionable work."
+      "Explicitly keeps the task read-only and does not modify files or Beads state.",
+      "Uses delegation only if useful, or explains why direct inspection is sufficient.",
+      "Ranks risks by severity with concrete evidence from harness files.",
+      "Proposes exact Beads follow-up issue titles or `bd create` commands without executing them."
     ]
   },
   {
@@ -50,19 +52,22 @@
       "agentic-dev-harness",
       "beads-harness"
     ],
-    "query": "Finish a partially implemented bead that updates `.goose/recipes/harness-review.yaml` and hand off safely.",
+    "query": "Finish the active Beads issue that is scoped to `.goose/recipes/harness-review.yaml`, then hand off safely. If no exact active issue exists in the isolated worktree, create and claim one before editing.",
     "files": [
       ".goose/recipes/harness-review.yaml",
-      "AGENTS.md"
+      "AGENTS.md",
+      ".beads/issues.jsonl"
     ],
     "baseline_gaps": [
       "Agent may rely on chat history instead of durable Beads state.",
-      "Agent may omit recipe validation, docs validation, or git status from handoff."
+      "Agent may edit outside the scoped recipe change.",
+      "Agent may omit recipe validation, Beads outcome, or git status from the handoff."
     ],
     "expected_behavior": [
-      "Inspects the bead state and related dependencies before acting.",
-      "Runs relevant validation gates for the changed scope, such as recipe validation when recipe files changed.",
-      "Closes or updates durable Beads state with the true outcome.",
+      "Inspects Beads state and relevant dependencies before editing, or creates and claims a scoped issue when no exact active issue exists.",
+      "Completes only the scoped recipe change.",
+      "Runs `goose recipe validate .goose/recipes/harness-review.yaml` or equivalent recipe validation.",
+      "Updates or closes the relevant Beads issue with the true outcome.",
       "Reports git status, files changed, validation performed, and remaining risks."
     ]
   }

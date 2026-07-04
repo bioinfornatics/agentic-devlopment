@@ -78,3 +78,12 @@ Editor shortcuts:
 - `sdd.json`
 - `ui-ux-quality.json`
 - `webapp-testing.json`
+
+
+## Scenario quality notes
+
+- Keep `expected_behavior` grader-only; do not rely on it being present in the task prompt.
+- Avoid contradictory expectations. For read-only scenarios, ask the agent to propose Beads follow-up commands instead of executing `bd create`.
+- If delegation is optional, grade either useful delegation or an explicit rationale for direct inspection.
+- Avoid putting `.agents/skills/` in `files` for with/without skill evals unless the scenario intentionally allows the baseline to inspect skill text.
+- For Beads workflow scenarios, provide a deterministic issue or allow the agent to create and claim a scoped issue when no exact active issue exists.
