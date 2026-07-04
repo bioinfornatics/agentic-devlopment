@@ -1,8 +1,16 @@
 [
   {
-    "skills": ["code-review", "beads-harness"],
-    "query": "Review the current diff for correctness and maintainability.",
-    "files": [],
+    "skills": [
+      "code-review",
+      "beads-harness"
+    ],
+    "query": "Review the current diff for changes to harness recipes, skills, docs, and install scripts.",
+    "files": [
+      ".goose/recipes/",
+      ".agents/skills/",
+      "scripts/",
+      "docs/"
+    ],
     "baseline_gaps": [
       "Agent may provide a generic summary without actionable findings.",
       "Agent may ignore Beads status and missing validation."
@@ -15,23 +23,34 @@
     ]
   },
   {
-    "skills": ["code-review"],
-    "query": "Review this authentication change.",
-    "files": [],
+    "skills": [
+      "code-review"
+    ],
+    "query": "Review a change to `scripts/install.sh` and `scripts/install.ps1` that updates slash command mappings and copies project skills.",
+    "files": [
+      "scripts/install.sh",
+      "scripts/install.ps1"
+    ],
     "baseline_gaps": [
-      "Agent may underweight security-sensitive edge cases.",
-      "Agent may miss rollback and audit requirements."
+      "Agent may underweight install-script idempotence, shell portability, or config overwrite risks.",
+      "Agent may miss rollback and backup expectations."
     ],
     "expected_behavior": [
-      "Prioritizes authn/authz, secret handling, injection, concurrency, audit logs, tests, and rollback concerns.",
+      "Prioritizes idempotence, path safety, quoting, backup behavior, config overwrite risk, tests, and rollback concerns.",
       "Distinguishes blockers from nits.",
       "Identifies missing tests or operational safeguards."
     ]
   },
   {
-    "skills": ["code-review", "beads-harness"],
-    "query": "Review these changes and tell me what follow-up work remains.",
-    "files": [],
+    "skills": [
+      "code-review",
+      "beads-harness"
+    ],
+    "query": "Review changes to skill evaluation docs and tell me what follow-up work remains.",
+    "files": [
+      "docs/15-skill-evaluations.md",
+      "evals/skills/"
+    ],
     "baseline_gaps": [
       "Agent may leave follow-up work only in prose.",
       "Agent may create markdown TODOs."

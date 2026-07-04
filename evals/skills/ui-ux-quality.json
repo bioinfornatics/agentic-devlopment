@@ -1,8 +1,15 @@
 [
   {
-    "skills": ["ui-ux-quality", "webapp-testing"],
-    "query": "Review this landing page for UX and visual quality.",
-    "files": [],
+    "skills": [
+      "ui-ux-quality",
+      "webapp-testing"
+    ],
+    "query": "Review the generated documentation site in `dist/index.html` for UX and visual quality.",
+    "files": [
+      "dist/index.html",
+      "docs/",
+      "docs/assets/site.css"
+    ],
     "baseline_gaps": [
       "Agent may give generic aesthetic feedback without evidence.",
       "Agent may ignore responsive behavior."
@@ -14,29 +21,42 @@
     ]
   },
   {
-    "skills": ["ui-ux-quality", "webapp-testing"],
-    "query": "Review this signup form.",
-    "files": [],
+    "skills": [
+      "ui-ux-quality",
+      "webapp-testing"
+    ],
+    "query": "Review the docs navigation and search/discovery experience for a new contributor installing the harness.",
+    "files": [
+      "README.md",
+      "INSTALL.md",
+      "docs/00-index.md",
+      "dist/index.html"
+    ],
     "baseline_gaps": [
       "Agent may ignore keyboard and screen-reader behavior.",
-      "Agent may miss form states."
+      "Agent may miss navigation states and content discovery states."
     ],
     "expected_behavior": [
-      "Checks labels, validation, errors, focus order, keyboard behavior, disabled/loading/success states, and accessible names.",
+      "Checks labels, navigation clarity, focus order, keyboard behavior, loading/empty/error states where relevant, and accessible names.",
       "Separates accessibility blockers from visual polish.",
       "Provides reproduction steps for issues."
     ]
   },
   {
-    "skills": ["ui-ux-quality"],
-    "query": "Evaluate this new button component.",
-    "files": [],
+    "skills": [
+      "ui-ux-quality"
+    ],
+    "query": "Evaluate the documentation site's CSS and layout tokens in `docs/assets/site.css` as a design-system surface.",
+    "files": [
+      "docs/assets/site.css",
+      "docs/BOOK.md"
+    ],
     "baseline_gaps": [
       "Agent may review only visual appearance.",
-      "Agent may ignore component API and design-system consistency."
+      "Agent may ignore design-system consistency and regression risk."
     ],
     "expected_behavior": [
-      "Checks tokens, variants, API, theming, docs/stories, accessibility states, and regression risk.",
+      "Checks tokens, variants, layout patterns, theming, docs consistency, accessibility states, and regression risk.",
       "Distinguishes design-system blockers from recommendations.",
       "Creates or proposes Beads follow-ups for product work."
     ]

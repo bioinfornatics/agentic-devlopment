@@ -1,8 +1,13 @@
 [
   {
-    "skills": ["beads-harness"],
-    "query": "Pick the next available issue and start working on it.",
-    "files": [],
+    "skills": [
+      "beads-harness"
+    ],
+    "query": "Pick the next available harness maintenance issue and start working on it.",
+    "files": [
+      ".beads/",
+      "AGENTS.md"
+    ],
     "baseline_gaps": [
       "Agent may choose work without checking durable ready state.",
       "Agent may not claim work atomically."
@@ -15,9 +20,13 @@
     ]
   },
   {
-    "skills": ["beads-harness"],
-    "query": "Task B must wait for Task A; encode this in Beads.",
-    "files": [],
+    "skills": [
+      "beads-harness"
+    ],
+    "query": "A task to validate recipe YAML must wait for the task that edits `.goose/recipes/harness-master.yaml`; encode this dependency in Beads.",
+    "files": [
+      ".goose/recipes/harness-master.yaml"
+    ],
     "baseline_gaps": [
       "Agent may reverse dependency direction.",
       "Agent may not verify blocked/ready state."
@@ -29,9 +38,13 @@
     ]
   },
   {
-    "skills": ["beads-harness"],
-    "query": "Remember that the canonical release checklist is in docs/10-release-readiness.md.",
-    "files": ["docs/10-release-readiness.md"],
+    "skills": [
+      "beads-harness"
+    ],
+    "query": "Remember that the canonical release checklist for this harness is in docs/10-release-readiness.md.",
+    "files": [
+      "docs/10-release-readiness.md"
+    ],
     "baseline_gaps": [
       "Agent may store long-form content or tasks in memory.",
       "Agent may create MEMORY.md."

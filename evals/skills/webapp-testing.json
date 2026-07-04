@@ -1,8 +1,13 @@
 [
   {
-    "skills": ["webapp-testing"],
-    "query": "Run a smoke test for this local web app.",
-    "files": [],
+    "skills": [
+      "webapp-testing"
+    ],
+    "query": "Run a smoke test for the generated local documentation site for this harness.",
+    "files": [
+      "dist/index.html",
+      "scripts/build-docs.sh"
+    ],
     "baseline_gaps": [
       "Agent may claim UI behavior without using a browser.",
       "Agent may kill unrelated processes."
@@ -15,9 +20,14 @@
     ]
   },
   {
-    "skills": ["webapp-testing"],
-    "query": "Check this page for basic accessibility.",
-    "files": [],
+    "skills": [
+      "webapp-testing"
+    ],
+    "query": "Check the generated documentation site for basic accessibility.",
+    "files": [
+      "dist/index.html",
+      "docs/assets/site.css"
+    ],
     "baseline_gaps": [
       "Agent may skip keyboard and focus checks.",
       "Agent may omit accessible names and error announcements."
@@ -29,9 +39,14 @@
     ]
   },
   {
-    "skills": ["webapp-testing"],
-    "query": "Verify the dashboard on mobile and desktop.",
-    "files": [],
+    "skills": [
+      "webapp-testing"
+    ],
+    "query": "Verify the documentation index renders correctly on mobile and desktop viewports.",
+    "files": [
+      "dist/index.html",
+      "docs/00-index.md"
+    ],
     "baseline_gaps": [
       "Agent may test only one viewport.",
       "Agent may omit screenshots or reproduction details."

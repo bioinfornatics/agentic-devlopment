@@ -1,8 +1,13 @@
 [
   {
-    "skills": ["goose-orchestration"],
-    "query": "I need to investigate a flaky test without editing files.",
-    "files": [],
+    "skills": [
+      "goose-orchestration"
+    ],
+    "query": "Investigate why `goose recipe validate` fails for `.goose/recipes/harness-master.yaml` without editing files.",
+    "files": [
+      ".goose/recipes/harness-master.yaml",
+      ".goose/recipes/subrecipes/"
+    ],
     "baseline_gaps": [
       "Agent may choose an implementation workflow for read-only investigation.",
       "Agent may use too many broad tools."
@@ -14,23 +19,34 @@
     ]
   },
   {
-    "skills": ["goose-orchestration"],
-    "query": "Have three agents inspect API, UI, and docs risks in parallel.",
-    "files": [],
+    "skills": [
+      "goose-orchestration"
+    ],
+    "query": "Have three agents inspect recipe, skill, and documentation risks in parallel for this harness.",
+    "files": [
+      ".goose/recipes/",
+      ".agents/skills/",
+      "docs/"
+    ],
     "baseline_gaps": [
       "Agent may create overlapping vague delegated tasks.",
       "Agent may not synthesize results."
     ],
     "expected_behavior": [
-      "Creates independent API, UI, and docs scopes with read-only constraints.",
+      "Creates independent recipe, skill, and documentation scopes with read-only constraints.",
       "Uses async delegation only for independent work.",
       "Synthesizes subagent outputs into a single risk-ranked result."
     ]
   },
   {
-    "skills": ["goose-orchestration"],
-    "query": "Split implementation between frontend and backend workers.",
-    "files": [],
+    "skills": [
+      "goose-orchestration"
+    ],
+    "query": "Split implementation between one worker updating `.goose/recipes/` and another worker updating `.agents/skills/` for this harness.",
+    "files": [
+      ".goose/recipes/",
+      ".agents/skills/"
+    ],
     "baseline_gaps": [
       "Agent may allow same-file writes or assume subagents can coordinate.",
       "Agent may omit output contracts."

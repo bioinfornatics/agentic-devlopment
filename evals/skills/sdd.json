@@ -1,8 +1,15 @@
 [
   {
-    "skills": ["sdd", "beads-harness"],
-    "query": "Add notifications.",
-    "files": [],
+    "skills": [
+      "sdd",
+      "beads-harness"
+    ],
+    "query": "Add support for a security-review recipe to this harness.",
+    "files": [
+      ".goose/recipes/",
+      "docs/03-security-review.md",
+      "AGENTS.md"
+    ],
     "baseline_gaps": [
       "Agent may implement from vague requirements.",
       "Agent may skip non-goals and acceptance criteria."
@@ -14,9 +21,14 @@
     ]
   },
   {
-    "skills": ["sdd"],
-    "query": "Implement retry logic for failed uploads.",
-    "files": [],
+    "skills": [
+      "sdd"
+    ],
+    "query": "Implement idempotence checks for the install scripts that manage `/harness` and `/review` slash-command mappings.",
+    "files": [
+      "scripts/install.sh",
+      "scripts/install.ps1"
+    ],
     "baseline_gaps": [
       "Agent may skip a failing test/spec check.",
       "Agent may propose a large irreversible change."
@@ -28,15 +40,22 @@
     ]
   },
   {
-    "skills": ["sdd"],
-    "query": "Is this ready to release?",
-    "files": [],
+    "skills": [
+      "sdd"
+    ],
+    "query": "Is this harness ready to release after changing recipes, skills, install scripts, and docs?",
+    "files": [
+      "docs/10-release-readiness.md",
+      ".goose/recipes/",
+      ".agents/skills/",
+      "scripts/"
+    ],
     "baseline_gaps": [
       "Agent may treat release checks as optional cleanup.",
       "Agent may omit rollback or observability."
     ],
     "expected_behavior": [
-      "Evaluates tests, docs, migrations, rollback, observability, and open blockers.",
+      "Evaluates tests, docs, install-script safety, recipe validation, rollback, observability, and open blockers.",
       "Treats quality gates as product requirements.",
       "Reports explicit release done criteria."
     ]
