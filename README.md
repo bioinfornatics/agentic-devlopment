@@ -178,8 +178,8 @@ Generate a single HTML/PDF bundle from the Markdown docs:
 Outputs:
 
 ```text
-dist/agentic-development-harness.html
-dist/agentic-development-harness.pdf
+dist/docs/html/agentic-development-harness.html
+dist/docs/pdf/agentic-development-harness.pdf
 ```
 
 Requires `pandoc`; PDF generation uses `xelatex` when available, otherwise tries `chromium`.

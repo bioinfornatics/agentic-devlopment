@@ -231,8 +231,8 @@ sudo dnf install pandoc texlive-xetex
 Generated files:
 
 ```text
-dist/agentic-development-harness.html
-dist/agentic-development-harness.pdf
+dist/docs/html/agentic-development-harness.html
+dist/docs/pdf/agentic-development-harness.pdf
 ```
 
 ## Uninstall

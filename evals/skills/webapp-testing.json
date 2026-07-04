@@ -5,7 +5,7 @@
     ],
     "query": "Run a smoke test for the generated local documentation site for this harness.",
     "files": [
-      "dist/index.html",
+      "dist/docs/html/index.html",
       "scripts/build-docs.sh"
     ],
     "baseline_gaps": [
@@ -25,7 +25,7 @@
     ],
     "query": "Check the generated documentation site for basic accessibility.",
     "files": [
-      "dist/index.html",
+      "dist/docs/html/index.html",
       "docs/assets/site.css"
     ],
     "baseline_gaps": [
@@ -44,7 +44,7 @@
     ],
     "query": "Verify the documentation index renders correctly on mobile and desktop viewports.",
     "files": [
-      "dist/index.html",
+      "dist/docs/html/index.html",
       "docs/00-index.md"
     ],
     "baseline_gaps": [

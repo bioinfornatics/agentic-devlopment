@@ -10,9 +10,24 @@ if ! command -v pandoc >/dev/null 2>&1; then
   exit 127
 fi
 
-mkdir -p dist
-ASSETS_DIR="dist/assets"
-mkdir -p "$ASSETS_DIR"
+DIST_DIR="dist"
+DOCS_DIST_DIR="$DIST_DIR/docs"
+HTML_DIR="$DOCS_DIST_DIR/html"
+PDF_DIR="$DOCS_DIST_DIR/pdf"
+ASSETS_DIR="$HTML_DIR/assets"
+HTML_OUT="$HTML_DIR/agentic-development-harness.html"
+HTML_INDEX="$HTML_DIR/index.html"
+PDF_OUT="$PDF_DIR/agentic-development-harness.pdf"
+
+mkdir -p "$ASSETS_DIR" "$PDF_DIR"
+
+# Remove legacy generated documentation paths so dist/ has one clear docs layout.
+rm -f \
+  "$DIST_DIR/agentic-development-harness.html" \
+  "$DIST_DIR/agentic-development-harness.pdf" \
+  "$DIST_DIR/index.html"
+rm -rf "$DIST_DIR/assets"
+
 cp docs/assets/site.css "$ASSETS_DIR/site.css"
 
 DOCS=(
@@ -45,9 +60,9 @@ pandoc "${DOCS[@]}" \
   --standalone \
   --metadata title="Agentic Development Harness" \
   --css assets/site.css \
-  -o dist/agentic-development-harness.html
+  -o "$HTML_OUT"
 
-cp dist/agentic-development-harness.html dist/index.html
+cp "$HTML_OUT" "$HTML_INDEX"
 
 if command -v xelatex >/dev/null 2>&1; then
   pandoc "${DOCS[@]}" \
@@ -56,14 +71,14 @@ if command -v xelatex >/dev/null 2>&1; then
     --number-sections \
     --pdf-engine=xelatex \
     --metadata title="Agentic Development Harness" \
-    -o dist/agentic-development-harness.pdf
-  echo "wrote dist/agentic-development-harness.pdf"
+    -o "$PDF_OUT"
+  echo "wrote $PDF_OUT"
 elif command -v chromium >/dev/null 2>&1; then
   chromium --headless --disable-gpu \
-    --print-to-pdf="$ROOT/dist/agentic-development-harness.pdf" \
-    "file://$ROOT/dist/agentic-development-harness.html" >/dev/null 2>&1 || true
-  if [ -f dist/agentic-development-harness.pdf ]; then
-    echo "wrote dist/agentic-development-harness.pdf"
+    --print-to-pdf="$ROOT/$PDF_OUT" \
+    "file://$ROOT/$HTML_OUT" >/dev/null 2>&1 || true
+  if [ -f "$PDF_OUT" ]; then
+    echo "wrote $PDF_OUT"
   else
     echo "warning: PDF generation via chromium failed; HTML was generated" >&2
   fi
@@ -72,4 +87,5 @@ else
   echo "Fedora PDF option: sudo dnf install texlive-xetex" >&2
 fi
 
-echo "wrote dist/agentic-development-harness.html"
+echo "wrote $HTML_OUT"
+echo "wrote $HTML_INDEX"
