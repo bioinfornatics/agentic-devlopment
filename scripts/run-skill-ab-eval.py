@@ -53,6 +53,51 @@ def write_json(path: Path, data: Any) -> None:
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
 
 
+def copy_minimal_goose_config(home: Path) -> None:
+    """Create an isolated Goose home with provider config but no project skills/agents/recipes."""
+    config_src = Path.home() / ".config" / "goose"
+    config_dst = home / ".config" / "goose"
+    agents_dst = home / ".agents"
+    (agents_dst / "skills").mkdir(parents=True, exist_ok=True)
+    (agents_dst / "agents").mkdir(parents=True, exist_ok=True)
+    config_dst.mkdir(parents=True, exist_ok=True)
+
+    # Copy only lightweight config needed for provider setup. Do not copy recipes,
+    # sessions, caches, or installed skill/agent directories.
+    for name in ["config.yaml", "permission.yaml"]:
+        src = config_src / name
+        if src.exists():
+            shutil.copy2(src, config_dst / name)
+    custom_src = config_src / "custom_providers"
+    if custom_src.exists():
+        shutil.copytree(custom_src, config_dst / "custom_providers", dirs_exist_ok=True)
+
+
+def prepare_goose_environment(args: argparse.Namespace, run_dir: Path) -> tuple[dict[str, str], Path, Path | None]:
+    """Return env, neutral cwd, and optional isolated home for a Goose subprocess.
+
+    The isolated cwd intentionally lives under the temporary HOME, not under the
+    repository. Goose discovers project-local `.agents` and `.goose` by walking
+    from the current directory, so a cwd under `dist/` would still expose this
+    repo's installed skills/agents/recipes to the baseline.
+    """
+    env = os.environ.copy()
+    if args.ambient_goose:
+        neutral_cwd = run_dir / "goose-cwd"
+        neutral_cwd.mkdir(parents=True, exist_ok=True)
+        return env, neutral_cwd, None
+
+    home = run_dir / "goose-home"
+    if home.exists():
+        shutil.rmtree(home)
+    copy_minimal_goose_config(home)
+    neutral_cwd = home / "cwd"
+    neutral_cwd.mkdir(parents=True, exist_ok=True)
+    env["HOME"] = str(home)
+    env["XDG_CONFIG_HOME"] = str(home / ".config")
+    return env, neutral_cwd, home
+
+
 def load_skill_bundle(skill_dir: Path) -> str:
     skill_md = skill_dir / "SKILL.md"
     if not skill_md.exists():
@@ -304,18 +349,25 @@ def prepare_configs(args: argparse.Namespace, scenario: dict[str, Any]) -> list[
             ),
         ]
     if args.mode == "old-new":
-        if not args.baseline_skill_dir or not args.candidate_skill_dir:
-            raise SystemExit("--mode old-new requires --baseline-skill-dir and --candidate-skill-dir")
+        candidate = (args.candidate_skill_dir or (ROOT / ".agents" / "skills" / args.skill)).resolve()
+        baseline = (args.baseline_skill_dir or (Path.home() / ".agents" / "skills" / args.skill)).resolve()
+        if not candidate.exists():
+            raise SystemExit(f"Candidate skill directory not found: {candidate}")
+        if not baseline.exists():
+            raise SystemExit(
+                f"Baseline skill directory not found: {baseline}. "
+                "Pass --baseline-skill-dir with a snapshot or install the original skill under ~/.agents/skills."
+            )
         return [
             Config(
                 name="new_skill",
-                description=f"Candidate skill from {args.candidate_skill_dir}.",
-                skill_dirs=(args.candidate_skill_dir.resolve(),),
+                description=f"Candidate skill from {candidate}.",
+                skill_dirs=(candidate,),
             ),
             Config(
                 name="old_skill",
-                description=f"Baseline skill from {args.baseline_skill_dir}.",
-                skill_dirs=(args.baseline_skill_dir.resolve(),),
+                description=f"Baseline/original installed skill from {baseline}.",
+                skill_dirs=(baseline,),
             ),
         ]
     raise SystemExit(f"Unsupported mode: {args.mode}")
@@ -329,7 +381,8 @@ def grade_run(
     stdout: str,
     stderr: str,
     returncode: int,
-    repo_root: Path,
+    goose_cwd: Path,
+    goose_env: dict[str, str],
 ) -> dict[str, Any]:
     if args.grade_mode == "none":
         expectations = [
@@ -350,8 +403,9 @@ def grade_run(
     try:
         rc, out, err, _duration = run_command(
             goose_cmd(args, prompt),
-            cwd=repo_root,
+            cwd=goose_cwd,
             timeout=args.grade_timeout,
+            env=goose_env,
         )
     except Exception as exc:  # noqa: BLE001 - preserve eval output instead of crashing late
         fallback = heuristic_grade(scenario, stdout, stderr, returncode)
@@ -498,6 +552,12 @@ def main() -> int:
     parser.add_argument("--model")
     parser.add_argument("--no-profile", action="store_true")
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument(
+        "--ambient-goose",
+        action="store_true",
+        help="Use the caller's normal Goose HOME/cwd discovery. By default runs use an isolated Goose home and neutral cwd so installed skills, agents, and recipes are hidden.",
+    )
+    parser.add_argument("--keep-goose-home", action="store_true", help="Keep the temporary isolated Goose home for debugging.")
     parser.add_argument("--keep-worktrees", action="store_true")
     args = parser.parse_args()
 
@@ -529,6 +589,7 @@ def main() -> int:
                 run_dir = eval_dir / config.name / f"run-{run_number}"
                 worktree = run_dir / "worktree"
                 copy_worktree(ROOT, worktree)
+                goose_env, goose_cwd, goose_home = prepare_goose_environment(args, run_dir)
                 prompt = build_eval_prompt(
                     skill_name=args.skill,
                     scenario=scenario,
@@ -540,8 +601,9 @@ def main() -> int:
                     try:
                         returncode, stdout, stderr, duration = run_command(
                             goose_cmd(args, prompt),
-                            cwd=worktree,
+                            cwd=goose_cwd,
                             timeout=args.timeout,
+                            env=goose_env,
                         )
                     except subprocess.TimeoutExpired as exc:
                         returncode = 124
@@ -564,7 +626,8 @@ def main() -> int:
                     stdout=stdout,
                     stderr=stderr,
                     returncode=returncode,
-                    repo_root=worktree,
+                    goose_cwd=goose_cwd,
+                    goose_env=goose_env,
                 )
                 write_run_artifacts(
                     run_dir=run_dir,
@@ -576,12 +639,14 @@ def main() -> int:
                     duration=duration,
                     grading=grading,
                 )
+                if goose_home and goose_home.exists() and not args.keep_goose_home:
+                    shutil.rmtree(goose_home)
                 if not args.keep_worktrees and worktree.exists():
                     shutil.rmtree(worktree)
 
     aggregate_and_render(args, workspace)
     print(f"Workspace: {workspace}")
-    print(f"Mode: {args.mode}; executed={args.execute}; grade_mode={args.grade_mode}")
+    print(f"Mode: {args.mode}; executed={args.execute}; grade_mode={args.grade_mode}; ambient_goose={args.ambient_goose}")
     return 0
 
 

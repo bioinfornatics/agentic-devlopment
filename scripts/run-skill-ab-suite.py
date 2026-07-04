@@ -172,6 +172,11 @@ def main() -> int:
     parser.add_argument("--model")
     parser.add_argument("--no-profile", action="store_true")
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument(
+        "--ambient-goose",
+        action="store_true",
+        help="Forward --ambient-goose to per-skill runs. By default runs use isolated Goose homes that hide installed skills, agents, and recipes.",
+    )
     parser.add_argument("--continue-on-failure", action="store_true", help="Continue remaining skills if one runner exits non-zero.")
     parser.add_argument("--output", type=Path, help="Default: dist/evals/skills/iteration-<N>-index.html")
     args = parser.parse_args()
@@ -216,6 +221,8 @@ def main() -> int:
             cmd.append("--no-profile")
         if args.quiet:
             cmd.append("--quiet")
+        if args.ambient_goose:
+            cmd.append("--ambient-goose")
 
         print(f"== Running skill eval suite item: {skill} ==")
         proc = subprocess.run(cmd, cwd=ROOT)

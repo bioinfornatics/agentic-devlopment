@@ -55,7 +55,7 @@ intent → spec → Beads graph → TDD/implementation → review → validation
 | `webapp-testing` | Browser automation and local web-app verification method |
 
 
-Skill evaluations live outside the skill packages in `evals/skills/`; see `docs/15-skill-evaluations.md` for the evaluation-driven workflow, visual definition review, and real A/B runner. Quick definition review: `python scripts/render-skill-eval-review.py`, then open `dist/skill-eval-review/index.html`. Real A/B example: `python scripts/run-skill-ab-eval.py --skill code-review --iteration 1 --execute --grade-mode llm`. Full suite: `python scripts/run-skill-ab-suite.py --iteration 1 --execute --grade-mode llm --continue-on-failure`, then open `dist/evals/skills/index.html`.
+Skill evaluations live outside the skill packages in `evals/skills/`; see `docs/15-skill-evaluations.md` for the evaluation-driven workflow, visual definition review, and real A/B runner. Quick definition review: `python scripts/render-skill-eval-review.py`, then open `dist/skill-eval-review/index.html`. Real A/B example: `python scripts/run-skill-ab-eval.py --skill code-review --iteration 1 --execute --grade-mode llm`. Full suite: `python scripts/run-skill-ab-suite.py --iteration 1 --execute --grade-mode llm --continue-on-failure`, then open `dist/evals/skills/index.html`. A/B runners use isolated Goose homes by default so `without_skill` hides installed project skills, agents, and recipes.
 
 ## Named agents
 

@@ -118,7 +118,15 @@ dist/evals/skills/<skill-name>/iteration-1/
   review.html
 ```
 
-The runner injects the listed skill material into `with_skill`; `without_skill` receives the same task without project skill material. If your global Goose profile auto-discovers these skills, treat the baseline as best-effort rather than perfectly blind; for stricter isolation, run with a clean Goose profile/provider environment and pass the needed `--provider` / `--model` flags.
+By default, the runner now uses an isolated Goose home and a neutral cwd for each run. That hides installed project skills, named agents, and recipes from Goose discovery, so `without_skill` is a strict baseline except for built-in Goose skills. The runner still gives every run an isolated copy of the repository path in the prompt, so the task can inspect or edit the copied files without exposing project-local Goose discovery from the source checkout.
+
+Use `--ambient-goose` only when you intentionally want the caller's normal Goose environment, for example while debugging provider configuration. In ambient mode, `goose skills list` and `goose recipe list` may see installed user/project skills and recipes, so the baseline is no longer strict.
+
+If the isolated home cannot use your default provider, pass explicit provider/model flags that work with the copied minimal Goose config:
+
+```bash
+python scripts/run-skill-ab-eval.py   --skill code-review   --iteration 1   --execute   --grade-mode llm   --provider custom_claude_from_azure   --model claude-sonnet-4-6
+```
 
 ### 3. Execute the full skill suite
 
@@ -148,6 +156,8 @@ python scripts/run-skill-ab-suite.py \
 xdg-open dist/evals/skills/index.html
 ```
 
+The suite runner uses the same strict isolated Goose baseline by default. Pass `--ambient-goose` only to debug with your normal installed skills/agents/recipes visible.
+
 The suite index links to each per-skill review and benchmark:
 
 ```text
@@ -168,7 +178,7 @@ mkdir -p dist/evals/snapshots
 cp -a .agents/skills/code-review dist/evals/snapshots/code-review-before
 ```
 
-After editing `.agents/skills/code-review`, compare the candidate against the snapshot:
+After editing `.agents/skills/code-review`, compare the candidate against the snapshot. If `--baseline-skill-dir` is omitted, the runner uses the installed original skill at `~/.agents/skills/<skill-name>` when present; if `--candidate-skill-dir` is omitted, it uses `.agents/skills/<skill-name>`.
 
 ```bash
 python scripts/run-skill-ab-eval.py \
