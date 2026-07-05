@@ -29,6 +29,25 @@ Use this skill when doing software development, planning, research, review, rele
 
 ## Delegation rules
 
+## Required checkpoints
+
+For durable edits, follow this observable order:
+
+1. Inspect targeted context and Beads state.
+2. Create or claim exactly one scoped bead before file writes; record the bead ID.
+3. Emit a user-visible `Scoped plan` section before the first mutating command. A retrospective plan in the final answer is not sufficient.
+4. Make the smallest scoped change.
+5. Run targeted validation for changed files.
+6. Stop after validation, Beads update/close, git status, and handoff; do not keep exploring.
+
+For read-only reviews:
+
+- Do not mutate files, Beads, or memory.
+- State the delegation decision: either name the read-only delegated scopes or say direct inspection is sufficient.
+- Include `Proposed Beads follow-ups` with issue titles or non-executed `bd create ...` examples for important follow-up work.
+
+Final handoff must include: bead ID/status, files changed, validation commands/results, git status, remaining risks, and follow-ups.
+
 - Use subagents for isolation, not for forgetting responsibility.
 - Give each subagent explicit scope, allowed files, output format, and whether it may write.
 - Same-file writes by multiple subagents are forbidden.

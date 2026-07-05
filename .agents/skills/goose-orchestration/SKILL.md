@@ -53,6 +53,23 @@ load(source: "<task_id>", cancel: true)
 
 ## Recipe design rules
 
+## Orchestration decision protocol
+
+Before orchestration-heavy work, state an `Orchestration decision`:
+
+- selected flow: research, review, implementation split, or direct inspection;
+- whether delegation is used;
+- if not delegating, why direct inspection is sufficient;
+- if delegating, list each worker scope, read/write permission, validation expectations, and output format.
+
+When delegating, include this invariant verbatim in the plan or worker contract:
+
+```text
+Subagents cannot coordinate with each other; the parent/orchestrator owns scope partitioning, context passing, integration, and synthesis.
+```
+
+Finish with a compact `Delegation audit` summarizing workers used or why none were used. Stop once the requested orchestration plan or synthesis is complete.
+
 - Put durable methodology in skills, not repeated in every recipe.
 - Put workflow routing in recipes.
 - Put specialized repeatable units in subrecipes.

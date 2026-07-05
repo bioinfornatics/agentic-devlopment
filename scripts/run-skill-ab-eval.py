@@ -461,13 +461,7 @@ def build_audit(
     duration: float,
 ) -> dict[str, Any]:
     tool_calls = extract_tool_calls(events)
-    commands = [
-        call["arguments"].get("command")
-        for call in tool_calls
-        if call.get("name") in {"shell", "Developer.shell"}
-        and isinstance(call.get("arguments"), dict)
-        and call["arguments"].get("command")
-    ]
+    commands = extract_shell_commands(tool_calls)
     beads_actions = extract_beads_actions(commands)
     browser_actions = extract_browser_actions(tool_calls)
     return {
@@ -493,6 +487,32 @@ def build_audit(
         "raw_stdout_chars": len(raw_stdout),
         "transcript_chars": len(transcript),
     }
+
+
+def extract_shell_commands(tool_calls: list[dict[str, Any]]) -> list[str]:
+    commands: list[str] = []
+    for call in tool_calls:
+        name = str(call.get("name") or "")
+        args = call.get("arguments", {}) if isinstance(call.get("arguments"), dict) else {}
+        if name in {"shell", "Developer.shell"} and args.get("command"):
+            commands.append(str(args["command"]))
+        if name == "execute_typescript":
+            commands.extend(extract_shell_commands_from_typescript(str(args.get("code", ""))))
+    return commands
+
+
+def extract_shell_commands_from_typescript(code: str) -> list[str]:
+    commands: list[str] = []
+    for match in re.finditer(r"Developer\.shell\s*\(\s*\{(?P<body>[\s\S]*?)\}\s*\)", code):
+        body = match.group("body")
+        command_match = re.search(r"command\s*:\s*`(?P<cmd>[\s\S]*?)`", body)
+        if command_match:
+            commands.append(command_match.group("cmd"))
+            continue
+        command_match = re.search(r"command\s*:\s*['\"](?P<cmd>[^'\"]+)['\"]", body)
+        if command_match:
+            commands.append(command_match.group("cmd"))
+    return commands
 
 
 def classify_validation(command: str) -> dict[str, Any] | None:
@@ -535,11 +555,20 @@ def extract_browser_actions(tool_calls: list[dict[str, Any]]) -> list[dict[str, 
     for call in tool_calls:
         name = str(call.get("name") or "")
         extension = str(call.get("extension") or "")
-        lowered = f"{extension}.{name}".lower()
-        if "browser" not in lowered and "playwright" not in lowered:
-            continue
         args = call.get("arguments", {}) if isinstance(call.get("arguments"), dict) else {}
-        actions.append({"tool": name, "extension": extension, "kind": classify_browser_action(name), "arguments": args})
+        lowered = f"{extension}.{name}".lower()
+        if "browser" in lowered or "playwright" in lowered:
+            actions.append({"tool": name, "extension": extension, "kind": classify_browser_action(name), "arguments": args})
+        for node in args.get("tool_graph", []) if isinstance(args.get("tool_graph"), list) else []:
+            tool = str(node.get("tool", ""))
+            if "browser" in tool.lower() or "playwright" in tool.lower():
+                actions.append({
+                    "tool": tool,
+                    "extension": extension,
+                    "kind": classify_browser_action(tool),
+                    "description": node.get("description"),
+                    "arguments": {},
+                })
     return actions
 
 

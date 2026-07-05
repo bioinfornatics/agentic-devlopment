@@ -3,7 +3,7 @@
     "skills": [
       "beads-harness"
     ],
-    "query": "Pick the next available harness maintenance issue and start working on it.",
+    "query": "Inspect the next available harness maintenance issue and start work only if claimable work exists. If no claimable issue exists, report that state and do not modify files.",
     "files": [
       ".beads/",
       "AGENTS.md"
@@ -15,8 +15,8 @@
     "expected_behavior": [
       "Runs or requests `bd prime` for workflow context.",
       "Inspects `bd ready --json` to find claimable work.",
-      "Claims selected work with `bd update <id> --claim` before modifications.",
-      "Summarizes selected scope and blockers."
+      "Claims selected work with `bd update <id> --claim` before modifications when claimable work exists; otherwise reports that no claimable work exists and avoids modifications.",
+      "Summarizes selected scope and blockers, or summarizes the no-work-available state."
     ],
     "max_turns": 100
   },

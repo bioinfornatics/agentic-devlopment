@@ -24,6 +24,17 @@ bd create "Title" -t task -p 2 --json
 
 ## Dependency semantics
 
+## Selection discipline
+
+When selecting work:
+
+1. Run `bd prime` and `bd ready --json`.
+2. If claimable work exists, claim exactly one issue with `bd update <id> --claim --json` before edits.
+3. If no claimable work exists, say so explicitly, do not pretend a claim happened, and either stop or create a scoped issue only when the user asked for durable work.
+4. Verify state with `bd show <id> --json` or a ready/blocked query before reporting success.
+
+Keep Beads operations bounded. Once the requested Beads state is created, verified, and reported, stop.
+
 `bd dep add B A` means **B needs A**. Use requirement language. Verify with `bd blocked`.
 
 Blocking dependencies: `blocks`, `parent-child`, `conditional-blocks`, `waits-for`.

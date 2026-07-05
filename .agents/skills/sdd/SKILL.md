@@ -22,6 +22,27 @@ SDD is a lightweight development method over the Goose+Beads harness.
 
 ## Principles
 
+## Mode rules
+
+If the request says `plan`, `do not implement yet`, `spec`, or `proposal`, stay in planning mode:
+
+- do not edit files;
+- do not create, claim, update, close, or link Beads unless the user explicitly asks to persist the plan;
+- inspect only the minimum context needed;
+- output proposed Beads graph as titles/dependencies, not executed commands.
+
+Planning outputs must include:
+
+- user/stakeholder;
+- desired outcome;
+- constraints and assumptions;
+- non-goals;
+- acceptance criteria;
+- risks;
+- proposed dependency-aware Beads graph.
+
+Release readiness outputs must use an explicit matrix covering tests, docs, install-script safety, recipe validation, rollback, observability/diagnostics, and open blockers, each marked pass/fail/blocked/unknown.
+
 - Prefer reversible increments.
 - Make dependencies explicit.
 - Optimize for handoff: every future agent should know current state from Beads.

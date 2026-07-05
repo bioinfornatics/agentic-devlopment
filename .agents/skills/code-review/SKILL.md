@@ -20,6 +20,15 @@ Review in this order:
 
 Output format:
 
+## Durable follow-ups
+
+When review finds follow-up work:
+
+- Prefer concrete Beads issue titles or exact non-executed `bd create` commands.
+- If a parent/review bead is provided, include `--deps discovered-from:<parent-id>`.
+- If no parent bead is available, say that linked follow-ups require a parent bead and provide unlinked draft commands or issue titles.
+- Never create markdown TODO files as durable tracking.
+
 - Verdict: pass / pass-with-nits / block.
 - Findings by severity: critical, high, medium, low.
 - Missing validation.
