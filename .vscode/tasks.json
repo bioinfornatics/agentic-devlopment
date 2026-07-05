@@ -89,6 +89,28 @@
         "reveal": "always",
         "panel": "shared"
       }
+    },
+    {
+      "label": "Eval Skills: Analyze Results",
+      "type": "shell",
+      "command": "python scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval Skills: Analyze Results + Open Index",
+      "type": "shell",
+      "command": "python scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate; xdg-open dist/evals/skills/analysis-index.html",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
     }
   ]
 }
