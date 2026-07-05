@@ -1293,7 +1293,7 @@ def patch_review_html_markdown(review_path: Path) -> None:
     });
   }
   const style = document.createElement('style');
-  style.textContent = '.markdown-rendered{padding:.5rem 1rem;line-height:1.55}.markdown-rendered pre{background:#0f172a;color:#e2e8f0;padding:.75rem;border-radius:.5rem;overflow:auto}.markdown-rendered code{background:#e5e7eb;padding:.1rem .25rem;border-radius:.25rem}.markdown-rendered h1,.markdown-rendered h2,.markdown-rendered h3{margin:.8rem 0 .4rem}.markdown-rendered p{margin:.4rem 0}';
+  style.textContent = '.markdown-rendered{padding:.5rem 1rem;line-height:1.55}.markdown-rendered pre{background:#0f172a;color:#e2e8f0;padding:.75rem;border-radius:.5rem;overflow:auto;border:1px solid #334155}.markdown-rendered pre code{background:transparent;color:inherit;padding:0;border-radius:0}.markdown-rendered code{background:#e5e7eb;color:#111827;padding:.1rem .25rem;border-radius:.25rem}.markdown-rendered h1,.markdown-rendered h2,.markdown-rendered h3{margin:.8rem 0 .4rem}.markdown-rendered p{margin:.4rem 0}';
   document.head.appendChild(style);
   const observer = new MutationObserver(enhanceMarkdownBlocks);
   observer.observe(document.body, {childList: true, subtree: true});
