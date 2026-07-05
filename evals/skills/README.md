@@ -23,6 +23,9 @@ Each file is a JSON array. Each scenario follows this shape:
   "files": ["optional/context/file"],
   "fixture_patch": "optional/path/to.patch",
   "fixture_description": "Optional explanation of prepared changes",
+  "fixture_intent": "Why this fixture exists and how it exercises the skill",
+  "difficulty": "normal|difficult|very_difficult",
+  "expected_skill_contribution": "What the skill should add beyond baseline",
   "max_turns": 100,
   "baseline_gaps": [
     "Observed failure without the skill"
@@ -93,3 +96,14 @@ Editor shortcuts:
 
 - Use `fixture_patch` for deterministic review scenarios instead of relying on the caller's current diff.
 - Use per-scenario `max_turns` for complex planning, review, browser, or Beads workflows; current harness evals default to 100 for robust analysis runs.
+
+
+## Difficulty ladder
+
+Each evaluated skill should normally cover one `normal`, one `difficult`, and one `very_difficult` scenario.
+
+- `normal`: verifies the core behavior the skill is expected to reliably improve.
+- `difficult`: combines the core behavior with realistic ambiguity, constraints, or follow-up hygiene.
+- `very_difficult`: combines multiple skill obligations, sequencing constraints, or orchestration risks while staying coherent with the skill's stated purpose.
+
+Use `expected_skill_contribution` to state what we expect from the skill specifically, not just what any competent agent could do. Keep this field grader/reviewer-facing; the runtime task prompt should not rely on it as an answer key.

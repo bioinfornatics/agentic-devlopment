@@ -18,7 +18,10 @@
       "Tests the critical path in a real browser/tooling path when available.",
       "Checks console/network errors and reports concrete evidence including status codes or messages."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The webapp-testing skill should perform a browser-backed smoke test with server lifecycle, exact URL, console/network checks, cleanup, and concrete evidence.",
+    "fixture_intent": "Normal scenario for `webapp-testing`: exercises behavior the skill is expected to improve over baseline."
   },
   {
     "skills": [
@@ -38,7 +41,10 @@
       "Reports exact URLs, viewports, commands, and evidence.",
       "Distinguishes verified facts from assumptions."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The webapp-testing skill should verify accessibility with keyboard navigation, visible focus, names/labels, contrast risks, announcements where relevant, and exact evidence.",
+    "fixture_intent": "Very Difficult scenario for `webapp-testing`: exercises behavior the skill is expected to improve over baseline."
   },
   {
     "skills": [
@@ -58,6 +64,9 @@
       "Captures screenshots when possible.",
       "Reports exact reproduction steps for failures."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The webapp-testing skill should verify mobile and desktop rendering with viewport dimensions, screenshot evidence, layout issues, and reproducible steps.",
+    "fixture_intent": "Difficult scenario for `webapp-testing`: exercises behavior the skill is expected to improve over baseline."
   }
 ]

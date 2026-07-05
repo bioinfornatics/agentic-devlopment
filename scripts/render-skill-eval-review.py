@@ -62,11 +62,23 @@ def write_workspace(evals_dir: Path, workspace: Path) -> int:
         files = scenario.get("files", [])
         skills = scenario.get("skills", [])
         baseline_gaps = scenario.get("baseline_gaps", [])
+        difficulty = scenario.get("difficulty", "unspecified")
+        fixture_patch = scenario.get("fixture_patch")
+        fixture_intent = scenario.get("fixture_intent")
+        expected_contribution = scenario.get("expected_skill_contribution")
         lines = [
             f"# Skill eval definition: {skill_name} / scenario {scenario_id}",
             "",
+            f"**Difficulty:** {difficulty}",
             f"**Skills:** {', '.join(skills) if skills else 'none listed'}",
             f"**Input files:** {', '.join(files) if files else 'none'}",
+            f"**Fixture patch:** {fixture_patch or 'none'}",
+            "",
+            "## Fixture intent",
+            fixture_intent or "(not specified)",
+            "",
+            "## Expected skill contribution",
+            expected_contribution or "(not specified)",
             "",
             "## User query",
             query or "(empty query)",

@@ -14,6 +14,9 @@
       "Inspects or requests Beads ready/blocked state before planning.",
       "Explains dependency direction using requirement language.",
       "States a claim strategy without editing files."
-    ]
+    ],
+    "difficulty": "normal",
+    "expected_skill_contribution": "The named agent should plan from durable Beads state, explain dependencies, and avoid edits while no scoped implementation is requested.",
+    "fixture_intent": "Baseline scenario for non-skill harness subject evaluation."
   }
 ]

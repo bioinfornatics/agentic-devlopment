@@ -19,7 +19,10 @@
       "Defines acceptance criteria and risks for the security-review recipe slice.",
       "Proposes a dependency-aware Beads graph without making durable edits."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The SDD skill should stay in planning mode, clarify intent/constraints/non-goals, define acceptance criteria and risks, and propose—not execute—a dependency-aware Beads graph.",
+    "fixture_intent": "Difficult scenario for `sdd`: exercises behavior the skill is expected to improve over baseline."
   },
   {
     "skills": [
@@ -39,7 +42,10 @@
       "Proposes a failing test or spec check first when practical.",
       "Defines implementation and verification steps without editing files."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The SDD skill should define a small reversible TDD slice with a failing check, implementation steps, and verification steps without editing files.",
+    "fixture_intent": "Normal scenario for `sdd`: exercises behavior the skill is expected to improve over baseline."
   },
   {
     "skills": [
@@ -61,6 +67,9 @@
       "Treats quality gates as product requirements.",
       "Reports explicit release done criteria."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The SDD skill should evaluate release readiness with an explicit matrix covering tests, docs, install safety, recipe validation, rollback, observability, and blockers.",
+    "fixture_intent": "Very Difficult scenario for `sdd`: exercises behavior the skill is expected to improve over baseline."
   }
 ]

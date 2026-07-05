@@ -15,6 +15,9 @@
       "Follows the review workflow shape described by the recipe and subrecipe.",
       "Checks or proposes relevant validation commands for recipe/harness changes.",
       "Reports Beads state expectations, git status expectations, files reviewed, and remaining risks."
-    ]
+    ],
+    "difficulty": "normal",
+    "expected_skill_contribution": "The recipe should route the review through harness-review behavior, covering validation, Beads hygiene, git status expectations, and safe handoff.",
+    "fixture_intent": "Baseline scenario for non-skill harness subject evaluation."
   }
 ]

@@ -17,7 +17,10 @@
       "Uses focused extensions and avoids writes.",
       "Returns evidence and next safe steps."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The orchestration skill should explicitly select a read-only research/review flow, use focused tools, avoid writes, and report evidence plus safe next steps.",
+    "fixture_intent": "Normal scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
   },
   {
     "skills": [
@@ -38,7 +41,10 @@
       "Gives delegated workers read-only constraints and non-overlapping scopes when delegation is used.",
       "Synthesizes findings into a single risk-ranked result with evidence."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The orchestration skill should decide whether delegation improves coverage, use non-overlapping read-only scopes when delegating, or clearly justify direct inspection, then synthesize risks.",
+    "fixture_intent": "Difficult scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
   },
   {
     "skills": [
@@ -58,6 +64,9 @@
       "States that subagents cannot coordinate with each other.",
       "Defines write permissions, validation expectations, and output format."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The orchestration skill should produce a split-work contract with exclusive scopes, write permissions, validation expectations, output format, and the invariant that subagents cannot coordinate with each other.",
+    "fixture_intent": "Very Difficult scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
   }
 ]

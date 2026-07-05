@@ -19,7 +19,10 @@
       "Requests or captures screenshots/browser evidence when possible.",
       "Ranks the top issues by user impact."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The UI/UX skill should produce a user-impact-ranked review with evidence for hierarchy, visual quality, accessibility, and responsive behavior.",
+    "fixture_intent": "Normal scenario for `ui-ux-quality`: exercises behavior the skill is expected to improve over baseline."
   },
   {
     "skills": [
@@ -42,7 +45,10 @@
       "Separates accessibility blockers from content/discovery polish.",
       "Provides reproduction steps or exact locations for issues."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The UI/UX skill should focus on navigation and contributor discovery, separating accessibility blockers from content/discovery polish with concrete locations or reproduction steps.",
+    "fixture_intent": "Difficult scenario for `ui-ux-quality`: exercises behavior the skill is expected to improve over baseline."
   },
   {
     "skills": [
@@ -62,6 +68,9 @@
       "Distinguishes design-system blockers from recommendations.",
       "Creates or proposes Beads follow-ups for product work."
     ],
-    "max_turns": 100
+    "max_turns": 100,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The UI/UX skill should evaluate CSS/layout tokens as a design-system surface, separate blockers from recommendations, and propose Beads follow-ups for product/design-system work.",
+    "fixture_intent": "Very Difficult scenario for `ui-ux-quality`: exercises behavior the skill is expected to improve over baseline."
   }
 ]
