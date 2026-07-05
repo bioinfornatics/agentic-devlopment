@@ -23,7 +23,7 @@
       "Runs recipe validation for changed recipes.",
       "Reports files changed, validation performed, Beads state, git status, and remaining risks in a concise handoff, then stops."
     ],
-    "max_turns": 40,
+    "max_turns": 150,
     "difficulty": "normal",
     "expected_skill_contribution": "The agentic harness skill should enforce the durable-edit loop: Beads state first, scoped plan before mutation, minimal recipe change, targeted recipe validation, and a complete handoff.",
     "fixture_intent": "Normal scenario for `agentic-dev-harness`: exercises behavior the skill is expected to improve over baseline."
@@ -50,7 +50,7 @@
       "Produces a risk-ranked report with concrete evidence from harness files.",
       "Proposes Beads-compatible follow-ups (issue titles or `bd create` commands) without executing durable actions."
     ],
-    "max_turns": 25,
+    "max_turns": 150,
     "difficulty": "difficult",
     "expected_skill_contribution": "The skill should preserve a strict read-only review while still making an explicit orchestration/delegation decision and proposing Beads-compatible follow-ups without executing them.",
     "fixture_intent": "Difficult scenario for `agentic-dev-harness`: exercises behavior the skill is expected to improve over baseline."
@@ -78,7 +78,7 @@
       "Updates or closes the relevant Beads issue with the true outcome.",
       "Reports git status, files changed, validation performed, and remaining risks."
     ],
-    "max_turns": 40,
+    "max_turns": 150,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The skill should complete a scoped Beads-backed recipe task end to end: identify or create the scoped issue, avoid unrelated work, validate the recipe, update/close durable state, report git status, then stop.",
     "fixture_intent": "Very Difficult scenario for `agentic-dev-harness`: exercises behavior the skill is expected to improve over baseline."

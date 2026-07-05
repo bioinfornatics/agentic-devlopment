@@ -18,7 +18,7 @@
       "Claims selected work with `bd update <id> --claim` before modifications when claimable work exists; otherwise reports that no claimable work exists and avoids modifications.",
       "Summarizes selected scope and blockers, or summarizes the no-work-available state."
     ],
-    "max_turns": 100,
+    "max_turns": 150,
     "difficulty": "normal",
     "expected_skill_contribution": "The Beads skill should inspect durable ready state, claim work only when claimable work exists, and otherwise report the no-work state without modifying files.",
     "fixture_intent": "Normal scenario for `beads-harness`: exercises behavior the skill is expected to improve over baseline."
@@ -40,7 +40,7 @@
       "Uses requirement language rather than ambiguous blocks language.",
       "Verifies the result with a blocked/ready query."
     ],
-    "max_turns": 100,
+    "max_turns": 150,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The Beads skill should encode dependency direction correctly using requirement language, verify blocked/ready state, and avoid ambiguous “blocks” phrasing.",
     "fixture_intent": "Very Difficult scenario for `beads-harness`: exercises behavior the skill is expected to improve over baseline."
@@ -62,7 +62,7 @@
       "Does not store secrets, transient state, tasks, or long documentation in memory.",
       "Does not create `MEMORY.md` or markdown TODO files."
     ],
-    "max_turns": 100,
+    "max_turns": 150,
     "difficulty": "difficult",
     "expected_skill_contribution": "The Beads skill should store or propose only a short pointer memory with a stable key, avoiding long content, tasks, secrets, MEMORY.md, or markdown TODO tracking.",
     "fixture_intent": "Difficult scenario for `beads-harness`: exercises behavior the skill is expected to improve over baseline."

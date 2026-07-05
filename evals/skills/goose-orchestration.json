@@ -19,7 +19,7 @@
       "Finishes with a compact `Delegation audit` confirming no delegates were used and why.",
       "Returns concrete evidence and next safe steps."
     ],
-    "max_turns": 20,
+    "max_turns": 150,
     "difficulty": "normal",
     "expected_skill_contribution": "The orchestration skill should produce an explicit Orchestration decision naming the read-only research flow, avoid delegation (explaining why), and close with a Delegation audit — none of which a baseline agent will naturally produce.",
     "fixture_intent": "Normal scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
@@ -44,7 +44,7 @@
       "Synthesizes findings into a single risk-ranked result with evidence from the harness files.",
       "Closes with a compact `Delegation audit` listing delegated scopes or justifying direct inspection."
     ],
-    "max_turns": 25,
+    "max_turns": 150,
     "difficulty": "difficult",
     "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision before work and a Delegation audit after — a baseline will skip both and just inspect.",
     "fixture_intent": "Difficult scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
@@ -69,7 +69,7 @@
       "Defines write permissions, validation expectations, and output format for each worker.",
       "Closes with a compact `Delegation audit` listing the two workers and their scopes."
     ],
-    "max_turns": 30,
+    "max_turns": 150,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision, worker contracts with non-overlapping scopes, the verbatim coordination invariant, and a Delegation audit — all missing from baseline responses.",
     "fixture_intent": "Very Difficult scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
