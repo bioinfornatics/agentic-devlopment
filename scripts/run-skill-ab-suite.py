@@ -210,7 +210,7 @@ def main() -> int:
     parser.add_argument("--no-feedback", action="store_true", help="Skip automatic feedback generation for each eval run.")
     parser.add_argument("--runs-per-config", type=int, default=1)
     parser.add_argument("--skills", nargs="*", help="Optional subset. Defaults to every evals/skills/*.json file.")
-    parser.add_argument("--mode", choices=["with-without"], default="with-without", help="Suite currently supports the with/without baseline mode.")
+    parser.add_argument("--mode", choices=["with-without", "with-without-available"], default="with-without", help="Eval comparison mode forwarded to per-skill runs.")
     parser.add_argument("--max-turns", type=int, default=8)
     parser.add_argument("--timeout", type=int, default=900)
     parser.add_argument("--grade-timeout", type=int, default=300)
@@ -294,6 +294,8 @@ def main() -> int:
             cmd.append("--no-history")
         else:
             cmd.extend(["--history-db", str(args.history_db)])
+        if args.mode != "with-without":  # non-default modes must be forwarded explicitly
+            cmd.extend(["--mode", args.mode])
         if args.no_feedback:
             cmd.append("--no-feedback")
 

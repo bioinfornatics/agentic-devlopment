@@ -79,6 +79,18 @@ python scripts/render-skill-eval-review.py \
 
 Use `scripts/run-skill-ab-eval.py` for behavioral review. It creates isolated copied worktrees under `dist/evals/`, runs Goose for each scenario, grades each output with an LLM, aggregates `benchmark.json`, and renders the skill-creator HTML review.
 
+#### Eval modes
+
+The runner supports three comparison modes:
+
+| Mode | Configs generated | Purpose |
+|---|---|---|
+| `with-without` (default) | `with_skill`, `without_skill` | Core skill-vs-baseline delta |
+| `with-without-available` | `with_skill`, `available_skill`, `without_skill` | Separates skill content quality from skill discoverability |
+| `old-new` | `new_skill`, `old_skill` | Compare two skill versions |
+
+**`available_skill`** installs the skill directory under the isolated Goose home (so `goose skills list` can find it) but does **not** inject the SKILL.md content into the prompt. This tests whether the agent can discover and apply the skill on its own — separate from whether the skill content is high-quality when directly provided.
+
 Single-skill `with_skill` / `without_skill` run:
 
 ```bash
@@ -244,7 +256,38 @@ dist/evals/recipes/<recipe-name>/<content-hash>/
 
 Agent subjects resolve to `.agents/agents/<agent-name>.md`. Recipe subjects resolve to `.goose/recipes/<recipe-name>.yaml`; recipe evals also run `goose recipe validate` and a `--render-recipe` smoke before model execution, writing `recipe_checks.json` in the subject workspace. The generic runner supports `--mode old-new --baseline-git-ref <ref>` for skills, agents, and recipes.
 
-### 4. Execute old/new A/B after changing a skill
+### 4. Run the analysis and quality gate
+
+After a suite run, analyze the artifacts and check for structural problems:
+
+```bash
+python scripts/analyze-skill-eval-results.py \
+  --check \
+  --max-turn-threshold 0.5 \
+  --negative-delta-gate \
+  --efficiency-gate
+```
+
+`--check` enables the quality gate; it exits 1 on hard failures and prints warnings for soft issues:
+
+| Gate | Severity | Triggers when |
+|---|---|---|
+| `--max-turn-threshold` (default 0.5) | **FAIL** | >50 % of scenarios in a subject hit max turns |
+| `--negative-delta-gate` | WARN | Any subject has ≥1 negative skill delta scenario |
+| `--efficiency-gate` | WARN | pass_rate=1.0 AND max_turns_reached in the same run (answer-key contamination) |
+| Model errors | WARN | Any run contains detected Azure/model content-filter events |
+
+Use the analysis output to decide whether to fix the **skill**, the **eval fixture**, or the **runner** — in that order of preference.
+
+```bash
+# View analysis summary
+cat dist/evals/skills/analysis-summary.md
+
+# Open analysis index
+xdg-open dist/evals/skills/analysis-index.html
+```
+
+### 5. Execute old/new A/B after changing a skill
 
 Prefer a git ref for the original baseline when the previous version is committed. This avoids manual snapshot directories:
 
@@ -277,7 +320,7 @@ Fallbacks remain available:
 
 The benchmark tab supports dynamic configuration names, so the same viewer works for `with_skill` / `without_skill` and `new_skill` / `old_skill`. No project-local viewer fork is needed unless we want UI features beyond the upstream skill-creator viewer.
 
-### 5. Interpret and iterate
+### 6. Interpret and iterate
 
 1. Compare behavior against `baseline_gaps` and `expected_behavior`.
 2. Inspect both the output tab and benchmark tab.
@@ -319,7 +362,7 @@ A skill evaluation update is done when:
 - recipe validation still passes if routing changed.
 
 - Use `fixture_patch` for deterministic review scenarios instead of relying on the caller's current diff.
-- Use per-scenario `max_turns` for complex planning, review, browser, or Beads workflows; current harness evals default to 100 for robust analysis runs.
+- Use per-scenario `max_turns` to balance task complexity with efficiency. Current harness evals use lower values (20–50) to detect saturation; only raise above 50 when the task genuinely requires deep sequential reasoning (browser flows, long Beads-backed pipelines).
 
 
 ## Difficulty ladder

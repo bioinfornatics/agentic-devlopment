@@ -56,6 +56,7 @@ class Config:
     skill_dirs: tuple[Path, ...] = ()
     baseline_note: str = ""
     include_grading_hints: bool = False
+    inject_mode: str = "inject"  # "inject" = full SKILL.md in prompt; "available" = installed in home but not in prompt; "none" = nothing
 
 
 def slug(value: str, limit: int = 64) -> str:
@@ -72,7 +73,7 @@ def write_json(path: Path, data: Any) -> None:
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
 
 
-def copy_minimal_goose_config(home: Path) -> None:
+def copy_minimal_goose_config(home: Path, available_skill_dirs: tuple[Path, ...] = ()) -> None:
     """Create an isolated Goose home with provider config but no project skills/agents/recipes."""
     config_src = Path.home() / ".config" / "goose"
     config_dst = home / ".config" / "goose"
@@ -90,9 +91,15 @@ def copy_minimal_goose_config(home: Path) -> None:
     custom_src = config_src / "custom_providers"
     if custom_src.exists():
         shutil.copytree(custom_src, config_dst / "custom_providers", dirs_exist_ok=True)
+    # Install available skills into isolated home (without injecting into prompt)
+    for skill_dir in available_skill_dirs:
+        if skill_dir.is_dir():
+            dst = agents_dst / "skills" / skill_dir.name
+            dst.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(skill_dir, dst, dirs_exist_ok=True)
 
 
-def prepare_goose_environment(args: argparse.Namespace, run_dir: Path) -> tuple[dict[str, str], Path, Path | None]:
+def prepare_goose_environment(args: argparse.Namespace, run_dir: Path, config: "Config | None" = None) -> tuple[dict[str, str], Path, Path | None]:
     """Return env, neutral cwd, and optional isolated home for a Goose subprocess.
 
     The isolated cwd intentionally lives under the temporary HOME, not under the
@@ -109,7 +116,10 @@ def prepare_goose_environment(args: argparse.Namespace, run_dir: Path) -> tuple[
     home = run_dir / "goose-home"
     if home.exists():
         shutil.rmtree(home)
-    copy_minimal_goose_config(home)
+    available_skill_dirs: tuple[Path, ...] = ()
+    if config is not None and getattr(config, "inject_mode", "inject") == "available":
+        available_skill_dirs = config.skill_dirs
+    copy_minimal_goose_config(home, available_skill_dirs=available_skill_dirs)
     neutral_cwd = home / "cwd"
     neutral_cwd.mkdir(parents=True, exist_ok=True)
     env["HOME"] = str(home)
@@ -223,8 +233,13 @@ def build_eval_prompt(
     config: Config,
     repo_root: Path,
 ) -> str:
-    skill_content = ""
-    if config.skill_dirs:
+    if config.inject_mode == "available":
+        skill_content = (
+            "Project skills are installed in your Goose environment and available for discovery "
+            "(e.g. via `goose skills list`). Load and use the relevant project skill as you normally "
+            "would rather than reading SKILL.md manually. The skill content is NOT pre-loaded here."
+        )
+    elif config.skill_dirs:
         skill_content = "\n\n".join(load_skill_bundle(path) for path in config.skill_dirs)
     else:
         skill_content = (
@@ -1003,6 +1018,29 @@ def prepare_configs(args: argparse.Namespace, scenario: dict[str, Any]) -> list[
                 skill_dirs=(baseline,),
             ),
         ]
+    if args.mode == "with-without-available":
+        skill_names = scenario.get("skills") or [args.skill]
+        skill_dirs = tuple(ROOT / ".agents" / "skills" / name for name in skill_names)
+        return [
+            Config(
+                name="with_skill",
+                description=f"Run with project skill material for: {', '.join(skill_names)}.",
+                skill_dirs=skill_dirs,
+                inject_mode="inject",
+            ),
+            Config(
+                name="available_skill",
+                description=f"Project skills installed in Goose home but not injected in prompt: {', '.join(skill_names)}.",
+                skill_dirs=skill_dirs,
+                inject_mode="available",
+            ),
+            Config(
+                name="without_skill",
+                description="Baseline run without project skill material injected into the prompt.",
+                baseline_note=f"Do not load or intentionally follow `{args.skill}` or the scenario's listed project skills.",
+                inject_mode="none",
+            ),
+        ]
     raise SystemExit(f"Unsupported mode: {args.mode}")
 
 
@@ -1385,7 +1423,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run real A/B evals for one project skill.")
     parser.add_argument("--skill", required=True, help="Skill/eval name, e.g. code-review")
     parser.add_argument("--eval-file", type=Path, help="Defaults to evals/skills/<skill>.json")
-    parser.add_argument("--mode", choices=["with-without", "old-new"], default="with-without")
+    parser.add_argument("--mode", choices=["with-without", "old-new", "with-without-available"], default="with-without")
     parser.add_argument("--baseline-skill-dir", type=Path, help="Old skill directory for old-new mode. Mutually exclusive with --baseline-git-ref.")
     parser.add_argument("--candidate-skill-dir", type=Path, help="New skill directory for old-new mode. Mutually exclusive with --candidate-git-ref.")
     parser.add_argument("--baseline-git-ref", help="Git ref to use as old_skill in old-new mode, e.g. HEAD, HEAD~1, origin/main, or a tag.")
@@ -1481,6 +1519,7 @@ def main() -> int:
                     skill_dirs=config.skill_dirs,
                     baseline_note=config.baseline_note,
                     include_grading_hints=True,
+                    inject_mode=config.inject_mode,
                 )
             for run_number in range(1, args.runs_per_config + 1):
                 run_dir = eval_dir / config.name / f"run-{run_number}"
@@ -1488,7 +1527,7 @@ def main() -> int:
                 copy_worktree(ROOT, worktree)
                 initialize_worktree_git(worktree)
                 apply_fixture_patch(scenario, worktree)
-                goose_env, goose_cwd, goose_home = prepare_goose_environment(args, run_dir)
+                goose_env, goose_cwd, goose_home = prepare_goose_environment(args, run_dir, config=config)
                 prompt = build_eval_prompt(
                     skill_name=args.skill,
                     scenario=scenario,
@@ -1557,6 +1596,8 @@ def main() -> int:
                     heartbeat_label=feedback_label,
                 )
                 print(f"[done] {feedback_label}", flush=True)
+                metadata["inject_mode"] = config.inject_mode
+                metadata["available_skills"] = [d.name for d in config.skill_dirs] if config.inject_mode == "available" else []
                 write_run_artifacts(
                     run_dir=run_dir,
                     metadata=metadata,

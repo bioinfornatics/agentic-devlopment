@@ -13,13 +13,15 @@
       "Agent may use too many broad tools."
     ],
     "expected_behavior": [
-      "Selects a research or review flow and keeps it read-only.",
-      "Uses focused extensions and avoids writes.",
-      "Returns evidence and next safe steps."
+      "States an explicit `Orchestration decision` before starting work, naming the selected flow (read-only research) and explaining why delegation is not needed.",
+      "Keeps the investigation strictly read-only with no file edits or Beads writes.",
+      "Uses focused extensions and avoids broad scans.",
+      "Finishes with a compact `Delegation audit` confirming no delegates were used and why.",
+      "Returns concrete evidence and next safe steps."
     ],
-    "max_turns": 100,
+    "max_turns": 20,
     "difficulty": "normal",
-    "expected_skill_contribution": "The orchestration skill should explicitly select a read-only research/review flow, use focused tools, avoid writes, and report evidence plus safe next steps.",
+    "expected_skill_contribution": "The orchestration skill should produce an explicit Orchestration decision naming the read-only research flow, avoid delegation (explaining why), and close with a Delegation audit — none of which a baseline agent will naturally produce.",
     "fixture_intent": "Normal scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
   },
   {
@@ -37,13 +39,14 @@
       "Agent may not synthesize results into one ranked answer."
     ],
     "expected_behavior": [
-      "Uses async delegation only for independent recipe, skill, and documentation scopes, or explains why direct inspection is sufficient.",
-      "Gives delegated workers read-only constraints and non-overlapping scopes when delegation is used.",
-      "Synthesizes findings into a single risk-ranked result with evidence."
+      "States an explicit `Orchestration decision` with the selected flow and a reasoned delegation choice before starting work.",
+      "When delegating, assigns non-overlapping read-only scopes; when not delegating, states why direct inspection is sufficient.",
+      "Synthesizes findings into a single risk-ranked result with evidence from the harness files.",
+      "Closes with a compact `Delegation audit` listing delegated scopes or justifying direct inspection."
     ],
-    "max_turns": 100,
+    "max_turns": 25,
     "difficulty": "difficult",
-    "expected_skill_contribution": "The orchestration skill should decide whether delegation improves coverage, use non-overlapping read-only scopes when delegating, or clearly justify direct inspection, then synthesize risks.",
+    "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision before work and a Delegation audit after — a baseline will skip both and just inspect.",
     "fixture_intent": "Difficult scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
   },
   {
@@ -60,13 +63,15 @@
       "Agent may omit output contracts."
     ],
     "expected_behavior": [
-      "Assigns non-overlapping file or module scopes.",
-      "States that subagents cannot coordinate with each other.",
-      "Defines write permissions, validation expectations, and output format."
+      "States an explicit `Orchestration decision` identifying the implementation-split flow before listing worker contracts.",
+      "Assigns non-overlapping file or module scopes to each worker.",
+      "States the coordination invariant verbatim: 'Subagents cannot coordinate with each other; the parent/orchestrator owns scope partitioning, context passing, integration, and synthesis.'",
+      "Defines write permissions, validation expectations, and output format for each worker.",
+      "Closes with a compact `Delegation audit` listing the two workers and their scopes."
     ],
-    "max_turns": 100,
+    "max_turns": 30,
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "The orchestration skill should produce a split-work contract with exclusive scopes, write permissions, validation expectations, output format, and the invariant that subagents cannot coordinate with each other.",
+    "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision, worker contracts with non-overlapping scopes, the verbatim coordination invariant, and a Delegation audit — all missing from baseline responses.",
     "fixture_intent": "Very Difficult scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
   }
 ]

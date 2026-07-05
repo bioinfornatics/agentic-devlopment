@@ -38,6 +38,44 @@ ROOT_CAUSES = {
 }
 
 
+MODEL_ERROR_PATTERNS = (
+    "invalid_content",
+    "content filter",
+    "content was filtered",
+    "filtered by azure",
+    "azure content policy",
+    "responsible ai",
+    "content_filter",
+    "invalid content",
+)
+
+
+def detect_model_errors(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Detect Azure/model content errors in the event stream."""
+    errors: list[dict[str, Any]] = []
+    for event in events:
+        event_type = str(event.get("type", ""))
+        if event_type in ("error", "model_error", "provider_error"):
+            errors.append({"type": event_type, "event": event})
+            continue
+        message = event.get("message") if isinstance(event.get("message"), dict) else {}
+        for item in message.get("content", []) if isinstance(message.get("content"), list) else []:
+            text = ""
+            if item.get("type") == "text":
+                text = str(item.get("text", ""))
+            elif item.get("type") == "toolResponse":
+                result = item.get("toolResult", {}).get("value", {}) if isinstance(item.get("toolResult"), dict) else {}
+                text = str(result) if isinstance(result, str) else json.dumps(result)[:500]
+            lower = text.lower()
+            if any(pat in lower for pat in MODEL_ERROR_PATTERNS):
+                errors.append({
+                    "type": "model_error_in_content",
+                    "pattern_matched": next(pat for pat in MODEL_ERROR_PATTERNS if pat in lower),
+                    "excerpt": text[:200],
+                })
+    return errors
+
+
 def read_json(path: Path, default: Any = None) -> Any:
     if not path.exists():
         return default
@@ -295,6 +333,7 @@ def classify_root_causes(bad_actions: list[dict[str, Any]], grading: dict[str, A
 
 def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: int, configuration: str) -> dict[str, Any]:
     events = parse_events(run_dir / "outputs" / "events.jsonl")
+    model_errors = detect_model_errors(events)
     timeline = timeline_from_events(events)
     audit = read_json(run_dir / "audit.json", {}) or {}
     grading = read_json(run_dir / "grading.json", {}) or {}
@@ -318,6 +357,8 @@ def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: 
         "root_causes": root_causes,
         "feedback": feedback,
         "confidence": confidence_for_run(grading, timing, events),
+        "model_errors": model_errors,
+        "model_error_count": len(model_errors),
     }
     write_json(run_dir / "analysis.json", analysis)
     (run_dir / "sequence.mmd").write_text(mermaid_sequence(timeline, f"{subject} eval-{eval_id} {configuration} {run_dir.name}"))
@@ -481,11 +522,14 @@ def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, An
                 run_analyses[config_dir.name] = analysis
         with_run = run_analyses.get("with_skill") or run_analyses.get("new_skill")
         without_run = run_analyses.get("without_skill") or run_analyses.get("old_skill")
+        total_model_errors = sum(run.get("model_error_count", 0) for run in run_analyses.values())
         scenario_analysis = {
             "subject": subject,
             "content_hash": run_dir.name,
             "eval_id": eval_id,
             "query": scenario.get("query"),
+            "difficulty": scenario.get("difficulty", "unknown"),
+            "expected_skill_contribution": scenario.get("expected_skill_contribution", ""),
             "skill_impact": skill_impact(with_run, without_run),
             "scenario_quality": scenario_quality(with_run, without_run, scenario),
             "with_score": with_run.get("score", {}).get("pass_rate") if with_run else None,
@@ -496,6 +540,8 @@ def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, An
             "bad_actions": sum((run.get("bad_actions", []) for run in run_analyses.values()), []),
             "max_turn_warning": any(run.get("turns", {}).get("reached_max") for run in run_analyses.values()),
             "confidence": round(sum(run.get("confidence", 0.0) for run in run_analyses.values()) / max(1, len(run_analyses)), 2),
+            "model_error_count": total_model_errors,
+            "has_model_errors": total_model_errors > 0,
         }
         llm_analysis = run_llm_analysis(args, subject, scenario_analysis, with_run, without_run)
         if llm_analysis is not None:
@@ -518,8 +564,15 @@ def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, An
 
 def scenario_analysis_md(analysis: dict[str, Any]) -> str:
     lines = [f"# Scenario Analysis — {analysis['subject']} eval-{analysis['eval_id']}", ""]
+    difficulty = analysis.get("difficulty", "unknown")
+    lines.append(f"- difficulty: **{difficulty}**")
     for key in ["skill_impact", "scenario_quality", "with_score", "without_score", "with_turns", "without_turns", "confidence"]:
         lines.append(f"- {key}: {analysis.get(key)}")
+    if analysis.get("model_error_count", 0) > 0:
+        lines.append(f"- ⚠ model_errors: {analysis['model_error_count']} (may skew pass-rate baselines)")
+    if analysis.get("expected_skill_contribution"):
+        lines.append("")
+        lines.append(f"*Expected skill contribution:* {analysis['expected_skill_contribution']}")
     lines.append("")
     lines.append("## Root causes")
     lines.extend(f"- `{cause}`" for cause in analysis.get("root_causes", []) or ["none"])
@@ -540,16 +593,30 @@ def scenario_analysis_md(analysis: dict[str, Any]) -> str:
 
 def subject_analysis_md(analysis: dict[str, Any]) -> str:
     lines = [f"# Evaluation Analysis — {analysis['subject']}", "", f"Content hash: `{analysis['content_hash']}`", ""]
-    lines.append("| Eval | Impact | Quality | With | Without | Turns W/B | Max-turn | Confidence | Root causes |")
-    lines.append("|---:|---|---|---:|---:|---:|---|---:|---|")
+    lines.append("| Eval | Difficulty | Impact | Quality | With | Without | Turns W/B | Max-turn | Model errs | Confidence | Root causes |")
+    lines.append("|---:|---|---|---|---:|---:|---:|---|---:|---:|---|")
     for item in analysis.get("scenarios", []):
+        model_err_col = str(item.get("model_error_count", 0)) if item.get("has_model_errors") else ""
         lines.append(
-            f"| {item['eval_id']} | {item['skill_impact']} | {item['scenario_quality']} | {item.get('with_score')} | {item.get('without_score')} | {item.get('with_turns')}/{item.get('without_turns')} | {'⚠' if item.get('max_turn_warning') else ''} | {item.get('confidence')} | {', '.join(item.get('root_causes', []))} |"
+            f"| {item['eval_id']} | {item.get('difficulty','?')} | {item['skill_impact']} | {item['scenario_quality']} | {item.get('with_score')} | {item.get('without_score')} | {item.get('with_turns')}/{item.get('without_turns')} | {'⚠' if item.get('max_turn_warning') else ''} | {model_err_col} | {item.get('confidence')} | {', '.join(item.get('root_causes', []))} |"
         )
     lines.append("")
     lines.append("## Recurring root causes")
     for cause, count in analysis.get("recurring_root_causes", []):
         lines.append(f"- `{cause}`: {count}")
+    # Difficulty breakdown
+    by_difficulty: dict[str, list[dict[str, Any]]] = {}
+    for s in analysis.get("scenarios", []):
+        by_difficulty.setdefault(s.get("difficulty", "unknown"), []).append(s)
+    if any(v for v in by_difficulty.values()):
+        lines.append("")
+        lines.append("## By difficulty")
+        for diff in ["normal", "difficult", "very_difficult", "unknown"]:
+            items = by_difficulty.get(diff, [])
+            if not items:
+                continue
+            impacts = [s.get("skill_impact", "?") for s in items]
+            lines.append(f"- **{diff}**: {', '.join(impacts)}")
     return "\n".join(lines) + "\n"
 
 
@@ -715,6 +782,14 @@ def main() -> int:
     parser.add_argument("--model")
     parser.add_argument("--llm-timeout", type=int, default=300)
     parser.add_argument("--llm-max-turns", type=int, default=2)
+    parser.add_argument("--check", action="store_true",
+                        help="Enable quality gate checking. Exits 1 if hard thresholds are violated.")
+    parser.add_argument("--max-turn-threshold", type=float, default=0.5, metavar="RATE",
+                        help="Gate: FAIL if max-turn hit rate across scenarios exceeds this fraction (default: 0.5).")
+    parser.add_argument("--negative-delta-gate", action="store_true",
+                        help="Gate: WARN if any subject has one or more negative skill delta scenarios.")
+    parser.add_argument("--efficiency-gate", action="store_true",
+                        help="Gate: WARN if any scenario has pass_rate=1.0 AND max_turns_reached (answer-key leakage suspected).")
     args = parser.parse_args()
 
     analyses = []
@@ -727,6 +802,67 @@ def main() -> int:
         persist_analysis(args.db, analyses, args.workspace_root)
     print(f"Analyzed {len(analyses)} subjects under {args.workspace_root}")
     print(f"Summary: {args.workspace_root / 'analysis-summary.md'}")
+
+    if args.check:
+        gate_failures: list[str] = []
+        gate_warnings: list[str] = []
+        for analysis in analyses:
+            subject = analysis["subject"]
+            scenarios = analysis.get("scenarios", [])
+            n = len(scenarios)
+            if n == 0:
+                continue
+            # Hard gate: max-turn hit rate
+            max_turn_hit_count = sum(1 for s in scenarios if s.get("max_turn_warning"))
+            max_turn_rate = max_turn_hit_count / n
+            if max_turn_rate > args.max_turn_threshold:
+                gate_failures.append(
+                    f"FAIL [{subject}]: max-turn hit rate {max_turn_rate:.0%} > threshold {args.max_turn_threshold:.0%} "
+                    f"({max_turn_hit_count}/{n} scenarios)"
+                )
+            # Soft gate: negative delta
+            if args.negative_delta_gate:
+                neg_count = sum(1 for s in scenarios if s.get("skill_impact") == "negative")
+                if neg_count > 0:
+                    gate_warnings.append(
+                        f"WARN [{subject}]: {neg_count} scenario(s) with negative skill delta"
+                    )
+            # Soft gate: efficiency (pass_rate=1.0 but max turns hit)
+            if args.efficiency_gate:
+                for s in scenarios:
+                    diff = s.get("difficulty", "?")
+                    eid = s.get("eval_id", "?")
+                    if s.get("max_turn_warning") and s.get("with_score") == 1.0:
+                        gate_warnings.append(
+                            f"WARN [{subject}] eval-{eid} ({diff}): with_skill pass_rate=1.0 AND max_turns_reached "
+                            f"— possible answer-key leakage or scenario too easy"
+                        )
+                    if s.get("max_turn_warning") and s.get("without_score") == 1.0:
+                        gate_warnings.append(
+                            f"WARN [{subject}] eval-{eid} ({diff}): without_skill pass_rate=1.0 AND max_turns_reached "
+                            f"— baseline contamination suspected"
+                        )
+            # Soft gate: model errors
+            for s in scenarios:
+                if s.get("has_model_errors"):
+                    gate_warnings.append(
+                        f"WARN [{subject}] eval-{s.get('eval_id', '?')} ({s.get('difficulty','?')}): "
+                        f"{s.get('model_error_count', 0)} model error(s) detected — runs may skew baselines"
+                    )
+
+        print("\n## Quality Gate\n")
+        for item in gate_failures + gate_warnings:
+            print(f"  {item}")
+        if not gate_failures and not gate_warnings:
+            print("  All checks passed.")
+        if gate_failures:
+            print(f"\nQuality gate: FAIL ({len(gate_failures)} failure(s), {len(gate_warnings)} warning(s))")
+            return 1
+        elif gate_warnings:
+            print(f"\nQuality gate: WARN ({len(gate_warnings)} warning(s))")
+        else:
+            print("\nQuality gate: PASS")
+
     return 0
 
 
