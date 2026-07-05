@@ -4,6 +4,10 @@
 *.db
 .beads-credential-key
 
+# Python cache
+__pycache__/
+*.py[cod]
+
 # Generated documentation/build outputs
 dist/
 
