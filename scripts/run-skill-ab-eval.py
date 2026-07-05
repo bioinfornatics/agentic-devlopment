@@ -406,8 +406,6 @@ def calculate_stats(values: list[float]) -> dict[str, float]:
 
 def parse_stream_json_output(raw: str) -> tuple[list[dict[str, Any]], str, str]:
     events: list[dict[str, Any]] = []
-    transcript: list[str] = []
-    text_parts: list[str] = []
     for line in raw.splitlines():
         stripped = line.strip()
         if not stripped.startswith("{"):
@@ -416,32 +414,168 @@ def parse_stream_json_output(raw: str) -> tuple[list[dict[str, Any]], str, str]:
             event = json.loads(stripped)
         except json.JSONDecodeError:
             continue
-        if not isinstance(event, dict):
-            continue
-        events.append(event)
+        if isinstance(event, dict):
+            events.append(event)
+    segments = stream_segments(events)
+    transcript = render_stream_transcript(segments)
+    response_text = "".join(segment.get("text", "") for segment in segments if segment.get("type") == "message" and segment.get("role") == "assistant").strip()
+    return events, transcript, response_text
+
+
+def stream_segments(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    segments: list[dict[str, Any]] = []
+    for event in events:
         message = event.get("message") if isinstance(event.get("message"), dict) else {}
-        role = message.get("role", event.get("type", "event"))
+        role = str(message.get("role", event.get("type", "event")))
+        message_id = str(message.get("id", ""))
         for item in message.get("content", []) if isinstance(message.get("content"), list) else []:
             item_type = item.get("type")
             if item_type == "text":
                 text = str(item.get("text", ""))
-                text_parts.append(text)
-                transcript.append(f"[{role}] {text}")
+                if segments and segments[-1].get("type") == "message" and segments[-1].get("role") == role and segments[-1].get("id") == message_id:
+                    segments[-1]["text"] += text
+                else:
+                    segments.append({"type": "message", "role": role, "id": message_id, "text": text})
             elif item_type == "toolRequest":
                 tool_call = item.get("toolCall", {}).get("value", {}) if isinstance(item.get("toolCall"), dict) else {}
-                name = tool_call.get("name", "tool")
-                arguments = tool_call.get("arguments", {})
-                transcript.append(f"[tool request] {name} {json.dumps(arguments, ensure_ascii=False)}")
+                segments.append({
+                    "type": "tool_request",
+                    "id": item.get("id"),
+                    "name": tool_call.get("name", "tool"),
+                    "arguments": tool_call.get("arguments", {}),
+                    "extension": item.get("_meta", {}).get("goose_extension") if isinstance(item.get("_meta"), dict) else None,
+                })
             elif item_type == "toolResponse":
                 result = item.get("toolResult", {}).get("value", {}) if isinstance(item.get("toolResult"), dict) else {}
                 structured = result.get("structuredContent", {}) if isinstance(result, dict) else {}
-                if structured:
-                    transcript.append(f"[tool response] {json.dumps(structured, ensure_ascii=False)[:4000]}")
-                else:
-                    transcript.append(f"[tool response] {json.dumps(result, ensure_ascii=False)[:4000]}")
+                segments.append({
+                    "type": "tool_response",
+                    "id": item.get("id"),
+                    "structured": structured,
+                    "result": result,
+                    "is_error": bool(result.get("isError")) if isinstance(result, dict) else False,
+                })
         if event.get("type") == "complete":
-            transcript.append(f"[complete] {json.dumps(event, ensure_ascii=False)}")
-    return events, "\n".join(transcript).strip(), "".join(text_parts).strip()
+            segments.append({
+                "type": "complete",
+                "total_tokens": event.get("total_tokens"),
+                "input_tokens": event.get("input_tokens"),
+                "output_tokens": event.get("output_tokens"),
+            })
+    return segments
+
+
+def render_stream_transcript(segments: list[dict[str, Any]]) -> str:
+    lines: list[str] = []
+    for segment in segments:
+        segment_type = segment.get("type")
+        if segment_type == "message":
+            text = str(segment.get("text", "")).strip()
+            if text:
+                lines.append(f"[{segment.get('role')}] {text}")
+        elif segment_type == "tool_request":
+            lines.append(f"[tool request] {segment.get('name')} {json.dumps(segment.get('arguments', {}), ensure_ascii=False)}")
+        elif segment_type == "tool_response":
+            payload = segment.get("structured") or segment.get("result") or {}
+            lines.append(f"[tool response] {json.dumps(payload, ensure_ascii=False)[:4000]}")
+        elif segment_type == "complete":
+            lines.append(f"[complete] {json.dumps(segment, ensure_ascii=False)}")
+    return "\n".join(lines).strip()
+
+
+def render_conversation_markdown(events: list[dict[str, Any]], transcript: str, raw_stdout: str, audit: dict[str, Any]) -> str:
+    segments = stream_segments(events)
+    lines = ["# Conversation Log", ""]
+    lines.extend([
+        "## Summary",
+        "",
+        f"- Events: {len(events)}",
+        f"- Turns used: {audit.get('turns_used')}/{audit.get('max_turns')}",
+        f"- Max turns reached: {audit.get('max_turns_reached')}",
+        f"- Tool calls: {len(audit.get('tool_calls', []))}",
+        f"- Shell commands: {len(audit.get('commands', []))}",
+        f"- Beads actions: {len(audit.get('beads_actions', []))}",
+        f"- Browser actions: {len(audit.get('browser_actions', []))}",
+        "",
+    ])
+    if audit.get("loaded_skills"):
+        lines.extend(["## Loaded skills", ""])
+        for skill in audit.get("loaded_skills", []):
+            lines.append(f"- `{skill}`")
+        lines.append("")
+    lines.extend(["## Turns and events", ""])
+    message_count = 0
+    tool_count = 0
+    for segment in segments:
+        segment_type = segment.get("type")
+        if segment_type == "message":
+            message_count += 1
+            role = segment.get("role")
+            text = str(segment.get("text", "")).strip()
+            lines.extend([f"### {role} message {message_count}", "", text or "_empty_", ""])
+        elif segment_type == "tool_request":
+            tool_count += 1
+            lines.extend([
+                f"### Tool request {tool_count}: `{segment.get('name')}`",
+                "",
+                f"- Extension: `{segment.get('extension')}`",
+                "",
+                "```json",
+                json.dumps(segment.get("arguments", {}), indent=2, ensure_ascii=False),
+                "```",
+                "",
+            ])
+        elif segment_type == "tool_response":
+            lines.extend([
+                f"### Tool response {tool_count}",
+                "",
+                "```json",
+                json.dumps(segment.get("structured") or segment.get("result") or {}, indent=2, ensure_ascii=False)[:8000],
+                "```",
+                "",
+            ])
+        elif segment_type == "complete":
+            lines.extend([
+                "### Completion",
+                "",
+                "```json",
+                json.dumps(segment, indent=2, ensure_ascii=False),
+                "```",
+                "",
+            ])
+    if not segments and raw_stdout:
+        lines.extend(["## Raw stdout fallback", "", "```text", raw_stdout[:20000], "```", ""])
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def extract_loaded_skills_from_prompt(prompt: str) -> tuple[list[str], list[str]]:
+    skills: list[str] = []
+    evidence: list[str] = []
+    for line in prompt.splitlines():
+        match = re.match(r"^## Skill:\s*(.+?)\s*$", line.strip())
+        if match:
+            skill = match.group(1).strip()
+            skills.append(skill)
+            evidence.append(line.strip())
+    if not skills and "No project skill content is provided" in prompt:
+        evidence.append("No project skill content is provided for this baseline run.")
+    return sorted(dict.fromkeys(skills)), evidence
+
+
+def loaded_skills_markdown(skills: list[str], evidence: list[str]) -> str:
+    lines = ["# Loaded Skill Evidence", ""]
+    if skills:
+        lines.append("## Loaded skills")
+        lines.extend(f"- `{skill}`" for skill in skills)
+    else:
+        lines.append("No project skills were injected for this configuration.")
+    lines.append("")
+    lines.append("## Evidence")
+    if evidence:
+        lines.extend(f"- {item}" for item in evidence)
+    else:
+        lines.append("- No skill marker found in prompt.")
+    return "\n".join(lines) + "\n"
 
 
 def write_events(path: Path, events: list[dict[str, Any]]) -> None:
@@ -946,9 +1080,14 @@ def write_run_artifacts(
     outputs_dir = run_dir / "outputs"
     outputs_dir.mkdir(parents=True, exist_ok=True)
     write_json(run_dir / "eval_metadata.json", metadata)
+    loaded_skills, skill_evidence = extract_loaded_skills_from_prompt(prompt)
+    audit.setdefault("loaded_skills", loaded_skills)
+    audit.setdefault("skill_load_evidence", skill_evidence)
     (outputs_dir / "prompt.md").write_text(prompt)
     (outputs_dir / "response.md").write_text(stdout or "")
-    (outputs_dir / "raw_stdout.txt").write_text(raw_stdout or "")
+    (outputs_dir / "conversation.md").write_text(render_conversation_markdown(events, stdout or "", raw_stdout or "", audit))
+    (outputs_dir / "loaded_skills.md").write_text(loaded_skills_markdown(loaded_skills, skill_evidence))
+    (run_dir / "raw_stdout.txt").write_text(raw_stdout or "")
     write_events(outputs_dir / "events.jsonl", events)
     write_json(run_dir / "audit.json", audit)
     write_json(run_dir / "feedback.json", feedback)
@@ -1081,6 +1220,95 @@ def patch_benchmark_markdown(workspace: Path, run_summary: dict[str, Any], feedb
     path.write_text(content.rstrip() + "\n" + "\n".join(lines) + "\n")
 
 
+def patch_review_html_markdown(review_path: Path) -> None:
+    if not review_path.exists():
+        return
+    content = review_path.read_text(errors="replace")
+    marker = "<!-- harness markdown renderer -->"
+    if marker in content:
+        return
+    script = r"""
+<!-- harness markdown renderer -->
+<script>
+(function () {
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>\"']/g, function (c) {
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]);
+    });
+  }
+  function inlineMarkdown(s) {
+    return escapeHtml(s)
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  }
+  function renderMarkdown(md) {
+    const lines = String(md || '').split(/\r?\n/);
+    let html = '';
+    let inCode = false;
+    let listOpen = false;
+    for (const line of lines) {
+      if (/^```/.test(line)) {
+        if (listOpen) { html += '</ul>'; listOpen = false; }
+        if (!inCode) { html += '<pre><code>'; inCode = true; }
+        else { html += '</code></pre>'; inCode = false; }
+        continue;
+      }
+      if (inCode) { html += escapeHtml(line) + '\n'; continue; }
+      const h = line.match(/^(#{1,4})\s+(.*)$/);
+      if (h) {
+        if (listOpen) { html += '</ul>'; listOpen = false; }
+        const level = h[1].length;
+        html += '<h' + level + '>' + inlineMarkdown(h[2]) + '</h' + level + '>';
+        continue;
+      }
+      const li = line.match(/^\s*[-*]\s+(.*)$/);
+      if (li) {
+        if (!listOpen) { html += '<ul>'; listOpen = true; }
+        html += '<li>' + inlineMarkdown(li[1]) + '</li>';
+        continue;
+      }
+      if (!line.trim()) {
+        if (listOpen) { html += '</ul>'; listOpen = false; }
+        continue;
+      }
+      if (listOpen) { html += '</ul>'; listOpen = false; }
+      html += '<p>' + inlineMarkdown(line) + '</p>';
+    }
+    if (inCode) html += '</code></pre>';
+    if (listOpen) html += '</ul>';
+    return html;
+  }
+  function enhanceMarkdownBlocks() {
+    document.querySelectorAll('.output-file').forEach(function (fileDiv) {
+      if (fileDiv.dataset.mdRendered === '1') return;
+      const name = fileDiv.querySelector('.output-file-header span');
+      const pre = fileDiv.querySelector('.output-file-content > pre');
+      if (!name || !pre || !/\.md$/i.test(name.textContent || '')) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'markdown-rendered';
+      wrapper.innerHTML = renderMarkdown(pre.textContent || '');
+      pre.replaceWith(wrapper);
+      fileDiv.dataset.mdRendered = '1';
+    });
+  }
+  const style = document.createElement('style');
+  style.textContent = '.markdown-rendered{padding:.5rem 1rem;line-height:1.55}.markdown-rendered pre{background:#0f172a;color:#e2e8f0;padding:.75rem;border-radius:.5rem;overflow:auto}.markdown-rendered code{background:#e5e7eb;padding:.1rem .25rem;border-radius:.25rem}.markdown-rendered h1,.markdown-rendered h2,.markdown-rendered h3{margin:.8rem 0 .4rem}.markdown-rendered p{margin:.4rem 0}';
+  document.head.appendChild(style);
+  const observer = new MutationObserver(enhanceMarkdownBlocks);
+  observer.observe(document.body, {childList: true, subtree: true});
+  document.addEventListener('DOMContentLoaded', enhanceMarkdownBlocks);
+  setTimeout(enhanceMarkdownBlocks, 0);
+})();
+</script>
+"""
+    if "</body>" in content:
+        content = content.replace("</body>", script + "\n</body>")
+    else:
+        content += script
+    review_path.write_text(content)
+
+
 def aggregate_and_render(args: argparse.Namespace, workspace: Path) -> None:
     skill_creator_dir = args.skill_creator_dir.resolve()
     aggregate = skill_creator_dir / "scripts" / "aggregate_benchmark.py"
@@ -1130,6 +1358,7 @@ def aggregate_and_render(args: argparse.Namespace, workspace: Path) -> None:
     if args.previous_workspace:
         cmd.extend(["--previous-workspace", str(args.previous_workspace)])
     subprocess.run(cmd, check=True)
+    patch_review_html_markdown(review_output)
     print(f"Review written to {review_output}")
 
 

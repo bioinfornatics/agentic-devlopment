@@ -97,8 +97,10 @@ dist/evals/skills/<skill-name>/<content-hash>/
         outputs/
           prompt.md
           response.md
-          raw_stdout.txt
+          conversation.md
+          loaded_skills.md
           events.jsonl
+        raw_stdout.txt
         audit.json
         feedback.json
         feedback.md
@@ -109,8 +111,10 @@ dist/evals/skills/<skill-name>/<content-hash>/
         outputs/
           prompt.md
           response.md
-          raw_stdout.txt
+          conversation.md
+          loaded_skills.md
           events.jsonl
+        raw_stdout.txt
         audit.json
         feedback.json
         feedback.md
@@ -182,7 +186,7 @@ The runners also append a lightweight SQLite history database at `dist/evals/eva
 
 Long runs print `[start]`, `[heartbeat]`, and `[done]` lines while task and grader subprocesses are running. The default heartbeat interval is 30 seconds; change it with `--heartbeat-seconds N` or disable it with `--heartbeat-seconds 0`.
 
-Task runs use Goose `--output-format stream-json`; JSON events are stored in `outputs/events.jsonl`, while `outputs/response.md` is reconstructed as a readable transcript. `audit.json` summarizes tool calls, shell commands, validations, Beads actions, changed files, token usage, and turn usage. `feedback.json`/`feedback.md` capture automatic recommendations; use `--no-feedback` to skip that extra LLM pass.
+Task runs use Goose `--output-format stream-json`; JSON events are stored in `outputs/events.jsonl`. Streaming text deltas are aggregated by message id so `outputs/response.md` and `outputs/conversation.md` show atomic assistant messages instead of one fragment per line. `outputs/loaded_skills.md` proves which project skills were injected, while `raw_stdout.txt` is kept outside `outputs/` so the review UI focuses on the rendered conversation. `audit.json` summarizes tool calls, shell commands, validations, Beads actions, browser actions, changed files, token usage, and turn usage. `feedback.json`/`feedback.md` capture automatic recommendations; use `--no-feedback` to skip that extra LLM pass.
 
 ### Editor shortcuts
 
