@@ -740,10 +740,98 @@ def recommended_action(scenario: dict[str, Any]) -> str:
     return "Review feedback and rerun if needed."
 
 
+def ranked_recommendations(analyses: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Generate ranked P0/P1 recommendations from suite analysis results."""
+    recs: list[dict[str, Any]] = []
+    for item in analyses:
+        subject = item["subject"]
+        scenarios = item.get("scenarios", [])
+        n = len(scenarios)
+        if n == 0:
+            continue
+        # P0: negative delta (skill actively hurts — fix skill or fixture first)
+        for s in scenarios:
+            if s.get("skill_impact") == "negative":
+                recs.append({
+                    "priority": "P0",
+                    "subject": subject,
+                    "eval_id": s.get("eval_id"),
+                    "difficulty": s.get("difficulty", "?"),
+                    "issue": "negative_delta",
+                    "message": f"Skill delta is negative (with={s.get('with_score')}, without={s.get('without_score')}). Fix skill instructions or scenario discriminant.",
+                    "action": "Check expected_skill_contribution; update skill or revise expected_behavior.",
+                })
+        # P0: high max-turn saturation (>= 2/3 scenarios hit max turns)
+        max_hit = sum(1 for s in scenarios if s.get("max_turn_warning"))
+        if n > 0 and max_hit / n >= 2 / 3:
+            recs.append({
+                "priority": "P0",
+                "subject": subject,
+                "eval_id": None,
+                "difficulty": None,
+                "issue": "max_turn_saturation",
+                "message": f"{max_hit}/{n} scenarios hit max turns. Reduce per-scenario max_turns or add stop-rule expected_behavior.",
+                "action": "Lower max_turns in eval JSON; add handoff/stop items to expected_behavior.",
+            })
+        # P1: neutral delta scenarios
+        for s in scenarios:
+            if s.get("skill_impact") == "neutral":
+                recs.append({
+                    "priority": "P1",
+                    "subject": subject,
+                    "eval_id": s.get("eval_id"),
+                    "difficulty": s.get("difficulty", "?"),
+                    "issue": "neutral_delta",
+                    "message": f"Skill delta is neutral (with={s.get('with_score')}, without={s.get('without_score')}). Scenario may not test skill-specific behaviour.",
+                    "action": "Add skill-specific expected_behavior items baseline cannot pass (e.g. required format, domain terms).",
+                })
+        # P1: efficiency issue (pass_rate=1.0 AND max_turns_reached)
+        for s in scenarios:
+            if s.get("max_turn_warning") and s.get("with_score") == 1.0 and s.get("without_score") == 1.0:
+                recs.append({
+                    "priority": "P1",
+                    "subject": subject,
+                    "eval_id": s.get("eval_id"),
+                    "difficulty": s.get("difficulty", "?"),
+                    "issue": "efficiency_and_full_score",
+                    "message": f"Both configs score 1.0 AND hit max turns — likely answer-key leakage in fixture_description or query.",
+                    "action": "Neutralise fixture_description; remove query hints; add discriminant expected_behavior.",
+                })
+        # P1: model errors
+        for s in scenarios:
+            if s.get("has_model_errors"):
+                recs.append({
+                    "priority": "P1",
+                    "subject": subject,
+                    "eval_id": s.get("eval_id"),
+                    "difficulty": s.get("difficulty", "?"),
+                    "issue": "model_errors",
+                    "message": f"{s.get('model_error_count', 0)} model error(s) detected — pass rates may be skewed.",
+                    "action": "Investigate content-filter triggers; consider retry policy or prompt adjustments.",
+                })
+    # Sort: P0 before P1, then by subject
+    recs.sort(key=lambda r: (r["priority"], r["subject"], r.get("eval_id") or 0))
+    return recs
+
+
 def write_suite_summary(workspace_root: Path, analyses: list[dict[str, Any]]) -> None:
-    summary = {"generated_at": utc_now(), "subjects": analyses}
+    recs = ranked_recommendations(analyses)
+    summary = {"generated_at": utc_now(), "subjects": analyses, "recommendations": recs}
     write_json(workspace_root / "analysis-summary.json", summary)
     lines = ["# Skill Evaluation Analysis Summary", ""]
+    # Ranked recommendations
+    if recs:
+        lines.append("## Ranked recommendations")
+        lines.append("")
+        lines.append("| Priority | Subject | Eval | Difficulty | Issue | Message | Action |")
+        lines.append("|---|---|---|---|---|---|---|")
+        for r in recs:
+            eid = str(r["eval_id"]) if r.get("eval_id") is not None else "—"
+            diff = r.get("difficulty") or "—"
+            lines.append(f"| **{r['priority']}** | {r['subject']} | {eid} | {diff} | `{r['issue']}` | {r['message']} | {r['action']} |")
+        lines.append("")
+    lines.append("## Subject summary")
+    lines.append("")
     lines.append("| Subject | Hash | Scenarios | Negative/Neutral | Max-turn warnings | Recurring root causes |")
     lines.append("|---|---|---:|---:|---:|---|")
     for item in analyses:
@@ -752,21 +840,63 @@ def write_suite_summary(workspace_root: Path, analyses: list[dict[str, Any]]) ->
         max_warnings = sum(1 for scenario in item.get('scenarios', []) if scenario.get('max_turn_warning'))
         lines.append(f"| {item['subject']} | `{item['content_hash']}` | {len(item.get('scenarios', []))} | {negative_neutral} | {max_warnings} | {causes} |")
     (workspace_root / "analysis-summary.md").write_text("\n".join(lines) + "\n")
-    (workspace_root / "analysis-index.html").write_text(render_html_summary(analyses))
+    (workspace_root / "analysis-index.html").write_text(render_html_summary(analyses, recs))
 
 
-def render_html_summary(analyses: list[dict[str, Any]]) -> str:
+def render_html_summary(analyses: list[dict[str, Any]], recs: list[dict[str, Any]] | None = None) -> str:
+    import html as _html
+    recs = recs or []
+    rec_rows = []
+    for r in recs:
+        priority_class = "p0" if r["priority"] == "P0" else "p1"
+        eid = str(r["eval_id"]) if r.get("eval_id") is not None else "—"
+        diff = r.get("difficulty") or "—"
+        rec_rows.append(
+            f"<tr class='{priority_class}'>"
+            f"<td><strong>{_html.escape(r['priority'])}</strong></td>"
+            f"<td>{_html.escape(r['subject'])}</td>"
+            f"<td>{_html.escape(eid)}</td>"
+            f"<td>{_html.escape(diff)}</td>"
+            f"<td><code>{_html.escape(r['issue'])}</code></td>"
+            f"<td>{_html.escape(r['message'])}</td>"
+            f"<td>{_html.escape(r['action'])}</td>"
+            "</tr>"
+        )
     rows = []
     for item in analyses:
         causes = ", ".join(f"{cause}({count})" for cause, count in item.get("recurring_root_causes", []))
         negative_neutral = sum(1 for scenario in item.get('scenarios', []) if scenario.get('skill_impact') in {'negative', 'neutral'})
         max_warnings = sum(1 for scenario in item.get('scenarios', []) if scenario.get('max_turn_warning'))
         row_class = "warn" if max_warnings or negative_neutral else "ok"
-        rows.append(f"<tr class='{row_class}'><td>{item['subject']}</td><td><code>{item['content_hash']}</code></td><td>{len(item.get('scenarios', []))}</td><td>{negative_neutral}</td><td>{max_warnings}</td><td>{causes}</td><td><a href='{item['subject']}/{item['content_hash']}/analysis.md'>analysis.md</a></td></tr>")
+        rows.append(f"<tr class='{row_class}'><td>{_html.escape(item['subject'])}</td><td><code>{_html.escape(item['content_hash'])}</code></td><td>{len(item.get('scenarios', []))}</td><td>{negative_neutral}</td><td>{max_warnings}</td><td>{_html.escape(causes)}</td><td><a href='{_html.escape(item['subject'])}/{_html.escape(item['content_hash'])}/analysis.md'>analysis.md</a></td></tr>")
+    rec_section = ""
+    if rec_rows:
+        rec_section = (
+            "<h2>Ranked recommendations</h2>"
+            "<table><thead><tr><th>Priority</th><th>Subject</th><th>Eval</th><th>Difficulty</th>"
+            "<th>Issue</th><th>Message</th><th>Action</th></tr></thead>"
+            f"<tbody>{''.join(rec_rows)}</tbody></table>"
+        )
     return f"""<!doctype html>
 <html><head><meta charset='utf-8'><title>Skill Eval Analysis</title>
-<style>body{{font-family:system-ui;margin:2rem}}table{{border-collapse:collapse;width:100%}}td,th{{border:1px solid #ddd;padding:.5rem;text-align:left}}code{{background:#eee;padding:.1rem .25rem}}.warn{{background:#fff7ed}}.ok{{background:#f0fdf4}}</style>
-</head><body><h1>Skill Evaluation Analysis</h1><p>Rows are highlighted when scenarios are neutral/negative or hit max turns.</p><table><thead><tr><th>Subject</th><th>Hash</th><th>Scenarios</th><th>Negative/Neutral</th><th>Max-turn warnings</th><th>Root causes</th><th>Links</th></tr></thead><tbody>{''.join(rows)}</tbody></table></body></html>"""
+<style>
+body{{font-family:system-ui;margin:2rem;color:#1f2937}}
+table{{border-collapse:collapse;width:100%;margin-bottom:2rem}}
+td,th{{border:1px solid #ddd;padding:.5rem;text-align:left;vertical-align:top}}
+th{{background:#f3f4f6}}
+code{{background:#eee;padding:.1rem .25rem;border-radius:.2rem}}
+.warn{{background:#fff7ed}}.ok{{background:#f0fdf4}}
+.p0{{background:#fee2e2}}.p1{{background:#fef9c3}}
+a{{color:#2563eb}}
+</style>
+</head><body>
+<h1>Skill Evaluation Analysis</h1>
+{rec_section}
+<h2>Subject summary</h2>
+<p>Rows highlighted when scenarios are neutral/negative or hit max turns.</p>
+<table><thead><tr><th>Subject</th><th>Hash</th><th>Scenarios</th><th>Negative/Neutral</th><th>Max-turn warnings</th><th>Root causes</th><th>Links</th></tr></thead>
+<tbody>{''.join(rows)}</tbody></table>
+</body></html>"""
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Analyze generated skill eval artifacts.")
