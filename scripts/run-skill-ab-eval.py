@@ -1242,6 +1242,9 @@ def patch_review_html_markdown(review_path: Path) -> None:
       .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
   }
+  function decodeEscapedCodeText(s) {
+    return String(s).replace(/\\n/g, '\n').replace(/\\r/g, '\r').replace(/\\t/g, '\t');
+  }
   function renderMarkdown(md) {
     const lines = String(md || '').split(/\r?\n/);
     let html = '';
@@ -1254,7 +1257,7 @@ def patch_review_html_markdown(review_path: Path) -> None:
         else { html += '</code></pre>'; inCode = false; }
         continue;
       }
-      if (inCode) { html += escapeHtml(line) + '\n'; continue; }
+      if (inCode) { html += escapeHtml(decodeEscapedCodeText(line)) + '\n'; continue; }
       const h = line.match(/^(#{1,4})\s+(.*)$/);
       if (h) {
         if (listOpen) { html += '</ul>'; listOpen = false; }
