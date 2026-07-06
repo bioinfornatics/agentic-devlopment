@@ -34,16 +34,17 @@
     "fixture_intent": "Very difficult scenario: dependency direction, requirement language, verification — `bd dep add B A` means B needs A.",
     "difficulty": "very_difficult",
     "max_turns": 200,
-    "expected_skill_contribution": "The Beads skill should encode dependency direction correctly using requirement language, verify with a blocked/ready query, and avoid ambiguous 'blocks' phrasing.",
+    "expected_skill_contribution": "The Beads skill should encode the dependency using `bd dep add <B> <A>` (B needs A), explicitly reject 'A blocks B' framing, create both beads if they don't exist, verify with `bd blocked --json` and report the actual blocked output showing the validate-bead is not claimable — a baseline agent either reverses the direction or skips verification output.",
     "baseline_gaps": [
-      "Agent may reverse dependency direction.",
-      "Agent may use ambiguous 'blocks' phrasing instead of 'needs' / 'depends on'."
+      "Agent may reverse the dependency direction (add edit-bead as dependent on validate-bead).",
+      "Agent states 'dependency added' without running a verification query or showing its output.",
+      "Agent uses 'blocks' language ('edit blocks validate') rather than requirement language ('validate needs edit')."
     ],
     "expected_behavior": [
-      "Uses `bd dep add <validate-id> <edit-id>` direction — validate-bead needs the edit-bead, not the reverse.",
-      "Explains the dependency using requirement/needs language: 'B needs A' not 'A blocks B'.",
-      "Verifies the result with `bd blocked --json` or `bd ready --json` and reports the outcome.",
-      "Does not invent beads if the target issues do not exist — creates them first or states they must be created."
+      "Creates both beads (edit-harness-master and validate-recipe) if they do not already exist before adding the dependency.",
+      "Uses `bd dep add <validate-id> <edit-id>` — the validate-bead is the child (it needs the edit-bead), not the reverse.",
+      "Explicitly rejects 'blocks' framing: states the dependency as 'validate needs edit' or 'validate depends on edit', never 'edit blocks validate'.",
+      "Runs `bd blocked --json` or `bd ready --json` after adding the dependency and reports the actual command output showing the validate-bead is blocked/not-ready."
     ]
   },
   {

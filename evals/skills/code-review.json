@@ -41,17 +41,17 @@
     "fixture_intent": "Difficult fixture: documentation introduces markdown TODO tracking; expected to catch the Beads hygiene violation, produce a verdict, and propose unlinked follow-up commands.",
     "difficulty": "difficult",
     "max_turns": 200,
-    "expected_skill_contribution": "The code-review skill should identify the Beads hygiene violation in the docs (TODO.md guidance conflicts with durable Beads tracking), produce a verdict, and propose Beads-compatible follow-ups — Beads hygiene findings are never subject to confidence filtering.",
+    "expected_skill_contribution": "The code-review skill mandates three things a baseline omits: (1) the pre-report 4-question gate must be applied — any Beads hygiene finding must cite file+line+failure-mode; (2) the verdict must be one of the three exact strings from the skill's output format (APPROVE / PASS-WITH-NITS / BLOCK); (3) the agent must NOT flag at least one common false positive from the skill's list despite it appearing in the diff.",
     "baseline_gaps": [
-      "Agent may leave follow-up work only in prose.",
-      "Agent may accept markdown TODO guidance as acceptable instead of flagging it as a Beads hygiene violation.",
-      "Agent may claim follow-ups are linked even when no parent bead is provided."
+      "Agent flags the Beads hygiene issue but without citing an exact file path and line number.",
+      "Agent produces a summary with a pass/fail word but not the exact three-option verdict the skill requires.",
+      "Agent flags a common false positive (e.g., missing JSDoc or a self-describing helper name) as a real finding."
     ],
     "expected_behavior": [
-      "Flags the markdown TODO guidance as a Beads hygiene violation — discoverable work encoded as TODO.md conflicts with the harness principle that durable work belongs in Beads issues.",
-      "Produces an explicit verdict (`APPROVE`, `PASS-WITH-NITS`, or `BLOCK`) for the diff.",
-      "Proposes draft `bd create` commands or issue titles without creating files and without inventing a `discovered-from` parent link when none is provided.",
-      "Treats the Beads hygiene check as non-discretionary — this finding is not subject to confidence filtering."
+      "Flags the markdown TODO guidance as a Beads hygiene violation AND cites the exact file and section where it appears (file path + heading or line reference).",
+      "Produces the verdict as exactly one of: `APPROVE`, `PASS-WITH-NITS`, or `BLOCK` — the literal string, placed before the findings list.",
+      "Applies the pre-report gate for the hygiene finding: states that it passes all four gate questions (exact location known, failure mode named, context read, severity defensible).",
+      "Avoids flagging at least one pattern from the false-positives list that appears in the diff (e.g., a self-describing internal helper, a well-known constant, or a test fixture hardcoded value)."
     ]
   },
   {

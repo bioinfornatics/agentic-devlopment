@@ -3,24 +3,25 @@
     "skills": [
       "goose-orchestration"
     ],
-    "query": "Investigate why `goose recipe validate` fails for `.goose/recipes/harness-master.yaml` without editing files.",
+    "query": "Map the delegation chain in `harness-master.yaml`: which sub_recipes it invokes, what extensions each requires, and what would break if the `skills` extension were removed. Read only.",
     "files": [
       ".goose/recipes/harness-master.yaml",
       ".goose/recipes/subrecipes/"
     ],
-    "fixture_intent": "Normal scenario: read-only investigation — Orchestration decision naming read-only flow, no delegation needed, Delegation audit closing.",
+    "fixture_intent": "Normal scenario: read-only mapping of recipe delegation chain — tests Orchestration decision naming the correct flow, focused analysis without broad scanning, and Delegation audit closure.",
     "difficulty": "normal",
     "max_turns": 200,
-    "expected_skill_contribution": "The orchestration skill should produce an explicit `Orchestration decision:` block naming the read-only research flow, justify why delegation is not needed, and close with a `Delegation audit` — none of which a baseline agent will naturally produce.",
+    "expected_skill_contribution": "The orchestration skill should emit a literal `Orchestration decision:` block before any analysis naming the read-only research flow, justify why delegation is or is not used, return evidence from specific recipe and subrecipe files, and close with a literal `Delegation audit:` — a baseline agent skips both structural blocks and just lists findings.",
     "baseline_gaps": [
-      "Agent may choose an implementation workflow for a read-only investigation.",
-      "Agent may skip the Orchestration decision and Delegation audit entirely."
+      "Agent inspects files and lists findings without ever emitting an Orchestration decision block.",
+      "Agent may delegate unnecessarily to a subagent or skip explaining the delegation choice.",
+      "Agent produces a prose summary without a closing Delegation audit confirming what was or was not delegated."
     ],
     "expected_behavior": [
-      "Emits a literal `Orchestration decision:` block before starting work, naming the selected flow as read-only research and explaining why delegation is not warranted.",
-      "Keeps the investigation strictly read-only with no file edits or Beads writes.",
-      "Returns concrete evidence (recipe file path, specific field or schema issue) and next safe steps.",
-      "Closes with a `Delegation audit:` summary confirming no delegates were used and why."
+      "Emits a literal `Orchestration decision:` block before any file reads, naming the selected flow as direct read-only research and stating why delegation adds no value for this scope.",
+      "Identifies at least two sub_recipes referenced in harness-master.yaml and states which extensions each requires.",
+      "Answers the `skills` extension removal question with specific evidence from recipe/subrecipe files (named files and fields, not guesses).",
+      "Closes with a literal `Delegation audit:` block confirming no delegates were used and the rationale."
     ]
   },
   {

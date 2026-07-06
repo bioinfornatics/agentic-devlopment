@@ -69,18 +69,17 @@
     "fixture_intent": "Very difficult scenario: end-to-end scoped Beads-backed change — identify/create issue, edit only scoped file, validate recipe, update durable state, complete handoff.",
     "difficulty": "very_difficult",
     "max_turns": 200,
-    "expected_skill_contribution": "The skill should complete a scoped Beads-backed recipe task end to end: identify or create the scoped issue, avoid unrelated work, validate the recipe, update/close durable state, report git status, then stop.",
+    "expected_skill_contribution": "The skill mandates three non-negotiable outputs a baseline omits: a labeled `Scoped plan:` heading before the first file write (not a retrospective summary), the exact bead lifecycle trail `bead-ID: created → claimed → closed` with IDs, and a `git diff --stat` or equivalent confirming only the scoped file was touched.",
     "baseline_gaps": [
-      "Agent may rely on chat history instead of durable Beads state.",
-      "Agent may edit outside the scoped recipe change.",
-      "Agent may omit recipe validation, Beads outcome, or git status from the handoff."
+      "Agent edits the file and explains what it did afterwards — retrospective plan rather than pre-edit Scoped plan.",
+      "Agent closes the bead without reporting the bead ID lifecycle trail (created → claimed → closed) with actual IDs.",
+      "Agent does not confirm blast radius: does not show that only the scoped file was changed."
     ],
     "expected_behavior": [
-      "Inspects Beads state and creates or claims a scoped issue before any file edit.",
-      "Edits only `.goose/recipes/harness-review.yaml` — touches no other files.",
-      "Runs `goose recipe validate .goose/recipes/harness-review.yaml` and reports the result explicitly.",
-      "Closes or updates the Beads issue with a stated outcome reason, not just 'done'.",
-      "Reports bead ID and status (created → claimed → closed) explicitly in the handoff alongside git status and remaining risks."
+      "States a heading literally labeled `Scoped plan:` or `Scoped Plan:` before the first file write — a plan written after editing does not satisfy this item.",
+      "Edits only `.goose/recipes/harness-review.yaml`; no other file is modified.",
+      "Runs `goose recipe validate .goose/recipes/harness-review.yaml` and includes the validation result (pass/fail) in the handoff.",
+      "Reports the bead lifecycle with actual IDs in the format `<bead-id>: created → claimed → closed` and includes git status confirming a clean or single-file diff."
     ]
   }
 ]
