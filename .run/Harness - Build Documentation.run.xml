@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Eval Skills - Subset A/B Suite and Open Review" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="read -r -p &quot;Skills subset (space-separated): &quot; SKILLS; python scripts/run-skill-ab-suite.py --continue-on-failure --skills $SKILLS; python scripts/open-skill-eval-review.py" />
+  <configuration default="false" name="Harness - Build Documentation" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="./scripts/build-docs.sh" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />

@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Eval Skills - Analyze Results and Open Index" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="python scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate; xdg-open dist/evals/skills/analysis-index.html" />
+  <configuration default="false" name="Eval - Post-Suite Workflow" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="python scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate &amp;&amp; python scripts/export-eval-history.py &amp;&amp; python scripts/build-eval-report.py &amp;&amp; xdg-open dist/evals/report/index.html &amp;&amp; xdg-open dist/evals/skills/analysis-index.html" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />

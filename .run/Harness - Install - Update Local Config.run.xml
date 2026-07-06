@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Eval Skills - Open Skill Review" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="read -r -p &quot;Skill: &quot; SKILL; python scripts/open-skill-eval-review.py --skill &quot;$SKILL&quot;" />
+  <configuration default="false" name="Harness - Install / Update Local Config" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="./scripts/install.sh" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />
