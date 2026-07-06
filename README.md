@@ -61,19 +61,60 @@ Editor shortcuts are available as VS Code tasks in `.vscode/tasks.json` and JetB
 
 ## Named agents
 
-Named agents live in `.agents/agents/` and can be invoked through Goose Summon:
+Named agents live in `.agents/agents/` and can be invoked through Goose Summon. All 11 agents follow the same format contract: Prompt Defense Baseline, rich identity, operating process with numbered phases, domain protocol, false positives list, output format template, skill pointer, and a closing prime directive.
 
-- `harness-orchestrator`
-- `codebase-researcher`
-- `beads-planner`
-- `implementation-worker`
-- `review-critic`
-- `ui-ux-auditor`
+### Orchestration + Research
 
-Example in a Goose session:
+| Agent | Role | Invoke when |
+|---|---|---|
+| `harness-orchestrator` | Lead orchestrator for the SDD+TDD loop | Multi-step, multi-agent, or multi-phase work |
+| `codebase-researcher` | Read-only architecture mapper | Mapping blast radius, gathering evidence before planning |
+| `beads-planner` | Beads dependency graph builder | Converting a goal into executable Beads issues |
+
+### SDD Roles (Spec-Driven Development)
+
+| Agent | Role | Invoke when |
+|---|---|---|
+| `product-owner` | PRD + acceptance criteria with 100-pt quality gate | Start of any new feature or initiative |
+| `architect` | System design, ADRs, trade-off analysis | Touching system boundaries, technology decisions |
+
+### TDD Roles (Test-Driven Development)
+
+| Agent | Role | Invoke when |
+|---|---|---|
+| `tdd-guide` | RED→GREEN→REFACTOR cycle + 80% coverage gate | Before any new feature implementation or bug fix |
+| `implementation-worker` | Scoped bead implementation with TDD | Bead is claimed and ready for coding |
+| `qa-automation` | Full test pipeline: unit/integration/E2E + CI | After implementation is complete |
+
+### Review + Quality
+
+| Agent | Role | Invoke when |
+|---|---|---|
+| `review-critic` | Confidence-filtered code review with proof requirement | After any implementation, before closing a bead |
+| `principal-engineer` | Blast radius, breaking changes, architecture coherence | Change touches shared infra, public APIs, or 2+ BLOCK verdicts |
+| `ui-ux-auditor` | WCAG 2.2 AA + UX + browser evidence | After any UI change |
+
+### SDD+TDD Orchestration Flow
+
+```
+product-owner → architect → beads-planner → tdd-guide
+  → implementation-worker → review-critic
+       ↑                        │  (BLOCK → up to 2 retries)
+       └── principal-engineer ◄─┘  (escalation on 2+ BLOCK)
+  → qa-automation
+
+codebase-researcher   (read-only, parallel, any phase)
+harness-orchestrator  (coordinates the full loop)
+ui-ux-auditor         (parallel for UI-bearing changes)
+```
+
+Example invocations:
 
 ```text
 delegate(source: "review-critic", instructions: "Review the current diff. Do not modify files.")
+delegate(source: "architect", instructions: "Design the caching layer for the sync service.")
+delegate(source: "tdd-guide", instructions: "Write failing tests for bd create duplicate detection.")
+delegate(source: "product-owner", instructions: "Spec out the memory stewardship feature.")
 ```
 
 ## Quick start

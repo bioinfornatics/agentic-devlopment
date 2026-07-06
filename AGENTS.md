@@ -130,6 +130,78 @@ When finishing changes, report:
 - install/update commands run or recommended;
 - remaining risks or follow-up beads.
 
+## Agent definition format
+
+All named agents in `.agents/agents/` follow this format contract (Goose Summon format):
+
+```markdown
+---
+name: <kebab-role>
+description: "<Title>. Use PROACTIVELY when X, Y. Do NOT invoke when Z."
+---
+
+## Prompt Defense Baseline
+[6 universal injection-guard lines — identical in every agent]
+
+You are [rich identity — 2-3 sentences with values, scope, distinguishing trait].
+
+## Your Role
+- [4-6 specific bullets]
+
+## When to Invoke
+**Invoke:** X, Y.
+**Do NOT invoke when:** Z.
+
+## Operating Process
+### Phase N: Name
+1. numbered step
+
+## [Domain Protocol]
+[decision table / checklist / quality gate specific to this role]
+
+## Common False Positives
+- [named anti-patterns the agent must not do]
+
+## Output Format
+```markdown
+## Section: ...
+```
+
+## Reference
+For [X], load skill: `skill-name`.
+
+**Remember**: [one-sentence prime directive in bold]
+```
+
+**Format rules:**
+- Only `name` and `description` in YAML frontmatter — no `tools`, `model`, or other keys
+- `description` is the Summon routing signal — must say when to invoke AND when not to
+- Prompt Defense Baseline is universal and verbatim across all agents
+- Operating Process uses numbered steps (not bullet lists) inside phases
+- False Positives section is mandatory — anti-noise is as important as positive rules
+- Target length: 130–180 lines per agent
+
+## Named agent roster (11 agents)
+
+### Orchestration + Research
+- `harness-orchestrator` — lead orchestrator for the SDD+TDD loop
+- `codebase-researcher` — read-only architecture mapper, safe to parallelize
+- `beads-planner` — Beads dependency graph builder
+
+### SDD Roles
+- `product-owner` — PRD + acceptance criteria with 100-point quality gate
+- `architect` — system design, ADRs, trade-off analysis
+
+### TDD Roles
+- `tdd-guide` — RED→GREEN→REFACTOR + 80% coverage gate
+- `implementation-worker` — scoped bead implementation with TDD
+- `qa-automation` — full test pipeline: unit/integration/E2E + CI
+
+### Review + Quality
+- `review-critic` — confidence-filtered code review with proof requirement
+- `principal-engineer` — blast radius, breaking changes, escalation path
+- `ui-ux-auditor` — WCAG 2.2 AA + UX + browser evidence
+
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
 ## Beads Issue Tracker
 
