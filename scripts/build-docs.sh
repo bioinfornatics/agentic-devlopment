@@ -89,3 +89,8 @@ fi
 
 echo "wrote $HTML_OUT"
 echo "wrote $HTML_INDEX"
+
+# Build eval trend dashboard (reads evals/history/runs.json — no API calls)
+if command -v python3 >/dev/null 2>&1; then
+  python3 "$(dirname "$0")/build-eval-report.py" && true
+fi

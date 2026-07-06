@@ -1,0 +1,1026 @@
+[
+  {
+    "run_id": "dd8bf6428b853574",
+    "kind": "skills",
+    "subject": "agentic-dev-harness",
+    "content_hash": "dd8bf6428b853574",
+    "git_commit": "7ff1f7c6ba95eaffd10ad701e6f631ea8ee677bc",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": 150.0,
+    "max_turns_mean": 150.0,
+    "max_turns_reached_rate": 1.0,
+    "created_at": "2026-07-06T01:25:09Z",
+    "scenarios": [
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 0.2,
+        "turns_used": 25,
+        "max_turns": 25,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.6,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.6,
+        "turns_used": 25,
+        "max_turns": 25,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 40,
+        "max_turns": 40,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 0.75,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 0.5,
+        "turns_used": 40,
+        "max_turns": 40,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 60,
+        "max_turns": 60,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 60,
+        "max_turns": 60,
+        "max_turns_reached": 1
+      }
+    ],
+    "improvements": [
+      {
+        "metric": "pass_rate",
+        "baseline": 0.7833,
+        "candidate": 1.0,
+        "delta": 0.2167
+      },
+      {
+        "metric": "pass_rate",
+        "baseline": 0.7,
+        "candidate": 0.7333,
+        "delta": 0.033299999999999996
+      }
+    ]
+  },
+  {
+    "run_id": "09cf746fa6d32418",
+    "kind": "skills",
+    "subject": "beads-harness",
+    "content_hash": "09cf746fa6d32418",
+    "git_commit": "7ff1f7c6ba95eaffd10ad701e6f631ea8ee677bc",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": 31.0,
+    "max_turns_mean": 150.0,
+    "max_turns_reached_rate": 0.1666,
+    "created_at": "2026-07-06T01:39:58Z",
+    "scenarios": [
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 7,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.75,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 7,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 0.3333,
+        "turns_used": 11,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 5,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 6,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      }
+    ],
+    "improvements": [
+      {
+        "metric": "pass_rate",
+        "baseline": 0.6944,
+        "candidate": 1.0,
+        "delta": 0.3056
+      }
+    ]
+  },
+  {
+    "run_id": "2abfc1cef5a2f78d",
+    "kind": "skills",
+    "subject": "code-review",
+    "content_hash": "2abfc1cef5a2f78d",
+    "git_commit": "7ff1f7c6ba95eaffd10ad701e6f631ea8ee677bc",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": 126.5,
+    "max_turns_mean": 150.0,
+    "max_turns_reached_rate": 0.8334,
+    "created_at": "2026-07-06T02:00:26Z",
+    "scenarios": [
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 10,
+        "max_turns": 25,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.6667,
+        "turns_used": 9,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.5,
+        "turns_used": 9,
+        "max_turns": 25,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 0.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 40,
+        "max_turns": 40,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 40,
+        "max_turns": 40,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 0.75,
+        "turns_used": 60,
+        "max_turns": 60,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 0.0,
+        "turns_used": 60,
+        "max_turns": 60,
+        "max_turns_reached": 1
+      }
+    ],
+    "improvements": [
+      {
+        "metric": "pass_rate",
+        "baseline": 0.8889,
+        "candidate": 0.6667,
+        "delta": -0.22220000000000006
+      },
+      {
+        "metric": "pass_rate",
+        "baseline": 0.5,
+        "candidate": 0.9167,
+        "delta": 0.41669999999999996
+      }
+    ]
+  },
+  {
+    "run_id": "4078892fface1b29",
+    "kind": "skills",
+    "subject": "goose-orchestration",
+    "content_hash": "4078892fface1b29",
+    "git_commit": "7ff1f7c6ba95eaffd10ad701e6f631ea8ee677bc",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": 150.0,
+    "max_turns_mean": 150.0,
+    "max_turns_reached_rate": 1.0,
+    "created_at": "2026-07-06T02:41:21Z",
+    "scenarios": [
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 0.6,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.6,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 0.75,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 0.5,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 0.8,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      }
+    ],
+    "improvements": [
+      {
+        "metric": "pass_rate",
+        "baseline": 0.6333,
+        "candidate": 0.7833,
+        "delta": 0.15000000000000002
+      }
+    ]
+  },
+  {
+    "run_id": "255aa3a6b7c51e9e",
+    "kind": "skills",
+    "subject": "sdd",
+    "content_hash": "255aa3a6b7c51e9e",
+    "git_commit": "7ff1f7c6ba95eaffd10ad701e6f631ea8ee677bc",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": 79.0,
+    "max_turns_mean": 150.0,
+    "max_turns_reached_rate": 0.5,
+    "created_at": "2026-07-06T06:41:23Z",
+    "scenarios": [
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.6667,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 3,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 8,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 13,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 0.6667,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      }
+    ],
+    "improvements": [
+      {
+        "metric": "pass_rate",
+        "baseline": 0.7778,
+        "candidate": 1.0,
+        "delta": 0.22219999999999995
+      }
+    ]
+  },
+  {
+    "run_id": "7660123bf43a4ce8",
+    "kind": "skills",
+    "subject": "ui-ux-quality",
+    "content_hash": "7660123bf43a4ce8",
+    "git_commit": "fdda6e0ee167d72e310e5b5c919e27bd2f8920bd",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": 38.8333,
+    "max_turns_mean": 150.0,
+    "max_turns_reached_rate": 0.1666,
+    "created_at": "2026-07-06T07:17:47Z",
+    "scenarios": [
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 0.6667,
+        "turns_used": 16,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.6667,
+        "turns_used": 24,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 29,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 0.6667,
+        "turns_used": 10,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 0.6667,
+        "turns_used": 4,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      }
+    ],
+    "improvements": [
+      {
+        "metric": "pass_rate",
+        "baseline": 0.7778,
+        "candidate": 0.7778,
+        "delta": 0.0
+      }
+    ]
+  },
+  {
+    "run_id": "5bb9131fc6adafa3",
+    "kind": "skills",
+    "subject": "webapp-testing",
+    "content_hash": "5bb9131fc6adafa3",
+    "git_commit": "4b36bb410eb33b671f643a302508e029fb9cefc0",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": 23.8333,
+    "max_turns_mean": 150.0,
+    "max_turns_reached_rate": 0.0,
+    "created_at": "2026-07-06T08:10:28Z",
+    "scenarios": [
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 17,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 18,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 27,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 0.6667,
+        "turns_used": 10,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 0.6667,
+        "turns_used": 42,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 0.6667,
+        "turns_used": 29,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      }
+    ],
+    "improvements": [
+      {
+        "metric": "pass_rate",
+        "baseline": 0.7778,
+        "candidate": 0.8889,
+        "delta": 0.11109999999999998
+      }
+    ]
+  },
+  {
+    "run_id": "398a72bc2c79d338",
+    "kind": "skills",
+    "subject": "__suite__",
+    "content_hash": "398a72bc2c79d338",
+    "git_commit": "4b36bb410eb33b671f643a302508e029fb9cefc0",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": null,
+    "max_turns_mean": null,
+    "max_turns_reached_rate": null,
+    "created_at": "2026-07-06T08:10:28Z",
+    "scenarios": [],
+    "improvements": []
+  },
+  {
+    "run_id": "dd8bf6428b853574",
+    "kind": "skills",
+    "subject": "agentic-dev-harness",
+    "content_hash": "dd8bf6428b853574",
+    "git_commit": "4d936c64c0399e4a33902df75734da695203ec79",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": 41.6667,
+    "max_turns_mean": 41.6667,
+    "max_turns_reached_rate": 1.0,
+    "created_at": "2026-07-06T10:05:59Z",
+    "scenarios": [
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 0.2,
+        "turns_used": 25,
+        "max_turns": 25,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.6,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.6,
+        "turns_used": 25,
+        "max_turns": 25,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 40,
+        "max_turns": 40,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 0.75,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 0.5,
+        "turns_used": 40,
+        "max_turns": 40,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 60,
+        "max_turns": 60,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 60,
+        "max_turns": 60,
+        "max_turns_reached": 1
+      }
+    ],
+    "improvements": [
+      {
+        "metric": "pass_rate",
+        "baseline": 0.7833,
+        "candidate": 1.0,
+        "delta": 0.2167
+      },
+      {
+        "metric": "pass_rate",
+        "baseline": 0.7,
+        "candidate": 0.7333,
+        "delta": 0.033299999999999996
+      }
+    ]
+  },
+  {
+    "run_id": "c1f6b6d838a3dc0b",
+    "kind": "skills",
+    "subject": "beads-harness",
+    "content_hash": "c1f6b6d838a3dc0b",
+    "git_commit": "4d936c64c0399e4a33902df75734da695203ec79",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": 21.6667,
+    "max_turns_mean": 41.6667,
+    "max_turns_reached_rate": 0.5,
+    "created_at": "2026-07-06T10:22:41Z",
+    "scenarios": [
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 0.75,
+        "turns_used": 25,
+        "max_turns": 25,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.5,
+        "turns_used": 25,
+        "max_turns": 25,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 7,
+        "max_turns": 60,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 60,
+        "max_turns": 60,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 6,
+        "max_turns": 40,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 0.75,
+        "turns_used": 7,
+        "max_turns": 40,
+        "max_turns_reached": 0
+      }
+    ],
+    "improvements": [
+      {
+        "metric": "pass_rate",
+        "baseline": 0.75,
+        "candidate": 0.9167,
+        "delta": 0.16669999999999996
+      }
+    ]
+  },
+  {
+    "run_id": "2abfc1cef5a2f78d",
+    "kind": "skills",
+    "subject": "code-review",
+    "content_hash": "2abfc1cef5a2f78d",
+    "git_commit": "4d936c64c0399e4a33902df75734da695203ec79",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": 36.5,
+    "max_turns_mean": 41.6667,
+    "max_turns_reached_rate": 0.6667,
+    "created_at": "2026-07-06T10:42:27Z",
+    "scenarios": [
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 10,
+        "max_turns": 25,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.6667,
+        "turns_used": 9,
+        "max_turns": 150,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.5,
+        "turns_used": 9,
+        "max_turns": 25,
+        "max_turns_reached": 0
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 0.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 40,
+        "max_turns": 40,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 40,
+        "max_turns": 40,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 0.75,
+        "turns_used": 60,
+        "max_turns": 60,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 1.0,
+        "turns_used": 150,
+        "max_turns": 150,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 0.0,
+        "turns_used": 60,
+        "max_turns": 60,
+        "max_turns_reached": 1
+      }
+    ],
+    "improvements": [
+      {
+        "metric": "pass_rate",
+        "baseline": 0.8889,
+        "candidate": 0.6667,
+        "delta": -0.22220000000000006
+      },
+      {
+        "metric": "pass_rate",
+        "baseline": 0.5,
+        "candidate": 0.9167,
+        "delta": 0.41669999999999996
+      }
+    ]
+  },
+  {
+    "run_id": "43605b65e2895bf7",
+    "kind": "skills",
+    "subject": "goose-orchestration",
+    "content_hash": "43605b65e2895bf7",
+    "git_commit": "4d936c64c0399e4a33902df75734da695203ec79",
+    "git_dirty": 1,
+    "provider": "azure_foundry",
+    "model": "claude-sonnet-4-6",
+    "turns_used_mean": 41.6667,
+    "max_turns_mean": 41.6667,
+    "max_turns_reached_rate": 1.0,
+    "created_at": "2026-07-06T11:17:21Z",
+    "scenarios": [
+      {
+        "eval_id": 0,
+        "configuration": "with_skill",
+        "pass_rate": 0.25,
+        "turns_used": 25,
+        "max_turns": 25,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 0,
+        "configuration": "without_skill",
+        "pass_rate": 0.25,
+        "turns_used": 25,
+        "max_turns": 25,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "with_skill",
+        "pass_rate": 0.75,
+        "turns_used": 40,
+        "max_turns": 40,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 1,
+        "configuration": "without_skill",
+        "pass_rate": 0.5,
+        "turns_used": 40,
+        "max_turns": 40,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "with_skill",
+        "pass_rate": 0.75,
+        "turns_used": 60,
+        "max_turns": 60,
+        "max_turns_reached": 1
+      },
+      {
+        "eval_id": 2,
+        "configuration": "without_skill",
+        "pass_rate": 0.25,
+        "turns_used": 60,
+        "max_turns": 60,
+        "max_turns_reached": 1
+      }
+    ],
+    "improvements": [
+      {
+        "metric": "pass_rate",
+        "baseline": 0.3333,
+        "candidate": 0.5833,
+        "delta": 0.25000000000000006
+      }
+    ]
+  }
+]
