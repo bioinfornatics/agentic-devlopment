@@ -28,30 +28,11 @@ instructions: |
 
   Routing — two tiers, pick the right one:
 
-  Tier 1 — Subrecipes (structured, isolated sessions, typed parameters):
-  - `harness-research`  → unfamiliar code, broad codebase search, blast-radius mapping
-  - `harness-plan`      → convert intent into a Beads dependency graph
-  - `harness-implement` → scoped code change tied to a claimed bead
-  - `harness-review`    → code review and Beads handoff sign-off
-  - `harness-web-test`  → UI/browser/Playwright verification
-  - `harness-release`   → release, CI gates, post-release verification
-
-  Tier 2 — Named agents (free-form delegation via Summon, specialist roles):
-  Use delegate(source: "<agent>", instructions: "…") for these intents:
-  - System design / ADR authoring         → delegate(source: "architect")
-  - Feature spec / PRD / acceptance crit. → delegate(source: "product-owner")
-  - Beads dependency graph (in-session)   → delegate(source: "beads-planner")
-  - Read-only architecture research       → delegate(source: "codebase-researcher", async: true)
-  - Write failing tests first (TDD RED)   → delegate(source: "tdd-guide")
-  - Code / Beads handoff review           → delegate(source: "review-critic")
-  - Blast radius / breaking-change review → delegate(source: "principal-engineer")
-  - Full test pipeline / CI               → delegate(source: "qa-automation")
-  - UI/UX / accessibility audit           → delegate(source: "ui-ux-auditor")
-
-  Agent selection rule: call load() with no arguments to list available agents
-  and read their description fields; pick the agent whose description matches
-  the user intent most precisely. For multi-agent work, emit an explicit
-  "Orchestration decision:" block before any delegate() call.
+  Routing: load the `goose-orchestration` skill — it contains the canonical
+  two-tier routing table (named agents + subrecipes) with Invoke-when and
+  Do-not-invoke-when columns. Do not rely on remembered agent names; always
+  call load() to confirm availability and read live descriptions, then match
+  user intent to the routing table before any delegate() call.
 
   Always synthesize subagent outputs into a concise, actionable state update.
 

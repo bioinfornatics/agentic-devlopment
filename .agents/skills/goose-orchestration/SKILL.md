@@ -43,10 +43,67 @@ load(source: "<task_id>", peek: true)
 load(source: "<task_id>", cancel: true)
 ```
 
+## Agent and Subrecipe Routing Table
+
+This is the **canonical routing reference** for the harness.
+Load this skill before any delegation decision.
+Call `load()` to confirm agent availability at runtime — descriptions you see
+there must match the "Invoke when" column below.
+
+### Named agents — `delegate(source: "<name>", instructions: "…")`
+
+| Agent | Role | Invoke when | Do NOT invoke when |
+|---|---|---|---|
+| `harness-orchestrator` | SDD+TDD loop coordinator | Multi-step, multi-agent, multi-phase work | Single-scope task; standalone research |
+| `product-owner` | PRD + acceptance criteria, 100-pt quality gate | Start of any feature or initiative | Implementation, architecture, bug fixes |
+| `architect` | System design, ADRs, trade-off analysis | Technology decision or system boundary touched | Implementation or tactical code review |
+| `beads-planner` | Beads dependency graph, exact `bd` commands | Goal spans >1 file/session/agent; no issues exist | Issues already exist and are claimable |
+| `codebase-researcher` | Read-only architecture mapper | Map blast radius; gather pre-planning evidence | Anything requiring writes |
+| `tdd-guide` | RED→GREEN→REFACTOR + 80% coverage gate | Before any new feature implementation or bug fix | Research, planning, or review phases |
+| `implementation-worker` | Scoped bead coding with TDD | Bead is claimed and ready for coding | Planning, architecture, or review |
+| `review-critic` | Confidence-filtered code review + Beads hygiene | After any implementation; before closing bead | Planning or architecture decisions |
+| `principal-engineer` | Blast radius, breaking changes, escalation | Shared infra touched; public API changed; 2+ BLOCKs | Routine review (use review-critic first) |
+| `qa-automation` | Full test pipeline: unit + integration + E2E + CI | After implementation is complete | Before implementation exists |
+| `ui-ux-auditor` | WCAG 2.2 AA + UX + browser evidence | After any UI change | Backend-only or CLI-only changes |
+
+### Subrecipes — structured, isolated sessions, typed parameters
+
+| Subrecipe | Role | Prefer over named agent when |
+|---|---|---|
+| `harness_research` | Read-only codebase + Beads research | Headless/CLI invocation; typed params needed |
+| `harness_plan` | Goal → Beads dependency graph | CLI planning run outside a session |
+| `harness_implement` | Scoped bead coding with handoff | CLI implementation run |
+| `harness_review` | Code + tests + Beads hygiene | CLI review run; JSON response schema needed |
+| `harness_web_test` | Playwright + accessibility | CLI browser verification run |
+| `harness_release` | Gated release + CI waits | Release workflow from CLI |
+
+### Routing decision algorithm
+
+```
+1. call load()                     → read live agent names + descriptions
+2. match user intent               → "Invoke when" column above
+3. single intent, clear match      → delegate to that agent directly
+4. multi-intent or unclear         → delegate to harness-orchestrator
+5. emit Orchestration decision     → before every delegate() call
+6. parallel read-only work         → async: true + load(source: "<task_id>")
+7. write work                      → one writer per file/module, no overlap
+```
+
+### Agent vs subrecipe selection
+
+| Criterion | Named agent | Subrecipe |
+|---|---|---|
+| Invocation context | Inside a Goose session | CLI / headless recipe run |
+| Parameter style | Free-form instructions | Typed key=value params |
+| Parent context sharing | Yes — carries over | No — isolated session |
+| Discovery | `load()` at runtime | `sub_recipes` block |
+
+---
+
 ## Automatic agent routing
 
-When a recipe or session has the `summon` extension enabled, the LLM can
-discover and route to named agents dynamically — no hard-coded list required.
+When a recipe or session has the `summon` extension enabled, the LLM
+discovers and routes to named agents dynamically.
 
 ### Discovery: `load()` with no arguments
 

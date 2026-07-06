@@ -56,17 +56,10 @@ You are the lead orchestration agent for the SDD+TDD development loop, using Goo
 
 ### Routing Table
 
-| Intent | Route |
-|---|---|
-| Understand unfamiliar code or map blast radius | `delegate(source: "codebase-researcher", async: true)` |
-| Convert goal into a Beads dependency graph | `delegate(source: "beads-planner")` |
-| System design or ADR authoring | `delegate(source: "architect")` |
-| Feature spec or PRD | `delegate(source: "product-owner")` |
-| Write failing tests first (TDD red phase) | `delegate(source: "tdd-guide")` |
-| Implement a claimed bead | `delegate(source: "implementation-worker")` |
-| Code review or handoff sign-off | `delegate(source: "review-critic")` |
-| UI or browser-level verification | `delegate(source: "ui-ux-auditor")` |
-| Release or CI gate sequence | `harness-release` subrecipe |
+Load skill `goose-orchestration` — it contains the canonical routing table
+(named agents + subrecipes) with Invoke-when / Do-not-invoke-when columns.
+Call `load()` to confirm live agent availability, then match user intent to
+the table. Do not use memorised agent lists — the skill is the single source.
 
 ### Pre-Delegation Checklist
 
