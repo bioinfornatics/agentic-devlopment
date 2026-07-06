@@ -102,7 +102,7 @@ class EvalData:
     # feedback: list of {run_id, subject, eval_id, severity, recommendation_type, message, evidence}
     feedback: list[dict]
     # analysis: list of {run_id, subject, eval_id, configuration, skill_impact, root_causes_json,
-    #                    confidence, scenario_quality}
+    #                    confidence, scenario_quality, efficiency_json}
     analysis: list[dict]
 
 def load_from_db(path: pathlib.Path) -> EvalData | None:
@@ -137,7 +137,7 @@ def load_from_db(path: pathlib.Path) -> EvalData | None:
     d.analysis     = [dict(r) for r in con.execute("""
         SELECT run_id, kind, subject, eval_id, configuration, run_number,
                skill_impact, scenario_quality, root_causes_json,
-               bad_actions_json, confidence
+               bad_actions_json, confidence, efficiency_json
         FROM eval_analysis
     """).fetchall()]
     con.close()
@@ -308,6 +308,75 @@ def render_runs_table(d: EvalData) -> str:
     return rows
 
 # ─── page assembly ─────────────────────────────────────────────────────────
+def render_efficiency(d: EvalData) -> str:
+    """Show turn-efficiency diagnostics for high-budget runs (budget > 40%)."""
+    rows = ""
+    seen: set[str] = set()
+    for a in d.analysis:
+        raw = a.get("efficiency_json")
+        if not raw:
+            continue
+        try:
+            eff = json.loads(raw) if isinstance(raw, str) else raw
+        except Exception:
+            continue
+        budget = eff.get("budget_used_pct")
+        if budget is None or budget < 0.4:
+            continue
+        key = f"{a.get('run_id')}::{a.get('eval_id')}::{a.get('configuration')}"
+        if key in seen:
+            continue
+        seen.add(key)
+
+        budget_cls  = "neg" if budget > 0.85 else ("neu" if budget > 0.6 else "pos")
+        failed      = eff.get("failed_tool_calls", 0)
+        recovery    = eff.get("recovery_attempts", 0)
+        repeated    = eff.get("repeated_commands_count", 0)
+        explore_pct = eff.get("explore_pct", 0)
+        t2write     = eff.get("turns_to_first_write")
+        ratio       = eff.get("tool_calls_per_file_changed")
+        phases      = eff.get("phase_breakdown", {})
+        phase_str   = " ".join(
+            f"<span class='rc'>{esc(k)}={v}</span>"
+            for k, v in sorted(phases.items(), key=lambda x: -x[1])[:5]
+        )
+        # Build signal badges
+        signals = ""
+        if failed > 0:
+            signals += f" <span class='badge neg'>✗ {failed} errors</span>"
+        if recovery > 0:
+            signals += f" <span class='badge neu'>↻ {recovery} retries</span>"
+        if repeated > 0:
+            signals += f" <span class='badge neu'>⟳ {repeated} repeated cmds</span>"
+        if explore_pct > 0.4:
+            signals += f" <span class='badge neu'>🔍 {explore_pct:.0%} explore</span>"
+        if ratio and ratio > 20:
+            signals += f" <span class='badge neg'>{ratio:.0f} calls/file</span>"
+
+        rows += (
+            f"<tr>"
+            f"<td>{esc(a.get('subject'))}</td>"
+            f"<td style='text-align:center'>{esc(a.get('eval_id'))}</td>"
+            f"<td>{esc(a.get('configuration','').replace('_skill',''))}</td>"
+            f"<td style='text-align:center'>"
+            f"<span class='badge {budget_cls}'>{budget:.0%}</span></td>"
+            f"<td>{esc(eff.get('tool_calls_total','?'))}</td>"
+            f"<td>{phase_str}</td>"
+            f"<td>{signals or '—'}</td>"
+            f"<td style='text-align:center'>{t2write if t2write is not None else '—'}</td>"
+            f"</tr>"
+        )
+
+    if not rows:
+        return "<p style='color:#64748b'>No high-budget runs yet, or efficiency data not populated.</p>"
+    return (
+        "<table><thead><tr>"
+        "<th>Skill</th><th>Eval</th><th>Config</th><th>Budget</th>"
+        "<th>Tool calls</th><th>Phases</th><th>Signals</th><th>1st write turn</th>"
+        "</tr></thead><tbody>" + rows + "</tbody></table>"
+    )
+
+
 def render(d: EvalData) -> str:
     generated = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     n_runs    = len(d.runs)
@@ -368,6 +437,17 @@ Sparkline = skill delta per run (last 14). Badge = latest run.
 </tr></thead>
 <tbody>{render_scenario_table(d)}</tbody>
 </table>
+
+<h2>Turn efficiency diagnostics</h2>
+<p style="color:{C['muted']};font-size:.82rem;margin-bottom:.75rem">
+Runs that used &gt;40% of their turn budget. High budget use is not always bad — it depends on signals:
+<span class='badge neg'>✗ errors</span> failed tool calls ·
+<span class='badge neu'>↻ retries</span> calls after failure ·
+<span class='badge neu'>⟳ repeated</span> same command ≥3× ·
+<span class='badge neu'>🔍 explore</span> &gt;40% turns = file reads ·
+<span class='badge neg'>N calls/file</span> &gt;20 = over-exploration
+</p>
+{render_efficiency(d)}
 
 <h2>Root cause frequency</h2>
 {render_root_causes(d)}

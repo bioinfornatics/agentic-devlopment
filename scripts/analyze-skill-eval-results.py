@@ -331,6 +331,88 @@ def classify_root_causes(bad_actions: list[dict[str, Any]], grading: dict[str, A
         causes.add("over_exploration")
     return sorted(causes)
 
+def analyze_efficiency(
+    timeline: list[dict[str, Any]],
+    audit:    dict[str, Any],
+    events:   list[dict[str, Any]],
+    turns_used: int | None,
+    max_turns:  int | None,
+) -> dict[str, Any]:
+    """Diagnose how turns were spent: phases, errors, retries, exploration ratio."""
+    PHASE_MAP: dict[str, str] = {
+        "inspection":    "explore",
+        "beads_read":    "beads",    "beads_write": "beads",
+        "file_write":    "implement",
+        "validation":    "validate",
+        "browser_action":"browser",
+        "delegation":    "delegate",
+        "handoff":       "handoff",  "planning": "plan",
+    }
+    phases: dict[str, int] = {}
+    tool_reqs = 0
+    for item in timeline:
+        if item.get("type") != "tool_request":
+            continue
+        tool_reqs += 1
+        ph = PHASE_MAP.get(item.get("classification", ""), "other")
+        phases[ph] = phases.get(ph, 0) + 1
+
+    # Non-zero exit codes in toolResponse events
+    failed_calls = 0
+    prev_failed  = False
+    recovery_attempts = 0
+    for ev in events:
+        msg = ev.get("message", {}) if isinstance(ev.get("message"), dict) else {}
+        for item in msg.get("content", []) if isinstance(msg.get("content"), list) else []:
+            if item.get("type") == "toolResponse":
+                result = item.get("toolResult", {}).get("value", {}) if isinstance(item.get("toolResult"), dict) else {}
+                sc  = result.get("structuredContent", {}) if isinstance(result, dict) else {}
+                ec  = sc.get("exit_code") if isinstance(sc, dict) else None
+                bad = ec is not None and ec not in (0, "0")
+                if bad:
+                    failed_calls += 1
+                    prev_failed = True
+            elif item.get("type") == "toolRequest" and prev_failed:
+                recovery_attempts += 1
+                prev_failed = False
+
+    # Repeated commands (≥3 times = thrashing signal)
+    commands: list[str] = audit.get("commands", []) if isinstance(audit, dict) else []
+    cmd_counts: dict[str, int] = {}
+    for cmd in commands:
+        cmd_counts[cmd] = cmd_counts.get(cmd, 0) + 1
+    repeated = sorted([(c, n) for c, n in cmd_counts.items() if n >= 3], key=lambda x: -x[1])
+
+    files_changed: list[str] = audit.get("files_changed", []) if isinstance(audit, dict) else []
+    validations:   list[str] = audit.get("validations",   []) if isinstance(audit, dict) else []
+
+    # First write turn (latency before agent stopped exploring)
+    turns_to_first_write: int | None = None
+    for i, item in enumerate(timeline):
+        if item.get("classification") == "file_write":
+            turns_to_first_write = i + 1
+            break
+
+    budget_pct  = round(turns_used / max_turns, 3) if (turns_used and max_turns) else None
+    explore_pct = round(phases.get("explore", 0) / max(1, tool_reqs), 2) if tool_reqs else 0.0
+    eff_ratio   = round(tool_reqs / max(1, len(files_changed)), 1) if files_changed else None
+
+    return {
+        "budget_used_pct":            budget_pct,
+        "tool_calls_total":           tool_reqs,
+        "failed_tool_calls":          failed_calls,
+        "recovery_attempts":          recovery_attempts,
+        "repeated_commands_count":    len(repeated),
+        "repeated_commands_top":      [{"cmd": c[:120], "n": n} for c, n in repeated[:4]],
+        "files_changed_count":        len(files_changed),
+        "validation_count":           len(validations),
+        "tool_calls_per_file_changed":eff_ratio,
+        "turns_to_first_write":       turns_to_first_write,
+        "explore_pct":                explore_pct,
+        "phase_breakdown":            {k: v for k, v in sorted(phases.items(), key=lambda x: -x[1]) if v > 0},
+    }
+
+
 def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: int, configuration: str) -> dict[str, Any]:
     events = parse_events(run_dir / "outputs" / "events.jsonl")
     model_errors = detect_model_errors(events)
@@ -349,6 +431,11 @@ def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: 
     ]
     _seen_da: set[str] = set()
     delegated_agents: list[str] = [x for x in _delegated_raw if not (x in _seen_da or _seen_da.add(x))]  # type: ignore[func-returns-value]
+    efficiency = analyze_efficiency(
+        timeline, audit, events,
+        turns_used=timing.get("turns_used"),
+        max_turns=timing.get("max_turns"),
+    )
     bad_actions = detect_bad_actions(timeline, audit, grading, timing, scenario)
     root_causes = classify_root_causes(bad_actions, grading, timing, feedback)
     analysis = {
@@ -371,6 +458,7 @@ def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: 
         "model_error_count": len(model_errors),
         "loaded_skills": loaded_skills,
         "delegated_agents": delegated_agents,
+        "efficiency": efficiency,
     }
     write_json(run_dir / "analysis.json", analysis)
     (run_dir / "sequence.mmd").write_text(mermaid_sequence(timeline, f"{subject} eval-{eval_id} {configuration} {run_dir.name}"))
@@ -400,6 +488,35 @@ def run_analysis_md(analysis: dict[str, Any]) -> str:
     _agents = analysis.get("delegated_agents") or []
     lines.append(f"- Loaded skills: {', '.join(_skills) if _skills else '—'}")
     lines.append(f"- Delegated agents: {', '.join(_agents) if _agents else '—'}")
+    # Turn efficiency — only shown when budget usage is notable (> 40%)
+    eff = analysis.get("efficiency", {})
+    budget = eff.get("budget_used_pct")
+    if budget is not None and budget > 0.4:
+        lines.append("")
+        lines.append("## Turn Efficiency")
+        lines.append(f"- Budget used: {budget:.0%}  ({eff.get('tool_calls_total', '?')} tool calls)")
+        pb = eff.get("phase_breakdown", {})
+        if pb:
+            parts = " | ".join(f"{ph}={n}" for ph, n in sorted(pb.items(), key=lambda x: -x[1]))
+            lines.append(f"- Phase breakdown: {parts}")
+        if eff.get("failed_tool_calls", 0) > 0:
+            lines.append(f"- Failed tool calls: {eff['failed_tool_calls']} (non-zero exit)")
+        if eff.get("recovery_attempts", 0) > 0:
+            lines.append(f"- Recovery attempts after failure: {eff['recovery_attempts']}")
+        if eff.get("repeated_commands_count", 0) > 0:
+            lines.append(f"- Repeated commands (>=3x): {eff['repeated_commands_count']}")
+            for rc in eff.get("repeated_commands_top", [])[:3]:
+                cmd_str = str(rc.get("cmd", ""))[:80]
+                n_str   = str(rc.get("n", "?"))
+                lines.append(f"  - {n_str}x: {cmd_str}")
+        if eff.get("turns_to_first_write") is not None:
+            lines.append(f"- Turns before first file write: {eff['turns_to_first_write']}")
+        if eff.get("tool_calls_per_file_changed") is not None:
+            ratio = eff["tool_calls_per_file_changed"]
+            flag  = " (high: over-exploration)" if ratio > 20 else ""
+            lines.append(f"- Tool calls per file changed: {ratio}{flag}")
+        if eff.get("explore_pct", 0) > 0.3:
+            lines.append(f"- Exploration fraction: {eff['explore_pct']:.0%} of tool calls were file reads")
     lines.append("")
     lines.append("## Root causes")
     lines.extend(f"- `{item}`" for item in analysis.get("root_causes", []) or ["none"])
