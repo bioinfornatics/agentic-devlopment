@@ -339,6 +339,16 @@ def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: 
     grading = read_json(run_dir / "grading.json", {}) or {}
     timing = read_json(run_dir / "timing.json", {}) or {}
     feedback = read_json(run_dir / "feedback.json", {}) or {}
+    # --- loaded skills + delegated agents from audit ---
+    loaded_skills: list[str] = audit.get("loaded_skills", []) if isinstance(audit, dict) else []
+    _delegated_raw = [
+        tc.get("arguments", {}).get("source", "")
+        for tc in (audit.get("tool_calls", []) if isinstance(audit, dict) else [])
+        if isinstance(tc, dict) and "delegate" in str(tc.get("name", "")).lower()
+        and isinstance(tc.get("arguments"), dict) and tc["arguments"].get("source")
+    ]
+    _seen_da: set[str] = set()
+    delegated_agents: list[str] = [x for x in _delegated_raw if not (x in _seen_da or _seen_da.add(x))]  # type: ignore[func-returns-value]
     bad_actions = detect_bad_actions(timeline, audit, grading, timing, scenario)
     root_causes = classify_root_causes(bad_actions, grading, timing, feedback)
     analysis = {
@@ -359,6 +369,8 @@ def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: 
         "confidence": confidence_for_run(grading, timing, events),
         "model_errors": model_errors,
         "model_error_count": len(model_errors),
+        "loaded_skills": loaded_skills,
+        "delegated_agents": delegated_agents,
     }
     write_json(run_dir / "analysis.json", analysis)
     (run_dir / "sequence.mmd").write_text(mermaid_sequence(timeline, f"{subject} eval-{eval_id} {configuration} {run_dir.name}"))
@@ -384,6 +396,10 @@ def run_analysis_md(analysis: dict[str, Any]) -> str:
     lines.append(f"- Pass rate: {score.get('pass_rate')} ({score.get('passed')}/{score.get('total')})")
     lines.append(f"- Turns: {turns.get('used')}/{turns.get('max')} max reached={turns.get('reached_max')}")
     lines.append(f"- Confidence: {analysis.get('confidence')}")
+    _skills = analysis.get("loaded_skills") or []
+    _agents = analysis.get("delegated_agents") or []
+    lines.append(f"- Loaded skills: {', '.join(_skills) if _skills else '—'}")
+    lines.append(f"- Delegated agents: {', '.join(_agents) if _agents else '—'}")
     lines.append("")
     lines.append("## Root causes")
     lines.extend(f"- `{item}`" for item in analysis.get("root_causes", []) or ["none"])
@@ -523,6 +539,16 @@ def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, An
         with_run = run_analyses.get("with_skill") or run_analyses.get("new_skill")
         without_run = run_analyses.get("without_skill") or run_analyses.get("old_skill")
         total_model_errors = sum(run.get("model_error_count", 0) for run in run_analyses.values())
+        all_loaded_skills = sorted(set(
+            s for run in run_analyses.values() for s in (run.get("loaded_skills") or [])
+        ))
+        _seen_aa: set[str] = set()
+        all_delegated_agents: list[str] = []
+        for _run in run_analyses.values():
+            for _a in (_run.get("delegated_agents") or []):
+                if _a not in _seen_aa:
+                    _seen_aa.add(_a)
+                    all_delegated_agents.append(_a)
         scenario_analysis = {
             "subject": subject,
             "content_hash": run_dir.name,
@@ -542,6 +568,8 @@ def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, An
             "confidence": round(sum(run.get("confidence", 0.0) for run in run_analyses.values()) / max(1, len(run_analyses)), 2),
             "model_error_count": total_model_errors,
             "has_model_errors": total_model_errors > 0,
+            "loaded_skills": all_loaded_skills,
+            "delegated_agents": all_delegated_agents,
         }
         llm_analysis = run_llm_analysis(args, subject, scenario_analysis, with_run, without_run)
         if llm_analysis is not None:
@@ -556,6 +584,8 @@ def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, An
         "scenarios": scenario_analyses,
         "recurring_root_causes": Counter(cause for item in scenario_analyses for cause in item.get("root_causes", [])).most_common(),
         "generated_at": utc_now(),
+        "loaded_skills": sorted(set(s for item in scenario_analyses for s in (item.get("loaded_skills") or []))),
+        "delegated_agents": list(dict.fromkeys(a for item in scenario_analyses for a in (item.get("delegated_agents") or []))),
     }
     write_json(run_dir / "analysis.json", subject_analysis)
     (run_dir / "analysis.md").write_text(subject_analysis_md(subject_analysis))
@@ -566,6 +596,10 @@ def scenario_analysis_md(analysis: dict[str, Any]) -> str:
     lines = [f"# Scenario Analysis — {analysis['subject']} eval-{analysis['eval_id']}", ""]
     difficulty = analysis.get("difficulty", "unknown")
     lines.append(f"- difficulty: **{difficulty}**")
+    _sc_skills = analysis.get("loaded_skills") or []
+    _sc_agents = analysis.get("delegated_agents") or []
+    lines.append(f"- loaded skills: {', '.join(_sc_skills) if _sc_skills else '—'}")
+    lines.append(f"- delegated agents: {', '.join(_sc_agents) if _sc_agents else '—'}")
     for key in ["skill_impact", "scenario_quality", "with_score", "without_score", "with_turns", "without_turns", "confidence"]:
         lines.append(f"- {key}: {analysis.get(key)}")
     if analysis.get("model_error_count", 0) > 0:
@@ -593,12 +627,14 @@ def scenario_analysis_md(analysis: dict[str, Any]) -> str:
 
 def subject_analysis_md(analysis: dict[str, Any]) -> str:
     lines = [f"# Evaluation Analysis — {analysis['subject']}", "", f"Content hash: `{analysis['content_hash']}`", ""]
-    lines.append("| Eval | Difficulty | Impact | Quality | With | Without | Turns W/B | Max-turn | Model errs | Confidence | Root causes |")
-    lines.append("|---:|---|---|---|---:|---:|---:|---|---:|---:|---|")
+    lines.append("| Eval | Difficulty | Impact | Quality | With | Without | Turns W/B | Max-turn | Model errs | Confidence | Loaded Skills | Agents | Root causes |")
+    lines.append("|---:|---|---|---|---:|---:|---:|---|---:|---:|---|---|---|")
     for item in analysis.get("scenarios", []):
         model_err_col = str(item.get("model_error_count", 0)) if item.get("has_model_errors") else ""
+        _row_skills = ' '.join(f'`{s}`' for s in (item.get('loaded_skills') or []))
+        _row_agents = ' '.join(f'`{a}`' for a in (item.get('delegated_agents') or []))
         lines.append(
-            f"| {item['eval_id']} | {item.get('difficulty','?')} | {item['skill_impact']} | {item['scenario_quality']} | {item.get('with_score')} | {item.get('without_score')} | {item.get('with_turns')}/{item.get('without_turns')} | {'⚠' if item.get('max_turn_warning') else ''} | {model_err_col} | {item.get('confidence')} | {', '.join(item.get('root_causes', []))} |"
+            f"| {item['eval_id']} | {item.get('difficulty','?')} | {item['skill_impact']} | {item['scenario_quality']} | {item.get('with_score')} | {item.get('without_score')} | {item.get('with_turns')}/{item.get('without_turns')} | {'⚠' if item.get('max_turn_warning') else ''} | {model_err_col} | {item.get('confidence')} | {_row_skills or '—'} | {_row_agents or '—'} | {', '.join(item.get('root_causes', []))} |"
         )
     lines.append("")
     lines.append("## Recurring root causes")
@@ -868,7 +904,9 @@ def render_html_summary(analyses: list[dict[str, Any]], recs: list[dict[str, Any
         negative_neutral = sum(1 for scenario in item.get('scenarios', []) if scenario.get('skill_impact') in {'negative', 'neutral'})
         max_warnings = sum(1 for scenario in item.get('scenarios', []) if scenario.get('max_turn_warning'))
         row_class = "warn" if max_warnings or negative_neutral else "ok"
-        rows.append(f"<tr class='{row_class}'><td>{_html.escape(item['subject'])}</td><td><code>{_html.escape(item['content_hash'])}</code></td><td>{len(item.get('scenarios', []))}</td><td>{negative_neutral}</td><td>{max_warnings}</td><td>{_html.escape(causes)}</td><td><a href='{_html.escape(item['subject'])}/{_html.escape(item['content_hash'])}/analysis.md'>analysis.md</a></td></tr>")
+        _skills_html = " ".join(f"<code>{_html.escape(s)}</code>" for s in item.get("loaded_skills", []))
+        _agents_html = " ".join(f"<code>{_html.escape(a)}</code>" for a in item.get("delegated_agents", []))
+        rows.append(f"<tr class='{row_class}'><td>{_html.escape(item['subject'])}</td><td><code>{_html.escape(item['content_hash'])}</code></td><td>{len(item.get('scenarios', []))}</td><td>{negative_neutral}</td><td>{max_warnings}</td><td>{_skills_html or '—'}</td><td>{_agents_html or '—'}</td><td>{_html.escape(causes)}</td><td><a href='{_html.escape(item['subject'])}/{_html.escape(item['content_hash'])}/analysis.md'>analysis.md</a></td></tr>")
     rec_section = ""
     if rec_rows:
         rec_section = (
@@ -894,7 +932,7 @@ a{{color:#2563eb}}
 {rec_section}
 <h2>Subject summary</h2>
 <p>Rows highlighted when scenarios are neutral/negative or hit max turns.</p>
-<table><thead><tr><th>Subject</th><th>Hash</th><th>Scenarios</th><th>Negative/Neutral</th><th>Max-turn warnings</th><th>Root causes</th><th>Links</th></tr></thead>
+<table><thead><tr><th>Subject</th><th>Hash</th><th>Scenarios</th><th>Negative/Neutral</th><th>Max-turn warnings</th><th>Loaded Skills</th><th>Delegated Agents</th><th>Root causes</th><th>Links</th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table>
 </body></html>"""
 
