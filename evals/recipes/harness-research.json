@@ -1,0 +1,72 @@
+[
+  {
+    "query": "Research the current state of Beads issues and which recipe files are most at risk of breaking if `.goose/recipes/harness-master.yaml` is changed.",
+    "files": [
+      ".goose/recipes/harness-master.yaml",
+      ".goose/recipes/subrecipes/",
+      ".beads/issues.jsonl"
+    ],
+    "max_turns": 25,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The research recipe should return a structured JSON-schema output with summary, relevant_files, beads_state, risks, recommended_next_steps — not prose only.",
+    "fixture_intent": "Validates that the research recipe is strictly read-only, returns all five required JSON schema output fields, and populates beads_state from actual Beads query results rather than fabricating it.",
+    "baseline_gaps": [
+      "Returns a prose summary without the five required structured schema fields",
+      "Skips querying actual Beads state and omits or fabricates the beads_state field",
+      "Lists no concrete file paths in relevant_files or provides no evidence from recipe content"
+    ],
+    "expected_behavior": [
+      "Makes no file edits and no Beads mutations — strictly read-only throughout",
+      "Returns output containing all five schema fields: summary, relevant_files, beads_state, risks, recommended_next_steps",
+      "Populates `beads_state` using actual results from `bd ready --json` or `bd blocked --json`",
+      "Lists at least two concrete file paths in `relevant_files` with supporting evidence from recipe file content"
+    ]
+  },
+  {
+    "query": "Map the blast radius of removing the `skills` extension block from `harness-implement.yaml`. Which other recipes, agents, and docs would be affected?",
+    "files": [
+      ".goose/recipes/harness-implement.yaml",
+      ".goose/recipes/",
+      ".agents/",
+      "docs/"
+    ],
+    "max_turns": 40,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The research recipe should use analyze extension for structure before raw search, return blast_radius as a distinct field, and propose Beads-compatible follow-ups without executing them.",
+    "fixture_intent": "Validates that the research recipe uses structural analysis tooling before grep, surfaces a distinct blast_radius or risks field, identifies multiple consumers, and proposes non-executed follow-up work as bd commands.",
+    "baseline_gaps": [
+      "Falls back to raw grep or file reads without using structural analysis tools first",
+      "Embeds blast radius findings in prose rather than as a distinct structured field",
+      "Proposes no Beads follow-up work or omits bd create command forms"
+    ],
+    "expected_behavior": [
+      "Uses `analyze` extension (code structure) before raw file reads or grep to map dependency surfaces",
+      "Returns `risks` and `recommended_next_steps` as distinct structured fields in the output schema",
+      "Identifies at least two consumers of the skills extension (agents, subrecipes, or docs) with explicit file paths",
+      "Proposes `bd create` commands or issue titles as non-executed follow-up work items"
+    ]
+  },
+  {
+    "query": "Research all open Beads issues, identify which are blocked and why, and recommend the safest next implementation order. Read only.",
+    "files": [
+      ".beads/issues.jsonl",
+      ".goose/recipes/",
+      "AGENTS.md"
+    ],
+    "max_turns": 60,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The research recipe should combine Beads dependency traversal with recipe-context analysis to produce a dependency-aware implementation order recommendation.",
+    "fixture_intent": "Validates that the research recipe runs all three Beads query commands, performs dependency-aware ordering rather than arbitrary listing, and returns all schema fields populated from real state.",
+    "baseline_gaps": [
+      "Lists issues in arbitrary order without performing dependency graph traversal",
+      "Does not distinguish blocked issues from ready issues or explain blocking reasons",
+      "Returns fewer than five schema fields or omits recommended_next_steps ordering rationale"
+    ],
+    "expected_behavior": [
+      "Runs `bd prime`, `bd ready --json`, and `bd blocked --json` to build a complete state picture before analysis",
+      "Makes no file edits and no Beads mutations — read-only throughout",
+      "Returns `recommended_next_steps` with explicit dependency rationale explaining which bead unblocks which",
+      "Returns all five JSON schema fields (summary, relevant_files, beads_state, risks, recommended_next_steps) with content derived from actual Beads and recipe state"
+    ]
+  }
+]

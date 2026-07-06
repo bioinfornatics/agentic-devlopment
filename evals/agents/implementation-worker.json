@@ -1,0 +1,59 @@
+[
+  {
+    "query": "Implement the simplest open Beads issue. Claim it, make the minimal change, validate, and hand off.",
+    "files": [".beads/issues.jsonl", ".goose/recipes/", "AGENTS.md"],
+    "max_turns": 25,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The implementation-worker should claim atomically before any edit, emit a Scoped plan, make the minimal change, validate, close bead, and report the 5-item handoff — baseline edits without claiming.",
+    "fixture_intent": "Verify that the agent enforces the claim-before-write contract and minimal-change discipline on a straightforward open issue, producing a well-formed handoff rather than silently completing the work.",
+    "baseline_gaps": [
+      "Edits files without first claiming the bead with `bd update <id> --claim --json`",
+      "Skips emitting a `Scoped plan:` section before making any file changes",
+      "Omits validation step and reports an incomplete or missing handoff checklist"
+    ],
+    "expected_behavior": [
+      "Claims the bead with `bd update <id> --claim --json` before writing any file — no file mutation precedes the claim",
+      "Emits a `Scoped plan:` section that lists exactly which files will change and what change will be made before the first edit",
+      "Makes the minimal correct change without refactoring unrelated code or expanding scope beyond the bead description",
+      "Reports all 5 handoff items: bead status (closed), files changed, validation result, git status, and remaining risks or follow-up bead IDs"
+    ]
+  },
+  {
+    "query": "Implement the scoped change to `.goose/recipes/harness-review.yaml` using TDD. Write failing test first, then implement, then validate recipe.",
+    "files": [".goose/recipes/harness-review.yaml", ".beads/issues.jsonl"],
+    "max_turns": 40,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The implementation-worker should enforce TDD: write failing test before implementation, run RED→GREEN cycle, validate recipe, close bead — baseline writes implementation first.",
+    "fixture_intent": "Confirm that the agent enforces the TDD contract (RED before GREEN) on a structured YAML artifact, including recipe validation as part of the GREEN check, and never collapses the cycle into a single implementation step.",
+    "baseline_gaps": [
+      "Writes the implementation change to the recipe before authoring or running any test",
+      "Skips recipe validation via `goose recipe validate` after making the change",
+      "Omits RED/GREEN cycle labels — produces no observable evidence that a failing test existed before implementation"
+    ],
+    "expected_behavior": [
+      "Claims the bead with `bd update <id> --claim --json` before touching any file — claim precedes both test and implementation",
+      "Writes a failing test first and confirms it fails (RED phase) with visible test output before writing implementation",
+      "Writes the minimal implementation to make the test pass (GREEN phase) without over-engineering beyond what the test requires",
+      "Runs `goose recipe validate` on the changed recipe and includes the validation output in the handoff checklist"
+    ]
+  },
+  {
+    "query": "Implement the scoped skill update to `.agents/skills/code-review/SKILL.md`. Discovered work must be filed as a follow-up bead, not done inline. Full handoff required.",
+    "files": [".agents/skills/code-review/SKILL.md", ".beads/issues.jsonl", "AGENTS.md"],
+    "max_turns": 60,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The implementation-worker must enforce blast radius: only touch the scoped file, file discovered work as a new bead with discovered-from link, and produce a complete handoff.",
+    "fixture_intent": "Stress-test the agent's blast-radius discipline when implementation naturally surfaces related work in adjacent files — the discriminant is whether discovered changes are isolated into follow-up beads or silently folded into the current changeset.",
+    "baseline_gaps": [
+      "Expands scope into related skill files or AGENTS.md when a discovery suggests they also need updating",
+      "Performs discovered work inline in the current bead without creating a follow-up bead with a `discovered-from` link",
+      "Produces an incomplete handoff that omits the discovered-from bead ID or the git status item"
+    ],
+    "expected_behavior": [
+      "Edits only `.agents/skills/code-review/SKILL.md` — any discovered need to change other files results in a new bead, not an inline edit",
+      "Uses `bd create \"<title>\" --deps discovered-from:<parent-id> --json` for each discovered work item, not prose notes or inline changes",
+      "Closes the original bead and explicitly states the discovered-from bead ID(s) in the handoff section",
+      "Reports all 5 handoff items: bead status chain (original closed + follow-up created), files changed, validation result, git status, and remaining risks referencing the new bead ID"
+    ]
+  }
+]

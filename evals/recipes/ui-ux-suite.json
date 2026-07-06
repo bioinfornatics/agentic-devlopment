@@ -1,0 +1,59 @@
+[
+  {
+    "query": "Run a UX quality review of the generated documentation site in `dist/docs/html/index.html`.",
+    "files": ["dist/docs/html/index.html", "docs/", "docs/assets/site.css"],
+    "max_turns": 25,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The ui-ux-suite recipe should apply the 8-dimension evaluation stack in order, require browser evidence before findings, and rank issues by user impact — not just aesthetic preference.",
+    "fixture_intent": "A built documentation site with its source docs and stylesheet; the agent must evaluate the rendered site through the 8-dimension stack and rank findings by user impact rather than by ease of detection.",
+    "baseline_gaps": [
+      "gives generic aesthetic feedback without the 8-dimension structure",
+      "no browser evidence — states findings from file inspection alone",
+      "no impact ranking — lists issues in discovery order, not by user impact"
+    ],
+    "expected_behavior": [
+      "evaluates at least 5 of the 8 dimensions in order (User Intent, IA, Interaction States, Visual, Design System, Accessibility, Performance, Evidence)",
+      "requests or captures browser evidence before stating findings",
+      "ranks issues by user impact not by ease of detection",
+      "separates accessibility blockers (WCAG 2.2 AA) from visual/content recommendations"
+    ]
+  },
+  {
+    "query": "Audit the harness documentation navigation and contributor onboarding path for accessibility and information architecture issues.",
+    "files": ["README.md", "INSTALL.md", "docs/00-index.md", "dist/docs/html/index.html"],
+    "max_turns": 40,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The recipe should focus on navigation IA and accessibility (not broad visual audit), test keyboard navigation with browser tooling, and provide exact element locations for findings.",
+    "fixture_intent": "The documentation entry points (README, INSTALL, index, rendered site) as the onboarding path; the agent must evaluate navigation IA and keyboard accessibility specifically, not perform a broad visual audit.",
+    "baseline_gaps": [
+      "broad visual review without keyboard test — no Tab navigation exercised",
+      "no exact element locations — findings reference sections loosely without file/element specificity",
+      "mixes a11y blockers with cosmetic nits without severity labels"
+    ],
+    "expected_behavior": [
+      "checks keyboard focus order and Tab navigation with browser tooling",
+      "evaluates navigation labels and information scent as distinct items",
+      "separates WCAG 2.2 AA violations from content/discovery polish with explicit severity labels",
+      "provides file name or element location for each finding"
+    ]
+  },
+  {
+    "query": "Evaluate `docs/assets/site.css` as a design system surface: tokens, variants, accessibility states, consistency, and regression risk.",
+    "files": ["docs/assets/site.css", "dist/docs/html/index.html"],
+    "max_turns": 60,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The recipe should evaluate CSS as a design-system (not just visual appearance): token naming, variant coverage, accessibility states (focus/hover/disabled), theming, and propose Beads follow-ups.",
+    "fixture_intent": "The site CSS and rendered HTML as a design-system surface; the agent must evaluate token naming, variant coverage, and accessibility states structurally rather than commenting on visual aesthetics.",
+    "baseline_gaps": [
+      "reviews visual appearance only — no evaluation of token structure or naming conventions",
+      "ignores accessibility states — does not assess focus, hover, or disabled CSS rules",
+      "no follow-up beads — identifies issues without proposing `bd create` commands"
+    ],
+    "expected_behavior": [
+      "evaluates token naming, variant coverage, and accessibility states (focus, hover, disabled) from the CSS",
+      "distinguishes design-system blockers (missing required states) from recommendations",
+      "checks theming and consistency across the HTML",
+      "proposes Beads follow-ups using `bd create` commands for design-system improvement work"
+    ]
+  }
+]

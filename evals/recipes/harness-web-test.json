@@ -1,0 +1,59 @@
+[
+  {
+    "query": "Run a browser smoke test on the generated documentation site at `dist/docs/html/index.html`.",
+    "files": ["dist/docs/html/index.html", "scripts/build-docs.sh"],
+    "max_turns": 25,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The web-test recipe should start a server, identify the exact URL, use browser tooling for evidence (not just file inspection), check console/network, and report cleanup.",
+    "fixture_intent": "A built documentation site and the build script that generates it; the agent must launch a local server to serve the static output rather than inspecting the HTML file directly.",
+    "baseline_gaps": [
+      "checks HTML file directly without browser — opens the file path rather than a served URL",
+      "no server lifecycle — never starts or stops a local server",
+      "no console/network evidence — asserts pass without capturing requests or errors"
+    ],
+    "expected_behavior": [
+      "identifies start command and exact base URL before navigating",
+      "uses condition-based waiting not arbitrary sleep/timeout",
+      "reports concrete console/network evidence with status codes or explicit absence of errors",
+      "reports server cleanup — server was stopped after test"
+    ]
+  },
+  {
+    "query": "Verify the documentation site passes WCAG 2.2 AA accessibility checks — keyboard navigation, focus indicators, accessible names, and color contrast.",
+    "files": ["dist/docs/html/index.html", "docs/assets/site.css"],
+    "max_turns": 40,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The web-test recipe should run structured a11y checks via browser tooling, report keyboard navigation results, identify specific WCAG violations with element locations.",
+    "fixture_intent": "A built documentation site with its stylesheet; the agent must exercise keyboard navigation and focus states through a live browser session, not infer accessibility from static HTML/CSS analysis.",
+    "baseline_gaps": [
+      "reads CSS/HTML without browser — infers a11y from source rather than rendered behavior",
+      "no keyboard navigation test — never exercises Tab/Shift-Tab sequences",
+      "generic a11y claims without evidence — reports compliance or violations without browser proof"
+    ],
+    "expected_behavior": [
+      "tests Tab/Shift-Tab keyboard navigation and reports reachable elements",
+      "checks visible focus indicator on interactive elements",
+      "verifies accessible names for images, links, and form inputs",
+      "distinguishes verified-with-browser facts from code-inspection assumptions"
+    ]
+  },
+  {
+    "query": "Test the documentation site on mobile (375px) and desktop (1280px) viewports, check responsive layout, capture screenshots, and report any layout breaks.",
+    "files": ["dist/docs/html/index.html", "docs/00-index.md"],
+    "max_turns": 60,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The web-test recipe should test both viewports with exact pixel dimensions, capture screenshot evidence, report layout issues with reproduction steps.",
+    "fixture_intent": "A built documentation site and a source markdown file; the agent must drive a browser at two distinct viewport sizes and produce screenshot evidence rather than reading files or assuming layout correctness.",
+    "baseline_gaps": [
+      "tests only one viewport or uses a single default viewport",
+      "no exact pixel dimensions stated — reports mobile/desktop without specifying width in pixels",
+      "no screenshot evidence — asserts layout correctness without captured frames"
+    ],
+    "expected_behavior": [
+      "tests mobile viewport ≤430px wide with exact dimensions stated",
+      "tests desktop viewport ≥1280px wide with exact dimensions stated",
+      "captures or requests screenshots at both viewports as evidence",
+      "reports reproduction steps for any failure: viewport dimensions, URL, observed symptom"
+    ]
+  }
+]

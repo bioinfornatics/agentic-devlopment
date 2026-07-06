@@ -1,0 +1,75 @@
+[
+  {
+    "query": "Is this harness ready to release? Run the release readiness checks.",
+    "files": [
+      ".goose/recipes/",
+      ".agents/",
+      "docs/10-release-readiness.md",
+      "scripts/"
+    ],
+    "max_turns": 25,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The release recipe should evaluate release readiness with an explicit pass/fail/blocked matrix across tests, docs, recipe validation, install safety, and rollback — not just a prose summary.",
+    "fixture_intent": "Validates that the release recipe produces a structured readiness matrix with per-dimension verdicts rather than a narrative summary, and includes an explicit rollback plan and release done criteria.",
+    "baseline_gaps": [
+      "Returns a prose summary without per-dimension pass/fail status in a matrix format",
+      "Skips documenting a rollback plan or rollback commands",
+      "Declares readiness without stating explicit release done criteria or listing open blockers"
+    ],
+    "expected_behavior": [
+      "Runs `goose recipe validate` on all recipes and reports an explicit pass count and fail count",
+      "Runs `goose skills list` and reports which skills are visible",
+      "Produces an explicit release-readiness matrix with a status (PASS/FAIL/BLOCKED) per dimension: tests, docs, recipe validation, install safety, rollback",
+      "States explicit release done criteria and enumerates any open blockers before the final readiness verdict"
+    ]
+  },
+  {
+    "query": "Run release gates for the harness after the agent roster overhaul. Validate recipes, check skills, verify install scripts are idempotent, document the rollback plan.",
+    "files": [
+      ".goose/recipes/",
+      ".agents/",
+      "scripts/install.sh",
+      "docs/"
+    ],
+    "max_turns": 40,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The recipe should enforce each gate in sequence (recipe validate → skills → install safety → rollback), propose bd gate for CI waits, and block on any FAIL before proceeding.",
+    "fixture_intent": "Validates that the release recipe runs gates in strict sequence, halts on any FAIL before proceeding to the next gate, documents a concrete rollback plan, and uses bd gate for CI waits it cannot verify locally.",
+    "baseline_gaps": [
+      "Runs all gates regardless of failures without halting on FAIL results",
+      "Produces no rollback documentation or only mentions rollback in passing prose",
+      "Declares CI-dependent gates as passing without proposing bd gate for the unverifiable wait"
+    ],
+    "expected_behavior": [
+      "Runs each quality gate in strict sequence and stops on FAIL before proceeding to the next gate",
+      "Documents a concrete rollback plan listing exact commands to revert the release",
+      "Proposes `bd gate` for any CI waits that cannot be verified in the local environment",
+      "Reports the final release verdict as READY or BLOCKED with exact reasons for any BLOCKED status"
+    ]
+  },
+  {
+    "query": "Full release: validate all recipes, verify skill visibility, check install scripts are idempotent, confirm docs build cleanly, document rollback, and produce a signed-off release summary.",
+    "files": [
+      ".goose/recipes/",
+      ".agents/",
+      "scripts/",
+      "docs/",
+      "README.md"
+    ],
+    "max_turns": 60,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The recipe should run a comprehensive release gate sequence, gate on every failure, produce a timestamped release summary with all gate results, and document rollback for each component.",
+    "fixture_intent": "Validates the full release gate sequence: per-recipe validation results, idempotence verification, docs build, per-component rollback documentation, and a timestamped signed-off release summary with a complete gate results table.",
+    "baseline_gaps": [
+      "Reports only a total recipe validation count without per-recipe pass/fail results",
+      "Produces no timestamped release summary and no per-component rollback commands",
+      "Skips docs build verification or install idempotence analysis"
+    ],
+    "expected_behavior": [
+      "Validates all recipes individually and reports each recipe's result by name — not just an aggregate count",
+      "Tests install script idempotence via dry-run execution or explicit logic analysis and reports the finding",
+      "Runs `./scripts/build-docs.sh` or verifies docs build cleanly and reports the outcome",
+      "Produces a timestamped release summary containing: gate results table, per-component rollback commands, open risks, and a final READY/BLOCKED verdict"
+    ]
+  }
+]

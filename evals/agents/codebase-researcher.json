@@ -1,0 +1,59 @@
+[
+  {
+    "query": "Map the architecture of the harness recipe layer. What are the entry points, what do they delegate to, and what are the risks?",
+    "files": [".goose/recipes/", ".goose/recipes/subrecipes/"],
+    "max_turns": 25,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The researcher agent should use analyze extension for structure before grep, return a structured output with all schema fields, and sample strategically — not scan every file.",
+    "fixture_intent": "A recipe layer with top-level entry points and subrecipes exists so the researcher can demonstrate strategic sampling (entry points first, then 1 level of delegation) rather than exhaustive scanning.",
+    "baseline_gaps": [
+      "Issues raw grep or shell commands without first using the analyze extension to get directory structure.",
+      "Returns prose output only, omitting the required JSON-schema fields (summary, relevant_files, beads_state, risks, blast_radius, recommended_next_steps).",
+      "Scans all files indiscriminately instead of sampling entry points and expanding exactly one level."
+    ],
+    "expected_behavior": [
+      "Uses the `analyze` extension (directory/file/symbol) to obtain structural context before issuing any raw shell commands.",
+      "Reads at most 10 files total — identifies entry-point recipes first, then expands exactly one delegation level into subrecipes.",
+      "Returns output with all 6 schema fields populated: summary, relevant_files, beads_state, risks, blast_radius, recommended_next_steps.",
+      "Makes no file edits, no Beads mutations, and no `bd create` calls — any follow-up work is proposed as draft issue titles only."
+    ]
+  },
+  {
+    "query": "Trace the blast radius of removing the `summon` extension from `harness-implement.yaml`. Which agents, recipes, and docs would break?",
+    "files": [".goose/recipes/harness-implement.yaml", ".goose/recipes/", ".agents/"],
+    "max_turns": 40,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The researcher should trace symbol usage across the harness, populate `blast_radius` as a distinct field with specific file paths, and propose follow-up without executing.",
+    "fixture_intent": "The `summon` extension is declared in one or more recipes and referenced in agent definitions, so the researcher must trace cross-file usage and populate `blast_radius` from evidence, not guesswork.",
+    "baseline_gaps": [
+      "Guesses blast radius based on file names without tracing actual `summon` extension usage across recipes and agents.",
+      "Omits the `blast_radius` field or merges it into narrative prose rather than a distinct structured list.",
+      "Proposes or executes changes to remove the extension instead of remaining strictly read-only."
+    ],
+    "expected_behavior": [
+      "Remains strictly read-only throughout — no mutations of any kind, including no Beads creates or updates.",
+      "Traces `summon` extension usage across all recipe and agent files with exact file path references and line-level evidence.",
+      "Returns `blast_radius` as a distinct list of affected files/modules each annotated with a one-line rationale for why removal would break it.",
+      "Proposes `bd create` draft issue titles as non-executed follow-up suggestions, explicitly not running the commands."
+    ]
+  },
+  {
+    "query": "Research which Beads issues are currently blocked, why, and recommend a safe unblocking order. Read only.",
+    "files": [".beads/issues.jsonl", ".goose/recipes/", "AGENTS.md"],
+    "max_turns": 60,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The researcher should combine Beads state traversal with recipe context to produce a dependency-aware unblocking recommendation with all schema fields populated.",
+    "fixture_intent": "A non-trivial Beads issue graph with blocked issues, dependency chains, and gate conditions exists so the researcher can demonstrate dependency traversal and cross-reference with recipe state to produce an ordered unblocking plan.",
+    "baseline_gaps": [
+      "Lists blocked issues without tracing their dependency chains or explaining why each blocker is in a blocked state.",
+      "Recommends an unblocking order without citing which bead unblocks which, leaving the rationale implicit.",
+      "Omits `recommended_next_steps` or leaves other required schema fields empty."
+    ],
+    "expected_behavior": [
+      "Runs `bd prime`, `bd blocked --json`, and `bd ready --json` read-only commands to gather Beads state — no `bd create`, `bd update`, or `bd close` calls.",
+      "Traces the dependency graph for each blocked issue, explaining the upstream blocker chain before recommending an order.",
+      "Recommends an explicit unblocking order with rationale naming which bead, when unblocked, frees which downstream work.",
+      "Populates all 6 JSON schema fields with content derived from actual Beads state and recipe context: summary, relevant_files, beads_state, risks, blast_radius, recommended_next_steps."
+    ]
+  }
+]
