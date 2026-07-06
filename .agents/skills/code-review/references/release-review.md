@@ -21,17 +21,17 @@
 ```markdown
 ## Release Readiness Matrix
 
-| Gate | Status | Evidence |
-|---|---|---|
-| Recipe validation | PASS/FAIL | N of N recipes valid |
-| Skill visibility | PASS/FAIL | N skills visible |
-| Tests | PASS/FAIL | coverage X% |
-| Docs build | PASS/FAIL | |
-| Install safety | PASS/FAIL | idempotence confirmed? |
-| Breaking changes | PASS/FAIL | list or "none" |
-| Migration safety | PASS/FAIL | down migration exists? |
-| Rollback plan | PASS/FAIL | commands listed below |
-| Open blockers | PASS/FAIL | count |
+| Gate              | Status    | Evidence               |
+| ----------------- | --------- | ---------------------- |
+| Recipe validation | PASS/FAIL | N of N recipes valid   |
+| Skill visibility  | PASS/FAIL | N skills visible       |
+| Tests             | PASS/FAIL | coverage X%            |
+| Docs build        | PASS/FAIL | ---------------------- |
+| Install safety    | PASS/FAIL | idempotence confirmed? |
+| Breaking changes  | PASS/FAIL | list or "none"         |
+| Migration safety  | PASS/FAIL | down migration exists? |
+| Rollback plan     | PASS/FAIL | commands listed below  |
+| Open blockers     | PASS/FAIL | count                  |
 
 **Release verdict:** READY | BLOCKED — [reasons]
 

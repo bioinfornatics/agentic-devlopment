@@ -26,8 +26,8 @@ Prepend to the standard output:
 ```markdown
 ## Acceptance criteria status
 
-| Criterion | Met? | Evidence |
-|---|---|---|
+| Criterion        | Met?       | Evidence                       |
+| ---------------- | ---------- | ------------------------------ |
 | [criterion text] | ✅ / ❌ / ⚠️ | [file:line or "no test found"] |
 ```
 

@@ -32,7 +32,7 @@
 
 ## Technical debt map
 | Area | Debt type | Severity | Suggested action |
-|---|---|---|---|
+| ---- | --------- | -------- | ---------------- |
 
 ## Top 3 risks
 [Ranked by blast radius if unaddressed]

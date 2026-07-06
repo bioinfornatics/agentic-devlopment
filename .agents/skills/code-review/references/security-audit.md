@@ -12,15 +12,15 @@
 
 ## OWASP Top 10 checklist (apply only to relevant changed code)
 
-| # | Category | Check |
-|---|---|---|
-| A01 | Broken Access Control | Auth check on every route? CORS configured? |
-| A02 | Cryptographic Failures | Passwords hashed (bcrypt/argon2)? TLS enforced? PII encrypted? |
-| A03 | Injection | Queries parameterized? User input sanitized? ORMs used safely? |
+| #   | Category                  | Check                                                           |
+| --- | ------------------------- | --------------------------------------------------------------- |
+| A01 | Broken Access Control     | Auth check on every route? CORS configured?                     |
+| A02 | Cryptographic Failures    | Passwords hashed (bcrypt/argon2)? TLS enforced? PII encrypted?  |
+| A03 | Injection                 | Queries parameterized? User input sanitized? ORMs used safely?  |
 | A05 | Security Misconfiguration | Debug off in prod? Default creds changed? Security headers set? |
-| A06 | Vulnerable Components | npm audit clean? Known CVEs in changed deps? |
-| A07 | Auth/Session Failures | JWT validated server-side? Sessions expire? |
-| A10 | SSRF | User-provided URLs whitelisted? Internal services protected? |
+| A06 | Vulnerable Components     | npm audit clean? Known CVEs in changed deps?                    |
+| A07 | Auth/Session Failures     | JWT validated server-side? Sessions expire?                     |
+| A10 | SSRF                      | User-provided URLs whitelisted? Internal services protected?    |
 
 ## Immediate CRITICAL patterns (always flag, no confidence gate needed)
 - Hardcoded credentials, API keys, or tokens in source

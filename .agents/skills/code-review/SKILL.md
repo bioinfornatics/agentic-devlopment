@@ -15,14 +15,14 @@ metadata:
 
 Read context (query, files, bead description) and load exactly one reference:
 
-| Signals present in context | Type | Load |
-|---|---|---|
-| diff / PR / staged / merge / patch | PR review | `load skill: code-review/references/pr-review.md` |
-| feature / acceptance criteria / user story / spec | Feature review | `load skill: code-review/references/feature-review.md` |
-| security / auth / payments / input / CVE / OWASP | Security audit | `load skill: code-review/references/security-audit.md` |
-| release / deploy / production / gate / go-no-go | Release review | `load skill: code-review/references/release-review.md` |
-| hotfix / urgent / incident / critical / regression | Hotfix review | `load skill: code-review/references/hotfix-review.md` |
-| architecture / codebase / global / patterns / audit | Global review | `load skill: code-review/references/global-review.md` |
+| Signals present in context                          | Type           | Load                                                   |
+| --------------------------------------------------- | -------------- | ------------------------------------------------------ |
+| diff / PR / staged / merge / patch                  | PR review      | `load skill: code-review/references/pr-review.md`      |
+| feature / acceptance criteria / user story / spec   | Feature review | `load skill: code-review/references/feature-review.md` |
+| security / auth / payments / input / CVE / OWASP    | Security audit | `load skill: code-review/references/security-audit.md` |
+| release / deploy / production / gate / go-no-go     | Release review | `load skill: code-review/references/release-review.md` |
+| hotfix / urgent / incident / critical / regression  | Hotfix review  | `load skill: code-review/references/hotfix-review.md`  |
+| architecture / codebase / global / patterns / audit | Global review  | `load skill: code-review/references/global-review.md`  |
 
 **Default when ambiguous:** load `code-review/references/pr-review.md`.
 
@@ -61,7 +61,7 @@ Do not manufacture findings to justify the invocation.
 ## Findings
 
 | Severity | File:Line | Issue | Fix |
-|---|---|---|---|
+| -------- | --------- | ----- | --- |
 
 ## Missing tests
 [list or "None identified"]
@@ -69,6 +69,54 @@ Do not manufacture findings to justify the invocation.
 ## Beads follow-ups
 [bd create commands or "None"]
 ```
+
+---
+
+## Finding generation loop
+
+Use this loop for every review type. It gives you freedom to decide what to examine
+and how deeply — bounded by the gates below. Do not skip the gates; the output is
+whatever survives them.
+
+```
+FOR EACH area you examine (diff section, file, pattern, dependency):
+
+  1. DRAFT a candidate finding — what you noticed
+
+  2. PRE-REPORT GATE (binary — all four must pass or drop/downgrade):
+     □ Can I cite the exact file and line?
+     □ Can I name the concrete failure mode: input → state → bad outcome?
+     □ Have I read surrounding context (callers, imports, tests)?
+     □ Is the severity defensible to a senior engineer on this team?
+
+  3. FALSE-POSITIVE CHECK (judgment):
+     Ask: "Would a senior engineer on this team actually request this change in review?"
+     If NO or UNSURE → drop.
+     If the pattern appears in the false-positive list for this review type → drop.
+
+  4. Finding survives both gates → add to findings list with severity.
+
+AFTER THE LOOP:
+
+  5. CONSOLIDATE similar findings:
+     "5 functions missing the same error handling" → 1 HIGH finding, count noted.
+
+  6. SEVERITY SANITY:
+     • CRITICAL → production impact evidence required
+     • HIGH     → exact snippet + failure scenario + why existing guards miss it
+     • MEDIUM   → specific location + consequence
+     • LOW      → include only if the diff is otherwise clean (< 3 other findings)
+
+  7. STOP. Zero findings is a valid, correct, complete output.
+     Never add findings to reach a minimum count.
+```
+
+**Your freedom within this loop:**
+- Choose which areas to examine (within the exploration budget of the active reference)
+- Set severity (within the sanity check bounds above)
+- Decide what counts as "similar" for consolidation
+- Decide whether surrounding context exonerates a finding
+- Decide when to stop reading more context
 
 ---
 
