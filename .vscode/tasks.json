@@ -4,19 +4,19 @@
     {
       "id": "skillEvalSubset",
       "type": "promptString",
-      "description": "Optional skill subset, e.g. code-review sdd. Leave empty for full suite.",
+      "description": "Skill subset, e.g. code-review sdd. Leave empty for full suite.",
       "default": ""
     },
     {
       "id": "skillEvalReviewSkill",
       "type": "promptString",
-      "description": "Skill review to open, e.g. code-review or sdd.",
+      "description": "Skill to open review for, e.g. code-review or sdd.",
       "default": "code-review"
     }
   ],
   "tasks": [
     {
-      "label": "Eval Skills: Full A/B Suite",
+      "label": "Eval: Full A/B Suite",
       "type": "shell",
       "command": "python scripts/run-skill-ab-suite.py --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
       "group": "test",
@@ -27,7 +27,7 @@
       }
     },
     {
-      "label": "Eval Skills: A/B Suite Subset",
+      "label": "Eval: A/B Suite Subset",
       "type": "shell",
       "command": "python scripts/run-skill-ab-suite.py --continue-on-failure --skills ${input:skillEvalSubset} --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
       "group": "test",
@@ -38,19 +38,9 @@
       }
     },
     {
-      "label": "Eval Skills: Open Suite Results",
+      "label": "Eval: Full A/B Suite + Post-Suite Workflow",
       "type": "shell",
-      "command": "python scripts/open-skill-eval-review.py",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "Eval Skills: Definition Review",
-      "type": "shell",
-      "command": "python scripts/render-skill-eval-review.py && xdg-open dist/skill-eval-review/index.html",
+      "command": "python scripts/run-skill-ab-suite.py --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate && python scripts/export-eval-history.py && python scripts/build-eval-report.py && xdg-open dist/evals/report/index.html",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
@@ -59,39 +49,7 @@
       }
     },
     {
-      "label": "Eval Skills: Full A/B Suite + Open Review",
-      "type": "shell",
-      "command": "python scripts/run-skill-ab-suite.py --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"; python scripts/open-skill-eval-review.py",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      },
-      "group": "test"
-    },
-    {
-      "label": "Eval Skills: A/B Suite Subset + Open Review",
-      "type": "shell",
-      "command": "python scripts/run-skill-ab-suite.py --continue-on-failure --skills ${input:skillEvalSubset} --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"; python scripts/open-skill-eval-review.py",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      },
-      "group": "test"
-    },
-    {
-      "label": "Eval Skills: Open Skill Review",
-      "type": "shell",
-      "command": "python scripts/open-skill-eval-review.py --skill ${input:skillEvalReviewSkill}",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "Eval Skills: Analyze Results",
+      "label": "Eval: Analyze Results + Quality Gate",
       "type": "shell",
       "command": "python scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate",
       "group": "test",
@@ -102,14 +60,134 @@
       }
     },
     {
-      "label": "Eval Skills: Analyze Results + Open Index",
+      "label": "Eval: Analyze Results + Open Analysis Index",
       "type": "shell",
-      "command": "python scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate; xdg-open dist/evals/skills/analysis-index.html",
+      "command": "python scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate && xdg-open dist/evals/skills/analysis-index.html",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval: Export History (DB → JSON)",
+      "detail": "Exports evaluation.db → evals/history/runs.json for GitHub Pages and CI. Run after every suite.",
+      "type": "shell",
+      "command": "python scripts/export-eval-history.py",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Eval: Build Trend Report",
+      "detail": "Generates dist/evals/report/index.html from evaluation.db (or runs.json fallback).",
+      "type": "shell",
+      "command": "python scripts/build-eval-report.py && xdg-open dist/evals/report/index.html",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Eval: Post-Suite Workflow",
+      "detail": "Analyze + Export history + Build trend report + Open report. Run after every suite.",
+      "type": "shell",
+      "command": "python scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate && python scripts/export-eval-history.py && python scripts/build-eval-report.py && xdg-open dist/evals/report/index.html && xdg-open dist/evals/skills/analysis-index.html",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval: Open Suite Results (benchmark viewer)",
+      "type": "shell",
+      "command": "python scripts/open-skill-eval-review.py",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Eval: Open Skill Review",
+      "type": "shell",
+      "command": "python scripts/open-skill-eval-review.py --skill ${input:skillEvalReviewSkill}",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Eval: Open Trend Report",
+      "type": "shell",
+      "command": "xdg-open dist/evals/report/index.html",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Eval: Open Analysis Index",
+      "type": "shell",
+      "command": "xdg-open dist/evals/skills/analysis-index.html",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Harness: Build Documentation",
+      "detail": "Runs pandoc to generate dist/docs/html/ and also builds the eval trend report.",
+      "type": "shell",
+      "command": "./scripts/build-docs.sh",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Harness: Validate All Recipes",
+      "detail": "Runs goose recipe validate on every .goose/recipes/**/*.yaml file.",
+      "type": "shell",
+      "command": "find .goose/recipes -name '*.yaml' | sort | xargs -I{} sh -c 'printf \"%s: \" \"{}\" && goose recipe validate \"{}\" 2>&1'",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Harness: Install / Update Local Config",
+      "detail": "Copies recipes, skills, agents to ~/.config/goose and ~/.agents, updates slash commands.",
+      "type": "shell",
+      "command": "./scripts/install.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Harness: goose skills list",
+      "type": "shell",
+      "command": "goose skills list",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
       }
     }
   ]
