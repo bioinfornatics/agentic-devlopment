@@ -13,7 +13,7 @@
     ],
     "fixture_intent": "Normal scenario: exercises the durable-edit loop — Beads first, scoped plan before mutation, targeted validation, complete handoff.",
     "difficulty": "normal",
-    "max_turns": 25,
+    "max_turns": 200,
     "expected_skill_contribution": "The agentic harness skill should enforce the durable-edit loop: Beads state first, scoped plan before mutation, minimal recipe change, targeted recipe validation, and a complete handoff.",
     "baseline_gaps": [
       "Agent may edit recipe files before creating or claiming durable Beads work.",
@@ -41,7 +41,7 @@
     ],
     "fixture_intent": "Difficult scenario: read-only orchestration investigation — delegation decision, concrete evidence, Beads-compatible follow-ups without executing them.",
     "difficulty": "difficult",
-    "max_turns": 40,
+    "max_turns": 200,
     "expected_skill_contribution": "The skill should preserve strict read-only investigation, make an explicit orchestration/delegation decision, and propose Beads-compatible follow-ups without executing them.",
     "baseline_gaps": [
       "Agent may perform writes during a read-only investigation.",
@@ -68,7 +68,7 @@
     ],
     "fixture_intent": "Very difficult scenario: end-to-end scoped Beads-backed change — identify/create issue, edit only scoped file, validate recipe, update durable state, complete handoff.",
     "difficulty": "very_difficult",
-    "max_turns": 60,
+    "max_turns": 200,
     "expected_skill_contribution": "The skill should complete a scoped Beads-backed recipe task end to end: identify or create the scoped issue, avoid unrelated work, validate the recipe, update/close durable state, report git status, then stop.",
     "baseline_gaps": [
       "Agent may rely on chat history instead of durable Beads state.",

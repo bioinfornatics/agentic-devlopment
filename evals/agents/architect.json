@@ -1,8 +1,12 @@
 [
   {
     "query": "Design the caching strategy for the Beads dependency graph in this harness. Propose options and recommend one.",
-    "files": [".beads/", ".agents/skills/beads-harness/SKILL.md", "AGENTS.md"],
-    "max_turns": 25,
+    "files": [
+      ".beads/",
+      ".agents/skills/beads-harness/SKILL.md",
+      "AGENTS.md"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The architect should propose at least 2 alternatives with a trade-off table, recommend the simplest design that meets requirements, and produce a draft ADR — baseline gives one solution without alternatives.",
     "fixture_intent": "Beads data files and the beads-harness skill are present so the architect can ground alternatives in actual data shapes and access patterns rather than pure speculation.",
@@ -20,8 +24,12 @@
   },
   {
     "query": "Design the agent routing mechanism for the harness: how should user intent automatically map to the right specialist agent?",
-    "files": [".agents/agents/", ".agents/skills/goose-orchestration/SKILL.md", ".goose/recipes/harness-master.yaml"],
-    "max_turns": 40,
+    "files": [
+      ".agents/agents/",
+      ".agents/skills/goose-orchestration/SKILL.md",
+      ".goose/recipes/harness-master.yaml"
+    ],
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The architect should analyse current state first, identify Red Flags in the current design, propose 2+ alternatives with trade-offs, and produce an ADR.",
     "fixture_intent": "The existing routing mechanism is embedded across agent descriptions and the orchestration skill, so the architect can identify real coupling or design smells before proposing alternatives.",
@@ -39,8 +47,13 @@
   },
   {
     "query": "Review the full harness architecture after the agent roster overhaul. Identify technical debt, scalability risks, and propose the next architectural iteration.",
-    "files": [".agents/agents/", ".agents/skills/", ".goose/recipes/", "AGENTS.md"],
-    "max_turns": 60,
+    "files": [
+      ".agents/agents/",
+      ".agents/skills/",
+      ".goose/recipes/",
+      "AGENTS.md"
+    ],
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The architect should produce a current-state analysis, technical debt map, scalability risk assessment, and a design proposal with trade-offs — not just a status summary.",
     "fixture_intent": "A full harness with 11 agents, multiple skill packages, and an orchestration recipe layer exists so the architect can map real patterns, identify specific debt items with file evidence, and stress-test the design against growth scenarios.",

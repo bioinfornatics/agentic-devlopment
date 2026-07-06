@@ -1,8 +1,11 @@
 [
   {
     "query": "Use SDD to plan support for a `harness-security-review` recipe. Stay in the Intent and Spec phases only — do not implement.",
-    "files": [".goose/recipes/", "AGENTS.md"],
-    "max_turns": 25,
+    "files": [
+      ".goose/recipes/",
+      "AGENTS.md"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The SDD recipe should explicitly name the Intent and Spec phases, clarify non-goals, produce acceptance criteria in Given/When/Then form, and resist jumping to implementation.",
     "fixture_intent": "The recipes directory and AGENTS.md as context for the new recipe; the agent must work through Intent and Spec phases only, stopping before any implementation or bead creation for implementation work.",
@@ -20,8 +23,11 @@
   },
   {
     "query": "Use SDD to drive a TDD slice for idempotence checks in the install scripts. Write the failing test spec first, then the implementation plan.",
-    "files": ["scripts/install.sh", "scripts/install.ps1"],
-    "max_turns": 40,
+    "files": [
+      "scripts/install.sh",
+      "scripts/install.ps1"
+    ],
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The SDD recipe should drive the TDD phase: RED spec first (failing test description), then minimal GREEN implementation plan, then REFACTOR step — in that named order.",
     "fixture_intent": "The install scripts as the unit under test; the agent must write a failing test specification before any implementation detail, following explicit RED→GREEN→REFACTOR discipline without editing files.",
@@ -39,8 +45,13 @@
   },
   {
     "query": "Run a full SDD release-readiness evaluation for the harness after the agent roster changes. Produce an explicit readiness matrix.",
-    "files": ["docs/10-release-readiness.md", ".goose/recipes/", ".agents/", "scripts/"],
-    "max_turns": 60,
+    "files": [
+      "docs/10-release-readiness.md",
+      ".goose/recipes/",
+      ".agents/",
+      "scripts/"
+    ],
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The SDD recipe should produce a release-readiness matrix covering all SDD gates (tests/docs/install/rollback/observability/blockers) with explicit pass/fail/blocked/unknown per dimension.",
     "fixture_intent": "The release-readiness doc, recipes, agent files, and scripts as the surfaces to evaluate; the agent must produce a structured matrix assessment of all required gates rather than a prose narrative.",

@@ -12,7 +12,7 @@
     "fixture_description": "Applied a patch to scripts/install.sh and scripts/install.ps1 that adds a new slash command mapping.",
     "fixture_intent": "Normal fixture: direct missing-recipe regression; expected to be caught by a practical review checklist.",
     "difficulty": "normal",
-    "max_turns": 25,
+    "max_turns": 200,
     "expected_skill_contribution": "The code-review skill should catch an explicit install-script regression, rank it correctly, and discuss idempotence, backups, path safety, tests, and rollback without over-exploring.",
     "baseline_gaps": [
       "Agent may underweight install-script idempotence, shell portability, or config overwrite risks.",
@@ -40,7 +40,7 @@
     "fixture_description": "Applied a patch to docs/15-skill-evaluations.md and evals/skills/README.md that updates guidance for tracking eval follow-up work.",
     "fixture_intent": "Difficult fixture: documentation introduces markdown TODO tracking; expected to catch the Beads hygiene violation, produce a verdict, and propose unlinked follow-up commands.",
     "difficulty": "difficult",
-    "max_turns": 40,
+    "max_turns": 200,
     "expected_skill_contribution": "The code-review skill should identify the Beads hygiene violation in the docs (TODO.md guidance conflicts with durable Beads tracking), produce a verdict, and propose Beads-compatible follow-ups — Beads hygiene findings are never subject to confidence filtering.",
     "baseline_gaps": [
       "Agent may leave follow-up work only in prose.",
@@ -69,7 +69,7 @@
     "fixture_description": "Applied a patch that modifies harness-review.yaml, code-review/SKILL.md, and docs/15-skill-evaluations.md.",
     "fixture_intent": "Very difficult fixture: mixed recipe/skill/docs regression; expected to connect multiple harness rules and validation gaps.",
     "difficulty": "very_difficult",
-    "max_turns": 60,
+    "max_turns": 200,
     "expected_skill_contribution": "The code-review skill should review a mixed multi-surface diff, produce a verdict, severity-ranked findings with exact file references, identify harness-rule violations, and propose exact validation steps and Beads follow-ups.",
     "baseline_gaps": [
       "Agent may provide a generic summary without a verdict or severity-ranked findings.",

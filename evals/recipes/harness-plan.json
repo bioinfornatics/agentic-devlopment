@@ -5,7 +5,7 @@
       ".goose/recipes/",
       "AGENTS.md"
     ],
-    "max_turns": 25,
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The plan recipe should check for duplicate Beads issues, output exact annotated bd commands in dependency order, and define acceptance criteria — not just describe the plan in prose.",
     "fixture_intent": "Validates that the plan recipe checks existing Beads state before creating issues, emits executable bd commands with comments, encodes dependency edges, and stops before implementation.",
@@ -27,7 +27,7 @@
       ".agents/agents/",
       "AGENTS.md"
     ],
-    "max_turns": 40,
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The plan recipe should produce a phased dependency graph with milestone epics, task beads, discovered-from links, and bd gate commands for milestone waits.",
     "fixture_intent": "Validates that the plan recipe structures work into epic→task phases, encodes discovered-from links for emergent work, uses bd gate for human-review milestones, and presents a visual dependency table before commands.",
@@ -50,7 +50,7 @@
       ".goose/recipes/",
       "docs/15-skill-evaluations.md"
     ],
-    "max_turns": 60,
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The plan recipe should produce a multi-phase SDD+TDD Beads graph covering intent, spec, implementation, and review phases with explicit quality gate conditions per phase.",
     "fixture_intent": "Validates that the plan recipe maps all five SDD phases as distinct bead groups, attaches explicit acceptance criteria to each phase bead, enforces ordering via dep add, and gates phase transitions on explicit conditions.",

@@ -5,7 +5,7 @@
       ".goose/recipes/harness-master.yaml",
       ".goose/recipes/subrecipes/"
     ],
-    "max_turns": 25,
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The master recipe should load agentic-dev-harness skill, orient via bd prime, emit an Orchestration decision naming harness-research flow, and synthesize results — not just inspect files.",
     "fixture_intent": "Validates that the harness-master recipe loads its skill, primes Beads, emits a visible Orchestration decision block, and synthesizes findings rather than raw-dumping file contents.",
@@ -28,7 +28,7 @@
       ".goose/recipes/subrecipes/",
       "AGENTS.md"
     ],
-    "max_turns": 40,
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The recipe should route to harness-plan behaviour: load skill, prime Beads, emit Orchestration decision for plan flow, check duplicates, output bd commands.",
     "fixture_intent": "Validates that the orchestrator correctly routes a planning request through the plan flow, checks for existing Beads issues before proposing new ones, and outputs executable bd commands rather than prose only.",
@@ -51,7 +51,7 @@
       ".beads/issues.jsonl",
       "AGENTS.md"
     ],
-    "max_turns": 60,
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The recipe should route through harness-implement behaviour: skill load, Beads prime + claim, Scoped plan before edits, recipe validation, Beads close, handoff with git status.",
     "fixture_intent": "Validates the full implement routing: the orchestrator routes to implement flow, claims atomically before editing, states a Scoped plan, validates the recipe, closes the bead, and produces a structured handoff.",

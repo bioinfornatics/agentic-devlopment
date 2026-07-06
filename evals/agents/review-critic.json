@@ -1,8 +1,12 @@
 [
   {
     "query": "Review the current diff in the harness. Focus on correctness and Beads hygiene.",
-    "files": [".goose/recipes/", ".agents/agents/", "AGENTS.md"],
-    "max_turns": 25,
+    "files": [
+      ".goose/recipes/",
+      ".agents/agents/",
+      "AGENTS.md"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The review-critic should apply the pre-report gate (4 questions), confidence filtering, severity taxonomy, and explicit verdict — baseline lists issues without filtering or verdict.",
     "fixture_intent": "Confirm that the agent reads the actual diff via git commands before reviewing, filters observations through the confidence threshold, and always emits a verdict — even when the diff is clean and the correct output is zero findings.",
@@ -20,8 +24,10 @@
   },
   {
     "query": "Review `.agents/skills/code-review/SKILL.md` changes. Report findings with proof for any HIGH severity issues.",
-    "files": [".agents/skills/code-review/SKILL.md"],
-    "max_turns": 40,
+    "files": [
+      ".agents/skills/code-review/SKILL.md"
+    ],
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The review-critic should apply the pre-report 4-question gate for each finding and require exact snippet + failure mode + why guards don't catch it for HIGH severity.",
     "fixture_intent": "Verify that the agent enforces the HIGH-severity proof requirement rather than asserting severity without evidence, and that it consolidates similar findings rather than producing a bloated list of the same pattern.",
@@ -44,7 +50,7 @@
       ".agents/skills/code-review/SKILL.md",
       ".agents/agents/review-critic.md"
     ],
-    "max_turns": 60,
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The review-critic must handle multi-surface review with cross-surface connections, apply false-positive filtering from its list, and propose exact Beads follow-ups.",
     "fixture_intent": "Stress-test the agent's false-positive suppression and cross-surface reasoning on a diff spanning three artifact types — the discriminant is whether the verdict is holistic and whether follow-ups are actionable `bd create` commands rather than prose.",

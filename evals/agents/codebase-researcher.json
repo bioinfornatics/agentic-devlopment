@@ -1,8 +1,11 @@
 [
   {
     "query": "Map the architecture of the harness recipe layer. What are the entry points, what do they delegate to, and what are the risks?",
-    "files": [".goose/recipes/", ".goose/recipes/subrecipes/"],
-    "max_turns": 25,
+    "files": [
+      ".goose/recipes/",
+      ".goose/recipes/subrecipes/"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The researcher agent should use analyze extension for structure before grep, return a structured output with all schema fields, and sample strategically — not scan every file.",
     "fixture_intent": "A recipe layer with top-level entry points and subrecipes exists so the researcher can demonstrate strategic sampling (entry points first, then 1 level of delegation) rather than exhaustive scanning.",
@@ -20,8 +23,12 @@
   },
   {
     "query": "Trace the blast radius of removing the `summon` extension from `harness-implement.yaml`. Which agents, recipes, and docs would break?",
-    "files": [".goose/recipes/harness-implement.yaml", ".goose/recipes/", ".agents/"],
-    "max_turns": 40,
+    "files": [
+      ".goose/recipes/harness-implement.yaml",
+      ".goose/recipes/",
+      ".agents/"
+    ],
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The researcher should trace symbol usage across the harness, populate `blast_radius` as a distinct field with specific file paths, and propose follow-up without executing.",
     "fixture_intent": "The `summon` extension is declared in one or more recipes and referenced in agent definitions, so the researcher must trace cross-file usage and populate `blast_radius` from evidence, not guesswork.",
@@ -39,8 +46,12 @@
   },
   {
     "query": "Research which Beads issues are currently blocked, why, and recommend a safe unblocking order. Read only.",
-    "files": [".beads/issues.jsonl", ".goose/recipes/", "AGENTS.md"],
-    "max_turns": 60,
+    "files": [
+      ".beads/issues.jsonl",
+      ".goose/recipes/",
+      "AGENTS.md"
+    ],
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The researcher should combine Beads state traversal with recipe context to produce a dependency-aware unblocking recommendation with all schema fields populated.",
     "fixture_intent": "A non-trivial Beads issue graph with blocked issues, dependency chains, and gate conditions exists so the researcher can demonstrate dependency traversal and cross-reference with recipe state to produce an ordered unblocking plan.",

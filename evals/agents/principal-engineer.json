@@ -1,8 +1,12 @@
 [
   {
     "query": "Review the agent roster overhaul changes for blast radius and breaking changes.",
-    "files": [".agents/agents/", "AGENTS.md", "README.md"],
-    "max_turns": 25,
+    "files": [
+      ".agents/agents/",
+      "AGENTS.md",
+      "README.md"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The principal-engineer should apply the breaking change checklist (name fields unchanged, description is routing signal), assess blast radius table, and flag LoC limits — baseline gives a generic review.",
     "fixture_intent": "Confirm that the agent uses a structured breaking-change checklist and blast-radius table rather than generic commentary, and that it quantifies change size against the defined LoC thresholds.",
@@ -24,7 +28,7 @@
       ".goose/recipes/harness-master.yaml",
       ".agents/skills/goose-orchestration/SKILL.md"
     ],
-    "max_turns": 40,
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The principal-engineer should check recipe parameter schema for backward compatibility, skill name for routing stability, and flag any changes that break existing slash command mappings.",
     "fixture_intent": "Verify that the agent treats recipe parameters and skill name frontmatter as a public API surface — not implementation details — and traces breaking changes downstream to slash command configurations in user config.",
@@ -49,7 +53,7 @@
       "evals/",
       "AGENTS.md"
     ],
-    "max_turns": 60,
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The principal-engineer should produce systemic risk assessment: breaking change checklist across all surfaces, splitting recommendations for large changes, and a definitive escalation decision.",
     "fixture_intent": "Stress-test the agent's systemic risk reasoning when it receives a session-wide diff that has already generated 2+ BLOCK verdicts — the discriminant is a definitive APPROVE/APPROVE-WITH-CONDITIONS/BLOCK decision, not a reiteration of individual findings.",

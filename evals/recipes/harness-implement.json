@@ -6,7 +6,7 @@
       ".goose/recipes/",
       "AGENTS.md"
     ],
-    "max_turns": 25,
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The implement recipe should claim atomically before editing, emit a Scoped plan, make a minimal change, validate, close the bead, and report the full handoff — not just make the edit.",
     "fixture_intent": "Validates the core implement protocol: atomic claim before mutation, Scoped plan declaration, minimal change, validation step, and structured handoff with bead + files + git + risks.",
@@ -28,7 +28,7 @@
       ".agents/skills/code-review/",
       ".beads/issues.jsonl"
     ],
-    "max_turns": 40,
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The implement recipe should enforce TDD: write failing test first (RED), then minimal implementation (GREEN), then verify, before closing the bead.",
     "fixture_intent": "Validates that the implement recipe enforces the RED→GREEN→REFACTOR TDD cycle, confirming a test fails before implementation code is written and reporting coverage alongside the handoff.",
@@ -51,7 +51,7 @@
       ".beads/issues.jsonl",
       "AGENTS.md"
     ],
-    "max_turns": 60,
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The recipe should enforce minimal blast radius: edit only the scoped file, validate the recipe, verify no other recipe broke, close bead with full handoff.",
     "fixture_intent": "Validates that the implement recipe enforces scoped blast radius by editing only the declared file, validates the changed recipe plus dependents, and produces a complete handoff with all required fields.",

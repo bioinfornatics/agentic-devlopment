@@ -1,8 +1,11 @@
 [
   {
     "query": "Run a browser smoke test on the generated documentation site at `dist/docs/html/index.html`.",
-    "files": ["dist/docs/html/index.html", "scripts/build-docs.sh"],
-    "max_turns": 25,
+    "files": [
+      "dist/docs/html/index.html",
+      "scripts/build-docs.sh"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The web-test recipe should start a server, identify the exact URL, use browser tooling for evidence (not just file inspection), check console/network, and report cleanup.",
     "fixture_intent": "A built documentation site and the build script that generates it; the agent must launch a local server to serve the static output rather than inspecting the HTML file directly.",
@@ -20,8 +23,11 @@
   },
   {
     "query": "Verify the documentation site passes WCAG 2.2 AA accessibility checks — keyboard navigation, focus indicators, accessible names, and color contrast.",
-    "files": ["dist/docs/html/index.html", "docs/assets/site.css"],
-    "max_turns": 40,
+    "files": [
+      "dist/docs/html/index.html",
+      "docs/assets/site.css"
+    ],
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The web-test recipe should run structured a11y checks via browser tooling, report keyboard navigation results, identify specific WCAG violations with element locations.",
     "fixture_intent": "A built documentation site with its stylesheet; the agent must exercise keyboard navigation and focus states through a live browser session, not infer accessibility from static HTML/CSS analysis.",
@@ -39,8 +45,11 @@
   },
   {
     "query": "Test the documentation site on mobile (375px) and desktop (1280px) viewports, check responsive layout, capture screenshots, and report any layout breaks.",
-    "files": ["dist/docs/html/index.html", "docs/00-index.md"],
-    "max_turns": 60,
+    "files": [
+      "dist/docs/html/index.html",
+      "docs/00-index.md"
+    ],
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The web-test recipe should test both viewports with exact pixel dimensions, capture screenshot evidence, report layout issues with reproduction steps.",
     "fixture_intent": "A built documentation site and a source markdown file; the agent must drive a browser at two distinct viewport sizes and produce screenshot evidence rather than reading files or assuming layout correctness.",

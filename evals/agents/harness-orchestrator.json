@@ -1,8 +1,11 @@
 [
   {
     "query": "Route a read-only risk investigation of the harness recipes to the correct specialist and synthesize the result.",
-    "files": [".goose/recipes/", ".agents/agents/"],
-    "max_turns": 25,
+    "files": [
+      ".goose/recipes/",
+      ".agents/agents/"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The orchestrator agent should emit Orchestration decision naming the codebase-researcher route, load the routing skill, and close with a Delegation audit — baseline just inspects files directly.",
     "fixture_intent": "Harness recipe layer and agent definitions are present so the orchestrator can identify the correct specialist, assign a read-only scope, and synthesize the researcher's output without touching files itself.",
@@ -20,8 +23,12 @@
   },
   {
     "query": "Coordinate two workers: one updating `.goose/recipes/` and one updating `.agents/skills/`. Ensure no scope overlap.",
-    "files": [".goose/recipes/", ".agents/skills/", "AGENTS.md"],
-    "max_turns": 40,
+    "files": [
+      ".goose/recipes/",
+      ".agents/skills/",
+      "AGENTS.md"
+    ],
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The orchestrator should partition scopes explicitly, state the invariant verbatim, and emit Orchestration decision + Delegation audit — baseline lets both writers touch overlapping paths.",
     "fixture_intent": "Two writable directories exist with distinct but adjacent content so the orchestrator must reason about boundary conditions and enforce non-overlapping write scopes between concurrent workers.",
@@ -39,8 +46,13 @@
   },
   {
     "query": "Orchestrate the full SDD+TDD flow for adding eval coverage to `harness-plan` recipe: spec → plan → implement → review.",
-    "files": [".goose/recipes/harness-plan.yaml", "evals/", "AGENTS.md", ".beads/issues.jsonl"],
-    "max_turns": 60,
+    "files": [
+      ".goose/recipes/harness-plan.yaml",
+      "evals/",
+      "AGENTS.md",
+      ".beads/issues.jsonl"
+    ],
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The orchestrator should route through product-owner → beads-planner → tdd-guide → implementation-worker → review-critic in sequence, with explicit Orchestration decision before each phase and escalation protocol if review blocks.",
     "fixture_intent": "A real harness recipe with no existing eval coverage and an active Beads tracker give the orchestrator enough state to derive phase inputs, route each SDD phase to the right specialist, and detect when review blocks require escalation.",

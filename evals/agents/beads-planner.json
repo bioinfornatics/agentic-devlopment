@@ -1,8 +1,12 @@
 [
   {
     "query": "Plan adding eval coverage to the `harness-review` recipe. Check for duplicates and produce the Beads graph.",
-    "files": [".beads/issues.jsonl", "evals/", "AGENTS.md"],
-    "max_turns": 25,
+    "files": [
+      ".beads/issues.jsonl",
+      "evals/",
+      "AGENTS.md"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The beads-planner should check for duplicates before creating, output exact bd commands annotated with reasons, use dependency ordering — baseline creates issues without checking for duplicates.",
     "fixture_intent": "An existing Beads issue store with potentially overlapping eval-related entries forces the planner to prove it checked for duplicates before proposing new beads, and gives it a real dependency graph to order against.",
@@ -20,8 +24,12 @@
   },
   {
     "query": "Plan the full agent roster overhaul (6 rewrites + 5 new agents) as a phased Beads graph. Use discovered-from links and milestone gates.",
-    "files": [".agents/agents/", ".beads/issues.jsonl", "AGENTS.md"],
-    "max_turns": 40,
+    "files": [
+      ".agents/agents/",
+      ".beads/issues.jsonl",
+      "AGENTS.md"
+    ],
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The beads-planner should produce a phased graph with epics before tasks, discovered-from links, and bd gate for milestone review waits — baseline produces a flat unordered list.",
     "fixture_intent": "Eleven agent definition files with a mix of existing and planned entries give the planner enough concrete scope to derive a phased structure (rewrite phase vs. new-agent phase) with real epic→task hierarchies and gate conditions.",
@@ -39,8 +47,12 @@
   },
   {
     "query": "Plan a multi-phase SDD+TDD cycle for the harness eval coverage gap: 10 recipes × 3 scenarios each. Include quality gates between phases and per-milestone acceptance criteria.",
-    "files": ["evals/", ".goose/recipes/", ".beads/issues.jsonl"],
-    "max_turns": 60,
+    "files": [
+      "evals/",
+      ".goose/recipes/",
+      ".beads/issues.jsonl"
+    ],
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The beads-planner should structure a large multi-phase graph with SDD phase ordering, per-bead acceptance criteria, and gates — not just a list of 30 task beads.",
     "fixture_intent": "Ten recipe files and a partially populated evals directory create a real coverage gap that the planner must decompose into SDD phases rather than a flat 30-task list, with existing beads requiring duplicate detection.",

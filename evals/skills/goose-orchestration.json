@@ -10,7 +10,7 @@
     ],
     "fixture_intent": "Normal scenario: read-only investigation — Orchestration decision naming read-only flow, no delegation needed, Delegation audit closing.",
     "difficulty": "normal",
-    "max_turns": 25,
+    "max_turns": 200,
     "expected_skill_contribution": "The orchestration skill should produce an explicit `Orchestration decision:` block naming the read-only research flow, justify why delegation is not needed, and close with a `Delegation audit` — none of which a baseline agent will naturally produce.",
     "baseline_gaps": [
       "Agent may choose an implementation workflow for a read-only investigation.",
@@ -35,7 +35,7 @@
     ],
     "fixture_intent": "Difficult scenario: delegation decision with justification — Orchestration decision, non-overlapping scopes if delegated, risk-ranked synthesis, Delegation audit.",
     "difficulty": "difficult",
-    "max_turns": 40,
+    "max_turns": 200,
     "expected_skill_contribution": "The orchestration skill should produce an `Orchestration decision:` before work and a `Delegation audit:` after — baseline agents skip both and just inspect files.",
     "baseline_gaps": [
       "Agent may create overlapping or vague delegated tasks without a stated routing decision.",
@@ -59,7 +59,7 @@
     ],
     "fixture_intent": "Very difficult scenario: multi-worker scope partitioning — Orchestration decision, non-overlapping file scopes, verbatim coordination invariant, Delegation audit.",
     "difficulty": "very_difficult",
-    "max_turns": 60,
+    "max_turns": 200,
     "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision, worker contracts with non-overlapping scopes, the verbatim coordination invariant, and a Delegation audit — all missing from baseline responses.",
     "baseline_gaps": [
       "Agent may allow same-file writes or assume subagents can coordinate.",

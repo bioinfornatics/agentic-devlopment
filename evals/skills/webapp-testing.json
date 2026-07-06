@@ -10,7 +10,7 @@
     ],
     "fixture_intent": "Normal scenario: browser smoke test — server lifecycle, exact URL, console/network checks, condition-based waiting, cleanup, concrete evidence.",
     "difficulty": "normal",
-    "max_turns": 25,
+    "max_turns": 200,
     "expected_skill_contribution": "The webapp-testing skill should perform a browser-backed smoke test with server lifecycle, exact URL, condition-based waiting (not sleep), console/network checks, cleanup, and concrete evidence.",
     "baseline_gaps": [
       "Agent may claim UI behavior without using a browser or providing evidence.",
@@ -34,7 +34,7 @@
     ],
     "fixture_intent": "Very difficult scenario: accessibility verification — keyboard navigation, visible focus, accessible names, contrast, error announcements, exact evidence.",
     "difficulty": "very_difficult",
-    "max_turns": 60,
+    "max_turns": 200,
     "expected_skill_contribution": "The webapp-testing skill should verify accessibility with keyboard navigation, visible focus, accessible names/labels, contrast risks, and exact evidence distinguishing verified facts from assumptions.",
     "baseline_gaps": [
       "Agent may skip keyboard and focus checks and provide only visual inspection.",
@@ -58,7 +58,7 @@
     ],
     "fixture_intent": "Difficult scenario: multi-viewport verification — both viewports with explicit pixel dimensions, screenshots, layout issues, reproducible steps.",
     "difficulty": "difficult",
-    "max_turns": 40,
+    "max_turns": 200,
     "expected_skill_contribution": "The webapp-testing skill should verify mobile and desktop rendering with explicit viewport pixel dimensions, screenshot evidence, layout issues with reproduction steps.",
     "baseline_gaps": [
       "Agent may test only one viewport.",

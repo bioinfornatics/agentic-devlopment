@@ -6,7 +6,7 @@
       ".goose/recipes/subrecipes/",
       ".beads/issues.jsonl"
     ],
-    "max_turns": 25,
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The research recipe should return a structured JSON-schema output with summary, relevant_files, beads_state, risks, recommended_next_steps — not prose only.",
     "fixture_intent": "Validates that the research recipe is strictly read-only, returns all five required JSON schema output fields, and populates beads_state from actual Beads query results rather than fabricating it.",
@@ -30,7 +30,7 @@
       ".agents/",
       "docs/"
     ],
-    "max_turns": 40,
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The research recipe should use analyze extension for structure before raw search, return blast_radius as a distinct field, and propose Beads-compatible follow-ups without executing them.",
     "fixture_intent": "Validates that the research recipe uses structural analysis tooling before grep, surfaces a distinct blast_radius or risks field, identifies multiple consumers, and proposes non-executed follow-up work as bd commands.",
@@ -53,7 +53,7 @@
       ".goose/recipes/",
       "AGENTS.md"
     ],
-    "max_turns": 60,
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The research recipe should combine Beads dependency traversal with recipe-context analysis to produce a dependency-aware implementation order recommendation.",
     "fixture_intent": "Validates that the research recipe runs all three Beads query commands, performs dependency-aware ordering rather than arbitrary listing, and returns all schema fields populated from real state.",

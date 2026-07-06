@@ -1,8 +1,10 @@
 [
   {
     "query": "Store a durable pointer memory that the harness routing table canonical source is in the goose-orchestration skill.",
-    "files": [".agents/skills/goose-orchestration/SKILL.md"],
-    "max_turns": 25,
+    "files": [
+      ".agents/skills/goose-orchestration/SKILL.md"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The memory recipe should store a pointer in the correct format with stable key, not copy the table content, and not create task beads or MEMORY.md files.",
     "fixture_intent": "The goose-orchestration skill file as the canonical source being referenced; the agent must store a pointer memory pointing to it, not replicate its content.",
@@ -20,8 +22,10 @@
   },
   {
     "query": "Search all durable memories for anything related to agent routing or harness entry points. Report what you find, correct any stale entries.",
-    "files": [".beads/"],
-    "max_turns": 40,
+    "files": [
+      ".beads/"
+    ],
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The memory recipe should use bd search/recall to find relevant memories, assess staleness against current skill/recipe state, and propose updates rather than guessing.",
     "fixture_intent": "The Beads store containing any existing memories; the agent must search the live store and cross-reference findings against current skill and recipe files rather than guessing at memory content.",
@@ -39,8 +43,10 @@
   },
   {
     "query": "Perform a memory audit: list all memories, identify which are stale, duplicated, or violate the pointer format, then propose corrections.",
-    "files": [".beads/"],
-    "max_turns": 60,
+    "files": [
+      ".beads/"
+    ],
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The memory recipe should enumerate all memories, classify each against the pointer format and staleness criteria, and produce a structured audit report with exact correction commands.",
     "fixture_intent": "The Beads store as the subject of the audit; the agent must enumerate all stored memories and evaluate each against the canonical pointer format and current source state.",

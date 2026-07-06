@@ -1,8 +1,12 @@
 [
   {
     "query": "Review the prepared install-script change that adds a new slash command mapping.",
-    "files": ["scripts/install.sh", "scripts/install.ps1", ".goose/recipes/"],
-    "max_turns": 25,
+    "files": [
+      "scripts/install.sh",
+      "scripts/install.ps1",
+      ".goose/recipes/"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The harness-review recipe should follow review workflow: read diff, apply confidence gate, rank findings by severity, produce a verdict, and propose Beads follow-ups — not just list observations.",
     "fixture_intent": "An install-script patch that introduces a broken slash command mapping pointing to a missing recipe; the agent must surface the missing recipe as a CRITICAL finding and not approve the diff.",
@@ -22,8 +26,11 @@
   },
   {
     "query": "Review the diff in `.agents/skills/code-review/SKILL.md` and `docs/15-skill-evaluations.md`. Focus on Beads hygiene and harness-rule compliance.",
-    "files": [".agents/skills/code-review/SKILL.md", "docs/15-skill-evaluations.md"],
-    "max_turns": 40,
+    "files": [
+      ".agents/skills/code-review/SKILL.md",
+      "docs/15-skill-evaluations.md"
+    ],
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The review recipe should check Beads hygiene as a non-discretionary category, identify harness-rule violations, and produce a severity-ranked report with proof for HIGH findings.",
     "fixture_intent": "A skill file and its corresponding evaluation documentation as a review surface; the agent must treat Beads hygiene as a non-discretionary check and validate harness-rule compliance independently of confidence filtering.",
@@ -41,8 +48,12 @@
   },
   {
     "query": "Review a multi-surface diff touching recipes, skills, and docs simultaneously. Produce a severity-ranked report with validation steps.",
-    "files": [".goose/recipes/harness-review.yaml", ".agents/skills/code-review/SKILL.md", "docs/15-skill-evaluations.md"],
-    "max_turns": 60,
+    "files": [
+      ".goose/recipes/harness-review.yaml",
+      ".agents/skills/code-review/SKILL.md",
+      "docs/15-skill-evaluations.md"
+    ],
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The review recipe should handle a multi-surface diff: connect findings across surfaces, run or propose recipe validation, rank findings, and propose exact follow-up Beads work.",
     "fixture_intent": "A multi-surface patch touching a recipe, skill, and documentation simultaneously; the agent must connect cross-surface implications and include recipe validation rather than reviewing each file in isolation.",

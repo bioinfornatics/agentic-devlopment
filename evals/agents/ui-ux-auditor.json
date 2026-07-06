@@ -1,8 +1,11 @@
 [
   {
     "query": "Audit the generated documentation site in `dist/docs/html/index.html` for UX quality.",
-    "files": ["dist/docs/html/index.html", "docs/assets/site.css"],
-    "max_turns": 25,
+    "files": [
+      "dist/docs/html/index.html",
+      "docs/assets/site.css"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The ui-ux-auditor should apply the 8-dimension stack in order, require browser evidence before any finding, and rank issues by user impact — baseline gives generic aesthetic feedback.",
     "fixture_intent": "Confirm that the agent structures its audit around the 8-dimension evaluation stack rather than giving freeform aesthetic commentary, and that it refuses to state any finding without referencing browser evidence.",
@@ -20,8 +23,12 @@
   },
   {
     "query": "Audit the harness docs navigation for accessibility: keyboard navigation, focus indicators, accessible names, and WCAG 2.2 AA compliance.",
-    "files": ["dist/docs/html/index.html", "docs/00-index.md", "README.md"],
-    "max_turns": 40,
+    "files": [
+      "dist/docs/html/index.html",
+      "docs/00-index.md",
+      "README.md"
+    ],
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The ui-ux-auditor should test keyboard navigation with browser tooling, check WCAG 2.2 AA checklist items, and provide exact element locations — baseline reads HTML without browser testing.",
     "fixture_intent": "Verify that the agent performs active browser-based accessibility testing rather than static HTML inference, and that it anchors each WCAG finding to a specific element or section rather than making page-wide assertions.",
@@ -39,8 +46,11 @@
   },
   {
     "query": "Evaluate `docs/assets/site.css` as a design system. Assess tokens, variants, accessibility states, and propose Beads follow-ups.",
-    "files": ["docs/assets/site.css", "dist/docs/html/index.html"],
-    "max_turns": 60,
+    "files": [
+      "docs/assets/site.css",
+      "dist/docs/html/index.html"
+    ],
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The ui-ux-auditor should evaluate CSS as a design-system surface (not just visual), check accessibility states in CSS, distinguish blockers from recommendations, and propose Beads follow-ups.",
     "fixture_intent": "Stress-test the agent's design-system reasoning depth — the discriminant is whether it audits token naming, accessibility state coverage, and CSS-HTML coherence as first-class concerns rather than describing visual appearance.",

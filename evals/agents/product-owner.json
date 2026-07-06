@@ -1,8 +1,12 @@
 [
   {
     "query": "Write a PRD for adding eval coverage to all harness recipes. Include acceptance criteria for the first milestone.",
-    "files": [".goose/recipes/", "evals/", "docs/15-skill-evaluations.md"],
-    "max_turns": 25,
+    "files": [
+      ".goose/recipes/",
+      "evals/",
+      "docs/15-skill-evaluations.md"
+    ],
+    "max_turns": 200,
     "difficulty": "normal",
     "expected_skill_contribution": "The product-owner agent should apply the 100-pt PRD rubric, score the PRD, write Given/When/Then acceptance criteria, and state explicit non-goals — baseline produces vague requirements.",
     "fixture_intent": "Existing recipe files and a partial evals directory give the PO concrete scope to anchor acceptance criteria and non-goals against real artefacts rather than hypotheticals.",
@@ -20,8 +24,12 @@
   },
   {
     "query": "Spec out the `harness-security-review` recipe: user, outcome, constraints, non-goals, and testable acceptance criteria. Score the PRD.",
-    "files": [".goose/recipes/", "AGENTS.md", "docs/03-security-review.md"],
-    "max_turns": 40,
+    "files": [
+      ".goose/recipes/",
+      "AGENTS.md",
+      "docs/03-security-review.md"
+    ],
+    "max_turns": 200,
     "difficulty": "difficult",
     "expected_skill_contribution": "The product-owner should clarify intent through targeted questions, score the PRD, iterate if below 85, and ensure each acceptance criterion is testable by the tdd-guide agent.",
     "fixture_intent": "The referenced doc and recipe directory provide partial context for a security-review recipe so the PO must identify missing information through targeted questions before producing a scoreable PRD.",
@@ -39,8 +47,12 @@
   },
   {
     "query": "Produce a complete PRD for a multi-tenant version of this harness. User personas, success metrics, epics, stories, Given/When/Then criteria, and technical constraints. Gate at ≥85/100.",
-    "files": ["README.md", "AGENTS.md", "docs/"],
-    "max_turns": 60,
+    "files": [
+      "README.md",
+      "AGENTS.md",
+      "docs/"
+    ],
+    "max_turns": 200,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The product-owner should produce a full PRD covering all 5 rubric dimensions, define distinct personas, write epic→story hierarchy, reach ≥85/100, and block implementation routing until the gate is met.",
     "fixture_intent": "A single-tenant harness with documented agents and recipes gives the PO enough context to identify what multi-tenancy would change, derive distinct personas, and structure epics that map to real harness components.",
