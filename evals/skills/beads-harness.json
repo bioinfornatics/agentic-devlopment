@@ -8,20 +8,20 @@
       ".beads/",
       "AGENTS.md"
     ],
+    "fixture_intent": "Normal scenario: inspect-and-claim discipline — bd prime, bd ready, atomic claim or explicit no-work report.",
+    "difficulty": "normal",
+    "max_turns": 25,
+    "expected_skill_contribution": "The Beads skill should inspect durable ready state, claim work only when claimable work exists, and otherwise report the no-work state without modifying files.",
     "baseline_gaps": [
       "Agent may choose work without checking durable ready state.",
-      "Agent may not claim work atomically."
+      "Agent may not claim work atomically before starting."
     ],
     "expected_behavior": [
-      "Runs or requests `bd prime` for workflow context.",
-      "Inspects `bd ready --json` to find claimable work.",
-      "Claims selected work with `bd update <id> --claim` before modifications when claimable work exists; otherwise reports that no claimable work exists and avoids modifications.",
-      "Summarizes selected scope and blockers, or summarizes the no-work-available state."
-    ],
-    "max_turns": 150,
-    "difficulty": "normal",
-    "expected_skill_contribution": "The Beads skill should inspect durable ready state, claim work only when claimable work exists, and otherwise report the no-work state without modifying files.",
-    "fixture_intent": "Normal scenario for `beads-harness`: exercises behavior the skill is expected to improve over baseline."
+      "Runs `bd prime` and `bd ready --json` before any other action.",
+      "Claims selected work with `bd update <id> --claim --json` before any modification when claimable work exists.",
+      "When no claimable work exists, explicitly reports that state and makes no file edits or Beads mutations.",
+      "Summarises selected scope and blockers, or summarises the no-work-available state, then stops."
+    ]
   },
   {
     "skills": [
@@ -31,19 +31,20 @@
     "files": [
       ".goose/recipes/harness-master.yaml"
     ],
+    "fixture_intent": "Very difficult scenario: dependency direction, requirement language, verification — `bd dep add B A` means B needs A.",
+    "difficulty": "very_difficult",
+    "max_turns": 60,
+    "expected_skill_contribution": "The Beads skill should encode dependency direction correctly using requirement language, verify with a blocked/ready query, and avoid ambiguous 'blocks' phrasing.",
     "baseline_gaps": [
       "Agent may reverse dependency direction.",
-      "Agent may not verify blocked/ready state."
+      "Agent may use ambiguous 'blocks' phrasing instead of 'needs' / 'depends on'."
     ],
     "expected_behavior": [
-      "Explains that `bd dep add B A` means B needs A.",
-      "Uses requirement language rather than ambiguous blocks language.",
-      "Verifies the result with a blocked/ready query."
-    ],
-    "max_turns": 150,
-    "difficulty": "very_difficult",
-    "expected_skill_contribution": "The Beads skill should encode dependency direction correctly using requirement language, verify blocked/ready state, and avoid ambiguous “blocks” phrasing.",
-    "fixture_intent": "Very Difficult scenario for `beads-harness`: exercises behavior the skill is expected to improve over baseline."
+      "Uses `bd dep add <validate-id> <edit-id>` direction — validate-bead needs the edit-bead, not the reverse.",
+      "Explains the dependency using requirement/needs language: 'B needs A' not 'A blocks B'.",
+      "Verifies the result with `bd blocked --json` or `bd ready --json` and reports the outcome.",
+      "Does not invent beads if the target issues do not exist — creates them first or states they must be created."
+    ]
   },
   {
     "skills": [
@@ -53,18 +54,19 @@
     "files": [
       "docs/10-release-readiness.md"
     ],
+    "fixture_intent": "Difficult scenario: pointer memory discipline — short key, pointer format, no content dump, no MEMORY.md.",
+    "difficulty": "difficult",
+    "max_turns": 40,
+    "expected_skill_contribution": "The Beads skill should store or propose only a short pointer memory with a stable key, avoiding long content, tasks, secrets, MEMORY.md, or markdown TODO tracking.",
     "baseline_gaps": [
-      "Agent may store long-form content or tasks in memory.",
-      "Agent may create MEMORY.md."
+      "Agent may store long-form checklist content in memory instead of a pointer.",
+      "Agent may create MEMORY.md or markdown TODO files."
     ],
     "expected_behavior": [
-      "Stores or proposes a short pointer memory with a stable key.",
-      "Does not store secrets, transient state, tasks, or long documentation in memory.",
-      "Does not create `MEMORY.md` or markdown TODO files."
-    ],
-    "max_turns": 150,
-    "difficulty": "difficult",
-    "expected_skill_contribution": "The Beads skill should store or propose only a short pointer memory with a stable key, avoiding long content, tasks, secrets, MEMORY.md, or markdown TODO tracking.",
-    "fixture_intent": "Difficult scenario for `beads-harness`: exercises behavior the skill is expected to improve over baseline."
+      "Stores or proposes a `bd remember` command with a stable kebab-case `--key`.",
+      "Uses the pointer format: `<topic>: canonical source is <file>#<section>; read when <trigger>; invariant: <rule>` — under 250 characters.",
+      "Does not copy the checklist content into the memory value.",
+      "Does not create MEMORY.md, markdown TODO files, or Beads task issues for this memory."
+    ]
   }
 ]

@@ -8,21 +8,20 @@
       ".goose/recipes/harness-master.yaml",
       ".goose/recipes/subrecipes/"
     ],
+    "fixture_intent": "Normal scenario: read-only investigation — Orchestration decision naming read-only flow, no delegation needed, Delegation audit closing.",
+    "difficulty": "normal",
+    "max_turns": 25,
+    "expected_skill_contribution": "The orchestration skill should produce an explicit `Orchestration decision:` block naming the read-only research flow, justify why delegation is not needed, and close with a `Delegation audit` — none of which a baseline agent will naturally produce.",
     "baseline_gaps": [
-      "Agent may choose an implementation workflow for read-only investigation.",
-      "Agent may use too many broad tools."
+      "Agent may choose an implementation workflow for a read-only investigation.",
+      "Agent may skip the Orchestration decision and Delegation audit entirely."
     ],
     "expected_behavior": [
-      "States an explicit `Orchestration decision` before starting work, naming the selected flow (read-only research) and explaining why delegation is not needed.",
+      "Emits a literal `Orchestration decision:` block before starting work, naming the selected flow as read-only research and explaining why delegation is not warranted.",
       "Keeps the investigation strictly read-only with no file edits or Beads writes.",
-      "Uses focused extensions and avoids broad scans.",
-      "Finishes with a compact `Delegation audit` confirming no delegates were used and why.",
-      "Returns concrete evidence and next safe steps."
-    ],
-    "max_turns": 150,
-    "difficulty": "normal",
-    "expected_skill_contribution": "The orchestration skill should produce an explicit Orchestration decision naming the read-only research flow, avoid delegation (explaining why), and close with a Delegation audit — none of which a baseline agent will naturally produce.",
-    "fixture_intent": "Normal scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
+      "Returns concrete evidence (recipe file path, specific field or schema issue) and next safe steps.",
+      "Closes with a `Delegation audit:` summary confirming no delegates were used and why."
+    ]
   },
   {
     "skills": [
@@ -34,20 +33,20 @@
       ".agents/skills/",
       "docs/"
     ],
+    "fixture_intent": "Difficult scenario: delegation decision with justification — Orchestration decision, non-overlapping scopes if delegated, risk-ranked synthesis, Delegation audit.",
+    "difficulty": "difficult",
+    "max_turns": 40,
+    "expected_skill_contribution": "The orchestration skill should produce an `Orchestration decision:` before work and a `Delegation audit:` after — baseline agents skip both and just inspect files.",
     "baseline_gaps": [
-      "Agent may create overlapping vague delegated tasks or skip useful parallel research.",
-      "Agent may not synthesize results into one ranked answer."
+      "Agent may create overlapping or vague delegated tasks without a stated routing decision.",
+      "Agent may not synthesize results into one ranked answer with a delegation audit."
     ],
     "expected_behavior": [
-      "States an explicit `Orchestration decision` with the selected flow and a reasoned delegation choice before starting work.",
-      "When delegating, assigns non-overlapping read-only scopes; when not delegating, states why direct inspection is sufficient.",
-      "Synthesizes findings into a single risk-ranked result with evidence from the harness files.",
-      "Closes with a compact `Delegation audit` listing delegated scopes or justifying direct inspection."
-    ],
-    "max_turns": 150,
-    "difficulty": "difficult",
-    "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision before work and a Delegation audit after — a baseline will skip both and just inspect.",
-    "fixture_intent": "Difficult scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
+      "Emits a literal `Orchestration decision:` block before starting work, naming the selected flow and making a stated delegation choice with reasoning.",
+      "Assigns non-overlapping scopes if delegating; explicitly states why direct inspection is sufficient if not delegating.",
+      "Synthesizes findings into a single risk-ranked result with evidence from harness files.",
+      "Closes with a `Delegation audit:` listing delegated scopes or justifying direct inspection."
+    ]
   },
   {
     "skills": [
@@ -58,20 +57,19 @@
       ".goose/recipes/",
       ".agents/skills/"
     ],
+    "fixture_intent": "Very difficult scenario: multi-worker scope partitioning — Orchestration decision, non-overlapping file scopes, verbatim coordination invariant, Delegation audit.",
+    "difficulty": "very_difficult",
+    "max_turns": 60,
+    "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision, worker contracts with non-overlapping scopes, the verbatim coordination invariant, and a Delegation audit — all missing from baseline responses.",
     "baseline_gaps": [
       "Agent may allow same-file writes or assume subagents can coordinate.",
-      "Agent may omit output contracts."
+      "Agent may omit output contracts or the coordination invariant."
     ],
     "expected_behavior": [
-      "States an explicit `Orchestration decision` identifying the implementation-split flow before listing worker contracts.",
-      "Assigns non-overlapping file or module scopes to each worker.",
+      "Emits a literal `Orchestration decision:` block identifying the implementation-split flow before listing worker contracts.",
+      "Assigns non-overlapping file or module scopes to each worker with explicit write permissions.",
       "States the coordination invariant verbatim: 'Subagents cannot coordinate with each other; the parent/orchestrator owns scope partitioning, context passing, integration, and synthesis.'",
-      "Defines write permissions, validation expectations, and output format for each worker.",
-      "Closes with a compact `Delegation audit` listing the two workers and their scopes."
-    ],
-    "max_turns": 150,
-    "difficulty": "very_difficult",
-    "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision, worker contracts with non-overlapping scopes, the verbatim coordination invariant, and a Delegation audit — all missing from baseline responses.",
-    "fixture_intent": "Very Difficult scenario for `goose-orchestration`: exercises behavior the skill is expected to improve over baseline."
+      "Closes with a `Delegation audit:` listing the two workers, their scopes, and expected output formats."
+    ]
   }
 ]

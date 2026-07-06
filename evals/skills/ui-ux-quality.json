@@ -10,45 +10,47 @@
       "docs/",
       "docs/assets/site.css"
     ],
+    "fixture_intent": "Normal scenario: UX quality review using the 8-dimension evaluation stack with browser evidence.",
+    "difficulty": "normal",
+    "max_turns": 25,
+    "expected_skill_contribution": "The UI/UX skill should apply the 8-dimension evaluation stack in sequence and produce a user-impact-ranked review with evidence for hierarchy, visual quality, and accessibility.",
     "baseline_gaps": [
       "Agent may give generic aesthetic feedback without evidence.",
-      "Agent may ignore responsive behavior."
+      "Agent may ignore responsive behavior or accessibility dimensions."
     ],
     "expected_behavior": [
-      "Assesses user intent, hierarchy, visual rhythm, accessibility, and responsive behavior.",
-      "Requests or captures screenshots/browser evidence when possible.",
-      "Ranks the top issues by user impact."
-    ],
-    "max_turns": 150,
-    "difficulty": "normal",
-    "expected_skill_contribution": "The UI/UX skill should produce a user-impact-ranked review with evidence for hierarchy, visual quality, accessibility, and responsive behavior.",
-    "fixture_intent": "Normal scenario for `ui-ux-quality`: exercises behavior the skill is expected to improve over baseline."
+      "Evaluates at least 5 of the 8 dimensions in order: User Intent, Information Architecture, Interaction States, Visual Taste, Design System, Accessibility, Performance, Evidence.",
+      "Requests or captures browser evidence (screenshot, console output, or a11y snapshot) before stating findings — no evidence means no finding.",
+      "Ranks the top issues by user impact, not by ease of detection.",
+      "Separates accessibility blockers from visual polish recommendations."
+    ]
   },
   {
     "skills": [
       "ui-ux-quality",
       "webapp-testing"
     ],
-    "query": "Review the docs navigation and contributor discovery path for installing the harness. Focus on information architecture, navigation labels, keyboard/focus behavior for navigation, and accessible names; do not perform a broad visual audit.",
+    "query": "Review the docs navigation and contributor discovery path for installing the harness. Focus on information architecture, navigation labels, keyboard/focus behavior, and accessible names; do not perform a broad visual audit.",
     "files": [
       "README.md",
       "INSTALL.md",
       "docs/00-index.md",
       "dist/docs/html/index.html"
     ],
+    "fixture_intent": "Difficult scenario: scoped IA + accessibility review — accessibility blockers separated from content polish, exact locations for findings.",
+    "difficulty": "difficult",
+    "max_turns": 40,
+    "expected_skill_contribution": "The UI/UX skill should focus on navigation and contributor discovery, separating accessibility blockers from content/discovery polish with concrete locations or reproduction steps.",
     "baseline_gaps": [
       "Agent may ignore keyboard and screen-reader behavior.",
       "Agent may miss navigation states and content discovery states."
     ],
     "expected_behavior": [
-      "Checks navigation labels, information scent, focus order for navigation, keyboard behavior, and accessible names.",
-      "Separates accessibility blockers from content/discovery polish.",
-      "Provides reproduction steps or exact locations for issues."
-    ],
-    "max_turns": 150,
-    "difficulty": "difficult",
-    "expected_skill_contribution": "The UI/UX skill should focus on navigation and contributor discovery, separating accessibility blockers from content/discovery polish with concrete locations or reproduction steps.",
-    "fixture_intent": "Difficult scenario for `ui-ux-quality`: exercises behavior the skill is expected to improve over baseline."
+      "Checks navigation labels, information scent, keyboard focus order, and accessible names as distinct evaluation items.",
+      "Separates accessibility blockers (WCAG 2.2 AA violations) from content/discovery polish using explicit severity labels.",
+      "Provides exact file names, section headings, or HTML element locations for each finding.",
+      "Requests browser evidence (a11y snapshot or keyboard test) before stating accessibility findings."
+    ]
   },
   {
     "skills": [
@@ -59,18 +61,19 @@
       "docs/assets/site.css",
       "docs/BOOK.md"
     ],
+    "fixture_intent": "Very difficult scenario: design-system evaluation — tokens, variants, accessibility states, regression risk, Beads follow-ups.",
+    "difficulty": "very_difficult",
+    "max_turns": 60,
+    "expected_skill_contribution": "The UI/UX skill should evaluate CSS/layout tokens as a design-system surface, separate blockers from recommendations, and propose Beads follow-ups for product/design-system work.",
     "baseline_gaps": [
-      "Agent may review only visual appearance.",
-      "Agent may ignore design-system consistency and regression risk."
+      "Agent may review only visual appearance without evaluating design-system consistency.",
+      "Agent may ignore accessibility states and regression risk."
     ],
     "expected_behavior": [
-      "Checks tokens, variants, layout patterns, theming, docs consistency, accessibility states, and regression risk.",
-      "Distinguishes design-system blockers from recommendations.",
-      "Creates or proposes Beads follow-ups for product work."
-    ],
-    "max_turns": 150,
-    "difficulty": "very_difficult",
-    "expected_skill_contribution": "The UI/UX skill should evaluate CSS/layout tokens as a design-system surface, separate blockers from recommendations, and propose Beads follow-ups for product/design-system work.",
-    "fixture_intent": "Very Difficult scenario for `ui-ux-quality`: exercises behavior the skill is expected to improve over baseline."
+      "Evaluates the CSS as a design-system surface: checks token naming, variant coverage, accessibility states (focus, hover, disabled), and theming consistency.",
+      "Distinguishes design-system blockers (missing required accessibility states, broken token references) from recommendations (naming conventions, docs).",
+      "Proposes Beads follow-ups using `bd create` commands or issue titles for design-system improvement work.",
+      "Reports evidence from the actual CSS file (property names, values, or line references) — no unsupported assertions."
+    ]
   }
 ]

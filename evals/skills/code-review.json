@@ -4,54 +4,55 @@
       "code-review"
     ],
     "query": "Review the prepared install-script diff that adds a slash command mapping to the harness.",
-    "fixture_patch": "evals/fixtures/code-review/install-missing-recipe.patch",
-    "fixture_description": "Applied a patch to scripts/install.sh and scripts/install.ps1 that adds a new slash command mapping.",
-    "max_turns": 150,
     "files": [
       "scripts/install.sh",
       "scripts/install.ps1"
     ],
+    "fixture_patch": "evals/fixtures/code-review/install-missing-recipe.patch",
+    "fixture_description": "Applied a patch to scripts/install.sh and scripts/install.ps1 that adds a new slash command mapping.",
+    "fixture_intent": "Normal fixture: direct missing-recipe regression; expected to be caught by a practical review checklist.",
+    "difficulty": "normal",
+    "max_turns": 25,
+    "expected_skill_contribution": "The code-review skill should catch an explicit install-script regression, rank it correctly, and discuss idempotence, backups, path safety, tests, and rollback without over-exploring.",
     "baseline_gaps": [
       "Agent may underweight install-script idempotence, shell portability, or config overwrite risks.",
-      "Agent may miss that the new slash command points to a missing recipe and can prevent slash command updates.",
+      "Agent may miss that the new slash command points to a missing recipe.",
       "Agent may miss rollback and backup expectations."
     ],
     "expected_behavior": [
-      "Flags the missing harness-security-review.yaml recipe as a blocker or high-severity issue.",
-      "Produces an explicit verdict (pass, pass-with-nits, or block) for the diff.",
-      "Proposes durable follow-up using Beads `bd create` commands or issue titles instead of markdown TODO files."
-    ],
-    "difficulty": "normal",
-    "expected_skill_contribution": "The code-review skill should catch an explicit install-script regression, rank it correctly, and discuss idempotence, backups, path safety, tests, and rollback without over-exploring.",
-    "fixture_intent": "Normal fixture: a direct missing-recipe install mapping regression; expected to be caught by a practical review checklist."
+      "Flags the missing harness-security-review.yaml recipe as a blocker or HIGH severity finding with file and line reference.",
+      "Produces an explicit verdict (`APPROVE`, `PASS-WITH-NITS`, or `BLOCK`) for the diff.",
+      "Proposes durable follow-up using Beads `bd create` commands or issue titles instead of markdown TODO files.",
+      "Does not manufacture low-confidence findings — every finding cites an exact line and concrete failure mode."
+    ]
   },
   {
     "skills": [
       "code-review",
       "beads-harness"
     ],
-    "query": "Review the prepared skill-evaluation docs diff and tell me what follow-up work remains. Do not create files; propose durable Beads follow-ups when needed. If no parent bead is provided, provide unlinked draft `bd create` commands or issue titles instead of claiming they are linked.",
-    "fixture_patch": "evals/fixtures/code-review/eval-docs-todo-antipattern.patch",
-    "fixture_description": "Applied a patch to docs/15-skill-evaluations.md and evals/skills/README.md that updates guidance for tracking eval follow-up work.",
-    "max_turns": 150,
+    "query": "Review the prepared skill-evaluation docs diff and tell me what follow-up work remains. Do not create files; propose durable Beads follow-ups when needed. If no parent bead is provided, give unlinked draft `bd create` commands.",
     "files": [
       "docs/15-skill-evaluations.md",
       "evals/skills/README.md"
     ],
+    "fixture_patch": "evals/fixtures/code-review/eval-docs-todo-antipattern.patch",
+    "fixture_description": "Applied a patch to docs/15-skill-evaluations.md and evals/skills/README.md that updates guidance for tracking eval follow-up work.",
+    "fixture_intent": "Difficult fixture: documentation introduces markdown TODO tracking; expected to catch the Beads hygiene violation, produce a verdict, and propose unlinked follow-up commands.",
+    "difficulty": "difficult",
+    "max_turns": 40,
+    "expected_skill_contribution": "The code-review skill should identify the Beads hygiene violation in the docs (TODO.md guidance conflicts with durable Beads tracking), produce a verdict, and propose Beads-compatible follow-ups — Beads hygiene findings are never subject to confidence filtering.",
     "baseline_gaps": [
       "Agent may leave follow-up work only in prose.",
-      "Agent may accept markdown TODOs instead of Beads durable tracking.",
+      "Agent may accept markdown TODO guidance as acceptable instead of flagging it as a Beads hygiene violation.",
       "Agent may claim follow-ups are linked even when no parent bead is provided."
     ],
     "expected_behavior": [
-      "Identifies the TODO.md guidance as conflicting with Beads durable tracking.",
-      "Produces an explicit verdict (pass, pass-with-nits, or block) for the diff.",
-      "Proposes Beads follow-ups or draft `bd create` commands without creating markdown TODO files; uses a discovered-from link only when a parent bead is provided.",
-      "Identifies real follow-up work separately from the review verdict."
-    ],
-    "difficulty": "difficult",
-    "expected_skill_contribution": "The code-review skill should separate a durable tracking anti-pattern from review nits and propose Beads-compatible follow-ups without creating files or inventing a parent link.",
-    "fixture_intent": "Difficult fixture: documentation introduces markdown TODO tracking; expected to distinguish durable Beads follow-ups from review nits without a parent bead."
+      "Flags the markdown TODO guidance as a Beads hygiene violation — discoverable work encoded as TODO.md conflicts with the harness principle that durable work belongs in Beads issues.",
+      "Produces an explicit verdict (`APPROVE`, `PASS-WITH-NITS`, or `BLOCK`) for the diff.",
+      "Proposes draft `bd create` commands or issue titles without creating files and without inventing a `discovered-from` parent link when none is provided.",
+      "Treats the Beads hygiene check as non-discretionary — this finding is not subject to confidence filtering."
+    ]
   },
   {
     "skills": [
@@ -59,27 +60,27 @@
       "beads-harness"
     ],
     "query": "Review the prepared diff for changes to harness recipes, skills, docs, and install scripts. Focus on correctness, validation, Beads follow-ups, and whether the change violates harness workflow rules.",
-    "fixture_patch": "evals/fixtures/code-review/current-diff-regression.patch",
-    "fixture_description": "Applied a patch that modifies harness-review.yaml, code-review/SKILL.md, and docs/15-skill-evaluations.md.",
-    "max_turns": 150,
     "files": [
       ".goose/recipes/harness-review.yaml",
       ".agents/skills/code-review/SKILL.md",
       "docs/15-skill-evaluations.md"
     ],
+    "fixture_patch": "evals/fixtures/code-review/current-diff-regression.patch",
+    "fixture_description": "Applied a patch that modifies harness-review.yaml, code-review/SKILL.md, and docs/15-skill-evaluations.md.",
+    "fixture_intent": "Very difficult fixture: mixed recipe/skill/docs regression; expected to connect multiple harness rules and validation gaps.",
+    "difficulty": "very_difficult",
+    "max_turns": 60,
+    "expected_skill_contribution": "The code-review skill should review a mixed multi-surface diff, produce a verdict, severity-ranked findings with exact file references, identify harness-rule violations, and propose exact validation steps and Beads follow-ups.",
     "baseline_gaps": [
       "Agent may provide a generic summary without a verdict or severity-ranked findings.",
       "Agent may miss that TODO.md conflicts with Beads durable tracking.",
       "Agent may miss that reducing recipe max_turns can break handoff completeness."
     ],
     "expected_behavior": [
-      "Inspects the prepared diff and states a pass/pass-with-nits/block verdict.",
-      "Ranks findings by severity with exact file references when possible.",
-      "Checks the diff against harness rules such as Beads durable tracking and validation handoff.",
-      "Lists missing validation and proposes exact Beads `bd create` commands or issue titles instead of markdown TODOs."
-    ],
-    "difficulty": "very_difficult",
-    "expected_skill_contribution": "The code-review skill should review a mixed multi-surface diff, produce a verdict, severity-ranked findings with file references, identify harness-rule violations, and propose exact validation/follow-up work.",
-    "fixture_intent": "Very difficult fixture: mixed recipe/skill/docs regression; expected to connect multiple harness rules and validation gaps in one review."
+      "States an explicit pass/pass-with-nits/block verdict before the findings list.",
+      "Ranks at least two findings by severity (CRITICAL/HIGH/MEDIUM/LOW) with exact file names.",
+      "Runs or proposes `goose recipe validate` for the changed recipe and states the result as a required validation step.",
+      "Proposes exact `bd create` commands or issue titles rather than markdown TODOs for follow-up work."
+    ]
   }
 ]

@@ -8,20 +8,20 @@
       "dist/docs/html/index.html",
       "scripts/build-docs.sh"
     ],
+    "fixture_intent": "Normal scenario: browser smoke test — server lifecycle, exact URL, console/network checks, condition-based waiting, cleanup, concrete evidence.",
+    "difficulty": "normal",
+    "max_turns": 25,
+    "expected_skill_contribution": "The webapp-testing skill should perform a browser-backed smoke test with server lifecycle, exact URL, condition-based waiting (not sleep), console/network checks, cleanup, and concrete evidence.",
     "baseline_gaps": [
-      "Agent may claim UI behavior without using a browser.",
-      "Agent may kill unrelated processes."
+      "Agent may claim UI behavior without using a browser or providing evidence.",
+      "Agent may kill unrelated processes or use arbitrary timeout delays."
     ],
     "expected_behavior": [
-      "Identifies the start command and exact base URL.",
-      "Avoids killing unrelated running servers and reports server cleanup.",
-      "Tests the critical path in a real browser/tooling path when available.",
-      "Checks console/network errors and reports concrete evidence including status codes or messages."
-    ],
-    "max_turns": 150,
-    "difficulty": "normal",
-    "expected_skill_contribution": "The webapp-testing skill should perform a browser-backed smoke test with server lifecycle, exact URL, console/network checks, cleanup, and concrete evidence.",
-    "fixture_intent": "Normal scenario for `webapp-testing`: exercises behavior the skill is expected to improve over baseline."
+      "Identifies the start command and exact base URL before navigating.",
+      "Uses condition-based waiting (wait for element/response) rather than arbitrary `sleep` or `waitForTimeout`.",
+      "Reports concrete console/network evidence: status codes, error messages, or explicit absence of errors.",
+      "Avoids killing unrelated running processes and reports server lifecycle (start, test, cleanup)."
+    ]
   },
   {
     "skills": [
@@ -32,19 +32,20 @@
       "dist/docs/html/index.html",
       "docs/assets/site.css"
     ],
+    "fixture_intent": "Very difficult scenario: accessibility verification — keyboard navigation, visible focus, accessible names, contrast, error announcements, exact evidence.",
+    "difficulty": "very_difficult",
+    "max_turns": 60,
+    "expected_skill_contribution": "The webapp-testing skill should verify accessibility with keyboard navigation, visible focus, accessible names/labels, contrast risks, and exact evidence distinguishing verified facts from assumptions.",
     "baseline_gaps": [
-      "Agent may skip keyboard and focus checks.",
+      "Agent may skip keyboard and focus checks and provide only visual inspection.",
       "Agent may omit accessible names and error announcements."
     ],
     "expected_behavior": [
-      "Verifies keyboard navigation, visible focus, names/labels, contrast risks, and error announcements where relevant.",
-      "Reports exact URLs, viewports, commands, and evidence.",
-      "Distinguishes verified facts from assumptions."
-    ],
-    "max_turns": 150,
-    "difficulty": "very_difficult",
-    "expected_skill_contribution": "The webapp-testing skill should verify accessibility with keyboard navigation, visible focus, names/labels, contrast risks, announcements where relevant, and exact evidence.",
-    "fixture_intent": "Very Difficult scenario for `webapp-testing`: exercises behavior the skill is expected to improve over baseline."
+      "Tests keyboard navigation (Tab/Shift-Tab) and reports whether interactive elements are reachable.",
+      "Checks visible focus indicator on focusable elements and reports any missing focus styles.",
+      "Verifies accessible names for images, links, and form inputs.",
+      "Explicitly distinguishes verified facts (tested with browser/tool) from assumptions (code inspection only)."
+    ]
   },
   {
     "skills": [
@@ -55,18 +56,19 @@
       "dist/docs/html/index.html",
       "docs/00-index.md"
     ],
+    "fixture_intent": "Difficult scenario: multi-viewport verification — both viewports with explicit pixel dimensions, screenshots, layout issues, reproducible steps.",
+    "difficulty": "difficult",
+    "max_turns": 40,
+    "expected_skill_contribution": "The webapp-testing skill should verify mobile and desktop rendering with explicit viewport pixel dimensions, screenshot evidence, layout issues with reproduction steps.",
     "baseline_gaps": [
       "Agent may test only one viewport.",
-      "Agent may omit screenshots or reproduction details."
+      "Agent may omit exact viewport dimensions or screenshot evidence."
     ],
     "expected_behavior": [
-      "Tests both mobile and desktop viewports.",
-      "Captures screenshots when possible.",
-      "Reports exact reproduction steps for failures."
-    ],
-    "max_turns": 150,
-    "difficulty": "difficult",
-    "expected_skill_contribution": "The webapp-testing skill should verify mobile and desktop rendering with viewport dimensions, screenshot evidence, layout issues, and reproducible steps.",
-    "fixture_intent": "Difficult scenario for `webapp-testing`: exercises behavior the skill is expected to improve over baseline."
+      "Tests both a mobile viewport (width ≤ 430px) and a desktop viewport (width ≥ 1280px), stating exact pixel dimensions for each.",
+      "Captures or requests screenshots at both viewports as evidence.",
+      "Reports any layout overflow, text truncation, or navigation collapse issues with the exact viewport where they occur.",
+      "Provides reproduction steps for any failure: viewport dimensions, URL, and the observed symptom."
+    ]
   }
 ]
