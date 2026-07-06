@@ -91,3 +91,74 @@ bd gate resolve <gate-id> --reason "passed"
 ```
 
 Use gates for async waits instead of keeping an agent idle.
+
+## Planning
+
+Load this section when acting as a Beads planner. It is the canonical home for
+planning methodology; agents and subrecipes load it rather than duplicating it.
+
+### Four-Phase Planning Protocol
+
+#### Phase 1 — Orient
+1. `bd prime` — load workflow context and memories.
+2. `bd list --json` — scan all open issues for related work.
+3. `bd ready --json` — identify what is already claimable.
+4. Search issue titles and descriptions for keywords matching the goal.
+5. **Duplicate found** → report the bead ID, propose `bd dep add`, and stop.
+6. **No duplicate** → proceed and list all keyword queries run.
+
+#### Phase 2 — Decompose
+1. Break the goal into milestones (epics) and atomic tasks.
+2. Identify hard dependencies: which items must complete before others start.
+3. Mark discovered follow-up work with `--deps discovered-from:<id>`.
+4. Classify each item: `task` / `bug` / `feature` / `decision` / `chore` / `epic`.
+5. Assign priorities: 1 (critical blocker) → 5 (nice-to-have).
+
+#### Phase 3 — Graph
+1. Output the dependency graph as a table first (visual sanity check).
+2. Output exact `bd` commands in dependency order — parents first, children after.
+3. Annotate every command with `# [reason this bead exists]`.
+4. Sanity-check: every leaf has a parent; no cycles; no orphan discovered-work beads.
+
+#### Phase 4 — Gates
+1. For each milestone: define acceptance criteria + validation command + done signal.
+2. Identify beads requiring `bd gate` (CI waits, human approval, external signals).
+3. Recommend a molecule only if this workflow repeats across two or more projects.
+
+### Command Reference
+
+```bash
+bd create "Title" --issue_type task -p 2 --json           # atomic task
+bd create "Title" --issue_type epic -p 1 --json           # milestone epic
+bd create "Title" --issue_type decision -p 2 --json       # ADR / decision bead
+bd dep add <child-id> <parent-id>                         # child requires parent
+bd create "Title" --deps discovered-from:<parent-id>      # discovered follow-up
+bd update <id> --acceptance "criteria text"               # attach acceptance criteria
+bd gate <id> --signal "CI green on branch X"              # register async gate
+```
+
+### Duplicate Check Protocol
+
+| Situation | Action |
+|---|---|
+| Exact title match found | Report bead ID; do not create; propose `bd dep add` |
+| Partial / keyword match | Report match; ask for clarification before creating |
+| No match found | Proceed; list all checked keyword queries in output |
+| Match found but closed | Create new with `--deps discovered-from:<old-id>` |
+
+### Dependency Ordering Rules
+
+1. Epics must be created before their child tasks.
+2. Decision beads (ADRs) must precede every task they constrain.
+3. Infrastructure and setup beads must precede feature beads that depend on them.
+4. Discovered follow-up beads are always created last with `--deps discovered-from`.
+
+### Prohibited Planning Actions
+
+- Never create a bead without completing the duplicate check first.
+- Never use markdown TODO lists as planning output — Beads issues only.
+- Never store the plan itself in Beads memory — plans belong in issues, facts in memory.
+- Never begin implementation — output graph and commands only.
+- Never create more than one epic per goal without explicit user request.
+- Never add fake dependencies to make the graph appear more sophisticated.
+
