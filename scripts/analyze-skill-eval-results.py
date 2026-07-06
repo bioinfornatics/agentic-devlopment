@@ -413,6 +413,172 @@ def analyze_efficiency(
     }
 
 
+# ── Efficiency signal thresholds ──────────────────────────────────────────────
+EFF_ERROR_RATE_HIGH  = 0.10   # 10%+ tool calls fail  → HIGH severity
+EFF_EXPLORE_HIGH     = 0.50   # 50%+ calls = file reads → MEDIUM
+EFF_REPEATED_HIGH    = 2      # >=3 repeated commands   → MEDIUM
+EFF_RATIO_HIGH       = 25.0   # >25 calls per file changed → MEDIUM
+EFF_DELAYED_WRITE    = 0.60   # first write after 60% of budget → LOW
+
+
+def efficiency_recommendations(
+    subject: str,
+    eval_id: int,
+    configuration: str,
+    eff: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Map efficiency signals to specific, actionable skill-improvement recommendations.
+
+    Each recommendation names: the signal, why it matters, and exactly what to add
+    to the skill instructions to prevent the pattern.
+    """
+    recs: list[dict[str, Any]] = []
+    total    = max(1, eff.get("tool_calls_total", 1))
+    failed   = eff.get("failed_tool_calls", 0)
+    recovery = eff.get("recovery_attempts", 0)
+    repeated = eff.get("repeated_commands_count", 0)
+    ratio    = eff.get("tool_calls_per_file_changed") or 0.0
+    explore  = eff.get("explore_pct", 0.0)
+    budget   = eff.get("budget_used_pct") or 0.0
+    t2w      = eff.get("turns_to_first_write")  # tool calls before first write
+
+    error_rate = failed / total
+
+    # ── HIGH: error rate above threshold ─────────────────────────────────────
+    if error_rate >= EFF_ERROR_RATE_HIGH:
+        recs.append({
+            "recommendation_type": "efficiency",
+            "severity":            "high",
+            "signal":              "error_rate_high",
+            "subject":             subject,
+            "eval_id":             eval_id,
+            "configuration":       configuration,
+            "message": (
+                f"Error rate {error_rate:.0%} ({failed}/{total} tool calls produced non-zero exit). "
+                f"The skill does not instruct the agent to handle tool failures gracefully."
+            ),
+            "evidence": (
+                f"failed_tool_calls={failed}  tool_calls_total={total}  "
+                f"error_rate={error_rate:.0%}  recovery_attempts={recovery}"
+            ),
+            "action": (
+                "Add to skill operating process: "
+                "'If a shell command fails (non-zero exit), read the error message carefully. "
+                "Try one alternative approach. If still failing after 2 attempts, stop and "
+                "report the exact blocker rather than retrying indefinitely.'"
+            ),
+        })
+
+    # ── MEDIUM: over-exploration ───────────────────────────────────────────────
+    if explore >= EFF_EXPLORE_HIGH:
+        phases = eff.get("phase_breakdown", {})
+        recs.append({
+            "recommendation_type": "efficiency",
+            "severity":            "medium",
+            "signal":              "over_exploration",
+            "subject":             subject,
+            "eval_id":             eval_id,
+            "configuration":       configuration,
+            "message": (
+                f"Over-exploration: {explore:.0%} of tool calls were file reads. "
+                f"Agent spent most of its budget reading, not acting. "
+                f"Phase breakdown: {phases}."
+            ),
+            "evidence": (
+                f"explore_pct={explore:.0%}  "
+                f"tool_calls_per_file_changed={ratio:.1f}  "
+                f"phase_breakdown={phases}"
+            ),
+            "action": (
+                "Add to skill: "
+                "'Read at most 5 files before acting. "
+                "Use the analyze extension (code structure tools) before raw file reads. "
+                "Start with entry points, not broad directory scans. "
+                "Emit a Scoped plan before any additional reads.'"
+            ),
+        })
+
+    # ── MEDIUM: command thrashing ──────────────────────────────────────────────
+    if repeated >= EFF_REPEATED_HIGH:
+        top = eff.get("repeated_commands_top", [])
+        ev = f"repeated_commands_count={repeated}"
+        if top:
+            ev += f"  top: '{top[0].get('cmd','')[:60]}' × {top[0].get('n')}"
+        recs.append({
+            "recommendation_type": "efficiency",
+            "severity":            "medium",
+            "signal":              "command_thrashing",
+            "subject":             subject,
+            "eval_id":             eval_id,
+            "configuration":       configuration,
+            "message": (
+                f"Command thrashing: {repeated} commands repeated 3+ times. "
+                "Agent is likely stuck in a loop trying the same approach repeatedly."
+            ),
+            "evidence":  ev,
+            "action": (
+                "Add to skill: "
+                "'If you run the same command twice and get the same result, "
+                "do not run it a third time. Try a different approach, "
+                "or stop and report the blocker with the exact error seen.'"
+            ),
+        })
+
+    # ── MEDIUM: low implementation yield ─────────────────────────────────────
+    if ratio >= EFF_RATIO_HIGH and eff.get("files_changed_count", 0) > 0:
+        recs.append({
+            "recommendation_type": "efficiency",
+            "severity":            "medium",
+            "signal":              "low_implementation_yield",
+            "subject":             subject,
+            "eval_id":             eval_id,
+            "configuration":       configuration,
+            "message": (
+                f"Low implementation yield: {ratio:.0f} tool calls per file changed. "
+                f"Most work was exploration, not implementation."
+            ),
+            "evidence": (
+                f"tool_calls_per_file_changed={ratio:.0f}  "
+                f"files_changed={eff.get('files_changed_count')}  "
+                f"tool_calls_total={total}"
+            ),
+            "action": (
+                "Add scoped plan requirement to skill: "
+                "'Before editing, state exactly which files you will change and what change you will make. "
+                "Do not read additional files after the plan is stated. "
+                "Make the edit, validate, then stop.'"
+            ),
+        })
+
+    # ── LOW: delayed first write ──────────────────────────────────────────────
+    if t2w is not None and budget >= 0.5 and t2w / max(1, total) >= EFF_DELAYED_WRITE:
+        recs.append({
+            "recommendation_type": "efficiency",
+            "severity":            "low",
+            "signal":              "delayed_first_write",
+            "subject":             subject,
+            "eval_id":             eval_id,
+            "configuration":       configuration,
+            "message": (
+                f"Slow to act: first file write at tool call {t2w} "
+                f"({t2w / total:.0%} into the run). "
+                "Skill should constrain pre-write exploration."
+            ),
+            "evidence": (
+                f"turns_to_first_write={t2w}  "
+                f"tool_calls_total={total}  "
+                f"budget_used_pct={budget:.0%}"
+            ),
+            "action": (
+                "Add to skill operating process: "
+                "'If the task requires file edits, emit a Scoped plan by tool call 5 at most. "
+                "Do not read more than 3 files before the first edit.'"
+            ),
+        })
+
+    return recs
+
+
 def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: int, configuration: str) -> dict[str, Any]:
     events = parse_events(run_dir / "outputs" / "events.jsonl")
     model_errors = detect_model_errors(events)
@@ -459,6 +625,7 @@ def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: 
         "loaded_skills": loaded_skills,
         "delegated_agents": delegated_agents,
         "efficiency": efficiency,
+        "efficiency_recs": efficiency_recommendations(subject, eval_id, configuration, efficiency),
     }
     write_json(run_dir / "analysis.json", analysis)
     (run_dir / "sequence.mmd").write_text(mermaid_sequence(timeline, f"{subject} eval-{eval_id} {configuration} {run_dir.name}"))
@@ -703,6 +870,14 @@ def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, An
         "generated_at": utc_now(),
         "loaded_skills": sorted(set(s for item in scenario_analyses for s in (item.get("loaded_skills") or []))),
         "delegated_agents": list(dict.fromkeys(a for item in scenario_analyses for a in (item.get("delegated_agents") or []))),
+        # Aggregated efficiency signals and recommendations across all run analyses
+        "efficiency_recs": [
+            rec
+            for eval_path in sorted(run_dir.glob("eval-*"))
+            for config_dir in sorted(p for p in eval_path.iterdir() if p.is_dir())
+            for one_run in sorted(config_dir.glob("run-*"))
+            for rec in (read_json(one_run / "analysis.json", {}) or {}).get("efficiency_recs", [])
+        ],
     }
     write_json(run_dir / "analysis.json", subject_analysis)
     (run_dir / "analysis.md").write_text(subject_analysis_md(subject_analysis))
@@ -852,6 +1027,32 @@ def persist_analysis(db_path: Path, analyses: list[dict[str, Any]], workspace_ro
                     ),
                 )
                 eval_dir = workspace_root / subject / run_id / f"eval-{scenario.get('eval_id')}"
+                # Persist efficiency recommendations to eval_feedback
+                for rec in (read_json(
+                    workspace_root / subject / run_id / f"eval-{scenario.get('eval_id')}"
+                    / str(list((workspace_root / subject / run_id / f"eval-{scenario.get('eval_id')}").iterdir())[0].name if (workspace_root / subject / run_id / f"eval-{scenario.get('eval_id')}").exists() else "") / "run-1" / "analysis.json",
+                    {}
+                ) or {}).get("efficiency_recs", []):
+                    try:
+                        db.execute(
+                            """
+                            INSERT INTO eval_feedback(
+                                run_id, kind, subject, eval_id, configuration, run_number,
+                                recommendation_type, severity, message, evidence, git_commit, provider, model, created_at
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            """,
+                            (
+                                run_id, "skills", subject, scenario.get("eval_id"),
+                                rec.get("configuration"), 1,
+                                rec.get("recommendation_type", "efficiency"),
+                                rec.get("severity"),
+                                rec.get("message", "")[:500],
+                                (rec.get("evidence", "") + " | ACTION: " + rec.get("action", ""))[:800],
+                                None, None, None, created,
+                            ),
+                        )
+                    except Exception:
+                        pass  # avoid breaking persist on path issues
                 for run_analysis_path in eval_dir.glob("*/run-*/analysis.json"):
                     run = read_json(run_analysis_path, {}) or {}
                     db.execute(
@@ -1127,6 +1328,44 @@ def main() -> int:
                             f"WARN [{subject}] eval-{eid} ({diff}): without_skill pass_rate=1.0 AND max_turns_reached "
                             f"— baseline contamination suspected"
                         )
+            # Efficiency gates: read from eval_analysis.efficiency_json via DB
+            # (only when DB is available and --efficiency-gate is set)
+            if args.efficiency_gate and not args.no_sqlite and args.db.exists():
+                try:
+                    _edb = __import__("sqlite3").connect(args.db)
+                    _erows = _edb.execute(
+                        "SELECT eval_id, configuration, efficiency_json FROM eval_analysis "
+                        "WHERE subject=? AND efficiency_json IS NOT NULL",
+                        (subject,)
+                    ).fetchall()
+                    _edb.close()
+                    for _eid, _cfg, _ejson in _erows:
+                        _eff = __import__("json").loads(_ejson or "{}")
+                        _total = max(1, _eff.get("tool_calls_total", 1))
+                        _err_r = _eff.get("failed_tool_calls", 0) / _total
+                        _expl  = _eff.get("explore_pct", 0)
+                        _rep   = _eff.get("repeated_commands_count", 0)
+                        if _err_r >= EFF_ERROR_RATE_HIGH:
+                            gate_warnings.append(
+                                f"WARN [{subject}] eval-{_eid} {_cfg}: "
+                                f"error rate {_err_r:.0%} >= {EFF_ERROR_RATE_HIGH:.0%} threshold — "
+                                "add error-handling guidance to skill."
+                            )
+                        if _expl >= EFF_EXPLORE_HIGH:
+                            gate_warnings.append(
+                                f"WARN [{subject}] eval-{_eid} {_cfg}: "
+                                f"exploration {_expl:.0%} >= {EFF_EXPLORE_HIGH:.0%} — "
+                                "add 'read at most N files' stop rule to skill."
+                            )
+                        if _rep >= EFF_REPEATED_HIGH:
+                            gate_warnings.append(
+                                f"WARN [{subject}] eval-{_eid} {_cfg}: "
+                                f"{_rep} repeated commands — "
+                                "add thrashing/loop detection guidance to skill."
+                            )
+                except Exception:
+                    pass  # DB not readable — skip efficiency gates
+
             # Soft gate: model errors
             for s in scenarios:
                 if s.get("has_model_errors"):
