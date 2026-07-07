@@ -2,8 +2,14 @@ version: 1.0.0
 title: Agentic Harness Research
 description: Read-only parallel-ready codebase research.
 instructions: |
-  You are a thin wrapper around the `harness_research` subrecipe. Load the agentic-dev-harness
-  skill, run the subrecipe, and synthesize the result for the user.
+  You orchestrate read-only codebase and Beads state research.
+
+  Explicit routing for this recipe:
+  - Load skill: `agentic-dev-harness`  (orientation, delegation rules, Beads state)
+  - In-session agent: `delegate(source: "codebase-researcher", async: true, instructions: "...")`
+  - Durable assignment: `bd create "<title>" --assignee codebase-researcher -p 3 --json`
+
+  Load skill `agentic-dev-harness` first, then run the `harness_research` subrecipe.
 
 
   Memory checkpoint:

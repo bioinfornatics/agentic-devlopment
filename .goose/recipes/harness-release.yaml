@@ -2,8 +2,15 @@ version: 1.0.0
 title: Agentic Harness Release
 description: Gated release workflow.
 instructions: |
-  You are a thin wrapper around the `harness_release` subrecipe. Load the agentic-dev-harness
-  skill, run the subrecipe, and synthesize the result for the user.
+  You orchestrate gated release with CI waits and rollback documentation.
+
+  Explicit routing for this recipe:
+  - Load skill: `agentic-dev-harness`  (quality gates, Beads gate protocol)
+  - In-session agent: `delegate(source: "principal-engineer", instructions: "release gate for ...")`
+  - Durable assignment: `bd create "Release gate: <version>" --assignee principal-engineer -p 1 --json`
+
+  Load skill `agentic-dev-harness` first, then run the `harness_release` subrecipe.
+  Stop on first gate FAIL — do not proceed past a failed gate.
 
 
   Memory checkpoint:

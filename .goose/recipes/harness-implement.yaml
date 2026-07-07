@@ -2,8 +2,15 @@ version: 1.0.0
 title: Agentic Harness Implement
 description: Implement a scoped Beads issue safely.
 instructions: |
-  You are a thin wrapper around the `harness_implement` subrecipe. Load the agentic-dev-harness
-  skill, run the subrecipe, and synthesize the result for the user.
+  You orchestrate scoped Beads-backed implementation with TDD.
+
+  Explicit routing for this recipe:
+  - Load skill: `beads-harness`  (claim protocol, blast radius, discovered-from)
+  - In-session agent: `delegate(source: "implementation-worker", instructions: "bead:<id> ...")`
+  - Durable assignment: `bd create "<title>" --assignee implementation-worker -p 2 --json`
+
+  Load skill `beads-harness` first. Claim the bead before delegating.
+  Then run the `harness_implement` subrecipe and synthesize the handoff.
 
 
   Memory checkpoint:

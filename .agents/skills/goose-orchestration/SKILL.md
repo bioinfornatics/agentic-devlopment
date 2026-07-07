@@ -186,6 +186,53 @@ context injection, integration, and synthesis.
 ```
 
 
+## Beads assignee delegation
+
+An alternative to in-session `delegate()`: create a Beads issue **assigned to a named agent**.
+The agent polls `bd ready --json`, claims its work, executes, and closes — traceable across sessions.
+
+### Create work for a specific agent
+```bash
+bd create "Review auth changes" --assignee review-critic         --issue_type task -p 2 --json
+bd create "Design caching layer" --assignee architect            --issue_type task -p 2 --json
+bd create "Implement login slice" --assignee implementation-worker --issue_type task -p 2 --json
+bd create "Write tests first" --assignee tdd-guide               --issue_type task -p 2 --json
+bd create "Map blast radius"  --assignee codebase-researcher     --issue_type task -p 3 --json
+```
+
+### Agent-side: claim and execute
+```bash
+bd ready --json          # see assigned + unassigned claimable work
+bd update <id> --claim   # atomic claim before any file write
+# … do the work …
+bd close <id> --reason "Done: <summary>"
+```
+
+### When to use assignee vs delegate()
+
+| Use `bd create --assignee` | Use `delegate(source: "...")` |
+|---|---|
+| Work spans multiple sessions | Work completes in the current session |
+| Need a durable audit trail | Need to carry parent session context |
+| Async handoff to a human or agent | Parallel read-only research |
+| Agent may not be available now | Agent is invoked immediately |
+
+### Assignee roster
+
+| Agent name              | Typical task type                          |
+|-------------------------|--------------------------------------------|
+| `review-critic`         | Code review, Beads hygiene, PR gates       |
+| `architect`             | System design, ADRs, trade-off analysis    |
+| `product-owner`         | PRD, acceptance criteria, user stories     |
+| `beads-planner`         | Dependency graphs, bd command sequences    |
+| `codebase-researcher`   | Read-only research, blast-radius mapping   |
+| `implementation-worker` | Scoped TDD implementation                  |
+| `tdd-guide`             | RED→GREEN→REFACTOR, coverage gates         |
+| `qa-automation`         | Test pipeline, flaky tests, CI integration |
+| `ui-ux-auditor`         | WCAG 2.2 AA, UX quality, browser evidence  |
+| `principal-engineer`    | Breaking changes, blast radius, escalation |
+| `harness-orchestrator`  | Multi-step SDD+TDD coordination            |
+
 ## Subagent constraints
 
 - Isolated context and session.

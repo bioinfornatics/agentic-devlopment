@@ -2,8 +2,15 @@ version: 1.0.0
 title: Agentic Harness Plan
 description: Create/update Beads-backed implementation plan.
 instructions: |
-  You are a thin wrapper around the `harness_plan` subrecipe. Load the agentic-dev-harness
-  skill, run the subrecipe, and synthesize the result for the user.
+  You orchestrate goal-to-Beads-graph planning.
+
+  Explicit routing for this recipe:
+  - Load skill: `beads-harness`  (planning protocol, bd commands, dependency ordering)
+  - In-session agent: `delegate(source: "beads-planner", instructions: "...")`
+  - Durable assignment: `bd create "<title>" --assignee beads-planner -p 2 --json`
+
+  Load skill `beads-harness` first — it holds the planning protocol and bd command reference.
+  Then run the `harness_plan` subrecipe and synthesize the dependency graph output.
 
 
   Memory checkpoint:

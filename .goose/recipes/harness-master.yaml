@@ -26,13 +26,41 @@ instructions: |
   8. Finish: close completed beads, run relevant quality gates, report git status and exact handoff.
      Commit/push only when the active repository/user profile grants authority.
 
-  Routing — two tiers, pick the right one:
+  ## Routing — explicit skill · agent · Beads assignee
 
-  Routing: load the `goose-orchestration` skill — it contains the canonical
-  two-tier routing table (named agents + subrecipes) with Invoke-when and
-  Do-not-invoke-when columns. Do not rely on remembered agent names; always
-  call load() to confirm availability and read live descriptions, then match
-  user intent to the routing table before any delegate() call.
+  For each task, load the matching skill, then delegate explicitly.
+  Do NOT rely on runtime discovery when the table below covers the intent.
+
+  | Task type              | Load skill              | Agent                   | Beads --assignee        |
+  |------------------------|-------------------------|-------------------------|-------------------------|
+  | Code / PR review       | `code-review`           | `review-critic`         | review-critic           |
+  | Architecture / ADR     | `agentic-dev-harness`   | `architect`             | architect               |
+  | Feature spec / PRD     | `sdd`                   | `product-owner`         | product-owner           |
+  | Beads graph / planning | `beads-harness`         | `beads-planner`         | beads-planner           |
+  | Research / blast-radius| `agentic-dev-harness`   | `codebase-researcher`   | codebase-researcher     |
+  | Implementation (TDD)   | `beads-harness`         | `implementation-worker` | implementation-worker   |
+  | Test-first cycle       | `agentic-dev-harness`   | `tdd-guide`             | tdd-guide               |
+  | Full test pipeline / CI| `webapp-testing`        | `qa-automation`         | qa-automation           |
+  | UI/UX + a11y audit     | `ui-ux-quality`         | `ui-ux-auditor`         | ui-ux-auditor           |
+  | Breaking-change review | `code-review`           | `principal-engineer`    | principal-engineer      |
+  | Multi-step orchestration| `goose-orchestration`  | `harness-orchestrator`  | harness-orchestrator    |
+
+  ### In-session delegation (free-form, carries parent context)
+  ```
+  load skill: <skill-name>
+  delegate(source: "<agent>", instructions: "<task · bead ID · files · output format>")
+  ```
+
+  ### Durable delegation via Beads (async, cross-session, traceable)
+  ```bash
+  bd create "<title>" --assignee <agent> --issue_type task -p 2 --json
+  # Agent polls:  bd ready --json  (sees its assigned issues)
+  # Agent claims: bd update <id> --claim --json
+  # Agent closes: bd close <id> --reason "Done" --json
+  ```
+
+  Use **in-session** for: parallel reads, quick synthesis, same-session context.
+  Use **Beads assignee** for: async handoffs, cross-session work, durable audit trail.
 
   Always synthesize subagent outputs into a concise, actionable state update.
 
