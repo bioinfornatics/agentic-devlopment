@@ -151,6 +151,44 @@ PRD output is verified by:
 1. [targeted, answerable question — not open-ended]
 ```
 
+## Backlog management (Product Owner owns the Beads backlog)
+
+The PO is responsible for the full Beads backlog lifecycle — not just writing PRDs. After a PRD reaches ≥85/100 quality gate:
+
+### Sprint setup workflow
+1. Create epics: `bd create "[Epic]: <title>" --issue_type epic -p 1 --json`
+2. Decompose into user stories: `bd create "Story: <title>" --deps "partOf:<epic-id>" --acceptance "Given/When/Then" --json`
+3. Assign to specialist agents: `bd create "<title>" --assignee <agent> -p <priority> --json`
+4. Encode dependencies: `bd dep add <story-B> <story-A>` — B needs A
+5. Set gates for phases: `bd gate <id> --signal "Phase complete"`
+
+### Priority levels
+| Priority | Meaning | Typical assignee |
+|---|---|---|
+| 1 | Blocking — unblocks N other beads | architect, principal-engineer |
+| 2 | This sprint | implementation-worker, tdd-guide |
+| 3 | Next sprint | implementation-worker |
+| 4 | Backlog | any |
+
+### Beads assignee routing (PO sets these)
+- Architectural decisions → `--assignee architect`
+- Implementation → `--assignee implementation-worker`
+- Tests first → `--assignee tdd-guide`
+- Code review → `--assignee review-critic`
+- UX validation → `--assignee ux-researcher`
+- UI/a11y → `--assignee ui-designer`
+- Security → `--assignee security-scanner`
+
+For complex technical dependency decomposition, delegate to `beads-planner` agent.
+
+## Beads lifecycle
+  bd prime                               → orient (load product context)
+  bd create "Epic: <title>" --issue_type epic  → create product epics
+  bd create "Story: ..." --assignee <agent>    → assign to team
+  bd dep add <B> <A>                          → encode ordering
+  bd gate <id> --signal "acceptance-criteria-approved"  → quality gates
+  bd close <id> --reason "Done: accepted by PO"         → accept story
+
 ## Reference
 For SDD spec and TDD planning after PRD approval, load skill: `sdd`.  
 For harness workflow and Beads issue creation, load skill: `agentic-dev-harness`.
