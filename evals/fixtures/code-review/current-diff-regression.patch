@@ -1,34 +1,27 @@
---- a/.goose/recipes/harness-review.yaml	2026-07-06 23:33:48.212241018 +0200
-+++ b/.goose/recipes/harness-review.yaml	2026-07-06 23:33:48.218764907 +0200
-@@ -15,7 +15,7 @@
+--- a/.goose/recipes/harness-review.yaml	2026-07-08 01:07:53.575884819 +0200
++++ b/.goose/recipes/harness-review.yaml	2026-07-08 01:09:02.662261916 +0200
+@@ -27,7 +27,7 @@
    - Never store secrets, tokens, credentials, or transient observations.
  settings:
    temperature: 0.15
--  max_turns: 30
-+  max_turns: 4
+-  max_turns: 4
++  max_turns: 1
  parameters:
    - key: task
      input_type: string
-@@ -63,4 +63,4 @@
- prompt: |
-   Run `harness_review` for: {{ task }}
-   Repo: {{ repo_path }}
--  Constraints: {{ constraints }}
-+  Constraints: {{ constraints }}
-\ Pas de fin de ligne à la fin du fichier
---- a/.agents/skills/code-review/SKILL.md	2026-07-06 23:33:48.212719465 +0200
-+++ b/.agents/skills/code-review/SKILL.md	2026-07-06 23:33:48.218764907 +0200
-@@ -127,3 +127,8 @@
- - For recipe or skill files: run `goose recipe validate` before flagging structural issues.
- - explore_pct rises when you read files before reading the diff. Read the diff first.
- - "Consider adding error handling" is not a finding unless you can name the exact uncaught error and its consequence.
+--- a/.agents/skills/code-review/SKILL.md	2026-07-08 01:09:02.645969785 +0200
++++ b/.agents/skills/code-review/SKILL.md	2026-07-08 01:09:02.662282204 +0200
+@@ -151,3 +151,8 @@
+ Additional checker for HIGH/CRITICAL security findings:
+ - Security findings CVSS ≥ 7.0 → require a second pass by security-scanner agent before BLOCK.
+ - Do not self-approve security findings — a single-agent security review is not reliable.
 +
 +
 +## Temporary review shortcut
 +
 +For small diffs, skip the finding generation loop and validation details — just summarize the intent.
---- a/docs/15-skill-evaluations.md	2026-07-06 23:33:48.213368855 +0200
-+++ b/docs/15-skill-evaluations.md	2026-07-06 23:33:48.218905483 +0200
+--- a/docs/15-skill-evaluations.md	2026-07-08 01:07:53.608715055 +0200
++++ b/docs/15-skill-evaluations.md	2026-07-08 01:09:02.662298095 +0200
 @@ -20,6 +20,11 @@
  4. **Write minimal instructions** — add just enough skill content to address the gaps and pass evals.
  5. **Iterate** — execute evals, compare against baseline, and refine.
@@ -41,10 +34,3 @@
  ## Evaluation schema
  
  Each eval file is a JSON array. Each scenario follows this shape:
-@@ -373,4 +378,4 @@
- - `difficult`: combines the core behavior with realistic ambiguity, constraints, or follow-up hygiene.
- - `very_difficult`: combines multiple skill obligations, sequencing constraints, or orchestration risks while staying coherent with the skill's stated purpose.
- 
--Use `expected_skill_contribution` to state what we expect from the skill specifically, not just what any competent agent could do. Keep this field grader/reviewer-facing; the runtime task prompt should not rely on it as an answer key.
-+Use `expected_skill_contribution` to state what we expect from the skill specifically, not just what any competent agent could do. Keep this field grader/reviewer-facing; the runtime task prompt should not rely on it as an answer key.
-\ Pas de fin de ligne à la fin du fichier
