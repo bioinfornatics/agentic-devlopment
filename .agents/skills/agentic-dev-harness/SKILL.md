@@ -15,6 +15,7 @@ Use this skill when doing software development, planning, research, review, rele
 
 - **Goose runtime**: extensions = capabilities; skills = methods; recipes/subrecipes = repeatable workflows; subagents = isolated workers.
 - **Beads control plane**: beads = durable work units; dependencies = execution graph; gates = async waits; molecules/wisps = reusable/ephemeral workflows; memories = cross-session facts.
+- **Loop Engineering layer**: Beads IS the state/triage/memory primitive from Loop Engineering. `bd prime` = knowledge generation + triage. `bd ready --json` = structured watchlist. `bd gate` = async circuit breaker. The loop runs: orient (bd prime) → triage (bd ready) → claim → execute → verify → close → remember.
 
 ## Operating loop
 

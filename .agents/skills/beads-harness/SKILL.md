@@ -10,6 +10,21 @@ metadata:
 
 Use Beads as the durable scheduler and audit log for agentic development.
 
+## Beads as Loop Engineering state layer
+
+Beads replaces Loop Engineering's STATE.md + triage + memory with a durable, dependency-aware, git-synced alternative:
+
+| Loop Engineering need | Beads command |
+|---|---|
+| Triage — what to work on now | `bd prime` + `bd ready --json` |
+| Task progress — claim, update, close | `bd update <id> --claim` → work → `bd close <id>` |
+| Human inbox — what is blocked | `bd blocked --json` |
+| Memory — cross-session facts | `bd remember "..." --key <key>` |
+| Attempt cap — escalate after N fails | comment count on bead + `bd update --status blocked` |
+| Dependency graph | `bd dep add B A` (B needs A) |
+| Async gate | `bd gate <id> --signal "CI green"` |
+| Resolved / pruned | `bd close <id> --reason "..."` |
+
 ## Core commands
 
 ```bash

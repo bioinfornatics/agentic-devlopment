@@ -518,3 +518,87 @@ Agent queries patterns, skills, state on demand instead of loading everything up
 | `docs/14-memory.md` | Beads memory pointer pattern |
 | `dist/evals/evaluation.db` | SQLite — all eval runs, results, feedback |
 | `evals/history/runs.json` | Committed eval history for Pages trend report |
+
+---
+
+## 12. Beads IS the Loop Engineering State Layer
+
+Loop Engineering defines STATE.md + triage + memory as the state primitive.
+**Our harness uses Beads (bd) for all three — it is a richer, durable, dependency-aware replacement.**
+
+### Mapping: Loop Engineering → Beads
+
+| Loop Engineering concept | Loop Engineering tool | Beads (bd) equivalent |
+|---|---|---|
+| **STATE.md** — current priorities, watch list | Markdown file | `bd list --json`, `bd ready --json` |
+| **Triage** — classify and prioritize work | loop-triage skill | `bd prime` (injects priorities into context) |
+| **Task progress** — attempt count, status | STATE.md rows | `bd update --claim`, `bd update --status`, `bd close` |
+| **Human inbox** — ambiguous / needs decision | STATE.md section | `bd blocked --json` |
+| **Memory / facts** — cross-session knowledge | STATE.md + notes | `bd remember --key`, `bd recall`, `bd memories` |
+| **Attempt cap** — max retries before escalate | counter in STATE.md | bead claim → comment on failure → escalate if count > N |
+| **Dependency graph** — what blocks what | manual notes | `bd dep add B A` (hard), `bd dep add --type related` |
+| **Gates / async waits** — CI, human, timer | sleep + poll | `bd gate <id> --signal "CI green"` |
+| **Resolved items** — prune from watch list | cross out in STATE.md | `bd close <id> --reason "..."` |
+| **Run log** — append-only history | loop-run-log.md | eval_analysis DB + feedback rows |
+| **Circuit breaker** — trip on N failures | loop-ledger.json | claim count on bead + comment trail |
+
+### What Beads adds that Loop Engineering STATE.md cannot
+
+| Capability | Beads | Plain STATE.md |
+|---|---|---|
+| Dependency graph with hard/soft/discovered-from types | ✅ native | ❌ manual prose |
+| Atomic claim (race-condition-safe) | ✅ CAS-style claim | ❌ text collision |
+| Molecule / wisp workflows | ✅ bd formula | ❌ none |
+| Durable memory with Dolt sync | ✅ bd remember | ❌ commit manually |
+| Per-issue acceptance criteria | ✅ bd update --acceptance | ❌ inline text |
+| Structured JSON output for agents | ✅ --json flag on every command | ❌ parse markdown |
+| Assignee routing | ✅ bd create --assignee <agent> | ❌ manual section |
+
+### How the full loop runs with Beads
+
+```
+ORIENT        bd prime                  → injects priorities, memories, workflow context
+TRIAGE        bd ready --json           → structured list of claimable work
+              bd blocked --json         → what is waiting on what
+CLAIM         bd update <id> --claim    → atomic; prevents two agents on same bead
+EXECUTE       [agent does the work]
+DISCOVER      bd create --deps discovered-from:<id>   → new beads, linked
+VERIFY        review-critic agent       → maker/checker split
+CLOSE         bd close <id> --reason    → removes from ready list
+MEMORY        bd remember "..." --key   → pointer for future sessions
+GATE          bd gate <id> --signal "…" → async wait (CI, human, timer)
+ESCALATE      bd update <id> --status blocked --note "N attempts, needs human"
+```
+
+### Loop patterns we can run natively on Beads
+
+| Loop pattern | bd command chain |
+|---|---|
+| **Daily Triage** | `bd prime && bd list --json` → classify priorities → update bead priorities |
+| **Issue Triage** | `bd search "bug" && bd list --status open` → create/update beads with classification |
+| **PR Babysitter** | `bd list --status in_progress` → check CI → comment on stalled beads |
+| **Attempt Cap** | `bd show <id>` → count comments with "failed attempt" → escalate at N |
+| **Human Gate** | `bd gate <id> --signal "human-approved"` → block until signal |
+| **Dependency Sweeper** | `bd blocked --json` → fix blockers → unlock dependents |
+| **Post-Merge Cleanup** | `bd list --status closed` → find follow-ups → `bd create --deps discovered-from` |
+
+### The key difference: Beads is durable and git-synced via Dolt
+
+Loop Engineering STATE.md lives in git — good for auditability but:
+- No structured queries
+- No atomic operations across agents
+- No dependency graph primitives
+
+Beads uses Dolt (git-native SQLite) — every change is a commit, fully auditable, AND queryable with SQL via the evaluation.db path.
+
+### What still needs Loop Engineering patterns
+
+Beads handles state/triage/memory. What we are missing from Loop Engineering:
+
+| Gap | What it needs | Priority |
+|---|---|---|
+| **Scheduling** — run triage automatically on cadence | cron / bd gate with timer | P2 |
+| **Circuit breaker** — pause loop after N failures | bd comment count + escalation skill | P2 |
+| **Multi-loop coordination** — two agents don't claim same bead | bd claim is atomic — already solved! | ✅ solved |
+| **Observability / run log** | evaluation.db + analysis-index.html | ✅ solved |
+| **L3 unattended** — full loop without human watching | needs scheduling + kill switch | P2 |
