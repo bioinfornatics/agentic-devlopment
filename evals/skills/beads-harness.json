@@ -55,17 +55,17 @@
     "files": [
       "docs/10-release-readiness.md"
     ],
-    "fixture_intent": "Difficult scenario: pointer memory discipline — short key, pointer format, no content dump, no MEMORY.md.",
+    "fixture_intent": "Difficult scenario: pointer memory discipline — 'read when' trigger phrase required (not 'read before'), short key, no content dump, no MEMORY.md. Skill gotcha now explicitly names this distinction.",
     "difficulty": "difficult",
-    "max_turns": 200,
-    "expected_skill_contribution": "The Beads skill should store or propose only a short pointer memory with a stable key, avoiding long content, tasks, secrets, MEMORY.md, or markdown TODO tracking.",
+    "max_turns": 40,
+    "expected_skill_contribution": "The Beads skill should store a short pointer memory with a stable key using the exact 'read when <trigger>' wording (not 'read before'), avoiding long content, MEMORY.md, or markdown TODO tracking. The skill now includes a verbatim template and a gotcha for the 'read when' vs 'read before' distinction.",
     "baseline_gaps": [
       "Agent may store long-form checklist content in memory instead of a pointer.",
       "Agent may create MEMORY.md or markdown TODO files."
     ],
     "expected_behavior": [
       "Stores or proposes a `bd remember` command with a stable kebab-case `--key`.",
-      "Uses the pointer format: `<topic>: canonical source is <file>#<section>; read when <trigger>; invariant: <rule>` — under 250 characters.",
+      "Uses the pointer format with `read when <trigger>` (not 'read before') — e.g. 'Release checklist: canonical source is docs/10-release-readiness.md; read when preparing a release; invariant: <rule>' — under 250 characters. The `#section` anchor is optional when the file has no named sections.",
       "Does not copy the checklist content into the memory value.",
       "Does not create MEMORY.md, markdown TODO files, or Beads task issues for this memory."
     ]

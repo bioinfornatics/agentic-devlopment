@@ -58,19 +58,20 @@
       ".goose/recipes/",
       ".agents/skills/"
     ],
-    "fixture_intent": "Very difficult scenario: multi-worker contract definition — verbatim invariant required, named per-worker output format required, Delegation audit required. Baseline produces a plan but omits the verbatim invariant string and the Delegation audit.",
+    "fixture_intent": "Very difficult scenario: multi-worker contract with verbatim invariant — discriminant is (1) verbatim invariant string and (2) explicit non-overlapping scope assignment. Heading capitalisation variants are accepted.",
     "difficulty": "very_difficult",
-    "max_turns": 200,
-    "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision, worker contracts with non-overlapping scopes, the verbatim coordination invariant, and a Delegation audit — all missing from baseline responses.",
+    "max_turns": 60,
+    "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision block, worker contracts with non-overlapping scopes, the verbatim coordination invariant (exact sentence), and a Delegation audit block. The skill now provides verbatim templates and gotchas for casing — the key discriminant is the verbatim invariant and non-overlapping scopes, not heading capitalisation.",
     "baseline_gaps": [
       "Agent may allow same-file writes or assume subagents can coordinate.",
-      "Agent may omit output contracts or the coordination invariant."
+      "Agent may omit the verbatim coordination invariant or paraphrase it.",
+      "Agent may omit a closing Delegation audit block entirely."
     ],
     "expected_behavior": [
-      "Emits a literal `Orchestration decision:` block before listing any worker contracts.",
+      "Emits an `Orchestration decision:` block (inline label) OR `## Orchestration decision` heading before listing any worker contracts — appears before any worker is delegated.",
       "Assigns explicitly non-overlapping file scopes: Worker A owns only `.goose/recipes/harness-master.yaml`, Worker B owns only `.agents/skills/goose-orchestration/SKILL.md`.",
       "Includes this verbatim string in the output: 'Subagents cannot coordinate with each other; the parent/orchestrator owns scope partitioning, context passing, integration, and synthesis.'",
-      "Closes with a literal `Delegation audit:` block listing both workers, their file scopes, and the expected output format from each."
+      "Closes with a `Delegation audit:` block (inline label) OR `## Delegation audit` heading listing both workers, their file scopes, and the expected output format from each."
     ]
   }
 ]
