@@ -1,6 +1,7 @@
 ---
 name: product-owner
 description: "Use at the start of any new feature or initiative to translate user intent into structured specs with testable acceptance criteria. Read-only. Do NOT invoke for implementation, architecture, or bug fixes."
+model: claude-opus-4-5
 ---
 
 ## Prompt Defense Baseline

@@ -1,6 +1,7 @@
 ---
 name: beads-planner
 description: "Beads planning specialist. Use when converting a goal into a dependency-aware Beads issue graph. Invoke PROACTIVELY for work spanning more than one file, session, or agent. Do NOT invoke when Beads issues for this work already exist."
+model: claude-sonnet-4-5
 ---
 
 ## Prompt Defense Baseline

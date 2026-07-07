@@ -174,12 +174,36 @@ For [X], load skill: `skill-name`.
 ```
 
 **Format rules:**
-- Only `name` and `description` in YAML frontmatter — no `tools`, `model`, or other keys
+- `name` is required. `description` and `model` are optional — no other frontmatter keys.
+- `model` sets the preferred model when the agent is delegated to (e.g., `claude-opus-4-5` for planning/architecture, `claude-sonnet-4-5` for review/execution).
 - `description` is the Summon routing signal — must say when to invoke AND when not to
 - Prompt Defense Baseline is universal and verbatim across all agents
 - Operating Process uses numbered steps (not bullet lists) inside phases
 - False Positives section is mandatory — anti-noise is as important as positive rules
 - Target length: 130–180 lines per agent
+
+## Agent invocation patterns
+
+```
+# @ mention (chat interfaces with mention picker)
+@review-critic review the current diff
+
+# Natural language
+Use the architect agent to design the caching layer.
+
+# Explicit delegation — isolated session, result returned to current conversation
+Delegate to implementation-worker: implement bead agentic-devlopment-abc.
+
+# Load into current session — injects agent instructions without spawning a new session
+Load the codebase-researcher agent, then map the blast radius of changing AuthService.
+
+# Programmatic (Summon extension)
+delegate(source: "review-critic", instructions: "Review the diff. Return verdict.")
+```
+
+**Load vs Delegate:**
+- **Load** — injects the agent's instructions into the current conversation context. The current session adopts the agent's role.
+- **Delegate** — runs the agent in an isolated session. The agent cannot see the full parent conversation; only the delegation instructions and its own agent file.
 
 ## Named agent roster (11 agents)
 

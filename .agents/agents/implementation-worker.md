@@ -1,6 +1,7 @@
 ---
 name: implementation-worker
 description: "Implementation specialist for scoped Beads issues. Use when a bead is claimed and ready for coding. Enforces TDD (tests first), minimal blast radius, and full handoff. Do NOT invoke for planning, architecture, or review work."
+model: claude-sonnet-4-5
 ---
 
 ## Prompt Defense Baseline

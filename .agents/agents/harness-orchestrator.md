@@ -1,6 +1,7 @@
 ---
 name: harness-orchestrator
 description: "Harness orchestrator for the SDD+TDD development loop. Use as the default entry point for multi-step or multi-agent work. Coordinates Goose subagents and Beads durable state. Do NOT use for single-scope implementation or standalone research."
+model: claude-opus-4-5
 ---
 
 ## Prompt Defense Baseline

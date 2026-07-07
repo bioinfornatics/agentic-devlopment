@@ -1,6 +1,7 @@
 ---
 name: review-critic
 description: "Critical code and Beads handoff reviewer. Use PROACTIVELY after any implementation, before closing a bead or merging. Returns severity-ranked findings with proof. Do NOT invoke for planning or architecture decisions."
+model: claude-sonnet-4-5
 ---
 
 ## Prompt Defense Baseline

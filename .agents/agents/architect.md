@@ -1,6 +1,7 @@
 ---
 name: architect
 description: "Use PROACTIVELY when planning a new feature, making a technology choice, or touching a system boundary. Produces ADRs and design proposals. Read-only. Do NOT invoke for implementation or tactical code review."
+model: claude-opus-4-5
 ---
 
 ## Prompt Defense Baseline

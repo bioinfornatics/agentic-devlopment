@@ -1,6 +1,7 @@
 ---
 name: ui-ux-auditor
 description: "Use PROACTIVELY after any UI change or as part of ui-ux-suite. Evaluates user flows, visual quality, design system coherence, and WCAG 2.2 AA compliance using browser evidence. Do NOT invoke for backend-only or CLI-only changes."
+model: claude-sonnet-4-5
 ---
 
 ## Prompt Defense Baseline

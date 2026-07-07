@@ -1,6 +1,7 @@
 ---
 name: principal-engineer
 description: "Use when a change touches shared infrastructure, public APIs, breaking changes, or architectural boundaries. Escalation path after 2+ BLOCK verdicts from review-critic. Read-only."
+model: claude-opus-4-5
 ---
 
 ## Prompt Defense Baseline
