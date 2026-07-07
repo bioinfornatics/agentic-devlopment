@@ -317,8 +317,36 @@ def build_grader_prompt(
     stdout: str,
     stderr: str,
     returncode: int,
+    events_transcript: str = "",
 ) -> str:
+    """Build the grader prompt.
+
+    Prefers events_transcript (full conversation, compact) over stdout[-24000:] (truncated tail).
+    events_transcript covers turns 1..N; stdout[-24000:] only covers the last ~50 turns of a
+    200-turn run, causing the grader to miss early actions like bd prime and Scoped plan.
+    """
     expectations = scenario.get("expected_behavior", [])
+    if events_transcript:
+        run_evidence = f"""Full conversation transcript (turns 1..N, compact format):
+```text
+{events_transcript}
+```
+
+Run stderr (last 4000 chars):
+```text
+{stderr[-4000:]}
+```"""
+    else:
+        # Fallback: stdout tail — may miss early actions in long runs
+        run_evidence = f"""Run stdout (last 24000 chars — may be truncated for long runs):
+```text
+{stdout[-24000:]}
+```
+
+Run stderr (last 8000 chars):
+```text
+{stderr[-8000:]}
+```"""
     return textwrap.dedent(
         f"""
         Grade this skill evaluation run. Return JSON only, with no Markdown fences.
@@ -331,15 +359,7 @@ def build_grader_prompt(
 
         Run return code: {returncode}
 
-        Run stdout:
-        ```text
-        {stdout[-24000:]}
-        ```
-
-        Run stderr:
-        ```text
-        {stderr[-8000:]}
-        ```
+        {run_evidence}
 
         Required JSON schema:
         {{
@@ -349,7 +369,10 @@ def build_grader_prompt(
           "notes": ["brief note if useful"]
         }}
 
-        Grade strictly. A behavior passes only if the run output demonstrates it. If the process failed before producing a usable answer, mark expectations false unless the output still proves them.
+        Grade strictly. A behavior passes only if the run output demonstrates it. If the process failed
+        before producing a usable answer, mark expectations false unless the output still proves them.
+        The transcript uses [TOOL:name] for tool calls, [RESULT ec=N] for results, [assistant] for
+        model text, and [user] for user messages. Tool calls appear in chronological order from turn 1.
         """
     ).strip()
 
@@ -1060,6 +1083,54 @@ def prepare_configs(args: argparse.Namespace, scenario: dict[str, Any]) -> list[
     raise SystemExit(f"Unsupported mode: {args.mode}")
 
 
+def events_transcript_from_events(events: list[dict[str, Any]]) -> str:
+    """Build a compact, full-conversation transcript from the parsed events list.
+
+    Covers turns 1..N — unlike stdout[-24000:] which only shows the tail.
+    Typical size: ~100 chars/event × N events, vs 100k+ raw stdout for long runs.
+    Format is chronological: [role] text, [TOOL:name] command, [RESULT ec=N] output.
+    """
+    lines: list[str] = []
+    for ev in events:
+        msg = ev.get("message", {})
+        if not isinstance(msg, dict):
+            continue
+        role = msg.get("role", "")
+        content = msg.get("content", [])
+        if not isinstance(content, list):
+            continue
+        for item in content:
+            t = item.get("type", "")
+            if t == "text":
+                txt = str(item.get("text", "")).strip()
+                if txt and len(txt) > 15:
+                    lines.append(f"[{role}] {txt[:400]}")
+            elif t == "toolRequest":
+                tc = item.get("toolCall", {})
+                tc_val = tc.get("value", {}) if isinstance(tc, dict) else {}
+                name = tc_val.get("name", "?") if isinstance(tc_val, dict) else "?"
+                args_val = tc_val.get("arguments", {}) if isinstance(tc_val, dict) else {}
+                cmd = args_val.get("command", "") if isinstance(args_val, dict) else ""
+                if cmd:
+                    lines.append(f"[TOOL:{name}] {cmd[:250]}")
+                else:
+                    lines.append(f"[TOOL:{name}] {json.dumps(args_val, ensure_ascii=False)[:150]}")
+            elif t == "toolResponse":
+                result = item.get("toolResult", {})
+                rv = result.get("value", {}) if isinstance(result, dict) else {}
+                sc = rv.get("structuredContent", {}) if isinstance(rv, dict) else {}
+                ec = sc.get("exit_code") if isinstance(sc, dict) else None
+                out = str(sc.get("stdout", ""))[:250] if isinstance(sc, dict) else ""
+                err = str(sc.get("stderr", ""))[:150] if isinstance(sc, dict) else ""
+                flag = "⚠ERROR" if ec not in (None, 0, "0") else ""
+                if flag or err.strip():
+                    lines.append(f"[RESULT {flag} ec={ec}] {out[:150]} | err: {err[:100]}")
+                elif out.strip():
+                    lines.append(f"[RESULT ec={ec}] {out[:200]}")
+    return "
+".join(lines)
+
+
 def _heuristic_grade(scenario: dict[str, Any], stdout: str, stderr: str) -> dict[str, Any] | None:
     """Regex-based fallback grader used when the LLM grader fails.
 
@@ -1134,13 +1205,16 @@ def grade_run(
     goose_cwd: Path,
     goose_env: dict[str, str],
     heartbeat_label: str,
+    events: "list[dict[str, Any]] | None" = None,
 ) -> dict[str, Any]:
+    events_transcript = events_transcript_from_events(events) if events else ""
     prompt = build_grader_prompt(
         scenario=scenario,
         config_name=config_name,
         stdout=stdout,
         stderr=stderr,
         returncode=returncode,
+        events_transcript=events_transcript,
     )
     try:
         rc, out, err, _duration = run_command(
@@ -1669,6 +1743,7 @@ def main() -> int:
                     goose_cwd=goose_cwd,
                     goose_env=goose_env,
                     heartbeat_label=grader_label,
+                    events=events,  # full conversation transcript — prevents grader truncation
                 )
                 print(f"[done] {grader_label}", flush=True)
                 feedback_label = f"{args.skill} eval-{eval_id} {config.name} run-{run_number} feedback"
