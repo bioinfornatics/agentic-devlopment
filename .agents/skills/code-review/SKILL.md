@@ -11,6 +11,14 @@ metadata:
 
 # Code Review Skill
 
+## Knowledge generation (Generated Knowledge Prompting)
+
+Before loading a review type reference, generate context:
+1. Run `git diff --staged && git diff` — read the actual diff before reading any other file.
+2. Identify which review type applies from the diff content (not from the user's description alone).
+3. Check if there is a Beads bead associated with this change: `bd show <id>` if a bead ID is given.
+Only after these three steps: load the matching type reference.
+
 ## Step 1 — Detect review type, load the matching reference
 
 Read context (query, files, bead description) and load exactly one reference:
@@ -127,3 +135,19 @@ AFTER THE LOOP:
 - For recipe or skill files: run `goose recipe validate` before flagging structural issues.
 - explore_pct rises when you read files before reading the diff. Read the diff first.
 - "Consider adding error handling" is not a finding unless you can name the exact uncaught error and its consequence.
+
+## Beads loop for code review
+
+  bd prime                     → load project coding standards and past review decisions
+  bd ready --json              → check for review beads already in flight
+  bd create "Review: <title>" --assignee review-critic   → file the review as a bead
+  bd close <id> --reason "APPROVE|PASS-WITH-NITS|BLOCK: <summary>"
+  bd create "Follow-up: <issue>" --deps discovered-from:<review-bead-id>  → file regressions
+
+## Maker/Checker
+
+Code review IS the checker role. The implementation-worker is the maker.
+
+Additional checker for HIGH/CRITICAL security findings:
+- Security findings CVSS ≥ 7.0 → require a second pass by security-scanner agent before BLOCK.
+- Do not self-approve security findings — a single-agent security review is not reliable.

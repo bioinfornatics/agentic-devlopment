@@ -53,6 +53,35 @@ For durable edits, follow this observable order:
 5. **Validate** (1 turn): Run targeted validation (e.g. `goose recipe validate`) and report the result.
 6. **Close and handoff** (1 turn): Close the bead, report git status, stop. Do not keep exploring.
 
+### Verbatim templates for required labels
+
+Copy these exact strings — agents pattern-match better against concrete structures than prose descriptions:
+
+**Scoped plan** (must appear before first write):
+```
+Scoped plan:
+- Goal: [one sentence]
+- Files to change: [exact list]
+- Validation: [command to run]
+- Bead: [id] → claimed
+```
+
+**Handoff block** (must appear as the final output):
+```
+## Handoff
+- Bead: [id] → closed (reason: ...)
+- Files changed: [list]
+- Validation: [command] → [result]
+- Git status: [output]
+- Remaining risks: [list or "none"]
+```
+
+**Default when no bead exists:** Create one before any file write:
+```bash
+bd create "[task title]" --issue_type task -p 2 --json
+bd update <id> --claim --json
+```
+
 ### Gotchas — literal string traps
 
 - **`Scoped plan:`** — colon required, lowercase 'p' OK, but graders check for `Scoped plan:` or `Scoped Plan:` heading. A plan written AFTER the first file write is a retrospective plan — it will not satisfy EB3.

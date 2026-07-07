@@ -16,6 +16,15 @@ Use when validating a local web UI.
 - **Never use `sleep` or `waitForTimeout`** — use condition-based waiting: `waitForResponse`, `waitForSelector`, `waitForLoadState`, `waitForURL`.
 - **Never kill unrelated running processes** — only stop the server you started.
 
+## Knowledge generation (before any browser test)
+
+Before navigating:
+1. Identify the start command and the exact base URL (protocol + host + port).
+2. Check if a server is already running — avoid killing unrelated processes.
+3. Read one existing test or script for patterns (do not reinvent fixtures).
+4. Open browser tooling (Playwright) and confirm the page loads before testing anything.
+Only after these four steps: begin the test protocol.
+
 ## Protocol
 
 1. Identify start command and exact base URL (protocol + host + port, e.g. `http://localhost:8080`).
@@ -53,6 +62,15 @@ A finding labeled [ASSUMPTION] must be followed by: *"Needs browser verification
 - **Form inputs**: every `<input>`, `<select>`, `<textarea>` has an associated `<label>` or `aria-label`
 - **Landmarks**: `<nav>`, `<main>`, `<aside>` have `aria-label` when >1 of the same type exists
 
+## Self-validation loop
+
+### Before reporting any browser test result:
+- [ ] Page was navigated with Playwright (not just HTML file opened)
+- [ ] Base URL includes protocol + host + port (not a relative path)
+- [ ] Condition-based wait was used — NOT sleep() or waitForTimeout()
+- [ ] Every a11y finding is labeled [VERIFIED — browser-tested] or [ASSUMPTION — code-inspection]
+- [ ] Server lifecycle report includes: start command, tests run, stop command
+
 ## Common checks
 
 - Critical path works.
@@ -67,3 +85,18 @@ A finding labeled [ASSUMPTION] must be followed by: *"Needs browser verification
 1. **Start**: command run, exact URL confirmed.
 2. **Test**: tests executed, evidence captured.
 3. **Stop**: server stopped with exact stop command (e.g., `kill $PID` or `Ctrl-C`).
+
+## Maker/Checker for browser tests
+
+Browser tests follow the same maker/checker split as code:
+- **Test author (maker):** writes the scenario and runs it once.
+- **Evidence reviewer (checker):** a second pass confirms evidence is [VERIFIED — browser-tested], not inferred from code inspection.
+
+Do not self-approve accessibility or layout findings — cross-check with at least one browser-based tool output (screenshot, axe snapshot, console log).
+
+## Beads loop for browser testing
+
+  bd prime            → load existing UI/accessibility issues and testing memories
+  bd ready --json     → check for open web-test beads
+  bd create "WebTest: <finding>" --assignee qa-automation   → file discovered issues
+  bd remember "Base URL: canonical source is scripts/build-docs.sh; read when starting the docs server; invariant: always use localhost:PORT not 0.0.0.0" --key docs-server-url

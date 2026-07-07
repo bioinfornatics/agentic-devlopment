@@ -208,3 +208,15 @@ bd gate <id> --signal "CI green on branch X"              # register async gate
 - Never create more than one epic per goal without explicit user request.
 - Never add fake dependencies to make the graph appear more sophisticated.
 
+## Progressive disclosure
+
+This skill's core commands are always in context. Load deeper references only when needed:
+- Detailed dependency semantics → already in `## Dependency semantics` above
+- Memory pointer format → already in `## Memory` above with verbatim template
+- Planning protocol → already in `## Planning` above
+- Molecules/wisps/gates → already in `## Molecules` and `## Gates` above
+
+For Loop Engineering context (scheduling, circuit breakers, multi-loop coordination):
+- Load `docs/sota-knowledge-base.md#12` — Beads as Loop Engineering state layer
+- Load `docs/sota-knowledge-base.md#11` — Loop Engineering patterns
+

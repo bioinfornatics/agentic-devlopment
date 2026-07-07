@@ -100,6 +100,37 @@ there must match the "Invoke when" column below.
 
 ---
 
+## Knowledge generation (before any delegation decision)
+
+Before emitting an Orchestration decision, generate explicit knowledge:
+1. Call `load()` with no arguments — list available agents and their descriptions.
+2. Run `bd prime` — load current Beads state (open issues, memories, workflow context).
+3. Check `bd ready --json` — identify which beads are waiting for assignment.
+Only after this knowledge is generated: emit the Orchestration decision block.
+
+## Beads as orchestration state (Loop Engineering pattern)
+
+Beads replaces STATE.md from Loop Engineering. The full orchestration loop:
+
+  bd prime                              → knowledge generation (triage context)
+  bd ready --json                       → structured watchlist of claimable beads
+  bd update <id> --claim                → atomic claim (prevents dual assignment)
+  delegate(source: "<agent>", ...)      → maker executes
+  review-critic agent                   → checker verifies
+  bd close <id> --reason "done"         → remove from ready list
+  bd remember "..." --key <key>         → store orchestration decision for future sessions
+  bd gate <id> --signal "CI green"      → async wait (circuit breaker pattern)
+
+**Attempt cap (circuit breaker):** If a bead has been claimed and reset >2 times without closing, add a note explaining the blocker and escalate to human. Do not retry infinitely.
+
+## Progressive disclosure — when to load deeper references
+
+Load `goose-orchestration` skill → routing table always available.
+Load additional references only when needed:
+- Complex multi-loop coordination → load `docs/sota-knowledge-base.md#12` (Beads loop mapping)
+- Loop Engineering patterns → load `docs/sota-knowledge-base.md#11` (Loop Engineering patterns)
+- Subagent constraints reference → the ## Subagent constraints section below is always available
+
 ## Automatic agent routing
 
 When a recipe or session has the `summon` extension enabled, the LLM

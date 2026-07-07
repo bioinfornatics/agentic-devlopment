@@ -11,6 +11,7 @@ instructions: |
   - Durable assignment: `bd create "<title>" --assignee ui-ux-auditor -p 2 --json`
 
   Load skill `webapp-testing` first. Then run the `harness_web_test` subrecipe.
+  Loop cycle: run bd prime to orient first, bd ready to triage, claim beads before writes, stop after handoff.
 settings:
   temperature: 0.15
   max_turns: 30

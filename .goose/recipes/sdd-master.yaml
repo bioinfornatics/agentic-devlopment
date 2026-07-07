@@ -21,6 +21,7 @@ instructions: |
 
   Run SDD as a thin governance layer over Goose+Beads: intent → spec → graph → TDD → implement → review → release.
   Keep decisions explicit, small, testable, and durable in Beads.
+  Loop cycle: run bd prime to orient first, bd ready to triage, claim beads before writes, stop after handoff.
 settings:
   temperature: 0.2
   max_turns: 35

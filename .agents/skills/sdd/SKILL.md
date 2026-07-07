@@ -47,3 +47,48 @@ Release readiness outputs must use an explicit matrix covering tests, docs, inst
 - Make dependencies explicit.
 - Optimize for handoff: every future agent should know current state from Beads.
 - Treat quality gates as product requirements, not cleanup.
+
+## Knowledge generation (before any SDD phase)
+
+Before starting any SDD phase, generate explicit knowledge:
+1. Run `bd prime` — loads current issues, memories, and workflow context.
+2. Run `bd ready --json` — identifies what is claimable.
+3. Read the nearest spec file or acceptance criteria if they exist.
+Only after this knowledge is generated: name the SDD phase and proceed.
+
+## Gotchas
+
+- **Never skip to implement** — the SDD loop is Intent→Spec→Graph→TDD→Implement→Review→Verify. Skipping Spec or TDD to reach Implement faster violates the loop and produces unverifiable code.
+- **Acceptance criteria must be testable** — "the system should be fast" is not acceptance criteria. "endpoint responds in <200ms at p95 under 100 rps" is.
+- **RED before GREEN** — in the TDD phase, the failing test must be written and confirmed to fail before any implementation code is written. A test written after implementation is not TDD.
+- **Beads before edits** — claim a bead before any file write. A retrospective claim after editing is not atomic.
+
+## Self-validation loop
+
+### Before advancing to the next SDD phase, verify:
+- [ ] Current phase is explicitly named in the output (Intent / Spec / TDD / Implement / Review / Verify)
+- [ ] Acceptance criteria are testable (specific measurable outcome, not aspirational prose)
+- [ ] No file writes happened before a bead was claimed
+- [ ] If TDD phase: failing test was written and confirmed to fail before implementation
+- [ ] If Implement phase: `bd update --claim` appears before the first `write` or `edit` tool call
+
+## Maker/Checker
+
+SDD phases have built-in maker/checker splits:
+- Spec → verified by Architect (ADR trade-off analysis)
+- Acceptance criteria → verified by TDD-guide (can a failing test be written?)
+- Implementation → verified by Review-critic (diff review)
+- Release readiness → verified by Principal-engineer (blast radius check)
+
+Never advance a phase using the same agent that produced it.
+
+## Beads loop
+
+The SDD loop runs on Beads:
+  bd prime                           → knowledge generation (orient)
+  bd ready --json                    → triage: which SDD bead is next?
+  bd update <id> --claim             → claim before any phase artifact
+  [produce phase artifact]           → spec / test / code / review
+  bd create --deps discovered-from   → file discovered follow-up work
+  bd close <id> --reason "phase done"
+  bd remember "..." --key <key>      → store durable phase decisions
