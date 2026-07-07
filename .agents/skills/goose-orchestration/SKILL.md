@@ -235,11 +235,54 @@ bd close <id> --reason "Done: <summary>"
 
 ## Subagent constraints
 
-- Isolated context and session.
-- Inherits parent extensions unless restricted.
-- Cannot spawn subagents.
-- Cannot manage extensions/schedules.
-- Default max turns: 25 unless overridden by `max_turns`, recipe settings, or `GOOSE_SUBAGENT_MAX_TURNS`.
+### Runtime behaviour
+- **Isolated context**: each subagent has its own context window — the main session stays lean.
+  After spawning several subagents, the main session typically uses <10% of its context budget.
+- **Extensions inherited from parent** by default; override with natural language.
+- **Default max turns: 25** — override via the GOOSE_SUBAGENT_MAX_TURNS env var, settings.max_turns in recipes, or natural language ("limit each to 10 turns").
+- **Default timeout: 5 minutes** — if a subagent exceeds this, it returns no output. For parallel runs, only successful subagents return results; timed-out ones are silently dropped.
+- **Autonomous spawning**: in goose's default autonomous permission mode, goose may decide to spawn subagents without explicit instruction. Subagents are disabled in manual/smart approval and chat-only modes.
+
+### Hard restrictions (enforced by the runtime — not overridable)
+
+| Restricted operation | Why |
+|---|---|
+| Spawning a subagent from within a subagent | Prevents infinite recursion |
+| Enabling, disabling, or modifying extensions | Avoids conflicts with parent session state |
+| Creating, modifying, or deleting scheduled tasks | Prevents interference with parent workflows |
+
+**Critical for the harness**: `delegate()` is an orchestrator-only capability. A subagent (e.g. implementation-worker) cannot call another subagent. Only the top-level session or recipe can delegate.
+
+### Trigger keywords (natural language routing)
+
+| Intent | Keywords | Example |
+|---|---|---|
+| Sequential (default) | "first…then", "after" | "First plan, then implement" |
+| Parallel | "parallel", "simultaneously", "concurrently" | "Create three files in parallel" |
+| Ad-hoc agent | "create a subagent according to this description: …" | — |
+| Recipe-backed | "use the <recipe-name> recipe as a subagent" | — |
+
+### Context preservation pattern
+
+Delegate aggressively to keep the orchestrator session focused.
+Each subagent has its own context window — spawning a research subagent does not pollute the orchestrator context.
+
+```
+Main session:  [orient → decide → delegate → synthesize]   ← stays lean
+Subagent 1:    [full research context → returns summary]   ← isolated
+Subagent 2:    [full implementation context → handoff]     ← isolated
+```
+
+### summon extension requirement
+
+The `delegate()` and `load()` tools are provided by the `summon` platform extension.
+- Recipes with an explicit `extensions` block must include `summon` or delegation is unavailable.
+- Recipes with `sub_recipes` have `summon` auto-injected.
+
+### subagent_system.md customization hook
+
+A project-local `subagent_system.md` file sets the base system prompt injected into every subagent in the session.
+Use it to add harness-wide context (Beads discipline, handoff format, stop rules) to all subagents automatically.
 
 ## Recipe design rules
 

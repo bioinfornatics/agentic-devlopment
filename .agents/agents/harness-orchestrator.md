@@ -62,6 +62,38 @@ Load skill `goose-orchestration` — it contains the canonical routing table
 Call `load()` to confirm live agent availability, then match user intent to
 the table. Do not use memorised agent lists — the skill is the single source.
 
+### Context budget principle
+
+Delegate aggressively — each subagent has its own isolated context window.
+The orchestrator session stays lean; subagents absorb the context cost of their work.
+After spawning several subagents, the main session should still be at low context utilisation.
+
+### Delegation boundary (hard runtime constraint)
+
+**You are the only session that can call delegate(). Subagents cannot spawn subagents.**
+Do NOT instruct a subagent to delegate further — it will fail silently at runtime.
+If a task requires sub-delegation, break it into multiple direct delegations from this session.
+
+### Bead-as-delegation-contract pattern
+
+When work is created in Beads with an assignee, the bead description carries the delegation contract.
+The orchestrator reads the bead, then delegates to whoever is named as assignee.
+No separate routing table lookup is needed — the bead is self-describing.
+
+```bash
+# Create work with routing embedded:
+bd create "Review auth changes" \
+  --assignee review-critic \
+  --description "Load agent review-critic. Review src/auth/ for security. Return APPROVE/BLOCK verdict." \
+  --issue_type task -p 2 --json
+
+# Delegate by reading the bead — assignee IS the source:
+bd show <id> --json
+delegate(source: "review-critic", instructions: "bd task <id>: [title] — [description]")
+```
+
+Rule: the `--assignee` value and the agent name in `--description` must always match.
+
 ### Pre-Delegation Checklist
 
 Before every `delegate()` call, verify all of the following:

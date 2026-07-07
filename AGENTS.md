@@ -199,11 +199,28 @@ Load the codebase-researcher agent, then map the blast radius of changing AuthSe
 
 # Programmatic (Summon extension)
 delegate(source: "review-critic", instructions: "Review the diff. Return verdict.")
+
+# Bead-as-delegation-contract — routing embedded in the bead itself
+bd create "Review auth PR" \
+  --assignee review-critic \
+  --description "Load agent review-critic. Review src/auth/. Return verdict + findings." \
+  --issue_type task -p 2 --json
+# Then the orchestrator delegates by reading the bead:
+#   delegate(source: "<assignee>", instructions: "bd task <id>: <description>")
 ```
 
 **Load vs Delegate:**
 - **Load** — injects the agent's instructions into the current conversation context. The current session adopts the agent's role.
 - **Delegate** — runs the agent in an isolated session. The agent cannot see the full parent conversation; only the delegation instructions and its own agent file.
+- **Bead-as-contract** — the bead `--assignee` names the target agent; the `--description` carries the load instruction and task details. Both must match. The orchestrator reads the bead and delegates to the assignee — no separate routing logic needed.
+
+**Hard constraints (goose runtime, not overridable):**
+- `delegate()` is only callable from the top-level session — subagents cannot spawn subagents.
+- Subagents cannot enable/disable extensions or manage scheduled tasks.
+- Default subagent timeout: **5 minutes**. Timed-out subagents return no output.
+- In goose's default autonomous permission mode, goose may spawn subagents without explicit instruction.
+
+**Context window principle:** each subagent has its own isolated context window. Delegate aggressively — the orchestrator stays lean while subagents absorb their own context cost.
 
 ## Named agent roster (11 agents)
 
