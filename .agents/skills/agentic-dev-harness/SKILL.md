@@ -27,6 +27,16 @@ Use this skill when doing software development, planning, research, review, rele
 7. **Gate async waits**: use `bd gate` for CI/human/timer waits.
 8. **Close/handoff**: close completed beads, run gates, report git status and remaining risk.
 
+## Tool constraints (universal — apply in every session)
+
+- **Never use `sudo`** or any privilege-escalation command.
+  If a task requires elevated privileges, stop and do one of:
+  1. Find a user-space alternative (e.g., install to `~/.local` instead of `/usr/local`).
+  2. If no alternative exists, use elicitation: tell the user *exactly* which command needs sudo and *why*, then wait for them to run it.
+- **Never use `kill -9` on arbitrary PIDs** — only stop processes you explicitly started.
+- **Never use `sleep` or busy-wait loops** — use condition-based waiting (`bd gate`, `waitForSelector`, `waitForResponse`).
+- If a required tool is missing, use elicitation: state which tool is missing, why it is needed, and ask the user to install it — do not attempt to install it with sudo.
+
 ## Delegation rules
 
 ## Required checkpoints

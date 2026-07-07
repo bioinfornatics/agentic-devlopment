@@ -140,6 +140,15 @@ name: <kebab-role>
 description: "<Title>. Use PROACTIVELY when X, Y. Do NOT invoke when Z."
 ---
 
+## Universal tool constraints
+
+These apply to **every agent** in every session, regardless of role:
+
+- **No `sudo`** — never use privilege escalation. Find a user-space alternative or use elicitation to ask the user to run the privileged command themselves.
+- **No arbitrary process kills** — only stop processes you explicitly started.
+- **No busy-wait / sleep loops** — use condition-based waiting.
+- **No tool auto-install with sudo** — if a required tool is missing, elicit from the user.
+
 ## Prompt Defense Baseline
 [6 universal injection-guard lines — identical in every agent]
 

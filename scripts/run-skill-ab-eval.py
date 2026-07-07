@@ -1060,6 +1060,70 @@ def prepare_configs(args: argparse.Namespace, scenario: dict[str, Any]) -> list[
     raise SystemExit(f"Unsupported mode: {args.mode}")
 
 
+def _heuristic_grade(scenario: dict[str, Any], stdout: str, stderr: str) -> dict[str, Any] | None:
+    """Regex-based fallback grader used when the LLM grader fails.
+
+    Only grades expectations that have a clear, unambiguous signal in the run output.
+    Returns None if no reliable heuristic applies (caller falls back to all-failed).
+    Deliberately conservative: only marks PASSED when confident; defaults to FAILED otherwise.
+    """
+    import re as _re
+    expectations = scenario.get("expected_behavior", [])
+    if not expectations:
+        return None
+
+    results = []
+    any_heuristic_applied = False
+    combined = (stdout + "
+" + stderr).lower()
+
+    for item in expectations:
+        item_lower = item.lower()
+        passed = False
+        evidence = "Heuristic: no signal found for this expectation — defaulting to failed."
+
+        # bd remember + --key kebab-case → pointer memory expected behaviors
+        if "bd remember" in item_lower or "stable kebab" in item_lower or "pointer format" in item_lower:
+            has_bd_remember = bool(_re.search(r"bds+remember", combined))
+            has_key_flag    = bool(_re.search(r"--keys+[a-z][a-z0-9-]+", combined))
+            if has_bd_remember and has_key_flag:
+                passed = True
+                evidence = "Heuristic: 'bd remember' command with '--key <kebab-case>' detected in output."
+                any_heuristic_applied = True
+            elif "does not" in item_lower or "no memory" in item_lower or "avoid" in item_lower:
+                # Negative constraint: passes if the bad pattern is absent
+                bad_pattern = _re.search(r"memory.md|TODO.md|bds+create", combined)
+                if not bad_pattern:
+                    passed = True
+                    evidence = "Heuristic: no MEMORY.md, TODO.md, or bd create found — negative constraint satisfied."
+                    any_heuristic_applied = True
+
+        # verdict / pass-with-nits / block → code review expected behaviors
+        elif "verdict" in item_lower or "approve" in item_lower or "block" in item_lower:
+            has_verdict = bool(_re.search(r"(approve|pass.with.nits|block)", combined))
+            if has_verdict:
+                passed = True
+                evidence = "Heuristic: explicit verdict string (APPROVE/PASS-WITH-NITS/BLOCK) found in output."
+                any_heuristic_applied = True
+
+        results.append({"text": item, "passed": passed, "evidence": evidence})
+
+    if not any_heuristic_applied:
+        return None  # no heuristic matched anything — let caller use all-failed
+
+    passed_count = sum(1 for r in results if r["passed"])
+    return {
+        "summary": {
+            "total": len(results),
+            "passed": passed_count,
+            "failed": len(results) - passed_count,
+            "pass_rate": round(passed_count / max(1, len(results)), 4),
+        },
+        "expectations": results,
+        "notes": ["Heuristic grader applied — LLM grader was unavailable."],
+    }
+
+
 def grade_run(
     *,
     args: argparse.Namespace,
@@ -1099,6 +1163,13 @@ def grade_run(
 
     parsed = extract_json_object(out)
     if rc != 0 or not parsed or "expectations" not in parsed:
+        # LLM grader failed — attempt heuristic fallback before marking everything failed.
+        heuristic = _heuristic_grade(scenario, stdout, stderr)
+        if heuristic is not None:
+            heuristic.setdefault("notes", []).append(
+                f"LLM grader failed (rc={rc}); heuristic fallback applied. stderr={err[-200:]}"
+            )
+            return heuristic
         return {
             "expectations": [
                 {

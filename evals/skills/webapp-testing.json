@@ -28,24 +28,25 @@
     "skills": [
       "webapp-testing"
     ],
-    "query": "Check the generated documentation site for basic accessibility.",
+    "query": "Check the generated documentation site for basic accessibility. Use browser tooling (Playwright or equivalent) for keyboard navigation testing — static HTML inspection alone is not sufficient.",
     "files": [
       "dist/docs/html/index.html",
       "docs/assets/site.css"
     ],
-    "fixture_intent": "Very difficult scenario: accessibility verification — keyboard navigation, visible focus, accessible names, contrast, error announcements, exact evidence.",
+    "fixture_intent": "Very difficult scenario: browser-based accessibility verification — keyboard navigation must be tested in a real browser (Tab/Shift-Tab), findings must be labeled [VERIFIED—browser-tested] or [ASSUMPTION—code-inspection], visible focus tested, accessible names verified.",
     "difficulty": "very_difficult",
     "max_turns": 200,
-    "expected_skill_contribution": "The webapp-testing skill should verify accessibility with keyboard navigation, visible focus, accessible names/labels, contrast risks, and exact evidence distinguishing verified facts from assumptions.",
+    "expected_skill_contribution": "The webapp-testing skill mandates: (1) actual Tab/Shift-Tab testing in a browser session — not HTML inspection; (2) per-finding attribution [VERIFIED—browser-tested] vs [ASSUMPTION—code-inspection]; (3) a structured accessible-names checklist covering links, images, and form inputs.",
     "baseline_gaps": [
-      "Agent may skip keyboard and focus checks and provide only visual inspection.",
-      "Agent may omit accessible names and error announcements."
+      "Agent skips keyboard nav in browser; infers tab order from HTML source and presents it as a verified result.",
+      "Agent does not label findings as verified vs assumed — presents code-inspection results as browser-tested facts.",
+      "Agent omits structured accessible-names checklist for links, images, and form inputs."
     ],
     "expected_behavior": [
-      "Tests keyboard navigation (Tab/Shift-Tab) and reports whether interactive elements are reachable.",
-      "Checks visible focus indicator on focusable elements and reports any missing focus styles.",
-      "Verifies accessible names for images, links, and form inputs.",
-      "Explicitly distinguishes verified facts (tested with browser/tool) from assumptions (code inspection only)."
+      "Opens the page in a browser session and presses Tab/Shift-Tab to observe actual focus order — does NOT infer from HTML source.",
+      "Labels every finding as [VERIFIED — browser-tested] or [ASSUMPTION — code-inspection] — never presents a code-inspection finding as a browser result.",
+      "Reports accessible names for links (meaningful text?), images (alt attributes?), and form inputs (labels?) as distinct checklist items.",
+      "Checks visible focus indicator by observing the browser after Tab keypresses — not by grepping CSS for ':focus'."
     ]
   },
   {
