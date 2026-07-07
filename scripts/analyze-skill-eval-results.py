@@ -579,6 +579,19 @@ def efficiency_recommendations(
     return recs
 
 
+def _compute_scenario_hash(scenario: dict[str, Any]) -> str:
+    """Fallback: compute scenario fingerprint from the scenario dict directly."""
+    import hashlib as _hl
+    key = {
+        "query":             scenario.get("query", ""),
+        "expected_behavior": scenario.get("expected_behavior", []),
+        "baseline_gaps":     scenario.get("baseline_gaps", []),
+        "max_turns":         scenario.get("max_turns", 0),
+        "difficulty":        scenario.get("difficulty", ""),
+    }
+    return _hl.sha256(json.dumps(key, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:12]
+
+
 def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: int, configuration: str) -> dict[str, Any]:
     events = parse_events(run_dir / "outputs" / "events.jsonl")
     model_errors = detect_model_errors(events)
@@ -587,6 +600,10 @@ def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: 
     grading = read_json(run_dir / "grading.json", {}) or {}
     timing = read_json(run_dir / "timing.json", {}) or {}
     feedback = read_json(run_dir / "feedback.json", {}) or {}
+    # Scenario hash: read from eval_metadata.json (written by runner).
+    # Falls back to hashing the scenario dict if metadata is missing (older runs).
+    _meta = read_json(run_dir.parent.parent / "eval_metadata.json", {}) or {}
+    scenario_hash_val: str = _meta.get("scenario_hash") or _compute_scenario_hash(scenario)
     # --- loaded skills + delegated agents from audit ---
     loaded_skills: list[str] = audit.get("loaded_skills", []) if isinstance(audit, dict) else []
     _delegated_raw = [
@@ -626,6 +643,7 @@ def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: 
         "delegated_agents": delegated_agents,
         "efficiency": efficiency,
         "efficiency_recs": efficiency_recommendations(subject, eval_id, configuration, efficiency),
+        "scenario_hash": scenario_hash_val,
     }
     write_json(run_dir / "analysis.json", analysis)
     (run_dir / "sequence.mmd").write_text(mermaid_sequence(timeline, f"{subject} eval-{eval_id} {configuration} {run_dir.name}"))
@@ -854,6 +872,8 @@ def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, An
             "has_model_errors": total_model_errors > 0,
             "loaded_skills": all_loaded_skills,
             "delegated_agents": all_delegated_agents,
+            # Use the with_skill hash if available; both configs should match.
+            "scenario_hash": (with_run or without_run or {}).get("scenario_hash", ""),
         }
         llm_analysis = run_llm_analysis(args, subject, scenario_analysis, with_run, without_run)
         if llm_analysis is not None:
@@ -980,6 +1000,7 @@ def init_analysis_tables(db_path: Path) -> None:
                 kind TEXT NOT NULL,
                 subject TEXT NOT NULL,
                 eval_id INTEGER NOT NULL,
+                scenario_hash TEXT,
                 with_score REAL,
                 without_score REAL,
                 with_turns REAL,
@@ -1006,15 +1027,16 @@ def persist_analysis(db_path: Path, analyses: list[dict[str, Any]], workspace_ro
                 db.execute(
                     """
                     INSERT INTO eval_scenario_analysis(
-                        run_id, kind, subject, eval_id, with_score, without_score, with_turns, without_turns,
+                        run_id, kind, subject, eval_id, scenario_hash, with_score, without_score, with_turns, without_turns,
                         root_cause, skill_impact, scenario_quality, recommended_action, created_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         run_id,
                         "skills",
                         subject,
                         scenario.get("eval_id"),
+                        scenario.get("scenario_hash", ""),
                         scenario.get("with_score"),
                         scenario.get("without_score"),
                         scenario.get("with_turns"),

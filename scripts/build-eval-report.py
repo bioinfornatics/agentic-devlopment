@@ -94,8 +94,8 @@ class EvalData:
     source: str = ""
     # runs: list of {run_id, subject, created_at, git_commit, model, ...}
     runs: list[dict]
-    # scenario_analysis: list of {run_id, subject, eval_id, with_score, without_score,
-    #                              skill_impact, scenario_quality, root_cause, created_at}
+    # scenario_analysis: list of {run_id, subject, eval_id, scenario_hash, with_score,
+    #                              without_score, skill_impact, scenario_quality, root_cause, created_at}
     scenarios: list[dict]
     # improvements: list of {run_id, subject, metric, baseline, candidate, delta, created_at}
     improvements: list[dict]
@@ -117,7 +117,7 @@ def load_from_db(path: pathlib.Path) -> EvalData | None:
         FROM eval_runs WHERE subject != '__suite__' ORDER BY created_at
     """).fetchall()]
     d.scenarios    = [dict(r) for r in con.execute("""
-        SELECT run_id, kind, subject, eval_id, with_score, without_score,
+        SELECT run_id, kind, subject, eval_id, scenario_hash, with_score, without_score,
                with_turns, without_turns, root_cause, skill_impact,
                scenario_quality, recommended_action, created_at
         FROM eval_scenario_analysis ORDER BY created_at
@@ -206,18 +206,34 @@ def render_scenario_table(d: EvalData) -> str:
     # Latest run per subject
     latest_run: dict[str, str] = {}
     for r in d.runs: latest_run[r["subject"]] = r["run_id"]
+
+    # Detect scenario version changes: group all historical hashes per (subject, eval_id)
+    hash_history: dict[tuple, set] = {}
+    for s in d.scenarios:
+        key = (s.get("subject",""), s.get("eval_id", -1))
+        h = s.get("scenario_hash") or ""
+        if h:
+            hash_history.setdefault(key, set()).add(h)
+
     rows = ""
     for s in sorted(d.scenarios, key=lambda x: (x.get("subject",""), x.get("eval_id",0))):
         if s.get("run_id") != latest_run.get(s.get("subject","")): continue
         ws  = s.get("with_score"); bs = s.get("without_score")
         dv  = round(ws - bs, 3) if (ws is not None and bs is not None) else None
-        imp = s.get("skill_impact","")
         sq  = s.get("scenario_quality","")
         rc  = s.get("root_cause","") or ""
         rc_tags = " ".join(f"<span class='rc'>{esc(c)}</span>" for c in rc.split(",") if c.strip())
+        shash = s.get("scenario_hash") or ""
+        key   = (s.get("subject",""), s.get("eval_id", -1))
+        n_versions = len(hash_history.get(key, set()))
+        # Warn if this scenario has multiple historical hashes → scores are not all comparable
+        hash_cell = f"<code style='font-size:.72rem'>{esc(shash[:8])}</code>"
+        if n_versions > 1:
+            hash_cell += f" <span class='badge neg' title='{n_versions} different scenario versions in history — older scores may not be comparable'>⚠{n_versions}v</span>"
         rows += (
             f"<tr><td>{esc(s.get('subject'))}</td>"
             f"<td style='text-align:center'>{esc(s.get('eval_id'))}</td>"
+            f"<td style='text-align:center'>{hash_cell}</td>"
             f"<td style='text-align:center'>{f'{ws:.0%}' if ws is not None else '—'}</td>"
             f"<td style='text-align:center'>{f'{bs:.0%}' if bs is not None else '—'}</td>"
             f"<td style='text-align:center'>{badge(dv)}</td>"

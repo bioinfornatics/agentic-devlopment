@@ -1501,9 +1501,11 @@ def main() -> int:
         eval_name = f"{args.skill}-{eval_id}-{slug(query)}"
         eval_dir = workspace / f"eval-{eval_id}"
         eval_dir.mkdir(parents=True, exist_ok=True)
+        scenario_hash_val = scenario_hash(scenario)
         metadata = {
             "eval_id": eval_id,
             "eval_name": eval_name,
+            "scenario_hash": scenario_hash_val,
             "prompt": query,
             "assertions": scenario_assertions(scenario),
             "fixture_patch": scenario.get("fixture_patch"),
