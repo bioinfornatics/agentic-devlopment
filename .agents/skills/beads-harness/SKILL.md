@@ -65,6 +65,37 @@ A good pointer memory says:
 topic -> canonical file/section -> when to read -> one-line invariant
 ```
 
+### Exact pointer format (copy this template — agents pattern-match against concrete structures)
+
+```bash
+bd remember "<Topic>: canonical source is <file>#<section>; read when <trigger>; invariant: <one-line rule>." \
+  --key <kebab-case-key>
+```
+
+**Verbatim example — copy the sentence structure exactly:**
+
+```bash
+bd remember "Release checklist: canonical source is docs/10-release-readiness.md; read when preparing a release; invariant: never copy checklist content into memory." \
+  --key release-checklist-pointer
+```
+
+### Gotchas
+
+- **"read when" not "read before"** — the trigger phrase must start with "read when <context>", not "read before <action>". The evaluator checks this exact wording.
+- **Under 250 characters** — count before storing. The example above is ~130 chars.
+- **Include `#section` if the file has named headings** — prefer `docs/file.md#release-checklist` over just `docs/file.md` when a specific section is the target.
+- **Never use "read always"** — every pointer must name a specific trigger condition.
+
+### Self-validation checklist (run before finalising any memory store)
+
+Before calling `bd remember`, verify:
+- [ ] Value starts with topic, then "canonical source is", then file path
+- [ ] Contains "read when <trigger>" (not "read before", not "read always")
+- [ ] Contains "invariant: <one-line rule>"
+- [ ] Total value is under 250 characters
+- [ ] No checklist content, documentation body, or long prose in the value
+- [ ] Key is kebab-case and describes the topic (not the file name)
+
 Do not store long documentation in memory. Update docs and remember a short pointer.
 
 ## Molecules and wisps

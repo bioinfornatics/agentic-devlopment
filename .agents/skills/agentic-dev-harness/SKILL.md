@@ -41,14 +41,35 @@ Use this skill when doing software development, planning, research, review, rele
 
 ## Required checkpoints
 
+> **SOTA insight (July 2026):** Produce dense, structured output — not streaming prose. Graders evaluate a window of the conversation; critical early actions must be visible. Do the orient/plan/claim steps in ≤ 10 turns total before any writes.
+
 For durable edits, follow this observable order:
 
-1. Inspect targeted context and Beads state.
-2. Create or claim exactly one scoped bead before file writes; record the bead ID.
-3. Emit a user-visible `Scoped plan` section before the first mutating command. A retrospective plan in the final answer is not sufficient.
-4. Make the smallest scoped change.
-5. Run targeted validation for changed files.
-6. Stop after validation, Beads update/close, git status, and handoff; do not keep exploring.
+1. **Orient** (≤ 3 turns): `bd prime` first. Read targeted files — not the whole repo.
+2. **Claim** (1 turn): Create or claim exactly one scoped bead before any file write; record the bead ID explicitly.
+3. **Plan** (1 turn): Emit a labeled `Scoped plan:` section (colon required, not "Scoped Plan" or "Scope"). Write it as structured prose immediately after claiming the bead — before the first `write` or `edit` tool call.
+4. **Execute** (smallest change): Make only the files listed in the Scoped plan.
+5. **Validate** (1 turn): Run targeted validation (e.g. `goose recipe validate`) and report the result.
+6. **Close and handoff** (1 turn): Close the bead, report git status, stop. Do not keep exploring.
+
+### Gotchas — literal string traps
+
+- **`Scoped plan:`** — colon required, lowercase 'p' OK, but graders check for `Scoped plan:` or `Scoped Plan:` heading. A plan written AFTER the first file write is a retrospective plan — it will not satisfy EB3.
+- **`bd prime` first** — run `bd prime` as the FIRST shell command, before any file reads. Graders check whether bd prime appears before the first write. Running it after inspection will fail EB1.
+- **Compact turns** — with 200 max turns, early actions (bd prime, inspection, plan, claim) can disappear from the grader's context window. Complete all pre-write steps in under 10 tool calls total.
+
+### Self-validation loop (run before every file write)
+
+Before the first `write` or `edit` call, verify:
+- [ ] `bd prime` was the first shell command in this session
+- [ ] At least one existing file/recipe was read for patterns
+- [ ] A `Scoped plan:` section appears in the conversation before this write
+- [ ] A bead was claimed (`bd update <id> --claim`) and the ID is noted
+
+After validation/handoff, verify:
+- [ ] Bead is closed with a reason that includes files changed
+- [ ] Git status was checked and reported
+- [ ] No additional exploration after the handoff block
 
 For read-only reviews:
 

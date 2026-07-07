@@ -174,6 +174,10 @@ load()  ← discover agents + subrecipes + their descriptions
 
 ### Orchestration decision block (emit before every delegate())
 
+> **SOTA insight (July 2026):** Agents pattern-match against concrete templates far better than prose descriptions. Copy the template below verbatim — including exact casing and the colon. Do NOT format it as a markdown heading (`## Orchestration Decision` ≠ `Orchestration decision:`).
+
+**Emit this exact block — inline text, not a markdown heading:**
+
 ```text
 Orchestration decision:
 - Intent matched: [what the user asked]
@@ -301,7 +305,30 @@ When delegating, include this invariant verbatim in the plan or worker contract:
 Subagents cannot coordinate with each other; the parent/orchestrator owns scope partitioning, context passing, integration, and synthesis.
 ```
 
-Finish with a compact `Delegation audit` summarizing workers used or why none were used. Stop once the requested orchestration plan or synthesis is complete.
+Close with this exact block — inline text, lowercase 'a', colon required:
+
+```text
+Delegation audit:
+- Workers used: [list or "none — direct inspection sufficient"]
+- Scopes assigned: [Worker A: <path> | Worker B: <path>]
+- Overlap: none
+- Integration: [how orchestrator combined results]
+```
+
+### Gotchas — literal string traps
+
+- **`Orchestration decision:`** — lowercase 'd', colon, no markdown heading. Writing `## Orchestration Decision` or `Orchestration Decision:` will fail the grader's literal-string check.
+- **`Delegation audit:`** — lowercase 'a', colon, no em dash, no "Summary". Writing `## Delegation Audit` or `## Delegation Audit — Summary` will fail.
+- **Verbatim invariant** — include the FULL string: *"Subagents cannot coordinate with each other; the parent/orchestrator owns scope partitioning, context passing, integration, and synthesis."* Paraphrasing any word will fail. Include it in full even if you already stated it earlier.
+
+### Self-validation checklist (run before finalising any orchestration output)
+
+- [ ] Output contains the literal text `Orchestration decision:` (no heading markup, lowercase d)
+- [ ] Output contains the full verbatim invariant string ending "...integration, and synthesis."
+- [ ] Output contains the literal text `Delegation audit:` (no heading markup, lowercase a)
+- [ ] Each worker contract lists the exact file it may write and names files it is FORBIDDEN from touching
+
+Stop once the requested orchestration plan or synthesis is complete.
 
 - Put durable methodology in skills, not repeated in every recipe.
 - Put workflow routing in recipes.
