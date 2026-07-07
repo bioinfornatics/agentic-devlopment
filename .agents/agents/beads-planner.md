@@ -1,6 +1,6 @@
 ---
 name: beads-planner
-description: "Beads planning specialist. Use when converting a goal into a dependency-aware Beads issue graph. Invoke PROACTIVELY for work spanning more than one file, session, or agent. Do NOT invoke when Beads issues for this work already exist."
+description: "Beads dependency graph specialist. Invoked BY product-owner or architect for complex technical decomposition requiring topological ordering across multiple files/agents/sessions. Use when a product goal needs to be broken into ordered Beads with dependency chains. Do NOT invoke when the product-owner can create the Beads directly — only for graphs with >5 interdependent issues."
 model: claude-sonnet-4-5
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: harness-orchestrator
-description: "Harness orchestrator for the SDD+TDD development loop. Use as the default entry point for multi-step or multi-agent work. Coordinates Goose subagents and Beads durable state. Do NOT use for single-scope implementation or standalone research."
+description: "Lead orchestrator for the SDD+TDD loop. Coordinates the full team: routes work via product-owner (backlog), architect (design), implementation-worker (code), review-critic (quality). Default entry point for multi-step or multi-agent work. Do NOT invoke for single-scope tasks, standalone research, or individual specialist work."
 model: claude-opus-4-5
 ---
 

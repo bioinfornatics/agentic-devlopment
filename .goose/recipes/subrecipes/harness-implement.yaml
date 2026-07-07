@@ -1,3 +1,5 @@
+# AGENT-FACING WORKER SUBRECIPE — invoked by the parent recipe of the same name.
+# Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
 version: 1.0.0
 title: Harness Implement
 description: Implement a scoped Beads issue with tests, review, and handoff.
