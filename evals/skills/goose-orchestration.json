@@ -8,10 +8,10 @@
       ".goose/recipes/harness-master.yaml",
       ".goose/recipes/subrecipes/"
     ],
-    "fixture_intent": "Normal scenario: read-only mapping of recipe delegation chain — tests Orchestration decision naming the correct flow, focused analysis without broad scanning, and Delegation audit closure.",
+    "fixture_intent": "Normal scenario: read-only mapping of recipe delegation chain \u2014 tests Orchestration decision naming the correct flow, focused analysis without broad scanning, and Delegation audit closure.",
     "difficulty": "normal",
     "max_turns": 200,
-    "expected_skill_contribution": "The orchestration skill should emit a literal `Orchestration decision:` block before any analysis naming the read-only research flow, justify why delegation is or is not used, return evidence from specific recipe and subrecipe files, and close with a literal `Delegation audit:` — a baseline agent skips both structural blocks and just lists findings.",
+    "expected_skill_contribution": "The orchestration skill should emit a literal `Orchestration decision:` block before any analysis naming the read-only research flow, justify why delegation is or is not used, return evidence from specific recipe and subrecipe files, and close with a literal `Delegation audit:` \u2014 a baseline agent skips both structural blocks and just lists findings.",
     "baseline_gaps": [
       "Agent inspects files and lists findings without ever emitting an Orchestration decision block.",
       "Agent may delegate unnecessarily to a subagent or skip explaining the delegation choice.",
@@ -34,10 +34,10 @@
       ".agents/skills/",
       "docs/"
     ],
-    "fixture_intent": "Difficult scenario: delegation decision with justification — Orchestration decision, non-overlapping scopes if delegated, risk-ranked synthesis, Delegation audit.",
+    "fixture_intent": "Difficult scenario: delegation decision with justification \u2014 Orchestration decision, non-overlapping scopes if delegated, risk-ranked synthesis, Delegation audit.",
     "difficulty": "difficult",
     "max_turns": 200,
-    "expected_skill_contribution": "The orchestration skill should produce an `Orchestration decision:` before work and a `Delegation audit:` after — baseline agents skip both and just inspect files.",
+    "expected_skill_contribution": "The orchestration skill should produce an `Orchestration decision:` before work and a `Delegation audit:` after \u2014 baseline agents skip both and just inspect files.",
     "baseline_gaps": [
       "Agent may create overlapping or vague delegated tasks without a stated routing decision.",
       "Agent may not synthesize results into one ranked answer with a delegation audit."
@@ -58,17 +58,17 @@
       ".goose/recipes/",
       ".agents/skills/"
     ],
-    "fixture_intent": "Very difficult scenario: multi-worker contract with verbatim invariant — discriminant is (1) verbatim invariant string and (2) explicit non-overlapping scope assignment. Heading capitalisation variants are accepted.",
+    "fixture_intent": "Very difficult scenario: multi-worker contract with verbatim invariant \u2014 discriminant is (1) verbatim invariant string and (2) explicit non-overlapping scope assignment. Heading capitalisation variants are accepted.",
     "difficulty": "very_difficult",
-    "max_turns": 60,
-    "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision block, worker contracts with non-overlapping scopes, the verbatim coordination invariant (exact sentence), and a Delegation audit block. The skill now provides verbatim templates and gotchas for casing — the key discriminant is the verbatim invariant and non-overlapping scopes, not heading capitalisation.",
+    "max_turns": 200,
+    "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision block, worker contracts with non-overlapping scopes, the verbatim coordination invariant (exact sentence), and a Delegation audit block. The skill now provides verbatim templates and gotchas for casing \u2014 the key discriminant is the verbatim invariant and non-overlapping scopes, not heading capitalisation.",
     "baseline_gaps": [
       "Agent may allow same-file writes or assume subagents can coordinate.",
       "Agent may omit the verbatim coordination invariant or paraphrase it.",
       "Agent may omit a closing Delegation audit block entirely."
     ],
     "expected_behavior": [
-      "Emits an `Orchestration decision:` block (inline label) OR `## Orchestration decision` heading before listing any worker contracts — appears before any worker is delegated.",
+      "Emits an `Orchestration decision:` block (inline label) OR `## Orchestration decision` heading before listing any worker contracts \u2014 appears before any worker is delegated.",
       "Assigns explicitly non-overlapping file scopes: Worker A owns only `.goose/recipes/harness-master.yaml`, Worker B owns only `.agents/skills/goose-orchestration/SKILL.md`.",
       "Includes this verbatim string in the output: 'Subagents cannot coordinate with each other; the parent/orchestrator owns scope partitioning, context passing, integration, and synthesis.'",
       "Closes with a `Delegation audit:` block (inline label) OR `## Delegation audit` heading listing both workers, their file scopes, and the expected output format from each."
