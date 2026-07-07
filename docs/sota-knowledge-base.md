@@ -320,3 +320,162 @@ Orchestration decision:
 | State/Memory | Loop Eng | evaluation.db + runs.json + .beads/issues.jsonl |
 | Attempt Cap | Loop Eng | max_turns 40/60 per scenario |
 | Denylist | Loop Eng | adversary.md blocks sudo/escalation |
+
+---
+
+## 8. Generated Knowledge Prompting — Liu et al. 2022
+
+**What it is:** Two-pass approach — generate factual knowledge statements first, then use them as additional context for the final answer.
+1. Knowledge generation pass: few-shot prompt → generate N factual knowledge statements
+2. Answer pass: original question + generated knowledge → final answer
+
+**The golf example:** Zero-shot says "higher point total wins" (wrong). After generating knowledge ("objective is lowest strokes"), the model answers correctly.
+
+**Applied to harness — bd prime IS the knowledge generation pass.**
+
+Before any decision or file write, generate explicit knowledge about the current state:
+
+    1. What files are in scope? (read the directory)
+    2. What does the Beads state say? (bd prime)
+    3. What patterns exist in similar files? (read 1 example)
+
+Only after this knowledge is generated: emit a Scoped plan and act.
+
+**Eval finding that proves this:** In agentic-dev-harness[0], the WITHOUT skill agent generated knowledge by reading docs/14-memory.md before storing the pointer — and used the exact "read when" phrasing it found there. The WITH skill agent skipped this knowledge generation step (skill already told it what to do) and improvised "read before". **Lesson: explicit knowledge generation can outperform skill recall for exact wording.**
+
+---
+
+## 9. Self-Consistency — Wang et al. 2022
+
+**What it is:** Instead of greedy decoding (one answer), sample multiple diverse reasoning paths, then select the most consistent answer by majority vote. Works on top of CoT.
+
+    Prompt → Path 1 → Answer A
+           → Path 2 → Answer A
+           → Path 3 → Answer B
+    Majority vote → Answer A wins
+
+**Applied to harness:** The eval grader pass rate IS self-consistency — fraction of runs that pass = consistency score. Our confidence-based filtering in review-critic is self-consistency applied to findings: only report findings consistent across multiple interpretations.
+
+**Improvement opportunity:** Run each eval scenario 3x and take the majority verdict. Currently 1x run means a single noisy run determines the score.
+
+---
+
+## 10. Tree of Thoughts (ToT) — Yao et al. 2023
+
+**What it is:** Generalizes CoT from a linear chain to a tree. Agent generates multiple candidate thoughts, evaluates each as sure/maybe/impossible, keeps best candidates (BFS/DFS), and backtracks if a path fails.
+
+**Applied to harness:**
+- Architect agent 4-phase process = ToT: generate N design candidates, evaluate via trade-off table, pick winner
+- Harness-orchestrator routing decision = ToT: list candidate agents, evaluate each against task, select most confident match
+
+**Gap:** tdd-guide uses linear RED→GREEN→REFACTOR (CoT). ToT would strengthen it: generate N test implementations, evaluate each against coverage gate, keep best, refactor from winner.
+
+---
+
+## 11. Loop Engineering — Complete Reference
+
+### Mental Model
+    Harness = single session setup
+    Loop    = harness + schedule + state + verification chain
+    Loop Engineering = replacing yourself as the prompter
+
+**Three kinds of debt loops address:**
+- Intent debt: agent re-derives conventions every session → Skills
+- Comprehension debt: code the loop wrote that no one understands → read loop output
+- Orchestration tax: human coordination cost of parallel agents → worktrees + state files
+
+---
+
+### Eight Patterns — Quick Reference
+
+| Pattern | Trigger | Cadence | Level |
+|---|---|---|---|
+| CI Sweeper | CI red on main/PR | 15m (not 5m) | L2 — classify then fix |
+| PR Babysitter | PRs stalling | 10m | L1 watch to L2 |
+| Daily Triage | Morning chaos | 1d | Start here — L1 week 1 |
+| Issue Triage | Noisy issue queue | 2h | L1 report to L2 label |
+| Dependency Sweeper | CVE alerts | 6h | L2 patch-only |
+| Post-Merge Cleanup | TODOs after merges | 1d off-peak | L1 to L2 |
+| Changelog Drafter | Release notes stale | 1d | Lowest risk — good first loop |
+| PR Babysitter + goal mode | Single PR needs green | one-shot | /goal pattern |
+
+**First loop recommendation: Daily Triage at L1. Teaches state discipline without auto-merge risk.**
+
+---
+
+### Claude Code Verbatim Commands
+
+Daily Triage week 1:
+    /loop 1d Run $loop-triage. Read STATE.md. Merge findings into High Priority and Watch List. Update Last run. Do not edit code.
+
+CI Sweeper:
+    /loop 15m $ci-triage — update ci-sweeper-state.md. Classify failures first. Fix only clear regressions in a worktree with verifier. Max 3 attempts.
+
+PR Babysitter:
+    /loop 5m For each open PR I care about: triage CI and reviews. Propose minimal fixes in worktree. Verifier agent must approve before commenting. Update pr-babysitter-state.md. Max 3 attempts.
+
+Issue Triage:
+    /loop 2h $issue-triage — read issue-triage-state.md first. Scan open issues since last run. Update state with Top 5, suggested labels. Propose only. Escalate auth, payments, security items.
+
+One-shot goal mode:
+    /goal All tests on main pass and lint is clean
+    /goal PR #1234 has green CI, no blocking review comments, and is rebased on main
+
+---
+
+### STATE.md Standard Schema
+
+    ## High Priority (loop must act)
+    - [ ] item — reason — suggested action
+
+    ## Watch List (monitor, not yet actionable)
+    - item — last checked: date
+
+    ## Human Inbox (ambiguous / cross-loop)
+    - [ ] PR #42: needs human decision
+
+    ## Resolved (prune weekly)
+    - DONE item — resolved: date
+
+    ---
+    Last run: DATE | N findings | M actions | K escalations
+
+---
+
+### Safety Denylist (always encode in skills)
+
+    .env, .env.*, **/secrets/**, auth/**, payments/**, billing/**,
+    **/migrations/**, k8s/production/**
+
+Never auto-merge: security/auth/payments/PII, dependency bumps, denylist paths, >10 file changes.
+
+---
+
+### Circuit Breaker Pattern
+
+    npx @cobusgreyling/loop-context --check --ledger loop-ledger.json
+    # exit 0 = continue | exit 2 = escalate to human
+
+Trips on: max iterations, same error repeating N times, token budget cap.
+
+---
+
+### Loop MCP Server (reduces prompt stuffing)
+
+    LOOP_PROJECT_ROOT=. npx @cobusgreyling/loop-mcp-server
+
+Agent queries patterns, skills, state on demand instead of loading everything upfront.
+
+---
+
+### Harness Loop Gaps (July 2026)
+
+| Gap | Loop Engineering term | Priority |
+|---|---|---|
+| No CI auto-trigger for eval runs | Scheduling primitive missing | P2 |
+| No token budget monitoring | No kill switch | P2 |
+| No collision detection for parallel workers | Multi-loop coordination | P2 |
+| Grader = same model as eval agent (was) | Maker/Checker violation | Fixed |
+| max_turns=200 infinite-fix (was) | No attempt cap | Fixed |
+| No audit score for harness loop | loop-audit equivalent missing | P3 |
+
