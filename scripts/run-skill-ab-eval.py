@@ -1127,8 +1127,7 @@ def events_transcript_from_events(events: list[dict[str, Any]]) -> str:
                     lines.append(f"[RESULT {flag} ec={ec}] {out[:150]} | err: {err[:100]}")
                 elif out.strip():
                     lines.append(f"[RESULT ec={ec}] {out[:200]}")
-    return "
-".join(lines)
+    return "\n".join(lines)
 
 
 def _heuristic_grade(scenario: dict[str, Any], stdout: str, stderr: str) -> dict[str, Any] | None:
