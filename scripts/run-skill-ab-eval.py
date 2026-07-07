@@ -1074,8 +1074,7 @@ def _heuristic_grade(scenario: dict[str, Any], stdout: str, stderr: str) -> dict
 
     results = []
     any_heuristic_applied = False
-    combined = (stdout + "
-" + stderr).lower()
+    combined = (stdout + "\n" + stderr).lower()
 
     for item in expectations:
         item_lower = item.lower()
