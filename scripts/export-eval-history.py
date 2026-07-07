@@ -38,6 +38,15 @@ def export(db_path: pathlib.Path, out_file: pathlib.Path, merge: bool = True) ->
             FROM eval_run_results WHERE run_id = ?
             ORDER BY eval_id, configuration
         """, (d["run_id"],)).fetchall()]
+        # Attach scenario_hash from eval_scenario_analysis for comparability tracking
+        d["scenario_hashes"] = {
+            str(r[0]): r[1]
+            for r in con.execute("""
+                SELECT eval_id, scenario_hash FROM eval_scenario_analysis
+                WHERE run_id = ? AND scenario_hash IS NOT NULL
+                GROUP BY eval_id
+            """, (d["run_id"],)).fetchall()
+        }
         d["improvements"] = [dict(i) for i in con.execute("""
             SELECT metric, baseline, candidate, delta
             FROM eval_improvements WHERE run_id = ?
