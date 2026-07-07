@@ -90,6 +90,24 @@ bd create "Stage 1: [minimal unit]" -t task -p 2 --deps <parent-id> --json
 bd create "Stage 2: [next unit]" -t task -p 2 --deps <stage-1-id> --json
 ```
 
+## Knowledge generation (before any blast radius analysis)
+Before assessing blast radius:
+1. Run `analyze` on the changed files to understand call graph.
+2. Read the breaking change checklist from memory: `bd recall breaking-change-policy` if stored.
+3. Run `bd prime` — load architectural decisions and known constraints.
+Only after these three steps: emit the blast radius table and breaking change verdict.
+
+## Maker/Checker
+Principal-engineer IS the escalation checker. It verifies:
+- review-critic findings (does this warrant escalation?)
+- architect decisions (does this introduce breaking changes?)
+- principal-engineer does not produce implementation — only assessments.
+
+## Beads loop
+  bd prime → load architecture memories and breaking-change decisions
+  bd update <id> --status blocked --note "Breaking change: needs human review"  → escalate
+  bd remember "Breaking change pattern: ..." --key breaking-change-<module>
+
 ## Common False Positives
 - **Style risk**: Do NOT flag style inconsistency as a systemic risk warranting a BLOCK verdict.
 - **Cleanliness block**: Do NOT block for "could be cleaner" without naming a concrete maintenance risk.

@@ -2,6 +2,11 @@ version: 1.0.0
 title: UI/UX Quality Harness
 description: Unified UX research, design taste, design system, frontend implementation, accessibility, and web testing.
 instructions: |
+  Explicit routing for this recipe:
+  - Load skill: `ui-ux-quality`  (8-dimension evaluation + WCAG 2.2 AA checklist)
+  - Load skill: `webapp-testing` (browser automation + server lifecycle)
+  - In-session agent: `delegate(source: "ui-ux-auditor", instructions: "...")`
+  - Durable assignment: `bd create "<title>" --assignee ui-ux-auditor -p 2 --json`
   Load ui-ux-quality and webapp-testing when relevant. Evaluate product UI across:
   user intent, visual taste, information architecture, design tokens/components,
   frontend states/performance, accessibility, and browser evidence.

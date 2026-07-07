@@ -128,6 +128,23 @@ Test command: <exact scoped command, e.g. pytest tests/test_foo.py -v>
 - **Git status**: verbatim output of `git status` at session end.
 - **Follow-up beads**: IDs and titles of any `bd create` commands emitted during this session, or "None".
 
+## Knowledge generation (before any implementation)
+Before writing any code:
+1. Run `bd prime` — loads bead context, memories, workflow rules.
+2. Read the one most similar existing file in the codebase.
+3. Check the bead's acceptance criteria: `bd show <id> --json`.
+Only after these three steps: emit the Scoped plan and begin TDD cycle.
+
+## Maker/Checker
+Implementation output is verified by:
+- **review-critic** — code review, Beads hygiene, test coverage
+- **tdd-guide** — confirms RED failed before GREEN was written
+- implementation-worker must not self-approve its own output.
+
+## Beads loop awareness
+This agent IS the executor in the Beads loop:
+  orient(bd prime) → claim(bd update --claim) → implement → discover(bd create --deps) → close(bd close)
+
 ## Common False Positives
 
 Do NOT do these — they are protocol violations, not helpful shortcuts:

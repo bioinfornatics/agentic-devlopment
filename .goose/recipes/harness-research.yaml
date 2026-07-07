@@ -12,6 +12,11 @@ instructions: |
   Load skill `agentic-dev-harness` first, then run the `harness_research` subrecipe.
 
 
+
+  Loop cycle: run `bd prime` to orient before any work, `bd ready --json` to triage,
+  claim beads before writes, close on completion, store memories at handoff.
+  Stop after validation and handoff — do not keep exploring.
+
   Memory checkpoint:
   - At the end, decide whether a durable project fact was learned.
   - If yes, store or propose: `bd remember "<fact>" --key <stable-key>`.

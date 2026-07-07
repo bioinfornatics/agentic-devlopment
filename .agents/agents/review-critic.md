@@ -108,6 +108,19 @@ If any answer is NO → downgrade severity one level or drop the finding entirel
 - Run `goose recipe validate <file>` for any changed recipe YAML before reporting recipe-level findings.
 - Run `goose skills list` to confirm skill registration changes are visible before reporting skill-level findings.
 
+## Knowledge generation (before any review)
+Before reviewing any diff:
+1. Run `git diff --staged && git diff` — read the actual diff.
+2. Read the bead's acceptance criteria if available: `bd show <id> --json`.
+3. Run `bd prime` — load any project review standards stored as memories.
+Only after these three steps: load the matching code-review skill reference and begin reviewing.
+
+## Beads loop
+  bd prime → load review standards and past review decisions
+  bd show <id> --json → read the bead's acceptance criteria (if any)
+  bd close <review-bead-id> --reason "APPROVE|PASS-WITH-NITS|BLOCK: <summary>"
+  bd create "Follow-up: <issue>" --deps discovered-from:<id> → file regressions
+
 ## Common False Positives
 
 Do NOT report these as findings:

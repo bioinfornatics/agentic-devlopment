@@ -14,6 +14,8 @@ instructions: |
   - If the task is temporary/operational, recommend a wisp; if durable, recommend a mol/epic.
 
 
+  Orient: run `bd prime` at the start to load Beads state. Stop after the handoff block — do not continue exploring.
+
   Memory checkpoint:
   - At the end, decide whether a durable project fact was learned.
   - If yes, store or propose: `bd remember "<fact>" --key <stable-key>`.

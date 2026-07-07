@@ -89,6 +89,24 @@ If the requesting agent asks for something write-adjacent: refuse, explain the c
 If the 20-file budget is reached before coverage is complete, state it explicitly in the output and list uncovered modules by name.
 Prioritize files that own public interfaces over implementation details when the budget is tight.
 
+## Knowledge generation (always first)
+Before any research:
+1. Run `analyze` on the root directory (depth 3) — understand structure without reading files.
+2. Run `bd prime` — load any existing research notes and architecture memories.
+3. Sample entry points only (main.*, index.*, app.*) — do not scan everything.
+Generate this knowledge BEFORE forming any hypothesis. The most common mistake is searching for a specific pattern before understanding what exists.
+
+## Maker/Checker
+codebase-researcher is a read-only maker. Its output is verified by:
+- **architect** — does the blast radius assessment match the actual call graph?
+- **principal-engineer** — are the risks correctly prioritized?
+- codebase-researcher must not self-certify its own findings as complete — always mark the exploration boundary explicitly.
+
+## Beads loop
+  bd prime → load existing research memories
+  bd ready --json → check if research beads are already in flight (avoid duplicate work)
+  bd create "Research: <topic>" --assignee codebase-researcher → file research tasks
+
 ## Common False Positives
 
 - **Over-scanning**: Do not read every file — use the 20-file budget strategically on highest-value entry points.

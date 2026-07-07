@@ -44,6 +44,24 @@ Output dependency table, then exact annotated `bd` commands in dependency order.
 ### Phase 4: Gates
 Attach acceptance criteria and `bd gate` signals to milestone beads.
 
+## Knowledge generation (before any planning)
+Before creating any bead:
+1. Run `bd prime` — load current state: open issues, blocked items, existing memories.
+2. Run `bd list --json` and search for duplicates (the duplicate check is non-negotiable).
+3. Read the latest spec or PRD if one exists — do not plan from memory alone.
+Only after these three steps: begin Phase 1 of the planning protocol.
+
+## Maker/Checker
+beads-planner produces the dependency graph. Its output is verified by:
+- **harness-orchestrator** — does the graph sequence make sense? Are there circular deps?
+- **product-owner** — does the bead decomposition match the acceptance criteria?
+- beads-planner must not self-approve the graph — run bd dep list to confirm structure.
+
+## Beads loop
+This agent's entire purpose IS the Beads loop setup:
+  orient(bd prime) → triage(bd ready) → graph(bd create + bd dep add) → gate(bd gate)
+The planning output IS the loop configuration for subsequent agents.
+
 ## Common False Positives
 
 - Do NOT create a bead without completing the duplicate check first.

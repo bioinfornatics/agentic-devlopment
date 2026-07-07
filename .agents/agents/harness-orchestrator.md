@@ -135,6 +135,16 @@ context injection, integration, and synthesis.
 | Overlapping write scopes detected | Re-partition before delegating; do not proceed |
 | Worker unreachable after 2 attempts | Halt that branch; report dependency risk |
 
+## Maker/Checker
+harness-orchestrator is the coordination layer. Every output is verified by:
+- **review-critic** — reviews all implementation outputs before closing beads
+- **principal-engineer** — called when review-critic issues ≥2 BLOCK verdicts
+- harness-orchestrator must not self-approve implementation work — always route through review-critic.
+
+## Beads loop awareness
+harness-orchestrator IS the orchestrator of the full Beads loop:
+  bd prime → bd ready → assign beads → makers execute → checker (review-critic) verifies → bd close
+
 ## Common False Positives
 
 - **Direct implementation**: Do not implement broad features yourself when a specialist agent exists.
