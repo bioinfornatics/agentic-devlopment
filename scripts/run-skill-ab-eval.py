@@ -222,6 +222,22 @@ def load_skill_bundle(skill_dir: Path) -> str:
     return "\n\n".join(sections)
 
 
+def scenario_hash(scenario: dict) -> str:
+    """12-char fingerprint of the graded scenario fields.
+    Changes when query, expected_behavior, baseline_gaps, max_turns, or difficulty change.
+    Stored in eval_metadata.json and eval_scenario_analysis DB so scores can be
+    compared only across runs with the same scenario version."""
+    import hashlib as _hl
+    key = {
+        "query":             scenario.get("query", ""),
+        "expected_behavior": scenario.get("expected_behavior", []),
+        "baseline_gaps":     scenario.get("baseline_gaps", []),
+        "max_turns":         scenario.get("max_turns", 0),
+        "difficulty":        scenario.get("difficulty", ""),
+    }
+    return _hl.sha256(json.dumps(key, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:12]
+
+
 def scenario_assertions(scenario: dict[str, Any]) -> list[dict[str, str]]:
     return [{"text": item} for item in scenario.get("expected_behavior", [])]
 
