@@ -8,7 +8,7 @@
       "dist/docs/html/index.html",
       "scripts/build-docs.sh"
     ],
-    "fixture_intent": "Normal scenario: browser smoke test — server lifecycle, exact URL, console/network checks, condition-based waiting, cleanup, concrete evidence.",
+    "fixture_intent": "Normal scenario: skill-guided browser smoke test — requires exact port URL, named condition-based wait API from the skill (not generic), explicit server lifecycle report, and console/network evidence. Baseline passes only if it independently uses all four without the skill's guidance.",
     "difficulty": "normal",
     "max_turns": 200,
     "expected_skill_contribution": "The webapp-testing skill adds three specific behaviours a baseline omits: (1) it names the exact condition-based wait API used (waitForResponse or waitForSelector — never waitForTimeout or sleep); (2) it includes an explicit server stop command in the cleanup report; (3) it states the full base URL with port number (e.g., http://localhost:8000) not just 'the local server'.",
@@ -18,10 +18,10 @@
       "Agent refers to 'the local server' without stating the protocol, host, and port in the base URL."
     ],
     "expected_behavior": [
-      "States the exact base URL with port number (e.g., `http://localhost:8000/index.html`) before navigating — not 'the local server' or a relative path.",
-      "Uses a named condition-based wait API (e.g., `waitForResponse`, `waitForSelector`, `waitForLoadState`) — explicitly avoids `waitForTimeout` or `sleep`.",
-      "Reports concrete console/network evidence: either specific status codes and response bodies, or an explicit statement that no console errors were detected.",
-      "Includes an explicit server stop/cleanup command in the test report and confirms the server was stopped after testing."
+      "States the exact base URL including protocol, host, and port number before navigating (e.g., `http://localhost:8080`).",
+      "Names the specific condition-based wait API used — must be one of: `waitForResponse`, `waitForSelector`, `waitForLoadState`, `waitForURL` — and explicitly states it is NOT using `waitForTimeout` or `sleep`.",
+      "Reports console evidence as a quoted output sample or an explicit statement 'no console errors detected' — not 'I checked the console'.",
+      "Reports server lifecycle in three named steps: (1) start command run, (2) tests executed, (3) server stopped — with the exact stop command used."
     ]
   },
   {
@@ -57,7 +57,7 @@
       "dist/docs/html/index.html",
       "docs/00-index.md"
     ],
-    "fixture_intent": "Difficult scenario: multi-viewport verification — both viewports with explicit pixel dimensions, screenshots, layout issues, reproducible steps.",
+    "fixture_intent": "Difficult scenario: dual-viewport test — both viewports must use exact WxH pixel notation, viewport must be explicitly set in the browser session before capture (not assumed), and any failure includes a one-line reproduction step. Baseline typically names viewports by name ('mobile') not dimensions.",
     "difficulty": "difficult",
     "max_turns": 200,
     "expected_skill_contribution": "The webapp-testing skill requires three specifics a baseline omits: (1) exact viewport dimensions as WxH in pixels for BOTH viewports (e.g., 375×812 mobile, 1280×800 desktop) — not 'mobile-sized' or 'wide screen'; (2) an explicit browser viewport set call before each screenshot; (3) layout failure reproduction steps with the exact viewport, URL, and observed symptom on a single line.",
@@ -67,10 +67,10 @@
       "Agent reports issues without a single-line reproduction step containing viewport + URL + symptom."
     ],
     "expected_behavior": [
-      "Tests a mobile viewport with exact pixel dimensions ≤430px wide stated as `WxH px` (e.g., 375×812 px).",
-      "Tests a desktop viewport with exact pixel dimensions ≥1280px wide stated as `WxH px` (e.g., 1280×800 px).",
-      "Explicitly sets the viewport in the browser session before capturing each screenshot (not just requests a screenshot at the default size).",
-      "For any layout issue found, provides a one-line reproduction step: `viewport=WxH, url=<URL>, symptom=<observed>`."
+      "Sets the mobile viewport to exact pixel dimensions ≤430px wide (e.g., 375×812) using a browser API call before capturing — states the exact call or command used.",
+      "Sets the desktop viewport to exact pixel dimensions ≥1280px wide (e.g., 1280×800) using a browser API call before capturing — states the exact call or command used.",
+      "Captures or explicitly requests a screenshot at each viewport as evidence — names the file or describes what was captured.",
+      "For any layout issue: provides a reproduction step formatted as `viewport=WxHpx  url=<URL>  symptom=<observed>` on a single line."
     ]
   }
 ]

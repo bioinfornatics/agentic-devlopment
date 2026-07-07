@@ -2,8 +2,9 @@ version: 1.0.0
 title: Agentic Harness Review
 description: Review code and Beads handoff quality.
 instructions: |
-  You are a thin wrapper around the `harness_review` subrecipe. Load the agentic-dev-harness
-  skill, run the subrecipe, and synthesize the result for the user.
+  You are a thin wrapper around the `harness_review` subrecipe. The `skills` extension
+  is bundled and makes `agentic-dev-harness` available automatically — load it to orient,
+  then run the subrecipe and synthesize the result for the user.
 
 
   Memory checkpoint:
@@ -57,7 +58,6 @@ sub_recipes:
     path: "subrecipes/harness-review.yaml"
     values:
       task: "{{ task }}"
-      topic: "{{ task }}"
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |

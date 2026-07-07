@@ -29,24 +29,26 @@
     "skills": [
       "sdd"
     ],
-    "query": "Plan a small TDD slice for idempotence checks in the install scripts that manage `/harness` and `/review` slash-command mappings. Do not implement yet.",
+    "query": "Plan a small TDD slice for idempotence checks in the install scripts. The slice must follow the SDD TDD phase structure: name the phase, propose a failing test spec (RED) first, then the minimal implementation contract (GREEN), then a refactor note. Do not implement or edit files.",
     "files": [
       "scripts/install.sh",
       "scripts/install.ps1"
     ],
-    "fixture_intent": "Normal scenario: SDD TDD phase — small reversible slice, failing test first, RED/GREEN/REFACTOR structure, no file edits.",
+    "fixture_intent": "Normal scenario: SDD TDD phase — RED/GREEN/REFACTOR explicitly named as SDD phase steps, failing test spec before implementation contract, plan-only output. Skill adds the phase labelling and RED-first discipline a baseline skips.",
     "difficulty": "normal",
     "max_turns": 200,
     "expected_skill_contribution": "The SDD skill should define a small reversible TDD slice naming the RED/GREEN/REFACTOR cycle steps, propose a failing test check first, and define verification steps — without editing files.",
     "baseline_gaps": [
-      "Agent may skip a failing test/spec check and go straight to implementation.",
-      "Agent may propose a large irreversible change."
+      "Agent skips the RED phase and proposes implementation steps directly.",
+      "Agent does not name the SDD TDD phase or use RED/GREEN/REFACTOR labels.",
+      "Agent writes a vague plan instead of a concrete failing test specification followed by an implementation contract."
     ],
     "expected_behavior": [
-      "Names the SDD TDD phase explicitly and uses RED/GREEN/REFACTOR terminology for the cycle.",
-      "Proposes a failing test or spec check as step 1 (RED) before any implementation step.",
-      "Defines the smallest reversible implementation slice (GREEN) and a refactor step.",
-      "Does not edit files — output is a plan only."
+      "Opens with an explicit statement identifying the SDD phase as 'TDD' before any plan content.",
+      "Proposes a concrete failing test specification as the RED step — named as RED and placed first, before any implementation step.",
+      "Defines the minimal implementation contract as the GREEN step — what code must exist to make the RED test pass.",
+      "Adds a REFACTOR note describing what would be cleaned up after GREEN passes.",
+      "Does not edit any files — output is a plan only."
     ]
   },
   {
