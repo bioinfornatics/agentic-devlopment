@@ -269,6 +269,10 @@ def init_history_db(path: Path = DEFAULT_HISTORY_DB) -> None:
         _ensure_column(db, "eval_run_results", "max_turns_reached", "INTEGER")
         _ensure_column(db, "eval_run_results", "provider", "TEXT")
         _ensure_column(db, "eval_run_results", "model", "TEXT")
+        _ensure_column(db, "eval_run_results", "total_tokens",    "INTEGER")
+        _ensure_column(db, "eval_run_results", "input_tokens",    "INTEGER")
+        _ensure_column(db, "eval_run_results", "output_tokens",   "INTEGER")
+        _ensure_column(db, "eval_run_results", "first_message_id","TEXT")
         _ensure_column(db, "eval_feedback", "recommendation_type", "TEXT")
         _ensure_column(db, "eval_feedback", "severity", "TEXT")
         _ensure_column(db, "eval_feedback", "message", "TEXT")
@@ -377,9 +381,10 @@ def _record_run_results(
             """
             INSERT INTO eval_run_results(
                 run_id, kind, subject, eval_id, configuration, run_number, pass_rate,
-                turns_used, max_turns, max_turns_reached, git_commit, provider, model, created_at
+                turns_used, max_turns, max_turns_reached, git_commit, provider, model,
+                total_tokens, input_tokens, output_tokens, first_message_id, created_at
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 run_id,
@@ -395,6 +400,10 @@ def _record_run_results(
                 commit,
                 provider,
                 model,
+                result.get("total_tokens"),
+                result.get("input_tokens"),
+                result.get("output_tokens"),
+                result.get("first_message_id"),
                 created,
             ),
         )

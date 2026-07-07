@@ -1364,6 +1364,26 @@ def patch_benchmark_turn_metrics(workspace: Path) -> None:
         result["turns_used"] = turns_used
         result["max_turns"] = max_turns
         result["max_turns_reached"] = max_reached
+        # Token counts: read from audit.json (captured per run)
+        audit_path = workspace / f"eval-{eval_id}" / config / f"run-{run_number}" / "audit.json"
+        if audit_path.exists():
+            audit_data = read_json(audit_path) or {}
+            token_usage = audit_data.get("token_usage", {}) or {}
+            result["total_tokens"]  = token_usage.get("total_tokens",  0)
+            result["input_tokens"]  = token_usage.get("input_tokens",  0)
+            result["output_tokens"] = token_usage.get("output_tokens", 0)
+        # First message ID: proxy trace to the Anthropic API call
+        # (--no-session means no Goose session ID is generated; message ID is the best trace)
+        events_path = workspace / f"eval-{eval_id}" / config / f"run-{run_number}" / "outputs" / "events.jsonl"
+        if events_path.exists():
+            try:
+                first_line = events_path.read_text(errors="replace").splitlines()[0]
+                first_ev = json.loads(first_line)
+                msg_id = (first_ev.get("message") or {}).get("id", "")
+                if msg_id:
+                    result["first_message_id"] = str(msg_id)
+            except Exception:
+                pass
         turn_values.setdefault(config, []).append(float(turns_used))
         max_values.setdefault(config, []).append(float(max_turns))
         hit_values.setdefault(config, []).append(1.0 if max_reached else 0.0)
