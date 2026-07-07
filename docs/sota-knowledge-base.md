@@ -478,4 +478,43 @@ Agent queries patterns, skills, state on demand instead of loading everything up
 | Grader = same model as eval agent (was) | Maker/Checker violation | Fixed |
 | max_turns=200 infinite-fix (was) | No attempt cap | Fixed |
 | No audit score for harness loop | loop-audit equivalent missing | P3 |
+---
 
+## References
+
+### Academic Papers
+| # | Citation | Technique | Year |
+|---|---|---|---|
+| [1] | Wei, J. et al. *Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.* NeurIPS 2022. | Chain-of-Thought | 2022 |
+| [2] | Kojima, T. et al. *Large Language Models are Zero-Shot Reasoners.* NeurIPS 2022. | Zero-shot CoT | 2022 |
+| [3] | Wang, X. et al. *Self-Consistency Improves Chain of Thought Reasoning in Language Models.* ICLR 2023. | Self-Consistency | 2022 |
+| [4] | Yao, S. et al. *ReAct: Synergizing Reasoning and Acting in Language Models.* ICLR 2023. | ReAct | 2022 |
+| [5] | Shinn, N. et al. *Reflexion: Language Agents with Verbal Reinforcement Learning.* NeurIPS 2023. | Reflexion | 2023 |
+| [6] | Liu, J. et al. *Generated Knowledge Prompting for Commonsense Reasoning.* ACL 2022. | Generated Knowledge | 2022 |
+| [7] | Yao, S. et al. *Tree of Thoughts: Deliberate Problem Solving with Large Language Models.* NeurIPS 2023. | Tree of Thoughts | 2023 |
+| [8] | Long, X. *Large Language Model Guided Tree-of-Thought.* arXiv 2023. | Tree of Thoughts | 2023 |
+
+### Canonical Online Sources
+| Source | URL | What it covers |
+|---|---|---|
+| PromptingGuide.ai | https://www.promptingguide.ai/techniques | Full prompting technique catalog |
+| PromptingGuide — Context Engineering | https://www.promptingguide.ai/agents/context-engineering | Context engineering for agents |
+| Loop Engineering project | /home/jmercier/Codes/third-parties/loop-engineering | Loop patterns, primitives, anti-patterns |
+| Loop Engineering docs | https://cobusgreyling.github.io/loop-engineering/ | Showcase, interactive pattern picker |
+| Claude Agent Skills platform | https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview | Official Anthropic skills API |
+| AgentSkills.io specification | https://agentskills.io/specification | SKILL.md format, progressive disclosure |
+| AgentSkills.io best practices | https://agentskills.io/skill-creation/best-practices | Gotchas, templates, validation loops |
+| Anthropic Engineering blog | https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills | Skills anatomy and design |
+| loop-audit CLI | https://github.com/cobusgreyling/loop-engineering/tree/main/tools/loop-audit | Loop readiness scoring |
+
+### Harness-Specific Sources (this repo)
+| File | What it contains |
+|---|---|
+| `.agents/skills/*/SKILL.md` | All 8 current skill definitions |
+| `.agents/agents/*.md` | All 11 agent definitions |
+| `.goose/recipes/*.yaml` | All 16 recipe definitions |
+| `evals/skills/*.json` | 7 skill eval scenario files (21 scenarios) |
+| `docs/15-skill-evaluations.md` | Eval-driven development workflow |
+| `docs/14-memory.md` | Beads memory pointer pattern |
+| `dist/evals/evaluation.db` | SQLite — all eval runs, results, feedback |
+| `evals/history/runs.json` | Committed eval history for Pages trend report |
