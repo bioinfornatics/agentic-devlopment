@@ -1,7 +1,7 @@
 [
   {
     "skills": [
-      "ui-ux-quality",
+      "ui-quality",
       "webapp-testing"
     ],
     "query": "Review the generated documentation site in `dist/docs/html/index.html` for UX and visual quality.",
@@ -27,34 +27,7 @@
   },
   {
     "skills": [
-      "ui-ux-quality",
-      "webapp-testing"
-    ],
-    "query": "Review the docs navigation and contributor discovery path for installing the harness. Focus on information architecture, navigation labels, keyboard/focus behavior, and accessible names; do not perform a broad visual audit.",
-    "files": [
-      "README.md",
-      "INSTALL.md",
-      "docs/00-index.md",
-      "dist/docs/html/index.html"
-    ],
-    "fixture_intent": "Difficult scenario: scoped IA + accessibility review — accessibility blockers separated from content polish, exact locations for findings.",
-    "difficulty": "difficult",
-    "max_turns": 200,
-    "expected_skill_contribution": "The UI/UX skill should focus on navigation and contributor discovery, separating accessibility blockers from content/discovery polish with concrete locations or reproduction steps.",
-    "baseline_gaps": [
-      "Agent may ignore keyboard and screen-reader behavior.",
-      "Agent may miss navigation states and content discovery states."
-    ],
-    "expected_behavior": [
-      "Checks navigation labels, information scent, keyboard focus order, and accessible names as distinct evaluation items.",
-      "Separates accessibility blockers (WCAG 2.2 AA violations) from content/discovery polish using explicit severity labels.",
-      "Provides exact file names, section headings, or HTML element locations for each finding.",
-      "Requests browser evidence (a11y snapshot or keyboard test) before stating accessibility findings."
-    ]
-  },
-  {
-    "skills": [
-      "ui-ux-quality"
+      "ui-quality"
     ],
     "query": "Evaluate the documentation site's CSS and layout tokens in `docs/assets/site.css` as a design-system surface.",
     "files": [
