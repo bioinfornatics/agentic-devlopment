@@ -8,17 +8,30 @@ metadata:
 
 # SDD — Spec-Driven Development
 
-SDD is a lightweight development method over the Goose+Beads harness.
+SDD means Spec-Driven Development, is a lightweight development method over the Goose+Beads harness.
 
 ## Loop
+
+```
+1. Intent ─→ 2. Spec ─→ 3. Graph ─→ 4. TDD ─→ 5. Implement ─→ 6. Verify ─┬─ AC met ─→ 7. Learn → close bead
+                  ↑                     ↑           ↑                       │
+                  └── spec gap ─────────┴─ test fail┴─ review finding ──────┘ (loop back)
+                                                              max 3 iterations → escalate
+```
 
 1. **Intent** — clarify user, outcome, constraints, non-goals.
 2. **Spec** — acceptance criteria, risks, data model/API/UI contracts.
 3. **Graph** — encode work in Beads with dependencies and gates.
-4. **TDD** — failing test/spec check before implementation when practical.
-5. **Implement** — smallest coherent slice.
-6. **Verify** — tests, review, UX/security/perf as relevant.
-7. **Learn** — remember durable facts as short pointer memories when possible, and file follow-up beads for work.
+4. **TDD** — write the failing test first; confirm it fails before any implementation.
+5. **Implement** — smallest coherent slice that makes the failing test pass.
+6. **Verify** — run tests, code review, UX/security/perf as relevant.
+   **Branch point — do not proceed linearly:**
+   - ✅ **All AC met** → advance to (7) Learn, close the bead.
+   - ❌ **Test failure** → loop back to (5) Implement, fix the code.
+   - ❌ **Review finding** → loop back to (5) Implement, address findings.
+   - ❌ **Spec gap discovered** → loop back to (2) Spec, clarify AC before re-implementing.
+   - ⚠️ **After 3 loops without resolution** → escalate to user; do not loop further.
+7. **Learn** — remember durable facts as short pointer memories; file follow-up beads for discovered work.
 
 ## Auto-sizing (apply before starting any SDD phase)
 
@@ -113,6 +126,11 @@ Only after this knowledge is generated: name the SDD phase and proceed.
 - [ ] No file writes happened before a bead was claimed
 - [ ] If TDD phase: failing test was written and confirmed to fail before implementation
 - [ ] If Implement phase: `bd update --claim` appears before the first `write` or `edit` tool call
+
+### At phase (6) Verify — branch decision (never skip this):
+- [ ] All acceptance criteria have been checked against the spec-anchored outcome rule
+- [ ] Decision recorded: **PASS** (→ 7 Learn) | **FAIL-IMPL** (→ 5) | **FAIL-SPEC** (→ 2) | **ESCALATE** (>3 loops)
+- [ ] Loop count tracked: if this is iteration 3 with the same failure mode → escalate, do not loop again
 
 ## Maker/Checker
 
