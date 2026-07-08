@@ -1,0 +1,699 @@
+- generic [active] [ref=f47e1]:
+  - generic [ref=f47e2]:
+    - generic [ref=f47e3]:
+      - text: 🚀 Learn to build apps with Claude Code! Use
+      - strong [ref=f47e4]: PROMPTING
+      - text: for 20% off
+      - link "Enroll now →" [ref=f47e5] [cursor=pointer]:
+        - /url: https://academy.dair.ai/courses/build-apps-with-claude-code
+    - generic [ref=f47e6]:
+      - navigation [ref=f47e8]:
+        - link "Prompt Engineering Guide" [ref=f47e9] [cursor=pointer]:
+          - /url: /
+          - img [ref=f47e10]
+          - generic [ref=f47e14]: Prompt Engineering Guide
+        - button "🎓 Courses" [ref=f47e16] [cursor=pointer]:
+          - text: 🎓 Courses
+          - img [ref=f47e17]
+        - link "About" [ref=f47e19] [cursor=pointer]:
+          - /url: /about
+          - generic [ref=f47e20]: About
+        - generic [ref=f47e22]:
+          - searchbox "Search..." [ref=f47e23]
+          - generic: CTRL K
+        - link "GitHub GitHub (opens in a new tab)" [ref=f47e24] [cursor=pointer]:
+          - /url: https://github.com/dair-ai/Prompt-Engineering-Guide
+          - img "GitHub" [ref=f47e25]
+          - generic [ref=f47e27]: GitHub
+          - generic [ref=f47e28]: (opens in a new tab)
+        - link "Discord Discord (opens in a new tab)" [ref=f47e29] [cursor=pointer]:
+          - /url: https://discord.gg/YbMT8k6GfX
+          - img "Discord" [ref=f47e30]
+          - generic [ref=f47e32]: Discord
+          - generic [ref=f47e33]: (opens in a new tab)
+        - link "✨ Services" [ref=f47e34] [cursor=pointer]:
+          - /url: /services
+      - generic [ref=f47e35]:
+        - complementary [ref=f47e36]:
+          - list [ref=f47e40]:
+            - listitem [ref=f47e41]:
+              - link "Prompt Engineering" [ref=f47e42] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=f47e43]:
+              - link "Introduction" [ref=f47e44] [cursor=pointer]:
+                - /url: /introduction
+                - text: Introduction
+                - img [ref=f47e45]
+              - list [ref=f47e49]:
+                - listitem [ref=f47e50]:
+                  - link "LLM Settings" [ref=f47e51] [cursor=pointer]:
+                    - /url: /introduction/settings
+                - listitem [ref=f47e52]:
+                  - link "Basics of Prompting" [ref=f47e53] [cursor=pointer]:
+                    - /url: /introduction/basics
+                - listitem [ref=f47e54]:
+                  - link "Prompt Elements" [ref=f47e55] [cursor=pointer]:
+                    - /url: /introduction/elements
+                - listitem [ref=f47e56]:
+                  - link "General Tips for Designing Prompts" [ref=f47e57] [cursor=pointer]:
+                    - /url: /introduction/tips
+                - listitem [ref=f47e58]:
+                  - link "Examples of Prompts" [ref=f47e59] [cursor=pointer]:
+                    - /url: /introduction/examples
+            - listitem [ref=f47e60]:
+              - link "Prompting Techniques" [ref=f47e61] [cursor=pointer]:
+                - /url: /techniques
+                - text: Prompting Techniques
+                - img [ref=f47e62]
+              - list [ref=f47e66]:
+                - listitem [ref=f47e67]:
+                  - link "Zero-shot Prompting" [ref=f47e68] [cursor=pointer]:
+                    - /url: /techniques/zeroshot
+                - listitem [ref=f47e69]:
+                  - link "Few-shot Prompting" [ref=f47e70] [cursor=pointer]:
+                    - /url: /techniques/fewshot
+                - listitem [ref=f47e71]:
+                  - link "Chain-of-Thought Prompting" [ref=f47e72] [cursor=pointer]:
+                    - /url: /techniques/cot
+                - listitem [ref=f47e73]:
+                  - link "Meta Prompting" [ref=f47e74] [cursor=pointer]:
+                    - /url: /techniques/meta-prompting
+                - listitem [ref=f47e75]:
+                  - link "Self-Consistency" [ref=f47e76] [cursor=pointer]:
+                    - /url: /techniques/consistency
+                - listitem [ref=f47e77]:
+                  - link "Generate Knowledge Prompting" [ref=f47e78] [cursor=pointer]:
+                    - /url: /techniques/knowledge
+                - listitem [ref=f47e79]:
+                  - link "Prompt Chaining" [ref=f47e80] [cursor=pointer]:
+                    - /url: /techniques/prompt_chaining
+                - listitem [ref=f47e81]:
+                  - link "Tree of Thoughts" [ref=f47e82] [cursor=pointer]:
+                    - /url: /techniques/tot
+                - listitem [ref=f47e83]:
+                  - link "Retrieval Augmented Generation" [ref=f47e84] [cursor=pointer]:
+                    - /url: /techniques/rag
+                - listitem [ref=f47e85]:
+                  - link "Automatic Reasoning and Tool-use" [ref=f47e86] [cursor=pointer]:
+                    - /url: /techniques/art
+                - listitem [ref=f47e87]:
+                  - link "Automatic Prompt Engineer" [ref=f47e88] [cursor=pointer]:
+                    - /url: /techniques/ape
+                - listitem [ref=f47e89]:
+                  - link "Active-Prompt" [ref=f47e90] [cursor=pointer]:
+                    - /url: /techniques/activeprompt
+                - listitem [ref=f47e91]:
+                  - link "Directional Stimulus Prompting" [ref=f47e92] [cursor=pointer]:
+                    - /url: /techniques/dsp
+                - listitem [ref=f47e93]:
+                  - link "Program-Aided Language Models" [ref=f47e94] [cursor=pointer]:
+                    - /url: /techniques/pal
+                - listitem [ref=f47e95]:
+                  - link "ReAct" [ref=f47e96] [cursor=pointer]:
+                    - /url: /techniques/react
+                - listitem [ref=f47e97]:
+                  - link "Reflexion" [ref=f47e98] [cursor=pointer]:
+                    - /url: /techniques/reflexion
+                - listitem [ref=f47e99]:
+                  - link "Multimodal CoT" [ref=f47e100] [cursor=pointer]:
+                    - /url: /techniques/multimodalcot
+                - listitem [ref=f47e101]:
+                  - link "Graph Prompting" [ref=f47e102] [cursor=pointer]:
+                    - /url: /techniques/graph
+            - listitem [ref=f47e103]:
+              - link "AI Agents" [ref=f47e104] [cursor=pointer]:
+                - /url: /agents
+                - text: AI Agents
+                - img [ref=f47e105]
+              - list [ref=f47e109]:
+                - listitem [ref=f47e110]:
+                  - link "Introduction to Agents" [ref=f47e111] [cursor=pointer]:
+                    - /url: /agents/introduction
+                - listitem [ref=f47e112]:
+                  - link "Agent Components" [ref=f47e113] [cursor=pointer]:
+                    - /url: /agents/components
+                - listitem [ref=f47e114]:
+                  - link "AI Workflows vs AI Agents" [ref=f47e115] [cursor=pointer]:
+                    - /url: /agents/ai-workflows-vs-ai-agents
+                - listitem [ref=f47e116]:
+                  - link "Context Engineering for AI Agents" [ref=f47e117] [cursor=pointer]:
+                    - /url: /agents/context-engineering
+                - listitem [ref=f47e118]:
+                  - link "Context Engineering Deep Dive" [ref=f47e119] [cursor=pointer]:
+                    - /url: /agents/context-engineering-deep-dive
+                - listitem [ref=f47e120]:
+                  - link "Function Calling" [ref=f47e121] [cursor=pointer]:
+                    - /url: /agents/function-calling
+                - listitem [ref=f47e122]:
+                  - link "Deep Agents" [ref=f47e123] [cursor=pointer]:
+                    - /url: /agents/deep-agents
+            - listitem [ref=f47e124]:
+              - button "Guides" [ref=f47e125] [cursor=pointer]:
+                - text: Guides
+                - img [ref=f47e126]
+              - list [ref=f47e130]:
+                - listitem [ref=f47e131]:
+                  - link "Optimizing Prompts" [ref=f47e132] [cursor=pointer]:
+                    - /url: /guides/optimizing-prompts
+                - listitem [ref=f47e133]:
+                  - link "OpenAI Deep Research" [ref=f47e134] [cursor=pointer]:
+                    - /url: /guides/deep-research
+                - listitem [ref=f47e135]:
+                  - link "Reasoning LLMs" [ref=f47e136] [cursor=pointer]:
+                    - /url: /guides/reasoning-llms
+                - listitem [ref=f47e137]:
+                  - link "4o Image Generation" [ref=f47e138] [cursor=pointer]:
+                    - /url: /guides/4o-image-generation
+                - listitem [ref=f47e139]:
+                  - link "Context Engineering Guide" [ref=f47e140] [cursor=pointer]:
+                    - /url: /guides/context-engineering-guide
+            - listitem [ref=f47e141]:
+              - link "Applications" [ref=f47e142] [cursor=pointer]:
+                - /url: /applications
+                - text: Applications
+                - img [ref=f47e143]
+              - list [ref=f47e147]:
+                - listitem [ref=f47e148]:
+                  - link "Fine-tuning GPT-4o" [ref=f47e149] [cursor=pointer]:
+                    - /url: /applications/finetuning-gpt4o
+                - listitem [ref=f47e150]:
+                  - link "Function Calling" [ref=f47e151] [cursor=pointer]:
+                    - /url: /applications/function_calling
+                - listitem [ref=f47e152]:
+                  - link "Context Caching with LLMs" [ref=f47e153] [cursor=pointer]:
+                    - /url: /applications/context-caching
+                - listitem [ref=f47e154]:
+                  - link "Generating Data" [ref=f47e155] [cursor=pointer]:
+                    - /url: /applications/generating
+                - listitem [ref=f47e156]:
+                  - link "Generating Synthetic Dataset for RAG" [ref=f47e157] [cursor=pointer]:
+                    - /url: /applications/synthetic_rag
+                - listitem [ref=f47e158]:
+                  - link "Tackling Generated Datasets Diversity" [ref=f47e159] [cursor=pointer]:
+                    - /url: /applications/generating_textbooks
+                - listitem [ref=f47e160]:
+                  - link "Generating Code" [ref=f47e161] [cursor=pointer]:
+                    - /url: /applications/coding
+                - listitem [ref=f47e162]:
+                  - link "Graduate Job Classification Case Study" [ref=f47e163] [cursor=pointer]:
+                    - /url: /applications/workplace_casestudy
+                - listitem [ref=f47e164]:
+                  - link "Prompt Function" [ref=f47e165] [cursor=pointer]:
+                    - /url: /applications/pf
+            - listitem [ref=f47e166]:
+              - link "Prompt Hub" [ref=f47e167] [cursor=pointer]:
+                - /url: /prompts
+                - text: Prompt Hub
+                - img [ref=f47e168]
+              - list [ref=f47e172]:
+                - listitem [ref=f47e173]:
+                  - link "Classification" [ref=f47e174] [cursor=pointer]:
+                    - /url: /prompts/classification
+                    - text: Classification
+                    - img [ref=f47e175]
+                  - list [ref=f47e178]:
+                    - listitem [ref=f47e179]:
+                      - link "Sentiment Classification" [ref=f47e180] [cursor=pointer]:
+                        - /url: /prompts/classification/sentiment
+                    - listitem [ref=f47e181]:
+                      - link "Few-Shot Sentiment Classification" [ref=f47e182] [cursor=pointer]:
+                        - /url: /prompts/classification/sentiment-fewshot
+                - listitem [ref=f47e183]:
+                  - link "Coding" [ref=f47e184] [cursor=pointer]:
+                    - /url: /prompts/coding
+                    - text: Coding
+                    - img [ref=f47e185]
+                  - list [ref=f47e188]:
+                    - listitem [ref=f47e189]:
+                      - link "Generate Code Snippet" [ref=f47e190] [cursor=pointer]:
+                        - /url: /prompts/coding/code-snippet
+                    - listitem [ref=f47e191]:
+                      - link "Generate MySQL Query" [ref=f47e192] [cursor=pointer]:
+                        - /url: /prompts/coding/mysql-query
+                    - listitem [ref=f47e193]:
+                      - link "Draw TiKZ Diagram" [ref=f47e194] [cursor=pointer]:
+                        - /url: /prompts/coding/tikz
+                - listitem [ref=f47e195]:
+                  - link "Creativity" [ref=f47e196] [cursor=pointer]:
+                    - /url: /prompts/creativity
+                    - text: Creativity
+                    - img [ref=f47e197]
+                  - list [ref=f47e200]:
+                    - listitem [ref=f47e201]:
+                      - link "Rhymes" [ref=f47e202] [cursor=pointer]:
+                        - /url: /prompts/creativity/rhymes
+                    - listitem [ref=f47e203]:
+                      - link "Infinite Primes" [ref=f47e204] [cursor=pointer]:
+                        - /url: /prompts/creativity/infinite-primes
+                    - listitem [ref=f47e205]:
+                      - link "Interdisciplinary" [ref=f47e206] [cursor=pointer]:
+                        - /url: /prompts/creativity/interdisciplinary
+                    - listitem [ref=f47e207]:
+                      - link "Inventing New Words" [ref=f47e208] [cursor=pointer]:
+                        - /url: /prompts/creativity/new-words
+                - listitem [ref=f47e209]:
+                  - link "Evaluation" [ref=f47e210] [cursor=pointer]:
+                    - /url: /prompts/evaluation
+                    - text: Evaluation
+                    - img [ref=f47e211]
+                  - list [ref=f47e214]:
+                    - listitem [ref=f47e215]:
+                      - link "Evaluate Plato's Dialogue" [ref=f47e216] [cursor=pointer]:
+                        - /url: /prompts/evaluation/plato-dialogue
+                - listitem [ref=f47e217]:
+                  - link "Information Extraction" [ref=f47e218] [cursor=pointer]:
+                    - /url: /prompts/information-extraction
+                    - text: Information Extraction
+                    - img [ref=f47e219]
+                  - list [ref=f47e222]:
+                    - listitem [ref=f47e223]:
+                      - link "Extract Model Names" [ref=f47e224] [cursor=pointer]:
+                        - /url: /prompts/information-extraction/extract-models
+                - listitem [ref=f47e225]:
+                  - link "Image Generation" [ref=f47e226] [cursor=pointer]:
+                    - /url: /prompts/image-generation
+                    - text: Image Generation
+                    - img [ref=f47e227]
+                  - list [ref=f47e230]:
+                    - listitem [ref=f47e231]:
+                      - link "Draw a Person Using Alphabet" [ref=f47e232] [cursor=pointer]:
+                        - /url: /prompts/image-generation/alphabet-person
+                - listitem [ref=f47e233]:
+                  - link "Mathematics" [ref=f47e234] [cursor=pointer]:
+                    - /url: /prompts/mathematics
+                    - text: Mathematics
+                    - img [ref=f47e235]
+                  - list [ref=f47e238]:
+                    - listitem [ref=f47e239]:
+                      - link "Evaluating Composite Functions" [ref=f47e240] [cursor=pointer]:
+                        - /url: /prompts/mathematics/composite-functions
+                    - listitem [ref=f47e241]:
+                      - link "Adding Odd Numbers" [ref=f47e242] [cursor=pointer]:
+                        - /url: /prompts/mathematics/odd-numbers
+                - listitem [ref=f47e243]:
+                  - link "Question Answering" [ref=f47e244] [cursor=pointer]:
+                    - /url: /prompts/question-answering
+                    - text: Question Answering
+                    - img [ref=f47e245]
+                  - list [ref=f47e248]:
+                    - listitem [ref=f47e249]:
+                      - link "Closed Domain Question Answering" [ref=f47e250] [cursor=pointer]:
+                        - /url: /prompts/question-answering/closed-domain
+                    - listitem [ref=f47e251]:
+                      - link "Open Domain Question Answering" [ref=f47e252] [cursor=pointer]:
+                        - /url: /prompts/question-answering/open-domain
+                    - listitem [ref=f47e253]:
+                      - link "Science Question Answering" [ref=f47e254] [cursor=pointer]:
+                        - /url: /prompts/question-answering/science-qa
+                - listitem [ref=f47e255]:
+                  - link "Reasoning" [ref=f47e256] [cursor=pointer]:
+                    - /url: /prompts/reasoning
+                    - text: Reasoning
+                    - img [ref=f47e257]
+                  - list [ref=f47e260]:
+                    - listitem [ref=f47e261]:
+                      - link "Indirect Reasoning" [ref=f47e262] [cursor=pointer]:
+                        - /url: /prompts/reasoning/indirect-reasoning
+                    - listitem [ref=f47e263]:
+                      - link "Physical Reasoning" [ref=f47e264] [cursor=pointer]:
+                        - /url: /prompts/reasoning/physical-reasoning
+                - listitem [ref=f47e265]:
+                  - link "Text Summarization" [ref=f47e266] [cursor=pointer]:
+                    - /url: /prompts/text-summarization
+                    - text: Text Summarization
+                    - img [ref=f47e267]
+                  - list [ref=f47e270]:
+                    - listitem [ref=f47e271]:
+                      - link "Explain A Concept" [ref=f47e272] [cursor=pointer]:
+                        - /url: /prompts/text-summarization/explain-concept
+                - listitem [ref=f47e273]:
+                  - link "Truthfulness" [ref=f47e274] [cursor=pointer]:
+                    - /url: /prompts/truthfulness
+                    - text: Truthfulness
+                    - img [ref=f47e275]
+                  - list [ref=f47e278]:
+                    - listitem [ref=f47e279]:
+                      - link "Hallucination Identification" [ref=f47e280] [cursor=pointer]:
+                        - /url: /prompts/truthfulness/identify-hallucination
+                - listitem [ref=f47e281]:
+                  - link "Adversarial Prompting" [ref=f47e282] [cursor=pointer]:
+                    - /url: /prompts/adversarial-prompting
+                    - text: Adversarial Prompting
+                    - img [ref=f47e283]
+                  - list [ref=f47e286]:
+                    - listitem [ref=f47e287]:
+                      - link "Prompt Injection" [ref=f47e288] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/prompt-injection
+                    - listitem [ref=f47e289]:
+                      - link "Prompt Leaking" [ref=f47e290] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/prompt-leaking
+                    - listitem [ref=f47e291]:
+                      - link "Jailbreaking" [ref=f47e292] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/jailbreaking-llms
+            - listitem [ref=f47e293]:
+              - link "Models" [ref=f47e294] [cursor=pointer]:
+                - /url: /models
+                - text: Models
+                - img [ref=f47e295]
+              - list [ref=f47e299]:
+                - listitem [ref=f47e300]:
+                  - link "ChatGPT" [ref=f47e301] [cursor=pointer]:
+                    - /url: /models/chatgpt
+                - listitem [ref=f47e302]:
+                  - link "Claude 3" [ref=f47e303] [cursor=pointer]:
+                    - /url: /models/claude-3
+                - listitem [ref=f47e304]:
+                  - link "Code Llama" [ref=f47e305] [cursor=pointer]:
+                    - /url: /models/code-llama
+                - listitem [ref=f47e306]:
+                  - link "Flan" [ref=f47e307] [cursor=pointer]:
+                    - /url: /models/flan
+                - listitem [ref=f47e308]:
+                  - link "Gemini" [ref=f47e309] [cursor=pointer]:
+                    - /url: /models/gemini
+                - listitem [ref=f47e310]:
+                  - link "Gemini Advanced" [ref=f47e311] [cursor=pointer]:
+                    - /url: /models/gemini-advanced
+                - listitem [ref=f47e312]:
+                  - link "Gemini 1.5 Pro" [ref=f47e313] [cursor=pointer]:
+                    - /url: /models/gemini-pro
+                - listitem [ref=f47e314]:
+                  - link "Gemma" [ref=f47e315] [cursor=pointer]:
+                    - /url: /models/gemma
+                - listitem [ref=f47e316]:
+                  - link "GPT-4" [ref=f47e317] [cursor=pointer]:
+                    - /url: /models/gpt-4
+                - listitem [ref=f47e318]:
+                  - link "Grok-1" [ref=f47e319] [cursor=pointer]:
+                    - /url: /models/grok-1
+                - listitem [ref=f47e320]:
+                  - link "Kimi K2.5" [ref=f47e321] [cursor=pointer]:
+                    - /url: /models/kimi-k2.5
+                - listitem [ref=f47e322]:
+                  - link "LLaMA" [ref=f47e323] [cursor=pointer]:
+                    - /url: /models/llama
+                - listitem [ref=f47e324]:
+                  - link "Llama 3" [ref=f47e325] [cursor=pointer]:
+                    - /url: /models/llama-3
+                - listitem [ref=f47e326]:
+                  - link "Mistral 7B" [ref=f47e327] [cursor=pointer]:
+                    - /url: /models/mistral-7b
+                - listitem [ref=f47e328]:
+                  - link "Mistral Large" [ref=f47e329] [cursor=pointer]:
+                    - /url: /models/mistral-large
+                - listitem [ref=f47e330]:
+                  - link "Mixtral" [ref=f47e331] [cursor=pointer]:
+                    - /url: /models/mixtral
+                - listitem [ref=f47e332]:
+                  - link "Mixtral 8x22B" [ref=f47e333] [cursor=pointer]:
+                    - /url: /models/mixtral-8x22b
+                - listitem [ref=f47e334]:
+                  - link "OLMo" [ref=f47e335] [cursor=pointer]:
+                    - /url: /models/olmo
+                - listitem [ref=f47e336]:
+                  - link "Phi-2" [ref=f47e337] [cursor=pointer]:
+                    - /url: /models/phi-2
+                - listitem [ref=f47e338]:
+                  - link "Sora" [ref=f47e339] [cursor=pointer]:
+                    - /url: /models/sora
+                - listitem [ref=f47e340]:
+                  - link "LLM Collection" [ref=f47e341] [cursor=pointer]:
+                    - /url: /models/collection
+            - listitem [ref=f47e342]:
+              - link "Risks & Misuses" [ref=f47e343] [cursor=pointer]:
+                - /url: /risks
+                - text: Risks & Misuses
+                - img [ref=f47e344]
+              - list [ref=f47e348]:
+                - listitem [ref=f47e349]:
+                  - link "Adversarial Prompting" [ref=f47e350] [cursor=pointer]:
+                    - /url: /risks/adversarial
+                - listitem [ref=f47e351]:
+                  - link "Factuality" [ref=f47e352] [cursor=pointer]:
+                    - /url: /risks/factuality
+                - listitem [ref=f47e353]:
+                  - link "Biases" [ref=f47e354] [cursor=pointer]:
+                    - /url: /risks/biases
+            - listitem [ref=f47e355]:
+              - link "LLM Research Findings" [ref=f47e356] [cursor=pointer]:
+                - /url: /research
+                - text: LLM Research Findings
+                - img [ref=f47e357]
+              - list [ref=f47e361]:
+                - listitem [ref=f47e362]:
+                  - link "LLM Agents" [ref=f47e363] [cursor=pointer]:
+                    - /url: /research/llm-agents
+                - listitem [ref=f47e364]:
+                  - link "RAG for LLMs" [ref=f47e365] [cursor=pointer]:
+                    - /url: /research/rag
+                - listitem [ref=f47e366]:
+                  - link "LLM Reasoning" [ref=f47e367] [cursor=pointer]:
+                    - /url: /research/llm-reasoning
+                - listitem [ref=f47e368]:
+                  - link "RAG Faithfulness" [ref=f47e369] [cursor=pointer]:
+                    - /url: /research/rag-faithfulness
+                - listitem [ref=f47e370]:
+                  - link "LLM In-Context Recall" [ref=f47e371] [cursor=pointer]:
+                    - /url: /research/llm-recall
+                - listitem [ref=f47e372]:
+                  - link "RAG Reduces Hallucination" [ref=f47e373] [cursor=pointer]:
+                    - /url: /research/rag_hallucinations
+                - listitem [ref=f47e374]:
+                  - link "Synthetic Data" [ref=f47e375] [cursor=pointer]:
+                    - /url: /research/synthetic_data
+                - listitem [ref=f47e376]:
+                  - link "ThoughtSculpt" [ref=f47e377] [cursor=pointer]:
+                    - /url: /research/thoughtsculpt
+                - listitem [ref=f47e378]:
+                  - link "Infini-Attention" [ref=f47e379] [cursor=pointer]:
+                    - /url: /research/infini-attention
+                - listitem [ref=f47e380]:
+                  - link "LM-Guided CoT" [ref=f47e381] [cursor=pointer]:
+                    - /url: /research/guided-cot
+                - listitem [ref=f47e382]:
+                  - link "Trustworthiness in LLMs" [ref=f47e383] [cursor=pointer]:
+                    - /url: /research/trustworthiness-in-llms
+                - listitem [ref=f47e384]:
+                  - link "LLM Tokenization" [ref=f47e385] [cursor=pointer]:
+                    - /url: /research/llm-tokenization
+                - listitem [ref=f47e386]:
+                  - link "What is Groq?" [ref=f47e387] [cursor=pointer]:
+                    - /url: /research/groq
+            - listitem [ref=f47e388]:
+              - link "Papers" [ref=f47e389] [cursor=pointer]:
+                - /url: /papers
+            - listitem [ref=f47e390]:
+              - link "Tools" [ref=f47e391] [cursor=pointer]:
+                - /url: /tools
+            - listitem [ref=f47e392]:
+              - link "Notebooks" [ref=f47e393] [cursor=pointer]:
+                - /url: /notebooks
+            - listitem [ref=f47e394]:
+              - link "Datasets" [ref=f47e395] [cursor=pointer]:
+                - /url: /datasets
+            - listitem [ref=f47e396]:
+              - link "Additional Readings" [ref=f47e397] [cursor=pointer]:
+                - /url: /readings
+            - listitem [ref=f47e398]:
+              - link "Services" [ref=f47e399] [cursor=pointer]:
+                - /url: /services
+          - generic [ref=f47e400]:
+            - button "English" [ref=f47e401] [cursor=pointer]:
+              - generic [ref=f47e402]:
+                - img [ref=f47e403]
+                - generic [ref=f47e405]: English
+            - button "Change theme" [ref=f47e407] [cursor=pointer]:
+              - img [ref=f47e409]
+        - article [ref=f47e411]:
+          - main [ref=f47e412]:
+            - generic [ref=f47e413]:
+              - generic "Prompting Techniques" [ref=f47e414]:
+                - link "Prompting Techniques" [ref=f47e415] [cursor=pointer]:
+                  - /url: /techniques
+              - img [ref=f47e416]
+              - generic "Reflexion" [ref=f47e418]
+            - button "Copy page" [ref=f47e421] [cursor=pointer]:
+              - img [ref=f47e422]
+              - text: Copy page
+              - img [ref=f47e425]
+            - heading "Reflexion" [level=1] [ref=f47e427]
+            - paragraph [ref=f47e428]:
+              - text: Reflexion is a framework to reinforce language-based agents through linguistic feedback. According to
+              - link "Shinn et al. (2023) (opens in a new tab)" [ref=f47e429] [cursor=pointer]:
+                - /url: https://arxiv.org/pdf/2303.11366.pdf
+                - text: Shinn et al. (2023)
+                - generic [ref=f47e430]: (opens in a new tab)
+              - text: ", \"Reflexion is a new paradigm for ‘verbal‘ reinforcement that parameterizes a policy as an agent’s memory encoding paired with a choice of LLM parameters.\""
+            - paragraph [ref=f47e431]:
+              - text: At a high level, Reflexion converts feedback (either free-form language or scalar) from the environment into linguistic feedback, also referred to as
+              - strong [ref=f47e432]: self-reflection
+              - text: ", which is provided as context for an LLM agent in the next episode. This helps the agent rapidly and effectively learn from prior mistakes leading to performance improvements on many advanced tasks."
+            - paragraph [ref=f47e433]:
+              - img "\"Reflexion Framework\"" [ref=f47e434]
+            - paragraph [ref=f47e435]: "As shown in the figure above, Reflexion consists of three distinct models:"
+            - list [ref=f47e436]:
+              - listitem [ref=f47e437]:
+                - strong [ref=f47e438]: An Actor
+                - text: ": Generates text and actions based on the state observations. The Actor takes an action in an environment and receives an observation which results in a trajectory."
+                - link "Chain-of-Thought (CoT) (opens in a new tab)" [ref=f47e439] [cursor=pointer]:
+                  - /url: https://www.promptingguide.ai/techniques/cot
+                  - text: Chain-of-Thought (CoT)
+                  - generic [ref=f47e440]: (opens in a new tab)
+                - text: and
+                - link "ReAct (opens in a new tab)" [ref=f47e441] [cursor=pointer]:
+                  - /url: https://www.promptingguide.ai/techniques/react
+                  - text: ReAct
+                  - generic [ref=f47e442]: (opens in a new tab)
+                - text: are used as Actor models. A memory component is also added to provide additional context to the agent.
+              - listitem [ref=f47e443]:
+                - strong [ref=f47e444]: An Evaluator
+                - text: ": Scores outputs produced by the Actor. Concretely, it takes as input a generated trajectory (also denoted as short-term memory) and outputs a reward score. Different reward functions are used depending on the task (LLMs and rule-based heuristics are used for decision-making tasks)."
+              - listitem [ref=f47e445]:
+                - strong [ref=f47e446]: Self-Reflection
+                - text: ": Generates verbal reinforcement cues to assist the Actor in self-improvement. This role is achieved by an LLM and provides valuable feedback for future trials. To generate specific and relevant feedback, which is also stored in memory, the self-reflection model makes use of the reward signal, the current trajectory, and its persistent memory. These experiences (stored in long-term memory) are leveraged by the agent to rapidly improve decision-making."
+            - paragraph [ref=f47e447]: In summary, the key steps of the Reflexion process are a) define a task, b) generate a trajectory, c) evaluate, d) perform reflection, and e) generate the next trajectory. The figure below demonstrates examples of how a Reflexion agent can learn to iteratively optimize its behavior to solve various tasks such as decision-making, programming, and reasoning. Reflexion extends the ReAct framework by introducing self-evaluation, self-reflection and memory components.
+            - paragraph [ref=f47e448]:
+              - img "\"Reflexion Examples\"" [ref=f47e449]
+            - heading "ResultsPermalink for this section" [level=2] [ref=f47e450]:
+              - text: Results
+              - link "Permalink for this section" [ref=f47e451] [cursor=pointer]:
+                - /url: "#results"
+                - text: "#"
+            - paragraph [ref=f47e452]: Experimental results demonstrate that Reflexion agents significantly improve performance on decision-making AlfWorld tasks, reasoning questions in HotPotQA, and Python programming tasks on HumanEval.
+            - paragraph [ref=f47e453]: When evaluated on sequential decision-making (AlfWorld) tasks, ReAct + Reflexion significantly outperforms ReAct by completing 130/134 tasks using self-evaluation techniques of Heuristic and GPT for binary classification.
+            - paragraph [ref=f47e454]:
+              - img "\"Reflexion ALFWorld Results\"" [ref=f47e455]
+            - paragraph [ref=f47e456]: Reflexion significantly outperforms all baseline approaches over several learning steps. For reasoning only and when adding an episodic memory consisting of the most recent trajectory, Reflexion + CoT outperforms CoT only and CoT with episodic memory, respectively.
+            - paragraph [ref=f47e457]:
+              - img "\"Reflexion ALFWorld Results\"" [ref=f47e458]
+            - paragraph [ref=f47e459]: As summarized in the table below, Reflexion generally outperforms the previous state-of-the-art approaches on Python and Rust code writing on MBPP, HumanEval, and Leetcode Hard.
+            - paragraph [ref=f47e460]:
+              - img "\"Reflexion ALFWorld Results\"" [ref=f47e461]
+            - heading "When to Use Reflexion?Permalink for this section" [level=2] [ref=f47e462]:
+              - text: When to Use Reflexion?
+              - link "Permalink for this section" [ref=f47e463] [cursor=pointer]:
+                - /url: "#when-to-use-reflexion"
+                - text: "#"
+            - paragraph [ref=f47e464]: "Reflexion is best suited for the following:"
+            - list [ref=f47e465]:
+              - listitem [ref=f47e466]:
+                - paragraph [ref=f47e467]:
+                  - strong [ref=f47e468]: An agent needs to learn from trial and error
+                  - text: ": Reflexion is designed to help agents improve their performance by reflecting on past mistakes and incorporating that knowledge into future decisions. This makes it well-suited for tasks where the agent needs to learn through trial and error, such as decision-making, reasoning, and programming."
+              - listitem [ref=f47e469]:
+                - paragraph [ref=f47e470]:
+                  - strong [ref=f47e471]: Traditional reinforcement learning methods are impractical
+                  - text: ": Traditional reinforcement learning (RL) methods often require extensive training data and expensive model fine-tuning. Reflexion offers a lightweight alternative that doesn't require fine-tuning the underlying language model, making it more efficient in terms of data and compute resources."
+              - listitem [ref=f47e472]:
+                - paragraph [ref=f47e473]:
+                  - strong [ref=f47e474]: Nuanced feedback is required
+                  - text: ": Reflexion utilizes verbal feedback, which can be more nuanced and specific than scalar rewards used in traditional RL. This allows the agent to better understand its mistakes and make more targeted improvements in subsequent trials."
+              - listitem [ref=f47e475]:
+                - paragraph [ref=f47e476]:
+                  - strong [ref=f47e477]: Interpretability and explicit memory are important
+                  - text: ": Reflexion provides a more interpretable and explicit form of episodic memory compared to traditional RL methods. The agent's self-reflections are stored in its memory, allowing for easier analysis and understanding of its learning process."
+            - paragraph [ref=f47e478]: "Reflexion is effective in the following tasks:"
+            - list [ref=f47e479]:
+              - listitem [ref=f47e480]:
+                - strong [ref=f47e481]: Sequential decision-making
+                - text: ": Reflexion agents improve their performance in AlfWorld tasks, which involve navigating through various environments and completing multi-step objectives."
+              - listitem [ref=f47e482]:
+                - strong [ref=f47e483]: Reasoning
+                - text: ": Reflexion improved the performance of agents on HotPotQA, a question-answering dataset that requires reasoning over multiple documents."
+              - listitem [ref=f47e484]:
+                - strong [ref=f47e485]: Programming
+                - text: ": Reflexion agents write better code on benchmarks like HumanEval and MBPP, achieving state-of-the-art results in some cases."
+            - paragraph [ref=f47e486]: "Here are some limitations of Reflexion:"
+            - list [ref=f47e487]:
+              - listitem [ref=f47e488]:
+                - strong [ref=f47e489]: Reliance on self-evaluation capabilities
+                - text: ": Reflexion relies on the agent's ability to accurately evaluate its performance and generate useful self-reflections. This can be challenging, especially for complex tasks but it's expected that Reflexion gets better over time as models keep improving in capabilities."
+              - listitem [ref=f47e490]:
+                - strong [ref=f47e491]: Long-term memory constraints
+                - text: ": Reflexion makes use of a sliding window with maximum capacity but for more complex tasks it may be advantageous to use advanced structures such as vector embedding or SQL databases."
+              - listitem [ref=f47e492]:
+                - strong [ref=f47e493]: Code generation limitations
+                - text: ": There are limitations to test-driven development in specifying accurate input-output mappings (e.g., non-deterministic generator function and function outputs influenced by hardware)."
+            - separator [ref=f47e494]
+            - paragraph [ref=f47e495]:
+              - emphasis [ref=f47e496]:
+                - text: "Figures source:"
+                - 'link "Reflexion: Language Agents with Verbal Reinforcement Learning (opens in a new tab)" [ref=f47e497] [cursor=pointer]':
+                  - /url: https://arxiv.org/pdf/2303.11366.pdf
+                  - text: "Reflexion: Language Agents with Verbal Reinforcement Learning"
+                  - generic [ref=f47e498]: (opens in a new tab)
+            - heading "ReferencesPermalink for this section" [level=2] [ref=f47e499]:
+              - text: References
+              - link "Permalink for this section" [ref=f47e500] [cursor=pointer]:
+                - /url: "#references"
+                - text: "#"
+            - list [ref=f47e501]:
+              - listitem [ref=f47e502]:
+                - 'link "Reflexion: Language Agents with Verbal Reinforcement Learning (opens in a new tab)" [ref=f47e503] [cursor=pointer]':
+                  - /url: https://arxiv.org/pdf/2303.11366.pdf
+                  - text: "Reflexion: Language Agents with Verbal Reinforcement Learning"
+                  - generic [ref=f47e504]: (opens in a new tab)
+              - listitem [ref=f47e505]:
+                - link "Can LLMs Critique and Iterate on Their Own Outputs? (opens in a new tab)" [ref=f47e506] [cursor=pointer]:
+                  - /url: https://evjang.com/2023/03/26/self-reflection.html
+                  - text: Can LLMs Critique and Iterate on Their Own Outputs?
+                  - generic [ref=f47e507]: (opens in a new tab)
+            - generic [ref=f47e508]:
+              - heading "Related Learning" [level=2] [ref=f47e509]
+              - generic [ref=f47e510]:
+                - link "Course Prompt Engineering for LLMs Master Reflexion, self-reflection, and advanced techniques for iterative improvement. Beginner 2 hours" [ref=f47e511] [cursor=pointer]:
+                  - /url: https://academy.dair.ai/courses/introduction-prompt-engineering
+                  - generic [ref=f47e512]: Course
+                  - generic [ref=f47e513]:
+                    - heading "Prompt Engineering for LLMs" [level=3] [ref=f47e514]
+                    - paragraph [ref=f47e515]: Master Reflexion, self-reflection, and advanced techniques for iterative improvement.
+                    - generic [ref=f47e516]:
+                      - generic [ref=f47e517]:
+                        - img [ref=f47e518]
+                        - generic [ref=f47e520]: Beginner
+                      - generic [ref=f47e521]: 2 hours
+                - link "Course Building Effective AI Agents Learn to build effective AI agents with Reflexion patterns. Covers function calling and agentic systems. Intermediate 5 hours" [ref=f47e522] [cursor=pointer]:
+                  - /url: https://academy.dair.ai/courses/building-effective-ai-agents
+                  - generic [ref=f47e523]: Course
+                  - generic [ref=f47e524]:
+                    - heading "Building Effective AI Agents" [level=3] [ref=f47e525]
+                    - paragraph [ref=f47e526]: Learn to build effective AI agents with Reflexion patterns. Covers function calling and agentic systems.
+                    - generic [ref=f47e527]:
+                      - generic [ref=f47e528]:
+                        - img [ref=f47e529]
+                        - generic [ref=f47e531]: Intermediate
+                      - generic [ref=f47e532]: 5 hours
+            - generic [ref=f47e534]:
+              - img [ref=f47e536]
+              - generic [ref=f47e539]:
+                - heading "Explore All Courses" [level=3] [ref=f47e540]
+                - paragraph [ref=f47e541]:
+                  - text: Discover our full catalog of AI and prompt engineering courses. From beginners to advanced practitioners.
+                  - generic [ref=f47e542]:
+                    - text: Use code
+                    - code [ref=f47e543]: PROMPTING20
+                    - text: for 20% off!
+                - link "Browse Academy" [ref=f47e544] [cursor=pointer]:
+                  - /url: https://academy.dair.ai/
+                  - text: Browse Academy
+                  - img [ref=f47e545]
+            - generic [ref=f47e548]:
+              - generic [ref=f47e549]: Last updated on Sun Feb 01 2026
+              - generic [ref=f47e550]:
+                - generic [ref=f47e551]: Sponsored by
+                - link "SerpAPI" [ref=f47e552] [cursor=pointer]:
+                  - /url: https://serpapi.com/
+                  - img "SerpAPI" [ref=f47e553]
+            - generic [ref=f47e554]:
+              - link "ReAct" [ref=f47e555] [cursor=pointer]:
+                - /url: /techniques/react
+                - img [ref=f47e556]
+                - text: ReAct
+              - link "Multimodal CoT" [ref=f47e558] [cursor=pointer]:
+                - /url: /techniques/multimodalcot
+                - text: Multimodal CoT
+                - img [ref=f47e559]
+      - contentinfo [ref=f47e561]:
+        - separator [ref=f47e562]
+        - generic [ref=f47e564]: Copyright © 2026 DAIR.AI
+  - alert [ref=f47e565]

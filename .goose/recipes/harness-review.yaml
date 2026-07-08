@@ -27,7 +27,7 @@ instructions: |
   - Never store secrets, tokens, credentials, or transient observations.
 settings:
   temperature: 0.15
-  max_turns: 30
+  max_turns: 4
 parameters:
   - key: task
     input_type: string

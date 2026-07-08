@@ -1,0 +1,928 @@
+- generic [active] [ref=f51e1]:
+  - generic [ref=f51e2]:
+    - generic [ref=f51e3]:
+      - text: 🚀 Learn to build apps with Claude Code! Use
+      - strong [ref=f51e4]: PROMPTING
+      - text: for 20% off
+      - link "Enroll now →" [ref=f51e5] [cursor=pointer]:
+        - /url: https://academy.dair.ai/courses/build-apps-with-claude-code
+    - generic [ref=f51e6]:
+      - navigation [ref=f51e8]:
+        - link "Prompt Engineering Guide" [ref=f51e9] [cursor=pointer]:
+          - /url: /
+          - img [ref=f51e10]
+          - generic [ref=f51e14]: Prompt Engineering Guide
+        - button "🎓 Courses" [ref=f51e16] [cursor=pointer]:
+          - text: 🎓 Courses
+          - img [ref=f51e17]
+        - link "About" [ref=f51e19] [cursor=pointer]:
+          - /url: /about
+          - generic [ref=f51e20]: About
+        - generic [ref=f51e22]:
+          - searchbox "Search..." [ref=f51e23]
+          - generic: CTRL K
+        - link "GitHub GitHub (opens in a new tab)" [ref=f51e24] [cursor=pointer]:
+          - /url: https://github.com/dair-ai/Prompt-Engineering-Guide
+          - img "GitHub" [ref=f51e25]
+          - generic [ref=f51e27]: GitHub
+          - generic [ref=f51e28]: (opens in a new tab)
+        - link "Discord Discord (opens in a new tab)" [ref=f51e29] [cursor=pointer]:
+          - /url: https://discord.gg/YbMT8k6GfX
+          - img "Discord" [ref=f51e30]
+          - generic [ref=f51e32]: Discord
+          - generic [ref=f51e33]: (opens in a new tab)
+        - link "✨ Services" [ref=f51e34] [cursor=pointer]:
+          - /url: /services
+      - generic [ref=f51e35]:
+        - complementary [ref=f51e36]:
+          - list [ref=f51e40]:
+            - listitem [ref=f51e41]:
+              - link "Prompt Engineering" [ref=f51e42] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=f51e43]:
+              - link "Introduction" [ref=f51e44] [cursor=pointer]:
+                - /url: /introduction
+                - text: Introduction
+                - img [ref=f51e45]
+              - list [ref=f51e49]:
+                - listitem [ref=f51e50]:
+                  - link "LLM Settings" [ref=f51e51] [cursor=pointer]:
+                    - /url: /introduction/settings
+                - listitem [ref=f51e52]:
+                  - link "Basics of Prompting" [ref=f51e53] [cursor=pointer]:
+                    - /url: /introduction/basics
+                - listitem [ref=f51e54]:
+                  - link "Prompt Elements" [ref=f51e55] [cursor=pointer]:
+                    - /url: /introduction/elements
+                - listitem [ref=f51e56]:
+                  - link "General Tips for Designing Prompts" [ref=f51e57] [cursor=pointer]:
+                    - /url: /introduction/tips
+                - listitem [ref=f51e58]:
+                  - link "Examples of Prompts" [ref=f51e59] [cursor=pointer]:
+                    - /url: /introduction/examples
+            - listitem [ref=f51e60]:
+              - link "Prompting Techniques" [ref=f51e61] [cursor=pointer]:
+                - /url: /techniques
+                - text: Prompting Techniques
+                - img [ref=f51e62]
+              - list [ref=f51e66]:
+                - listitem [ref=f51e67]:
+                  - link "Zero-shot Prompting" [ref=f51e68] [cursor=pointer]:
+                    - /url: /techniques/zeroshot
+                - listitem [ref=f51e69]:
+                  - link "Few-shot Prompting" [ref=f51e70] [cursor=pointer]:
+                    - /url: /techniques/fewshot
+                - listitem [ref=f51e71]:
+                  - link "Chain-of-Thought Prompting" [ref=f51e72] [cursor=pointer]:
+                    - /url: /techniques/cot
+                - listitem [ref=f51e73]:
+                  - link "Meta Prompting" [ref=f51e74] [cursor=pointer]:
+                    - /url: /techniques/meta-prompting
+                - listitem [ref=f51e75]:
+                  - link "Self-Consistency" [ref=f51e76] [cursor=pointer]:
+                    - /url: /techniques/consistency
+                - listitem [ref=f51e77]:
+                  - link "Generate Knowledge Prompting" [ref=f51e78] [cursor=pointer]:
+                    - /url: /techniques/knowledge
+                - listitem [ref=f51e79]:
+                  - link "Prompt Chaining" [ref=f51e80] [cursor=pointer]:
+                    - /url: /techniques/prompt_chaining
+                - listitem [ref=f51e81]:
+                  - link "Tree of Thoughts" [ref=f51e82] [cursor=pointer]:
+                    - /url: /techniques/tot
+                - listitem [ref=f51e83]:
+                  - link "Retrieval Augmented Generation" [ref=f51e84] [cursor=pointer]:
+                    - /url: /techniques/rag
+                - listitem [ref=f51e85]:
+                  - link "Automatic Reasoning and Tool-use" [ref=f51e86] [cursor=pointer]:
+                    - /url: /techniques/art
+                - listitem [ref=f51e87]:
+                  - link "Automatic Prompt Engineer" [ref=f51e88] [cursor=pointer]:
+                    - /url: /techniques/ape
+                - listitem [ref=f51e89]:
+                  - link "Active-Prompt" [ref=f51e90] [cursor=pointer]:
+                    - /url: /techniques/activeprompt
+                - listitem [ref=f51e91]:
+                  - link "Directional Stimulus Prompting" [ref=f51e92] [cursor=pointer]:
+                    - /url: /techniques/dsp
+                - listitem [ref=f51e93]:
+                  - link "Program-Aided Language Models" [ref=f51e94] [cursor=pointer]:
+                    - /url: /techniques/pal
+                - listitem [ref=f51e95]:
+                  - link "ReAct" [ref=f51e96] [cursor=pointer]:
+                    - /url: /techniques/react
+                - listitem [ref=f51e97]:
+                  - link "Reflexion" [ref=f51e98] [cursor=pointer]:
+                    - /url: /techniques/reflexion
+                - listitem [ref=f51e99]:
+                  - link "Multimodal CoT" [ref=f51e100] [cursor=pointer]:
+                    - /url: /techniques/multimodalcot
+                - listitem [ref=f51e101]:
+                  - link "Graph Prompting" [ref=f51e102] [cursor=pointer]:
+                    - /url: /techniques/graph
+            - listitem [ref=f51e103]:
+              - link "AI Agents" [ref=f51e104] [cursor=pointer]:
+                - /url: /agents
+                - text: AI Agents
+                - img [ref=f51e105]
+              - list [ref=f51e109]:
+                - listitem [ref=f51e110]:
+                  - link "Introduction to Agents" [ref=f51e111] [cursor=pointer]:
+                    - /url: /agents/introduction
+                - listitem [ref=f51e112]:
+                  - link "Agent Components" [ref=f51e113] [cursor=pointer]:
+                    - /url: /agents/components
+                - listitem [ref=f51e114]:
+                  - link "AI Workflows vs AI Agents" [ref=f51e115] [cursor=pointer]:
+                    - /url: /agents/ai-workflows-vs-ai-agents
+                - listitem [ref=f51e116]:
+                  - link "Context Engineering for AI Agents" [ref=f51e117] [cursor=pointer]:
+                    - /url: /agents/context-engineering
+                - listitem [ref=f51e118]:
+                  - link "Context Engineering Deep Dive" [ref=f51e119] [cursor=pointer]:
+                    - /url: /agents/context-engineering-deep-dive
+                - listitem [ref=f51e120]:
+                  - link "Function Calling" [ref=f51e121] [cursor=pointer]:
+                    - /url: /agents/function-calling
+                - listitem [ref=f51e122]:
+                  - link "Deep Agents" [ref=f51e123] [cursor=pointer]:
+                    - /url: /agents/deep-agents
+            - listitem [ref=f51e124]:
+              - button "Guides" [ref=f51e125] [cursor=pointer]:
+                - text: Guides
+                - img [ref=f51e126]
+              - list [ref=f51e130]:
+                - listitem [ref=f51e131]:
+                  - link "Optimizing Prompts" [ref=f51e132] [cursor=pointer]:
+                    - /url: /guides/optimizing-prompts
+                - listitem [ref=f51e133]:
+                  - link "OpenAI Deep Research" [ref=f51e134] [cursor=pointer]:
+                    - /url: /guides/deep-research
+                - listitem [ref=f51e135]:
+                  - link "Reasoning LLMs" [ref=f51e136] [cursor=pointer]:
+                    - /url: /guides/reasoning-llms
+                - listitem [ref=f51e137]:
+                  - link "4o Image Generation" [ref=f51e138] [cursor=pointer]:
+                    - /url: /guides/4o-image-generation
+                - listitem [ref=f51e139]:
+                  - link "Context Engineering Guide" [ref=f51e140] [cursor=pointer]:
+                    - /url: /guides/context-engineering-guide
+            - listitem [ref=f51e141]:
+              - link "Applications" [ref=f51e142] [cursor=pointer]:
+                - /url: /applications
+                - text: Applications
+                - img [ref=f51e143]
+              - list [ref=f51e147]:
+                - listitem [ref=f51e148]:
+                  - link "Fine-tuning GPT-4o" [ref=f51e149] [cursor=pointer]:
+                    - /url: /applications/finetuning-gpt4o
+                - listitem [ref=f51e150]:
+                  - link "Function Calling" [ref=f51e151] [cursor=pointer]:
+                    - /url: /applications/function_calling
+                - listitem [ref=f51e152]:
+                  - link "Context Caching with LLMs" [ref=f51e153] [cursor=pointer]:
+                    - /url: /applications/context-caching
+                - listitem [ref=f51e154]:
+                  - link "Generating Data" [ref=f51e155] [cursor=pointer]:
+                    - /url: /applications/generating
+                - listitem [ref=f51e156]:
+                  - link "Generating Synthetic Dataset for RAG" [ref=f51e157] [cursor=pointer]:
+                    - /url: /applications/synthetic_rag
+                - listitem [ref=f51e158]:
+                  - link "Tackling Generated Datasets Diversity" [ref=f51e159] [cursor=pointer]:
+                    - /url: /applications/generating_textbooks
+                - listitem [ref=f51e160]:
+                  - link "Generating Code" [ref=f51e161] [cursor=pointer]:
+                    - /url: /applications/coding
+                - listitem [ref=f51e162]:
+                  - link "Graduate Job Classification Case Study" [ref=f51e163] [cursor=pointer]:
+                    - /url: /applications/workplace_casestudy
+                - listitem [ref=f51e164]:
+                  - link "Prompt Function" [ref=f51e165] [cursor=pointer]:
+                    - /url: /applications/pf
+            - listitem [ref=f51e166]:
+              - link "Prompt Hub" [ref=f51e167] [cursor=pointer]:
+                - /url: /prompts
+                - text: Prompt Hub
+                - img [ref=f51e168]
+              - list [ref=f51e172]:
+                - listitem [ref=f51e173]:
+                  - link "Classification" [ref=f51e174] [cursor=pointer]:
+                    - /url: /prompts/classification
+                    - text: Classification
+                    - img [ref=f51e175]
+                  - list [ref=f51e178]:
+                    - listitem [ref=f51e179]:
+                      - link "Sentiment Classification" [ref=f51e180] [cursor=pointer]:
+                        - /url: /prompts/classification/sentiment
+                    - listitem [ref=f51e181]:
+                      - link "Few-Shot Sentiment Classification" [ref=f51e182] [cursor=pointer]:
+                        - /url: /prompts/classification/sentiment-fewshot
+                - listitem [ref=f51e183]:
+                  - link "Coding" [ref=f51e184] [cursor=pointer]:
+                    - /url: /prompts/coding
+                    - text: Coding
+                    - img [ref=f51e185]
+                  - list [ref=f51e188]:
+                    - listitem [ref=f51e189]:
+                      - link "Generate Code Snippet" [ref=f51e190] [cursor=pointer]:
+                        - /url: /prompts/coding/code-snippet
+                    - listitem [ref=f51e191]:
+                      - link "Generate MySQL Query" [ref=f51e192] [cursor=pointer]:
+                        - /url: /prompts/coding/mysql-query
+                    - listitem [ref=f51e193]:
+                      - link "Draw TiKZ Diagram" [ref=f51e194] [cursor=pointer]:
+                        - /url: /prompts/coding/tikz
+                - listitem [ref=f51e195]:
+                  - link "Creativity" [ref=f51e196] [cursor=pointer]:
+                    - /url: /prompts/creativity
+                    - text: Creativity
+                    - img [ref=f51e197]
+                  - list [ref=f51e200]:
+                    - listitem [ref=f51e201]:
+                      - link "Rhymes" [ref=f51e202] [cursor=pointer]:
+                        - /url: /prompts/creativity/rhymes
+                    - listitem [ref=f51e203]:
+                      - link "Infinite Primes" [ref=f51e204] [cursor=pointer]:
+                        - /url: /prompts/creativity/infinite-primes
+                    - listitem [ref=f51e205]:
+                      - link "Interdisciplinary" [ref=f51e206] [cursor=pointer]:
+                        - /url: /prompts/creativity/interdisciplinary
+                    - listitem [ref=f51e207]:
+                      - link "Inventing New Words" [ref=f51e208] [cursor=pointer]:
+                        - /url: /prompts/creativity/new-words
+                - listitem [ref=f51e209]:
+                  - link "Evaluation" [ref=f51e210] [cursor=pointer]:
+                    - /url: /prompts/evaluation
+                    - text: Evaluation
+                    - img [ref=f51e211]
+                  - list [ref=f51e214]:
+                    - listitem [ref=f51e215]:
+                      - link "Evaluate Plato's Dialogue" [ref=f51e216] [cursor=pointer]:
+                        - /url: /prompts/evaluation/plato-dialogue
+                - listitem [ref=f51e217]:
+                  - link "Information Extraction" [ref=f51e218] [cursor=pointer]:
+                    - /url: /prompts/information-extraction
+                    - text: Information Extraction
+                    - img [ref=f51e219]
+                  - list [ref=f51e222]:
+                    - listitem [ref=f51e223]:
+                      - link "Extract Model Names" [ref=f51e224] [cursor=pointer]:
+                        - /url: /prompts/information-extraction/extract-models
+                - listitem [ref=f51e225]:
+                  - link "Image Generation" [ref=f51e226] [cursor=pointer]:
+                    - /url: /prompts/image-generation
+                    - text: Image Generation
+                    - img [ref=f51e227]
+                  - list [ref=f51e230]:
+                    - listitem [ref=f51e231]:
+                      - link "Draw a Person Using Alphabet" [ref=f51e232] [cursor=pointer]:
+                        - /url: /prompts/image-generation/alphabet-person
+                - listitem [ref=f51e233]:
+                  - link "Mathematics" [ref=f51e234] [cursor=pointer]:
+                    - /url: /prompts/mathematics
+                    - text: Mathematics
+                    - img [ref=f51e235]
+                  - list [ref=f51e238]:
+                    - listitem [ref=f51e239]:
+                      - link "Evaluating Composite Functions" [ref=f51e240] [cursor=pointer]:
+                        - /url: /prompts/mathematics/composite-functions
+                    - listitem [ref=f51e241]:
+                      - link "Adding Odd Numbers" [ref=f51e242] [cursor=pointer]:
+                        - /url: /prompts/mathematics/odd-numbers
+                - listitem [ref=f51e243]:
+                  - link "Question Answering" [ref=f51e244] [cursor=pointer]:
+                    - /url: /prompts/question-answering
+                    - text: Question Answering
+                    - img [ref=f51e245]
+                  - list [ref=f51e248]:
+                    - listitem [ref=f51e249]:
+                      - link "Closed Domain Question Answering" [ref=f51e250] [cursor=pointer]:
+                        - /url: /prompts/question-answering/closed-domain
+                    - listitem [ref=f51e251]:
+                      - link "Open Domain Question Answering" [ref=f51e252] [cursor=pointer]:
+                        - /url: /prompts/question-answering/open-domain
+                    - listitem [ref=f51e253]:
+                      - link "Science Question Answering" [ref=f51e254] [cursor=pointer]:
+                        - /url: /prompts/question-answering/science-qa
+                - listitem [ref=f51e255]:
+                  - link "Reasoning" [ref=f51e256] [cursor=pointer]:
+                    - /url: /prompts/reasoning
+                    - text: Reasoning
+                    - img [ref=f51e257]
+                  - list [ref=f51e260]:
+                    - listitem [ref=f51e261]:
+                      - link "Indirect Reasoning" [ref=f51e262] [cursor=pointer]:
+                        - /url: /prompts/reasoning/indirect-reasoning
+                    - listitem [ref=f51e263]:
+                      - link "Physical Reasoning" [ref=f51e264] [cursor=pointer]:
+                        - /url: /prompts/reasoning/physical-reasoning
+                - listitem [ref=f51e265]:
+                  - link "Text Summarization" [ref=f51e266] [cursor=pointer]:
+                    - /url: /prompts/text-summarization
+                    - text: Text Summarization
+                    - img [ref=f51e267]
+                  - list [ref=f51e270]:
+                    - listitem [ref=f51e271]:
+                      - link "Explain A Concept" [ref=f51e272] [cursor=pointer]:
+                        - /url: /prompts/text-summarization/explain-concept
+                - listitem [ref=f51e273]:
+                  - link "Truthfulness" [ref=f51e274] [cursor=pointer]:
+                    - /url: /prompts/truthfulness
+                    - text: Truthfulness
+                    - img [ref=f51e275]
+                  - list [ref=f51e278]:
+                    - listitem [ref=f51e279]:
+                      - link "Hallucination Identification" [ref=f51e280] [cursor=pointer]:
+                        - /url: /prompts/truthfulness/identify-hallucination
+                - listitem [ref=f51e281]:
+                  - link "Adversarial Prompting" [ref=f51e282] [cursor=pointer]:
+                    - /url: /prompts/adversarial-prompting
+                    - text: Adversarial Prompting
+                    - img [ref=f51e283]
+                  - list [ref=f51e286]:
+                    - listitem [ref=f51e287]:
+                      - link "Prompt Injection" [ref=f51e288] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/prompt-injection
+                    - listitem [ref=f51e289]:
+                      - link "Prompt Leaking" [ref=f51e290] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/prompt-leaking
+                    - listitem [ref=f51e291]:
+                      - link "Jailbreaking" [ref=f51e292] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/jailbreaking-llms
+            - listitem [ref=f51e293]:
+              - link "Models" [ref=f51e294] [cursor=pointer]:
+                - /url: /models
+                - text: Models
+                - img [ref=f51e295]
+              - list [ref=f51e299]:
+                - listitem [ref=f51e300]:
+                  - link "ChatGPT" [ref=f51e301] [cursor=pointer]:
+                    - /url: /models/chatgpt
+                - listitem [ref=f51e302]:
+                  - link "Claude 3" [ref=f51e303] [cursor=pointer]:
+                    - /url: /models/claude-3
+                - listitem [ref=f51e304]:
+                  - link "Code Llama" [ref=f51e305] [cursor=pointer]:
+                    - /url: /models/code-llama
+                - listitem [ref=f51e306]:
+                  - link "Flan" [ref=f51e307] [cursor=pointer]:
+                    - /url: /models/flan
+                - listitem [ref=f51e308]:
+                  - link "Gemini" [ref=f51e309] [cursor=pointer]:
+                    - /url: /models/gemini
+                - listitem [ref=f51e310]:
+                  - link "Gemini Advanced" [ref=f51e311] [cursor=pointer]:
+                    - /url: /models/gemini-advanced
+                - listitem [ref=f51e312]:
+                  - link "Gemini 1.5 Pro" [ref=f51e313] [cursor=pointer]:
+                    - /url: /models/gemini-pro
+                - listitem [ref=f51e314]:
+                  - link "Gemma" [ref=f51e315] [cursor=pointer]:
+                    - /url: /models/gemma
+                - listitem [ref=f51e316]:
+                  - link "GPT-4" [ref=f51e317] [cursor=pointer]:
+                    - /url: /models/gpt-4
+                - listitem [ref=f51e318]:
+                  - link "Grok-1" [ref=f51e319] [cursor=pointer]:
+                    - /url: /models/grok-1
+                - listitem [ref=f51e320]:
+                  - link "Kimi K2.5" [ref=f51e321] [cursor=pointer]:
+                    - /url: /models/kimi-k2.5
+                - listitem [ref=f51e322]:
+                  - link "LLaMA" [ref=f51e323] [cursor=pointer]:
+                    - /url: /models/llama
+                - listitem [ref=f51e324]:
+                  - link "Llama 3" [ref=f51e325] [cursor=pointer]:
+                    - /url: /models/llama-3
+                - listitem [ref=f51e326]:
+                  - link "Mistral 7B" [ref=f51e327] [cursor=pointer]:
+                    - /url: /models/mistral-7b
+                - listitem [ref=f51e328]:
+                  - link "Mistral Large" [ref=f51e329] [cursor=pointer]:
+                    - /url: /models/mistral-large
+                - listitem [ref=f51e330]:
+                  - link "Mixtral" [ref=f51e331] [cursor=pointer]:
+                    - /url: /models/mixtral
+                - listitem [ref=f51e332]:
+                  - link "Mixtral 8x22B" [ref=f51e333] [cursor=pointer]:
+                    - /url: /models/mixtral-8x22b
+                - listitem [ref=f51e334]:
+                  - link "OLMo" [ref=f51e335] [cursor=pointer]:
+                    - /url: /models/olmo
+                - listitem [ref=f51e336]:
+                  - link "Phi-2" [ref=f51e337] [cursor=pointer]:
+                    - /url: /models/phi-2
+                - listitem [ref=f51e338]:
+                  - link "Sora" [ref=f51e339] [cursor=pointer]:
+                    - /url: /models/sora
+                - listitem [ref=f51e340]:
+                  - link "LLM Collection" [ref=f51e341] [cursor=pointer]:
+                    - /url: /models/collection
+            - listitem [ref=f51e342]:
+              - link "Risks & Misuses" [ref=f51e343] [cursor=pointer]:
+                - /url: /risks
+                - text: Risks & Misuses
+                - img [ref=f51e344]
+              - list [ref=f51e348]:
+                - listitem [ref=f51e349]:
+                  - link "Adversarial Prompting" [ref=f51e350] [cursor=pointer]:
+                    - /url: /risks/adversarial
+                - listitem [ref=f51e351]:
+                  - link "Factuality" [ref=f51e352] [cursor=pointer]:
+                    - /url: /risks/factuality
+                - listitem [ref=f51e353]:
+                  - link "Biases" [ref=f51e354] [cursor=pointer]:
+                    - /url: /risks/biases
+            - listitem [ref=f51e355]:
+              - link "LLM Research Findings" [ref=f51e356] [cursor=pointer]:
+                - /url: /research
+                - text: LLM Research Findings
+                - img [ref=f51e357]
+              - list [ref=f51e361]:
+                - listitem [ref=f51e362]:
+                  - link "LLM Agents" [ref=f51e363] [cursor=pointer]:
+                    - /url: /research/llm-agents
+                - listitem [ref=f51e364]:
+                  - link "RAG for LLMs" [ref=f51e365] [cursor=pointer]:
+                    - /url: /research/rag
+                - listitem [ref=f51e366]:
+                  - link "LLM Reasoning" [ref=f51e367] [cursor=pointer]:
+                    - /url: /research/llm-reasoning
+                - listitem [ref=f51e368]:
+                  - link "RAG Faithfulness" [ref=f51e369] [cursor=pointer]:
+                    - /url: /research/rag-faithfulness
+                - listitem [ref=f51e370]:
+                  - link "LLM In-Context Recall" [ref=f51e371] [cursor=pointer]:
+                    - /url: /research/llm-recall
+                - listitem [ref=f51e372]:
+                  - link "RAG Reduces Hallucination" [ref=f51e373] [cursor=pointer]:
+                    - /url: /research/rag_hallucinations
+                - listitem [ref=f51e374]:
+                  - link "Synthetic Data" [ref=f51e375] [cursor=pointer]:
+                    - /url: /research/synthetic_data
+                - listitem [ref=f51e376]:
+                  - link "ThoughtSculpt" [ref=f51e377] [cursor=pointer]:
+                    - /url: /research/thoughtsculpt
+                - listitem [ref=f51e378]:
+                  - link "Infini-Attention" [ref=f51e379] [cursor=pointer]:
+                    - /url: /research/infini-attention
+                - listitem [ref=f51e380]:
+                  - link "LM-Guided CoT" [ref=f51e381] [cursor=pointer]:
+                    - /url: /research/guided-cot
+                - listitem [ref=f51e382]:
+                  - link "Trustworthiness in LLMs" [ref=f51e383] [cursor=pointer]:
+                    - /url: /research/trustworthiness-in-llms
+                - listitem [ref=f51e384]:
+                  - link "LLM Tokenization" [ref=f51e385] [cursor=pointer]:
+                    - /url: /research/llm-tokenization
+                - listitem [ref=f51e386]:
+                  - link "What is Groq?" [ref=f51e387] [cursor=pointer]:
+                    - /url: /research/groq
+            - listitem [ref=f51e388]:
+              - link "Papers" [ref=f51e389] [cursor=pointer]:
+                - /url: /papers
+            - listitem [ref=f51e390]:
+              - link "Tools" [ref=f51e391] [cursor=pointer]:
+                - /url: /tools
+            - listitem [ref=f51e392]:
+              - link "Notebooks" [ref=f51e393] [cursor=pointer]:
+                - /url: /notebooks
+            - listitem [ref=f51e394]:
+              - link "Datasets" [ref=f51e395] [cursor=pointer]:
+                - /url: /datasets
+            - listitem [ref=f51e396]:
+              - link "Additional Readings" [ref=f51e397] [cursor=pointer]:
+                - /url: /readings
+            - listitem [ref=f51e398]:
+              - link "Services" [ref=f51e399] [cursor=pointer]:
+                - /url: /services
+          - generic [ref=f51e400]:
+            - button "English" [ref=f51e401] [cursor=pointer]:
+              - generic [ref=f51e402]:
+                - img [ref=f51e403]
+                - generic [ref=f51e405]: English
+            - button "Change theme" [ref=f51e407] [cursor=pointer]:
+              - img [ref=f51e409]
+        - article [ref=f51e411]:
+          - main [ref=f51e412]:
+            - generic [ref=f51e413]:
+              - generic "AI Agents" [ref=f51e414]:
+                - link "AI Agents" [ref=f51e415] [cursor=pointer]:
+                  - /url: /agents
+              - img [ref=f51e416]
+              - generic "Context Engineering for AI Agents" [ref=f51e418]
+            - button "Copy page" [ref=f51e421] [cursor=pointer]:
+              - img [ref=f51e422]
+              - text: Copy page
+              - img [ref=f51e425]
+            - heading "Why Context Engineering?" [level=1] [ref=f51e729]
+            - paragraph [ref=f51e730]:
+              - link "Context engineering (opens in a new tab)" [ref=f51e731] [cursor=pointer]:
+                - /url: https://www.promptingguide.ai/guides/context-engineering-guide
+                - text: Context engineering
+                - generic [ref=f51e732]: (opens in a new tab)
+              - text: is a critical practice for building reliable and effective AI agents. This guide explores the importance of context engineering through a practical example of building a deep research agent.
+            - paragraph [ref=f51e733]: Context engineering involves carefully crafting and refining the prompts, instructions, and constraints that guide an AI agent's behavior to achieve desired outcomes.
+            - generic [ref=f51e432]:
+              - generic [ref=f51e433]: 📚
+              - paragraph [ref=f51e734]:
+                - text: This content is based on our new course
+                - link "\"Building Effective AI Agents with n8n\" (opens in a new tab)" [ref=f51e735] [cursor=pointer]:
+                  - /url: https://academy.dair.ai/courses/building-effective-ai-agents
+                  - text: "\"Building Effective AI Agents with n8n\""
+                  - generic [ref=f51e736]: (opens in a new tab)
+                - text: ", which provides comprehensive insights, downloadable templates, prompts, and advanced tips into designing and implementing agentic systems."
+            - heading "What is Context Engineering?Permalink for this section" [level=2] [ref=f51e737]:
+              - text: What is Context Engineering?
+              - link "Permalink for this section" [ref=f51e738] [cursor=pointer]:
+                - /url: "#what-is-context-engineering"
+                - text: "#"
+            - paragraph [ref=f51e739]:
+              - link "Context engineering (opens in a new tab)" [ref=f51e740] [cursor=pointer]:
+                - /url: https://www.promptingguide.ai/guides/context-engineering-guide
+                - text: Context engineering
+                - generic [ref=f51e741]: (opens in a new tab)
+              - text: "is the process of designing, testing, and iterating on the contextual information provided to AI agents to shape their behavior and improve task performance. Unlike simple prompt engineering for single LLM calls, context engineering for agents involves (but not limited to):"
+            - list [ref=f51e742]:
+              - listitem [ref=f51e743]:
+                - strong [ref=f51e744]: System prompts
+                - text: that define agent behavior and capabilities
+              - listitem [ref=f51e745]:
+                - strong [ref=f51e746]: Task constraints
+                - text: that guide decision-making
+              - listitem [ref=f51e747]:
+                - strong [ref=f51e748]: Tool descriptions
+                - text: that clarify when and how to use available functions/tools
+              - listitem [ref=f51e749]:
+                - strong [ref=f51e750]: Memory management
+                - text: for tracking state across multiple steps
+              - listitem [ref=f51e751]:
+                - strong [ref=f51e752]: Error handling
+                - text: patterns for robust execution
+            - 'heading "Building a Deep Research Agent: A Case StudyPermalink for this section" [level=2] [ref=f51e753]':
+              - text: "Building a Deep Research Agent: A Case Study"
+              - link "Permalink for this section" [ref=f51e754] [cursor=pointer]:
+                - /url: "#building-a-deep-research-agent-a-case-study"
+                - text: "#"
+            - paragraph [ref=f51e755]: "Let's explore context engineering principles through an example: a minimal deep research agent that performs web searches and generates reports."
+            - paragraph [ref=f51e756]:
+              - img "Agent Workflow" [ref=f51e757]
+            - heading "The Context Engineering ChallengePermalink for this section" [level=3] [ref=f51e758]:
+              - text: The Context Engineering Challenge
+              - link "Permalink for this section" [ref=f51e759] [cursor=pointer]:
+                - /url: "#the-context-engineering-challenge"
+                - text: "#"
+            - paragraph [ref=f51e760]: "When building the first version of this agent system, the initial implementation revealed several behavioral issues that required careful context engineering:"
+            - 'heading "Issue 1: Incomplete Task ExecutionPermalink for this section" [level=4] [ref=f51e761]':
+              - text: "Issue 1: Incomplete Task Execution"
+              - link "Permalink for this section" [ref=f51e762] [cursor=pointer]:
+                - /url: "#issue-1-incomplete-task-execution"
+                - text: "#"
+            - paragraph [ref=f51e763]:
+              - strong [ref=f51e764]: Problem
+              - text: ": When running the agentic workflow, the orchestrator agent often creates three search tasks but only executes searches for two of them, skipping the third task without explicit justification."
+            - paragraph [ref=f51e765]:
+              - strong [ref=f51e766]: Root Cause
+              - text: ": The agent's system prompt lacked explicit constraints about task completion requirements. The agent made assumptions about which searches were necessary, leading to inconsistent behavior."
+            - paragraph [ref=f51e767]:
+              - strong [ref=f51e768]: Solution
+              - text: ": Two approaches are possible:"
+            - list [ref=f51e769]:
+              - listitem [ref=f51e770]:
+                - strong [ref=f51e771]: Flexible Approach
+                - text: "(current): Allow the agent to decide which searches are necessary, but require explicit reasoning for skipped tasks"
+              - listitem [ref=f51e772]:
+                - strong [ref=f51e773]: Strict Approach
+                - text: ": Add explicit constraints requiring search execution for all planned tasks"
+            - paragraph [ref=f51e774]: "Example system prompt enhancement:"
+            - generic [ref=f51e476]:
+              - code [ref=f51e478]:
+                - generic [ref=f51e479]: You are a deep research agent responsible for executing comprehensive research tasks.
+                - generic [ref=f51e480]: "TASK EXECUTION RULES:"
+                - generic [ref=f51e481]: "- For each search task you create, you MUST either:"
+                - generic [ref=f51e482]: 1. Execute a web search and document findings, OR
+                - generic [ref=f51e483]: 2. Explicitly state why the search is unnecessary and mark it as completed with justification
+                - generic [ref=f51e484]: "- Do NOT skip tasks silently or make assumptions about task redundancy"
+                - generic [ref=f51e485]: "- If you determine tasks overlap, consolidate them BEFORE execution"
+                - generic [ref=f51e486]: "- Update task status in the spreadsheet after each action"
+              - button [ref=f51e488] [cursor=pointer]:
+                - img
+            - 'heading "Issue 2: Lack of Debugging VisibilityPermalink for this section" [level=4] [ref=f51e775]':
+              - text: "Issue 2: Lack of Debugging Visibility"
+              - link "Permalink for this section" [ref=f51e776] [cursor=pointer]:
+                - /url: "#issue-2-lack-of-debugging-visibility"
+                - text: "#"
+            - paragraph [ref=f51e777]:
+              - strong [ref=f51e778]: Problem
+              - text: ": Without proper logging and state tracking, it was difficult to understand why the agent made certain decisions."
+            - paragraph [ref=f51e779]:
+              - strong [ref=f51e780]: Solution
+              - text: ": For this example, it helps to implement a task management system using a spreadsheet or text file (for simplicity) with the following fields:"
+            - list [ref=f51e781]:
+              - listitem [ref=f51e782]: Task ID
+              - listitem [ref=f51e783]: Search query
+              - listitem [ref=f51e784]: Status (todo, in_progress, completed)
+              - listitem [ref=f51e785]: Results summary
+              - listitem [ref=f51e786]: Timestamp
+            - paragraph [ref=f51e787]: "This visibility enables:"
+            - list [ref=f51e788]:
+              - listitem [ref=f51e789]: Real-time debugging of agent decisions
+              - listitem [ref=f51e790]: Understanding of task execution flow
+              - listitem [ref=f51e791]: Identification of behavioral patterns
+              - listitem [ref=f51e792]: Data for iterative improvements
+            - heading "Context Engineering Best PracticesPermalink for this section" [level=3] [ref=f51e793]:
+              - text: Context Engineering Best Practices
+              - link "Permalink for this section" [ref=f51e794] [cursor=pointer]:
+                - /url: "#context-engineering-best-practices"
+                - text: "#"
+            - paragraph [ref=f51e795]: "Based on this case study, here are key principles for effective context engineering:"
+            - heading "1. Eliminate Prompt AmbiguityPermalink for this section" [level=4] [ref=f51e796]:
+              - text: 1. Eliminate Prompt Ambiguity
+              - link "Permalink for this section" [ref=f51e797] [cursor=pointer]:
+                - /url: "#1-eliminate-prompt-ambiguity"
+                - text: "#"
+            - paragraph [ref=f51e798]:
+              - strong [ref=f51e799]: "Bad Example:"
+            - generic [ref=f51e514]:
+              - code [ref=f51e516]:
+                - generic [ref=f51e517]: Perform research on the given topic.
+              - button [ref=f51e519] [cursor=pointer]:
+                - img
+            - paragraph [ref=f51e800]:
+              - strong [ref=f51e801]: "Good Example:"
+            - generic [ref=f51e522]:
+              - code [ref=f51e524]:
+                - generic [ref=f51e525]: "Perform research on the given topic by:"
+                - generic [ref=f51e526]: 1. Breaking down the query into 3-5 specific search subtasks
+                - generic [ref=f51e527]: 2. Executing a web search for EACH subtask using the search_tool
+                - generic [ref=f51e528]: 3. Documenting findings for each search in the task tracker
+                - generic [ref=f51e529]: 4. Synthesizing all findings into a comprehensive report
+              - button [ref=f51e531] [cursor=pointer]:
+                - img
+            - heading "2. Make Expectations ExplicitPermalink for this section" [level=4] [ref=f51e802]:
+              - text: 2. Make Expectations Explicit
+              - link "Permalink for this section" [ref=f51e803] [cursor=pointer]:
+                - /url: "#2-make-expectations-explicit"
+                - text: "#"
+            - paragraph [ref=f51e804]: "Don't assume the agent knows what you want. Be explicit about:"
+            - list [ref=f51e805]:
+              - listitem [ref=f51e806]: Required vs. optional actions
+              - listitem [ref=f51e807]: Quality standards
+              - listitem [ref=f51e808]: Output formats
+              - listitem [ref=f51e809]: Decision-making criteria
+            - heading "3. Implement ObservabilityPermalink for this section" [level=4] [ref=f51e810]:
+              - text: 3. Implement Observability
+              - link "Permalink for this section" [ref=f51e811] [cursor=pointer]:
+                - /url: "#3-implement-observability"
+                - text: "#"
+            - paragraph [ref=f51e812]: "Build debugging mechanisms into your agentic system:"
+            - list [ref=f51e813]:
+              - listitem [ref=f51e814]: Log all agent decisions and reasoning
+              - listitem [ref=f51e815]: Track state changes in external storage
+              - listitem [ref=f51e816]: Record tool calls and their outcomes
+              - listitem [ref=f51e817]: Capture errors and edge cases
+            - generic [ref=f51e548]:
+              - generic [ref=f51e549]: ⚠️
+              - paragraph [ref=f51e818]: Pay close attention to every run of your agentic system. Strange behaviors and edge cases are opportunities to improve your context engineering efforts.
+            - heading "4. Iterate Based on BehaviorPermalink for this section" [level=4] [ref=f51e819]:
+              - text: 4. Iterate Based on Behavior
+              - link "Permalink for this section" [ref=f51e820] [cursor=pointer]:
+                - /url: "#4-iterate-based-on-behavior"
+                - text: "#"
+            - paragraph [ref=f51e821]: "Context engineering is an iterative process:"
+            - list [ref=f51e822]:
+              - listitem [ref=f51e823]:
+                - strong [ref=f51e824]: Deploy
+                - text: the agent with initial context
+              - listitem [ref=f51e825]:
+                - strong [ref=f51e826]: Observe
+                - text: actual behavior in production
+              - listitem [ref=f51e827]:
+                - strong [ref=f51e828]: Identify
+                - text: deviations from expected behavior
+              - listitem [ref=f51e829]:
+                - strong [ref=f51e830]: Refine
+                - text: system prompts and constraints
+              - listitem [ref=f51e831]:
+                - strong [ref=f51e832]: Test
+                - text: and validate improvements
+              - listitem [ref=f51e833]:
+                - strong [ref=f51e834]: Repeat
+            - heading "5. Balance Flexibility and ConstraintsPermalink for this section" [level=4] [ref=f51e835]:
+              - text: 5. Balance Flexibility and Constraints
+              - link "Permalink for this section" [ref=f51e836] [cursor=pointer]:
+                - /url: "#5-balance-flexibility-and-constraints"
+                - text: "#"
+            - paragraph [ref=f51e837]: "Consider the tradeoff between:"
+            - list [ref=f51e838]:
+              - listitem [ref=f51e839]:
+                - strong [ref=f51e840]: Strict constraints
+                - text: ": More predictable but less adaptable"
+              - listitem [ref=f51e841]:
+                - strong [ref=f51e842]: Flexible guidelines
+                - text: ": More adaptable but potentially inconsistent"
+            - paragraph [ref=f51e843]: Choose based on your use case requirements.
+            - heading "Advanced Context Engineering TechniquesPermalink for this section" [level=2] [ref=f51e844]:
+              - text: Advanced Context Engineering Techniques
+              - link "Permalink for this section" [ref=f51e845] [cursor=pointer]:
+                - /url: "#advanced-context-engineering-techniques"
+                - text: "#"
+            - heading "Layered Context ArchitecturePermalink for this section" [level=3] [ref=f51e846]:
+              - text: Layered Context Architecture
+              - link "Permalink for this section" [ref=f51e847] [cursor=pointer]:
+                - /url: "#layered-context-architecture"
+                - text: "#"
+            - paragraph [ref=f51e848]: "Context engineering applies to all stages of the AI agent build process. Depending on the AI Agent, it's sometimes helpful to think of context as a hierarchical structure. For our basic agentic system, we can organize context into hierarchical layers:"
+            - list [ref=f51e849]:
+              - listitem [ref=f51e850]:
+                - strong [ref=f51e851]: System Layer
+                - text: ": Core agent identity and capabilities"
+              - listitem [ref=f51e852]:
+                - strong [ref=f51e853]: Task Layer
+                - text: ": Specific instructions for the current task"
+              - listitem [ref=f51e854]:
+                - strong [ref=f51e855]: Tool Layer
+                - text: ": Descriptions and usage guidelines for each tool"
+              - listitem [ref=f51e856]:
+                - strong [ref=f51e857]: Memory Layer
+                - text: ": Relevant historical context and learnings"
+            - heading "Dynamic Context AdjustmentPermalink for this section" [level=3] [ref=f51e858]:
+              - text: Dynamic Context Adjustment
+              - link "Permalink for this section" [ref=f51e859] [cursor=pointer]:
+                - /url: "#dynamic-context-adjustment"
+                - text: "#"
+            - paragraph [ref=f51e860]: "Another approach is to dynamically adjust context based on the task complexity, available resources, previous execution history, and error patterns. Based on our example, we can adjust context based on:"
+            - list [ref=f51e861]:
+              - listitem [ref=f51e862]: Task complexity
+              - listitem [ref=f51e863]: Available resources
+              - listitem [ref=f51e864]: Previous execution history
+              - listitem [ref=f51e865]: Error patterns
+            - heading "Context ValidationPermalink for this section" [level=3] [ref=f51e866]:
+              - text: Context Validation
+              - link "Permalink for this section" [ref=f51e867] [cursor=pointer]:
+                - /url: "#context-validation"
+                - text: "#"
+            - paragraph [ref=f51e868]: "Evaluation is key to ensuring context engineering techniques are working as they should for your AI agents. Before deployment, validate your context design:"
+            - list [ref=f51e869]:
+              - listitem [ref=f51e870]:
+                - strong [ref=f51e871]: Completeness
+                - text: ": Does it cover all important scenarios?"
+              - listitem [ref=f51e872]:
+                - strong [ref=f51e873]: Clarity
+                - text: ": Is it unambiguous?"
+              - listitem [ref=f51e874]:
+                - strong [ref=f51e875]: Consistency
+                - text: ": Do different parts align?"
+              - listitem [ref=f51e876]:
+                - strong [ref=f51e877]: Testability
+                - text: ": Can you verify the behavior?"
+            - heading "Common Context Engineering PitfallsPermalink for this section" [level=2] [ref=f51e878]:
+              - text: Common Context Engineering Pitfalls
+              - link "Permalink for this section" [ref=f51e879] [cursor=pointer]:
+                - /url: "#common-context-engineering-pitfalls"
+                - text: "#"
+            - paragraph [ref=f51e880]: "Below are a few common context engineering pitfalls to avoid when building AI agents:"
+            - heading "1. Over-ConstraintPermalink for this section" [level=3] [ref=f51e881]:
+              - text: 1. Over-Constraint
+              - link "Permalink for this section" [ref=f51e882] [cursor=pointer]:
+                - /url: "#1-over-constraint"
+                - text: "#"
+            - paragraph [ref=f51e883]:
+              - strong [ref=f51e884]: Problem
+              - text: ": Too many rules make the agent inflexible and unable to handle edge cases."
+            - paragraph [ref=f51e885]:
+              - strong [ref=f51e886]: Example
+              - text: ":"
+            - generic [ref=f51e620]:
+              - code [ref=f51e622]:
+                - generic [ref=f51e623]: NEVER skip a search task.
+                - generic [ref=f51e624]: ALWAYS perform exactly 3 searches.
+                - generic [ref=f51e625]: NEVER combine similar queries.
+              - button [ref=f51e627] [cursor=pointer]:
+                - img
+            - paragraph [ref=f51e887]:
+              - strong [ref=f51e888]: Better Approach
+              - text: ":"
+            - generic [ref=f51e630]:
+              - code [ref=f51e632]:
+                - generic [ref=f51e633]: Aim to perform searches for all planned tasks. If you determine that tasks are redundant, consolidate them before execution and document your reasoning.
+              - button [ref=f51e635] [cursor=pointer]:
+                - img
+            - heading "2. Under-SpecificationPermalink for this section" [level=3] [ref=f51e889]:
+              - text: 2. Under-Specification
+              - link "Permalink for this section" [ref=f51e890] [cursor=pointer]:
+                - /url: "#2-under-specification"
+                - text: "#"
+            - paragraph [ref=f51e891]:
+              - strong [ref=f51e892]: Problem
+              - text: ": Vague instructions lead to unpredictable behavior."
+            - paragraph [ref=f51e893]:
+              - strong [ref=f51e894]: Example
+              - text: ":"
+            - generic [ref=f51e642]:
+              - code [ref=f51e644]:
+                - generic [ref=f51e645]: Do some research and create a report.
+              - button [ref=f51e647] [cursor=pointer]:
+                - img
+            - paragraph [ref=f51e895]:
+              - strong [ref=f51e896]: Better Approach
+              - text: ":"
+            - generic [ref=f51e650]:
+              - code [ref=f51e652]:
+                - generic [ref=f51e653]: "Execute research by:"
+                - generic [ref=f51e654]: 1. Analyzing the user query to identify key information needs
+                - generic [ref=f51e655]: 2. Creating 3-5 specific search tasks covering different aspects
+                - generic [ref=f51e656]: 3. Executing searches using the search_tool for each task
+                - generic [ref=f51e657]: "4. Synthesizing findings into a structured report with sections for:"
+                - generic [ref=f51e658]: "- Executive summary"
+                - generic [ref=f51e659]: "- Key findings per search task"
+                - generic [ref=f51e660]: "- Conclusions and insights"
+              - button [ref=f51e662] [cursor=pointer]:
+                - img
+            - heading "3. Ignoring Error CasesPermalink for this section" [level=3] [ref=f51e897]:
+              - text: 3. Ignoring Error Cases
+              - link "Permalink for this section" [ref=f51e898] [cursor=pointer]:
+                - /url: "#3-ignoring-error-cases"
+                - text: "#"
+            - paragraph [ref=f51e899]:
+              - strong [ref=f51e900]: Problem
+              - text: ": Context doesn't specify behavior when things go wrong."
+            - paragraph [ref=f51e901]:
+              - strong [ref=f51e902]: Solution
+              - text: ": In some cases, it helps to add error handling instructions to your AI Agents:"
+            - generic [ref=f51e669]:
+              - code [ref=f51e671]:
+                - generic [ref=f51e672]: "ERROR HANDLING:"
+                - generic [ref=f51e673]: "- If a search fails, retry once with a rephrased query"
+                - generic [ref=f51e674]: "- If retry fails, document the failure and continue with remaining tasks"
+                - generic [ref=f51e675]: "- If more than 50% of searches fail, alert the user and request guidance"
+                - generic [ref=f51e676]: "- Never stop execution completely without user notification"
+              - button [ref=f51e678] [cursor=pointer]:
+                - img
+            - heading "Measuring Context Engineering SuccessPermalink for this section" [level=2] [ref=f51e903]:
+              - text: Measuring Context Engineering Success
+              - link "Permalink for this section" [ref=f51e904] [cursor=pointer]:
+                - /url: "#measuring-context-engineering-success"
+                - text: "#"
+            - paragraph [ref=f51e905]: "Track these metrics to evaluate context engineering effectiveness:"
+            - list [ref=f51e906]:
+              - listitem [ref=f51e907]:
+                - strong [ref=f51e908]: Task Completion Rate
+                - text: ": Percentage of tasks completed successfully"
+              - listitem [ref=f51e909]:
+                - strong [ref=f51e910]: Behavioral Consistency
+                - text: ": Similarity of agent behavior across similar inputs"
+              - listitem [ref=f51e911]:
+                - strong [ref=f51e912]: Error Rate
+                - text: ": Frequency of failures and unexpected behaviors"
+              - listitem [ref=f51e913]:
+                - strong [ref=f51e914]: User Satisfaction
+                - text: ": Quality and usefulness of outputs"
+              - listitem [ref=f51e915]:
+                - strong [ref=f51e916]: Debugging Time
+                - text: ": Time required to identify and fix issues"
+            - paragraph [ref=f51e917]: "It's important to not treat context engineering as a one-time activity but an ongoing practice that requires:"
+            - list [ref=f51e918]:
+              - listitem [ref=f51e919]:
+                - strong [ref=f51e920]: Systematic observation
+                - text: of agent behavior
+              - listitem [ref=f51e921]:
+                - strong [ref=f51e922]: Careful analysis
+                - text: of failures and edge cases
+              - listitem [ref=f51e923]:
+                - strong [ref=f51e924]: Iterative refinement
+                - text: of instructions and constraints
+              - listitem [ref=f51e925]:
+                - strong [ref=f51e926]: Rigorous testing
+                - text: of changes
+            - paragraph [ref=f51e927]: We will be covering these principles in more detail in upcoming guides. By applying these principles, you can build AI agent systems that are reliable, predictable, and effective at solving complex tasks.
+            - generic [ref=f51e704]:
+              - generic [ref=f51e705]: 🎓
+              - paragraph [ref=f51e928]:
+                - text: Learn how to build production-ready AI agents in our comprehensive course.
+                - link "Join now! (opens in a new tab)" [ref=f51e929] [cursor=pointer]:
+                  - /url: https://academy.dair.ai/courses/building-effective-ai-agents
+                  - text: Join now!
+                  - generic [ref=f51e930]: (opens in a new tab)
+                - text: Use code PROMPTING20 to get an extra 20% off.
+            - generic [ref=f51e711]:
+              - generic [ref=f51e712]: Last updated on Sun Feb 01 2026
+              - generic [ref=f51e713]:
+                - generic [ref=f51e714]: Sponsored by
+                - link "SerpAPI" [ref=f51e715] [cursor=pointer]:
+                  - /url: https://serpapi.com/
+                  - img "SerpAPI" [ref=f51e716]
+            - generic [ref=f51e717]:
+              - link "AI Workflows vs AI Agents" [ref=f51e718] [cursor=pointer]:
+                - /url: /agents/ai-workflows-vs-ai-agents
+                - img [ref=f51e719]
+                - text: AI Workflows vs AI Agents
+              - link "Context Engineering Deep Dive" [ref=f51e721] [cursor=pointer]:
+                - /url: /agents/context-engineering-deep-dive
+                - text: Context Engineering Deep Dive
+                - img [ref=f51e722]
+      - contentinfo [ref=f51e724]:
+        - separator [ref=f51e725]
+        - generic [ref=f51e727]: Copyright © 2026 DAIR.AI
+  - alert [ref=f51e728]

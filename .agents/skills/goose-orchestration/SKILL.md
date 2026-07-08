@@ -64,7 +64,8 @@ there must match the "Invoke when" column below.
 | `review-critic` | Confidence-filtered code review + Beads hygiene | After any implementation; before closing bead | Planning or architecture decisions |
 | `principal-engineer` | Blast radius, breaking changes, escalation | Shared infra touched; public API changed; 2+ BLOCKs | Routine review (use review-critic first) |
 | `qa-automation` | Full test pipeline: unit + integration + E2E + CI | After implementation is complete | Before implementation exists |
-| `ui-ux-auditor` | WCAG 2.2 AA + UX + browser evidence | After any UI change | Backend-only or CLI-only changes |
+| `ux-researcher` | User research, personas, usability testing | New feature, user validation | Visual design, a11y compliance |
+  | `ui-designer`   | Design system, WCAG 2.2 AA, a11y audit | Any UI change | User research, backend-only |
 
 ### Subrecipes — structured, isolated sessions, typed parameters
 
@@ -264,7 +265,8 @@ bd close <id> --reason "Done: <summary>"
 | `implementation-worker` | Scoped TDD implementation                  |
 | `tdd-guide`             | RED→GREEN→REFACTOR, coverage gates         |
 | `qa-automation`         | Test pipeline, flaky tests, CI integration |
-| `ui-ux-auditor`         | WCAG 2.2 AA, UX quality, browser evidence  |
+| `ux-researcher`         | User research, personas, journey maps, usability testing |
+| `ui-designer`           | Design system tokens, WCAG 2.2 AA, a11y, browser evidence |
 | `principal-engineer`    | Breaking changes, blast radius, escalation |
 | `harness-orchestrator`  | Multi-step SDD+TDD coordination            |
 

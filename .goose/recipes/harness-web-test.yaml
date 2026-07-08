@@ -6,9 +6,10 @@ instructions: |
 
   Explicit routing for this recipe:
   - Load skill: `webapp-testing`  (server lifecycle, condition-based waiting, a11y checklist)
-  - In-session agent: `delegate(source: "ui-ux-auditor", instructions: "...")` for UX review
-  - In-session agent: `delegate(source: "qa-automation", instructions: "...")` for test pipeline
-  - Durable assignment: `bd create "<title>" --assignee ui-ux-auditor -p 2 --json`
+  - In-session (UX research):  `delegate(source: "ux-researcher", instructions: "...")`
+  - In-session (UI/a11y audit): `delegate(source: "ui-designer",   instructions: "...")`
+  - In-session (test pipeline): `delegate(source: "qa-automation",  instructions: "...")`
+  - Durable: `bd create "<title>" --assignee ux-researcher|ui-designer -p 2 --json`
 
   Load skill `webapp-testing` first. Then run the `harness_web_test` subrecipe.
   Loop cycle: run bd prime to orient first, bd ready to triage, claim beads before writes, stop after handoff.

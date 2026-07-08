@@ -67,5 +67,6 @@ Do not self-approve CRITICAL or HIGH findings — require a second pass with exp
 Orient before auditing:
   bd prime            → load any existing UX issues and design decisions
   bd ready --json     → check for open UX beads
-  bd create "UX: <finding>" --assignee ui-ux-auditor   → file issues for findings
+  bd create "UX research: <finding>" --assignee ux-researcher -p 2   → file research findings
+  bd create "UI design: <finding>" --assignee ui-designer -p 2         → file design/a11y findings
   bd remember "Design system: canonical source is <file>; read when..." --key design-system-pointer

@@ -265,7 +265,8 @@ Orchestration decision:
 | `principal-engineer` | opus-4-5 | ✅ blast radius | ❌ | ✅ breaking-change |
 | `tdd-guide` | sonnet-4-5 | ✅ RED→GREEN | ✅ edge cases | ⚠️ |
 | `qa-automation` | sonnet-4-5 | ✅ pyramid | ❌ | ⚠️ |
-| `ui-ux-auditor` | sonnet-4-5 | ✅ 8-dimension | ❌ | ⚠️ |
+| `ux-researcher` | sonnet-4-5 | ✅ research process | ❌ | ⚠️ |
+| `ui-designer`   | sonnet-4-5 | ✅ 8-dimension a11y | ❌ | ⚠️ |
 
 ### Recipe Inventory (16 recipes = 10 top-level + 6 subrecipes)
 
@@ -279,8 +280,8 @@ Orchestration decision:
 | sdd-master | ✅ 7-phase table | ✅ per phase | ✅ per phase | ❌ no subrecipe |
 | harness-memory | ✅ beads-harness | ❌ direct ops | ❌ | ✅ |
 | harness-release | ✅ agentic-dev-harness | ✅ principal-engineer | ✅ | ✅ |
-| harness-web-test | ✅ webapp-testing | ✅ ui-ux-auditor | ✅ | ✅ |
-| ui-ux-suite | ✅ ui-ux-quality | ✅ ui-ux-auditor | ✅ | ❌ no subrecipe |
+| harness-web-test | ✅ webapp-testing | ✅ ux-researcher + ui-designer | ✅ | ✅ |
+| ui-ux-suite      | ✅ ui-ux-quality | ✅ ux-researcher → ui-designer  | ✅ | ❌ no subrecipe |
 
 ---
 

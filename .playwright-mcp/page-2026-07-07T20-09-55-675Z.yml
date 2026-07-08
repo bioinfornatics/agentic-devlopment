@@ -1,0 +1,1375 @@
+- generic [active] [ref=f55e1]:
+  - generic [ref=f55e5]:
+    - navigation [ref=f55e8]:
+      - link "Skip to content" [ref=f55e9] [cursor=pointer]:
+        - /url: "#content"
+      - generic [ref=f55e10]:
+        - link "Atlassian logo" [ref=f55e12] [cursor=pointer]:
+          - /url: /
+          - img "Atlassian" [ref=f55e13]
+        - generic [ref=f55e26]:
+          - generic [ref=f55e28]:
+            - search [ref=f55e30]:
+              - generic:
+                - generic: Search
+              - button "search" [ref=f55e31] [cursor=pointer]:
+                - img [ref=f55e32]
+            - link "Sign in" [ref=f55e39] [cursor=pointer]:
+              - generic [ref=f55e43]: Sign in
+          - button "Toggle Menu" [ref=f55e46]:
+            - generic [ref=f55e47]:
+              - img [ref=f55e48]
+              - img [ref=f55e49]
+              - img [ref=f55e50]
+    - main [ref=f55e52]:
+      - navigation "Agile topics mobile navigation" [ref=f55e56]:
+        - generic [ref=f55e57]:
+          - button "Agile topics" [ref=f55e58] [cursor=pointer]:
+            - generic [ref=f55e61]: Agile topics
+          - generic:
+            - generic:
+              - list:
+                - listitem:
+                  - link "What is Agile?":
+                    - /url: /agile
+                    - generic: What is Agile?
+                - listitem:
+                  - link "Agile manifesto":
+                    - /url: /agile/manifesto
+                    - generic: Agile manifesto
+                - listitem:
+                  - generic:
+                    - button "Scrum" [expanded]:
+                      - generic:
+                        - paragraph: Scrum
+                    - generic:
+                      - generic:
+                        - generic:
+                          - list:
+                            - listitem:
+                              - link "What is Scrum?":
+                                - /url: /agile/scrum
+                                - generic: What is Scrum?
+                            - listitem:
+                              - link "Sprints":
+                                - /url: /agile/scrum/sprints
+                                - generic: Sprints
+                            - listitem:
+                              - link "Sprint planning":
+                                - /url: /agile/scrum/sprint-planning
+                                - generic: Sprint planning
+                            - listitem:
+                              - link "Agile ceremonies":
+                                - /url: /agile/scrum/ceremonies
+                                - generic: Agile ceremonies
+                            - listitem:
+                              - link "Product backlogs":
+                                - /url: /agile/scrum/backlogs
+                                - generic: Product backlogs
+                            - listitem:
+                              - link "Sprint reviews":
+                                - /url: /agile/scrum/sprint-reviews
+                                - generic: Sprint reviews
+                            - listitem:
+                              - link "Standups":
+                                - /url: /agile/scrum/standups
+                                - generic: Standups
+                            - listitem:
+                              - link "Scrum master":
+                                - /url: /agile/scrum/scrum-master
+                                - generic: Scrum master
+                            - listitem:
+                              - link "Agile retrospectives":
+                                - /url: /agile/scrum/retrospectives
+                                - generic: Agile retrospectives
+                            - listitem:
+                              - link "Distributed Scrum":
+                                - /url: /agile/scrum/distributed-scrum
+                                - generic: Distributed Scrum
+                            - listitem:
+                              - link "Scrum roles":
+                                - /url: /agile/scrum/roles
+                                - generic: Scrum roles
+                            - listitem:
+                              - link "Scrum of Scrums":
+                                - /url: /agile/scrum/scrum-of-scrums
+                                - generic: Scrum of Scrums
+                            - listitem:
+                              - link "Agile Scrum artifacts":
+                                - /url: /agile/scrum/artifacts
+                                - generic: Agile Scrum artifacts
+                            - listitem:
+                              - link "Scrum metrics":
+                                - /url: /agile/scrum/scrum-metrics
+                                - generic: Scrum metrics
+                            - listitem:
+                              - link "Scrum in Jira and Confluence":
+                                - /url: /agile/scrum/jira-confluence-scrum
+                                - generic: Scrum in Jira and Confluence
+                            - listitem:
+                              - link "Agile vs. Scrum":
+                                - /url: /agile/scrum/agile-vs-scrum
+                                - generic: Agile vs. Scrum
+                            - listitem:
+                              - link "Backlog refinement":
+                                - /url: /agile/scrum/backlog-refinement
+                                - generic: Backlog refinement
+                            - listitem:
+                              - link "Scrum master vs. project manager":
+                                - /url: /agile/scrum/scrum-master-project-manager
+                                - generic: Scrum master vs. project manager
+                - listitem:
+                  - generic:
+                    - button "Kanban":
+                      - generic:
+                        - paragraph: Kanban
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/kanban
+                              - generic: What is Kanban?
+                          - listitem:
+                            - link:
+                              - /url: /agile/kanban/boards
+                              - generic: Kanban boards
+                          - listitem:
+                            - link:
+                              - /url: /agile/kanban/wip-limits
+                              - generic: WIP limits
+                          - listitem:
+                            - link:
+                              - /url: /agile/kanban/kanban-vs-scrum
+                              - generic: Kanban vs. Scrum
+                          - listitem:
+                            - link:
+                              - /url: /agile/kanban/kanplan
+                              - generic: Kanplan
+                          - listitem:
+                            - link:
+                              - /url: /agile/kanban/cards
+                              - generic: Kanban cards
+                - listitem:
+                  - generic:
+                    - button "Agile project management":
+                      - generic:
+                        - paragraph: Agile project management
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management
+                              - generic: What is Agile project management?
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/project-management-intro
+                              - generic: Agile vs. Waterfall methodology
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/workflow
+                              - generic: Agile workflow
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/ai-workflow-automation
+                              - generic: AI workflow automation
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/epics-stories-themes
+                              - generic: Epics, stories, and initiatives
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/epics
+                              - generic: Agile epics
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/user-stories
+                              - generic: User stories
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/estimation
+                              - generic: Story points and estimation
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/task-management-tools
+                              - generic: Task management tools
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/metrics
+                              - generic: Agile metrics
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/gantt-chart
+                              - generic: Gantt chart
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/free-project-management-software
+                              - generic: Free project management software
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/program-management
+                              - generic: Program vs. project management
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/project-baseline
+                              - generic: Project baseline
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/continuous-improvement
+                              - generic: Continuous improvement
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/lean-principles
+                              - generic: "Lean Principles: Advancing DevOps Efficiency"
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/3-pillars-scrum
+                              - generic: Pillars of Scrum
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/scrum-board
+                              - generic: Scrum board
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/waterfall-methodology
+                              - generic: Waterfall methodology
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/velocity-scrum
+                              - generic: Velocity in Scrum
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/definition-of-ready
+                              - generic: Definition of Ready
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/lean-vs-agile
+                              - generic: Lean vs. Agile
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/scrumban
+                              - generic: Scrumban
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/lean-methodology
+                              - generic: Lean methodology
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/sprint-backlog
+                              - generic: Sprint backlog
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/burn-up-chart
+                              - generic: Burn up chart
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/kanban-principles
+                              - generic: Kanban principles
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/kanban-metrics
+                              - generic: Kanban metrics
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/program-vs-project-manager
+                              - generic: Program vs. project manager
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/gantt-chart-examples
+                              - generic: Gantt chart examples
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/definition-of-done
+                              - generic: Definition of Done
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/backlog-grooming
+                              - generic: Backlog grooming
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/lean-process-improvement
+                              - generic: Lean process improvement
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/backlog-refinement-meeting
+                              - generic: Backlog refinement meetings
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/scrum-values
+                              - generic: Scrum values
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/scope-of-work
+                              - generic: Scope of work
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/scrum-tools
+                              - generic: Scrum tools
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/tools
+                              - generic: Agile project management tools
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/workflow-automation-software
+                              - generic: Workflow automation software
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/templates
+                              - generic: Agile templates
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/task-tracker
+                              - generic: Task tracker
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/workflow-automation
+                              - generic: Workflow automation
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/status-report
+                              - generic: Project status report
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/workflow-chart
+                              - generic: Workflow chart
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/project-roadmap
+                              - generic: Project roadmap
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/project-schedule
+                              - generic: Project schedule
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/issue-tracking-software
+                              - generic: Issue tracking software
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/roadmap-tools
+                              - generic: Project management roadmap tools
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/technology-roadmap
+                              - generic: Technology roadmap
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/project-scheduling-software
+                              - generic: Project scheduling software
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/backlog-management-tools
+                              - generic: Backlog management tools
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/workflow-management
+                              - generic: Workflow management
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/workflow-examples
+                              - generic: Workflow examples
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/create-project-roadmap
+                              - generic: How to create a project roadmap
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/sprint-planning-tools
+                              - generic: Sprint planning tools
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/sprint-demo
+                              - generic: Sprint demo
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/project-timeline-software
+                              - generic: Project timeline software
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/task-automation
+                              - generic: Task automation
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/sprint-backlog-product-backlog
+                              - generic: Product backlog vs. sprint backlog
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/workflow-management-tools
+                              - generic: Workflow management tools
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/project-management-dependencies
+                              - generic: Project dependencies
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/task-management-dashboard
+                              - generic: Task management dashboards
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/sprint-cadence
+                              - generic: Sprint cadence
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/fast-tracking
+                              - generic: Fast tracking
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/fibonacci-story-points
+                              - generic: Fibonacci story points
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/product-vs-project-management
+                              - generic: Product vs. project management
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/deadline-management
+                              - generic: Deadline management
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/skills
+                              - generic: Project management skills
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/workload-management
+                              - generic: Workload management
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/free-project-management-software
+                              - generic: Free project management software
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/continuous-improvement
+                              - generic: Continuous improvement process
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/risk-analysis
+                              - generic: Risk analysis
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/ai-agents
+                              - generic: Project management AI agents
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/pmo
+                              - generic: What is a PMO?
+                          - listitem:
+                            - link:
+                              - /url: /agile/project-management/adaptive-project-management
+                              - generic: Adaptive project management
+                - listitem:
+                  - generic:
+                    - button "Product management":
+                      - generic:
+                        - paragraph: Product management
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management
+                              - generic: What is product management?
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-roadmaps
+                              - generic: Product roadmaps
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-manager
+                              - generic: Product manager
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/tips-for-new-product-manager
+                              - generic: New product managers tips
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/roadmaps
+                              - generic: Agile roadmaps
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/tips-for-presenting-product-roadmaps
+                              - generic: Product roadmap presentation
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/requirements
+                              - generic: Product requirements
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-analytics
+                              - generic: Product analytics
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-development
+                              - generic: Product development
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/remote-product-management
+                              - generic: Remote product management
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/minimum-viable-product
+                              - generic: Minimal viable product
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/discovery
+                              - generic: Product discovery
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-specification
+                              - generic: Product specification
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-development-strategy
+                              - generic: Product development strategy
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-development-software
+                              - generic: Product development software
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/new-product-development-process
+                              - generic: New product development process
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-management-kpis
+                              - generic: Product management KPIs
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/nps-score
+                              - generic: Net Promoter Score
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-critique
+                              - generic: Product critique
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/prioritization-framework
+                              - generic: Product prioritization frameworks
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-features
+                              - generic: Product features
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-management-tools
+                              - generic: Product management tools
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/plm
+                              - generic: Product lifecycle management
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/roadmap-software
+                              - generic: Product roadmap software
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-launch-checklist
+                              - generic: Product launch checklist
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-strategy
+                              - generic: Product strategy
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-engineering
+                              - generic: Product engineering
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-operations
+                              - generic: Product operations
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/portfolio-management
+                              - generic: Product portfolio management
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/pm-and-ai
+                              - generic: AI product management
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/growth-product-management
+                              - generic: Growth product management
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-metrics
+                              - generic: Product metrics
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-release
+                              - generic: Product release
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/feature-request
+                              - generic: Feature request
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-launch
+                              - generic: Product launch
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-launch-timeline
+                              - generic: Product launch timeline
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-planning
+                              - generic: Product planning
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-launch-event
+                              - generic: Product launch event
+                          - listitem:
+                            - link:
+                              - /url: /product-management/product-operating-model
+                              - generic: Product operating model
+                          - listitem:
+                            - link:
+                              - /url: /agile/product-management/product-design
+                              - generic: Product design
+                - listitem:
+                  - link "Value stream management":
+                    - /url: /agile/value-stream-management
+                    - generic: Value stream management
+                - listitem:
+                  - generic:
+                    - button "The Agile advantage":
+                      - generic:
+                        - paragraph: The Agile advantage
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/advantage
+                              - generic: What is the Agile advantage?
+                          - listitem:
+                            - link:
+                              - /url: /agile/advantage/connect-business-strategy-to-development-reality
+                              - generic: Business strategy to development
+                          - listitem:
+                            - link:
+                              - /url: /agile/advantage/agile-is-a-competitive-advantage
+                              - generic: Agile competitive advantage
+                          - listitem:
+                            - link:
+                              - /url: /agile/advantage/agile-mindset
+                              - generic: Agile mindset
+                          - listitem:
+                            - link:
+                              - /url: /agile/advantage/going-agile
+                              - generic: Going Agile
+                - listitem:
+                  - generic:
+                    - button "Agile at scale":
+                      - generic:
+                        - paragraph: Agile at scale
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale
+                              - generic: What is Agile at scale?
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale/managing-an-agile-portfolio
+                              - generic: Managing an Agile portfolio
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale/lean-portfolio-management
+                              - generic: Lean portfolio management
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale/okr
+                              - generic: Agile OKRs
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale/long-term-agile-planning
+                              - generic: Long-term Agile planning
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale/what-is-safe
+                              - generic: Scaled Agile Framework
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale/spotify
+                              - generic: Agile Spotify model
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale/scrum-at-scale
+                              - generic: Scrum at scale
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale/agile-iron-triangle
+                              - generic: Agile iron triangle
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale/less
+                              - generic: Large-Scale Scrum Framework
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale/using-improvement-kata-to-support-lean
+                              - generic: Improvement Kata
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-at-scale/beyond-the-basics-whitepaper
+                              - generic: Beyond the basics of scaling Agile
+                - listitem:
+                  - generic:
+                    - button "Software development":
+                      - generic:
+                        - paragraph: Software development
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development
+                              - generic: What is software development?
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/developer
+                              - generic: Software developer
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/dev-managers-vs-scrum-masters
+                              - generic: Dev managers vs. Scrum masters
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/git
+                              - generic: Git
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/branching
+                              - generic: Branching strategy
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/git-branching-video
+                              - generic: Create a branch in Git
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/code-reviews
+                              - generic: Code reviews
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/release
+                              - generic: Software release
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/stress-free-release
+                              - generic: Stress free release
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/technical-debt
+                              - generic: Technical debt
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/testing
+                              - generic: Agile testing
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/incident-response
+                              - generic: Incident response
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/continuous-integration
+                              - generic: Continuous integration
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/sdlc
+                              - generic: Software development lifecycle
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/bug-triage
+                              - generic: Bug triage
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/software-deployment
+                              - generic: Software deployment
+                          - listitem:
+                            - link:
+                              - /url: /agile/software-development/adaptive-software-development
+                              - generic: Adaptive software development
+                - listitem:
+                  - generic:
+                    - button "Agile design":
+                      - generic:
+                        - paragraph: Agile design
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/design
+                              - generic: What is Agile design?
+                          - listitem:
+                            - link:
+                              - /url: /agile/design/design-process
+                              - generic: Design process
+                          - listitem:
+                            - link:
+                              - /url: /agile/design/product-design-process-customer-interview
+                              - generic: Product design process
+                          - listitem:
+                            - link:
+                              - /url: /agile/design/collaborative-design-in-agile-teams-video
+                              - generic: Collaborative design
+                          - listitem:
+                            - link:
+                              - /url: /agile/design/creative-operations
+                              - generic: Creative operations
+                          - listitem:
+                            - link:
+                              - /url: /agile/design/design-sprint
+                              - generic: Design sprint
+                - listitem:
+                  - generic:
+                    - button "Agile marketing":
+                      - generic:
+                        - paragraph: Agile marketing
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-marketing
+                              - generic: What is Agile Marketing?
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-marketing/marketing-project-manager
+                              - generic: Marketing project manager
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-marketing/agile-marketing-team
+                              - generic: Agile marketing team
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-marketing/ai-marketing-automation
+                              - generic: AI marketing automation
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-marketing/marketing-operations
+                              - generic: Marketing operations
+                - listitem:
+                  - link "DevOps":
+                    - /url: /agile/devops
+                    - generic: DevOps
+                - listitem:
+                  - generic:
+                    - button "Agile teams":
+                      - generic:
+                        - paragraph: Agile teams
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/teams
+                              - generic: What are Agile teams?
+                          - listitem:
+                            - link:
+                              - /url: /agile/teams/remote-teams
+                              - generic: Remote teams
+                          - listitem:
+                            - link:
+                              - /url: /agile/teams/working-with-specialists
+                              - generic: Agile specialists
+                          - listitem:
+                            - link:
+                              - /url: /agile/teams/release-ready-teams
+                              - generic: Release-ready teams
+                          - listitem:
+                            - link:
+                              - /url: /agile/teams/agilents-agile-transformation-journey
+                              - generic: Agilent’s agile journey
+                          - listitem:
+                            - link:
+                              - /url: /agile/teams/advanced-roadmaps-teams
+                              - generic: Jira Advanced Roadmaps
+                          - listitem:
+                            - link:
+                              - /url: /agile/teams/jira-twitter-unified-projects-teamwork
+                              - generic: How Twitter uses Jira
+                - listitem:
+                  - generic:
+                    - button "Agile tutorials":
+                      - generic:
+                        - paragraph: Agile tutorials
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials
+                              - generic: Jira tutorials
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/jira-confluence-sprint-refinement
+                              - generic: Sprint refinement with Jira and Confluence
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/how-to-do-scrum-with-jira
+                              - generic: Scrum with Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/how-to-do-advanced-scrum-practices-with-jira-software
+                              - generic: Advanced Scrum with Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/how-to-do-kanban-with-jira
+                              - generic: Kanban with Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/epics
+                              - generic: Epics in Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/creating-your-agile-board
+                              - generic: Create an Agile board in Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/sprints
+                              - generic: Sprints in Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/versions
+                              - generic: Versions with Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/issues
+                              - generic: Issues with Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/burndown-charts
+                              - generic: Burndown charts with Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/how-to-auto-create-subtasks-with-jira-automation
+                              - generic: Auto-create subtasks in Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/how-to-automatically-assign-issues-with-jira-software-automation
+                              - generic: Auto-assign issues in Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/how-to-sync-epics-stories-with-jira-software-automation
+                              - generic: Sync epics and stories in Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/tutorials/how-to-escalate-overdue-issues-with-jira-software-automation
+                              - generic: Escalate issues in Jira
+                - listitem:
+                  - generic:
+                    - button "Agile conversations":
+                      - generic:
+                        - paragraph: Agile conversations
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-conversations
+                              - generic: Agile conversations with Jira
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-conversations/marketing-agility
+                              - generic: Marketing agility
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-conversations/customer-research-tips
+                              - generic: Agile customer research
+                          - listitem:
+                            - link:
+                              - /url: /agile/agile-conversations/think-big-work-small
+                              - generic: Think big and work small
+                - listitem:
+                  - generic:
+                    - button "About the Agile Coach":
+                      - generic:
+                        - paragraph: About the Agile Coach
+                    - generic:
+                      - generic:
+                        - list:
+                          - listitem:
+                            - link:
+                              - /url: /agile/about
+                              - generic: Agile Coach team
+                - listitem:
+                  - link "All articles":
+                    - /url: /agile/articles
+                    - generic: All articles
+      - generic [ref=f55e64]:
+        - generic [ref=f55e66]:
+          - generic [ref=f55e68]:
+            - heading "Agile scrum roles and responsibilities" [level=1] [ref=f55e69]
+            - paragraph [ref=f55e71]: The truth about scrum roles, titles and responsibilities
+          - generic [ref=f55e76]:
+            - button "By Dave West, scrum.org CEO" [ref=f55e77] [cursor=pointer]:
+              - paragraph [ref=f55e81]: By Dave West, scrum.org CEO
+            - paragraph [ref=f55e85]: Dave West is the product owner and CEO at scrum.org. He is a frequent keynote at major industry conferences and is a widely published author of articles and research reports. He also is the co-author of two books, The Nexus Framework For Scaling Scrum and Head First Object-Oriented Analysis and Design. Reach out to Dave on twitter @DavidJWest
+          - generic [ref=f55e86]:
+            - generic [ref=f55e87]:
+              - paragraph [ref=f55e88]: Get started with the free Jira scrum template
+              - paragraph [ref=f55e89]: Streamline your project and easily plan, track, and manage work across sprints. This template includes boards, backlogs, roadmaps, reports, and more!
+            - link "Use template Get started with the free Jira scrum template" [ref=f55e91] [cursor=pointer]:
+              - /url: /software/jira/templates/scrum
+              - text: Use template
+        - generic [ref=f55e92]:
+          - paragraph [ref=f55e94]: Key Takeaways
+          - list [ref=f55e96]:
+            - listitem [ref=f55e97]:
+              - paragraph [ref=f55e98]: "A Scrum team consists of three core roles: product owner, Scrum master, and development team, each with distinct responsibilities."
+            - listitem [ref=f55e99]:
+              - paragraph [ref=f55e100]: The product owner manages the backlog and prioritizes work, the Scrum master facilitates the process and removes blockers, and the development team delivers increments of value.
+            - listitem [ref=f55e101]:
+              - paragraph [ref=f55e102]: Scrum teams are self-organizing, cross-functional, and focused on collaboration and continuous improvement.
+            - listitem [ref=f55e103]:
+              - paragraph [ref=f55e104]: Clearly define and support each Scrum role to foster team autonomy, accountability, and project success.
+          - heading "What are the main roles in a Scrum team?" [level=2] [ref=f55e106]
+          - paragraph [ref=f55e108]:
+            - text: The main roles in a Scrum team are the Product Owner, Scrum Master, and Development Team. The Product Owner defines and prioritizes the
+            - link "product backlog" [ref=f55e109] [cursor=pointer]:
+              - /url: /agile/scrum/backlogs
+            - text: ", the Scrum Master facilitates the Scrum process, and the Development Team delivers the work. While this is pretty clear, what to do with existing job titles can get confusing. Many teams ask if they need to change their titles when adopting scrum. The short answer is no."
+          - paragraph [ref=f55e111]: Each role has distinct responsibilities, but they work closely together to achieve sprint goals. For example, the Product Owner communicates vision and priorities, the Scrum Master removes obstacles, and the Development Team collaborates to build and deliver high-quality increments.
+          - paragraph [ref=f55e113]: In this article, we’ll define scrum roles and how you can fold them into your organization, without printing new business cards.
+          - heading "Who is the leader of a Scrum team?" [level=3] [ref=f55e115]
+          - paragraph [ref=f55e117]:
+            - text: A Scrum team does not have a traditional leader; instead, leadership is distributed among the roles. The
+            - link "Scrum Master" [ref=f55e118] [cursor=pointer]:
+              - /url: /agile/scrum/scrum-master
+            - text: leads the process and facilitates meetings, while the Product Owner leads on product vision and priorities. The Development Team is self-organizing and collectively responsible for delivery.
+          - paragraph [ref=f55e120]:
+            - text: This shared leadership model empowers team members to take ownership and collaborate effectively. For example, the Scrum Master may guide the team through challenges, but decisions about how to do the work and what gets picked up from the
+            - link "sprint backlog" [ref=f55e121] [cursor=pointer]:
+              - /url: /agile/project-management/sprint-backlog
+            - text: are made by the team itself, fostering autonomy and accountability.
+          - heading "Scrum roles vs. job titles" [level=2] [ref=f55e123]
+          - paragraph [ref=f55e125]:
+            - text: The three
+            - link "scrum roles" [ref=f55e126] [cursor=pointer]:
+              - /url: https://scrumguides.org/scrum-guide.html#team
+            - text: describe the key responsibilities for those on the scrum team. They aren’t job titles. This means that any job title, even your existing ones, can be used to perform one of the roles.
+          - paragraph [ref=f55e128]: Because the essence of Scrum is empiricism, self-organization, and continuous improvement, the three roles provide a minimum definition of responsibilities and accountability, allowing teams to deliver work effectively. This allows teams to take responsibility for how they organize and continually improve themselves.
+          - button "Play Video" [ref=f55e132]:
+            - img "Getting started with Jira video thumbnail"
+            - img
+          - heading "Building a scrum team" [level=2] [ref=f55e134]
+          - paragraph [ref=f55e136]: Scrum is a framework for teams to build their processes on top of. It provides the basic structure for regular meetings, artifacts, and who does what.
+          - paragraph [ref=f55e138]: What it doesn’t do is provide a one-size-fits-all model for teams to work within. For example, if the team is working on a web insurance application, they will need people who know the technology, the back-end systems, and the business domain. If, on the other hand, the team is working on the next generation of Donkey Kong, the skills needed would be very different. They would include a graphic designer, sound engineer, and graphics developer. Because the problems are different, the team structures and skills needed are also different.
+          - paragraph [ref=f55e140]: This gets even harder the more complex the problem a team is trying to solve. As the old saying goes ‘you don’t know what you don’t know, until you know you don’t know it’. Teams might not know the skills or amount of work needed up front, and need the flexibility to change course once they know more.
+          - paragraph [ref=f55e142]: To provide some structure to this complex, ever-changing, and often annoying world, scrum gives a lightweight structure with the three scrum roles of development team member, product owner, and scrum master.
+          - heading "How many people are in a Scrum team?" [level=3] [ref=f55e144]
+          - paragraph [ref=f55e146]: A Scrum team typically consists of 5 to 11 members, including the Product Owner, Scrum Master, and Development Team. This size range is recommended to ensure effective communication, collaboration, and flexibility.
+          - paragraph [ref=f55e148]: Smaller teams may struggle with capacity, while larger teams can face coordination challenges. For example, a team of seven often strikes a balance between diverse skills and efficient decision-making, supporting the Scrum principle of small, cross-functional teams.
+          - 'heading "The development team: Redefining “developer”" [level=2] [ref=f55e150]'
+          - paragraph [ref=f55e152]:
+            - text: The development team includes the people that do the work. At first glance, you may think the “
+            - link "development team" [ref=f55e153] [cursor=pointer]:
+              - /url: https://www.scrum.org/resources/what-is-a-scrum-development-team
+            - text: ” means engineers. But that’s not always the case. According to the
+            - link "Scrum Guide" [ref=f55e154] [cursor=pointer]:
+              - /url: https://www.scrumguides.org/
+            - text: ", the development team can be comprised of all kinds of people including designers, writers, programmers, etc."
+          - paragraph [ref=f55e156]: You can think of it in the same way as when you have a house project and you hire a developer. They develop the project and do the work. Yes, this might mean they lay bricks, do plumbing, even dig holes, but the person is known as a developer. So, that means the ‘developer’ role in scrum means a team member who has the right skills, as part of the team to do the work.
+          - generic:
+            - 'img "A diagram showing the development team''s responsibilities: Self organization, design, development, UX, testing, deployment."'
+          - paragraph [ref=f55e158]: The development team should be able to self-organize so they can make decisions to get work done. Think of a development team as similar to a production support team that is called in during the night because something has gone wrong. The development team, like the production support team, can make decisions and deliver the fix/value for the problem at hand. Self-organization isn’t about disrespecting the organization, but rather about empowering the people closest to the work to do what’s needed to solve the problem.
+          - paragraph [ref=f55e160]: "The development team’s responsibilities include:"
+          - list [ref=f55e162]:
+            - listitem [ref=f55e163]:
+              - paragraph [ref=f55e164]: Delivering the work through the sprint.
+            - listitem [ref=f55e165]:
+              - paragraph [ref=f55e166]:
+                - text: To ensure transparency during the sprint they meet daily at the
+                - link "daily scrum" [ref=f55e167] [cursor=pointer]:
+                  - /url: /agile/scrum/standups
+                - text: ( sometimes called a standup). The daily scrum provides transparency to the work and provides a dedicated place for team members to seek help, talk about success and highlight issues and blockers. The scrum master might facilitate the daily scrum, but ultimately it is the responsibility of the development team to run this meeting. It is their meeting to help them, as a group, to inspect and adapt the work they are doing and work in a more effective way.
+          - 'heading "The product owner: Setting clear direction" [level=2] [ref=f55e169]'
+          - paragraph [ref=f55e171]:
+            - text: Scrum product owners understand the customer and business requirements, then create and manage the
+            - link "product backlog" [ref=f55e172] [cursor=pointer]:
+              - /url: /agile/project-management/sprint-backlog
+            - text: based on those requirements. Since agile teams are, by design, flexible and responsive, it is the responsibility of the
+            - link "product owner" [ref=f55e173] [cursor=pointer]:
+              - /url: https://www.scrum.org/pathway/product-owner-learning-path
+            - text: to ensure that they are delivering the most value. The business is represented by the product owner who tells the development what is important to deliver. Trust between these two roles is crucial.
+          - paragraph [ref=f55e175]: The product owner should not only understand the customer but also have a vision for the value the scrum team is delivering to the customer. The product owner also balances the needs of other stakeholders in the organization.
+          - paragraph [ref=f55e177]: So the product owner must take all these inputs and prioritize the work. This is probably their most important responsibility because conflicting priorities and unclear directions will not only reduce the effectiveness of the team but also could break the important trust relationship that the business has with the development team.
+          - paragraph [ref=f55e179]: Agile teams are designed to inspect and adapt. That means a change in priority may lead to a massive change to the team structure, work products, as well as the end result. It is, therefore, crucial for scrum teams to be successful and that only one person sets the priority. That person is the product owner.
+          - paragraph [ref=f55e181]: "The Scrum Guide defines the product owners responsibilities as:"
+          - list [ref=f55e183]:
+            - listitem [ref=f55e184]:
+              - paragraph [ref=f55e185]:
+                - text: Managing the scrum backlog - This does not mean that they are the only one putting in new product backlog Items into the backlog. But ultimately they are responsible for the backlog that the development team pulls to deliver from. That means the product owner should know about everything that is in the backlog and other people that add items to the product backlog should ensure that they communicate with the product owner. We even offer a
+                - link "free scrum template" [ref=f55e186] [cursor=pointer]:
+                  - /url: /software/jira/templates/scrum
+                - text: that makes it easy to get your backlog up and running.
+            - listitem [ref=f55e187]:
+              - paragraph [ref=f55e188]:
+                - text: Release management - The sprint is not a release cycle, but instead a planning cycle. That means that scrum teams can deliver at any time. Ideally, they would deliver frequently throughout the sprint allowing the
+                - link "sprint review" [ref=f55e189] [cursor=pointer]:
+                  - /url: /agile/scrum/sprint-reviews
+                - text: to review real customer usage and feedback. However continuous delivery is not always possible and other release models are required. It is important for the product owner to know when things can and should be released.
+            - listitem [ref=f55e190]:
+              - paragraph [ref=f55e191]: Stakeholder management - Any product will have many stakeholders involved ranging from users, customers, governance and organizational leadership. The product owner will have to work with all these people to effectively ensure that the development team is delivering value. That can mean a large amount of stakeholder management and communication.
+          - generic:
+            - 'img "A diagram showing the product owner''s responsibilities: Manage the product backlog, release management, stakeholder management."'
+          - 'heading "The scrum master: Holding it all together" [level=2] [ref=f55e193]'
+          - paragraph [ref=f55e195]:
+            - text: The
+            - link "scrum master" [ref=f55e196] [cursor=pointer]:
+              - /url: /agile/scrum/scrum-master
+            - text: is the role responsible for gluing everything together and ensuring that scrum is being done well. In practical terms, that means they help the product owner define value, the development team deliver the value, and the scrum team to get to get better. The scrum master is a servant leader which not only describes a supportive style of leadership but describes what they do on a day-to-day basis.
+          - paragraph [ref=f55e198]: They serve the product owner by helping them better understand and communicate value, to manage the backlog, help them plan the work with the team and break down that work to deliver the most effective learning. Serving the development team, the scrum master helps them self-organize, focus on outcomes, get to a “done increment,” and manage blockers. The scrum master also serves the organization at large, helping them understand what scrum is and create an environment that supports scrum.
+          - generic:
+            - 'img "A diagram showing the scrum master''s responsibilities: Transparency, Empiricism, Self organization, Scrum values, Protecting the team, Remove blockers."'
+          - paragraph [ref=f55e200]: "The scrum master focuses on:"
+          - list [ref=f55e202]:
+            - listitem [ref=f55e203]:
+              - paragraph [ref=f55e204]: Transparency - To effectively inspect and adapt it is important that the right people can see what is going on. But this is actually much harder than it looks. The scrum master is tasked with ensuring that the scrum team works in a transparent way. Examples include creating story maps and updating Confluence pages with retrospective ideas.
+            - listitem [ref=f55e205]:
+              - paragraph [ref=f55e206]: Empiricism - A fundamental for scrum and agile approaches the idea that the best way of planning is to do work and learn from it. The empirical process is not easy and requires the scrum master to coach the scrum team on breaking down work, describing clear outcomes, and reviewing those outcomes.
+            - listitem [ref=f55e207]:
+              - paragraph [ref=f55e208]:
+                - text: Self-organization - Telling a development team they can self-organize does mean that the team will self-organize. In fact, self-organization comes over time and requires help and support. The scrum master will encourage team members to step outside their comfort zone and try different things and use practices such as ‘
+                - link "delegation poker" [ref=f55e209] [cursor=pointer]:
+                  - /url: https://management30.com/product/delegation-poker/
+                - text: ’ to expose and challenge predefined ideas about role boundaries and responsibilities.
+            - listitem [ref=f55e210]:
+              - paragraph [ref=f55e211]:
+                - text: Values - Scrum defines
+                - link "5 values" [ref=f55e212] [cursor=pointer]:
+                  - /url: https://www.scrum.org/resources/scrum-values-poster
+                - text: of courage, focus, commitment, respect, and openness not because they are nice to have, but because they create an environment of physiological safety and trust. This environment is necessary for agility to thrive. Following the values is the responsibility of everyone in the scrum team, but the scrum master takes an active role in encouraging and reminding everyone of the importance of those values.
+          - paragraph [ref=f55e214]:
+            - text: The scrum master serves the product owner in
+            - link "sprint planning" [ref=f55e215] [cursor=pointer]:
+              - /url: /agile/scrum/sprint-planning
+            - text: and sprint reviews, ensuring that value is clearly being described and direction set. They serve the development team in the daily scrum by ensuring that work is happening and that blockers are being removed. They also take responsibility for blockers that are outside of the team's ability to resolve. The scrum master ensures that every opportunity to improve is made transparent to the scrum team and the
+            - link "retrospective" [ref=f55e216] [cursor=pointer]:
+              - /url: /team-playbook/plays/retrospective
+            - text: has a clear set of outcomes that can be executed.
+          - heading "Get started with agile scrum roles" [level=2] [ref=f55e218]
+          - paragraph [ref=f55e220]: "The three scrum roles are pretty simple in describing the three major areas of responsibility on any scrum team, but often it is hard to map them to your own job title. So here is a starter:"
+          - list [ref=f55e222]:
+            - listitem [ref=f55e223]:
+              - paragraph [ref=f55e224]: If you have lots of great skills for delivering customer value and that is what excites you, then you should be a scrum development team member. In fact, the team is the most important element of any agile organization as they actually deliver value to customers and stakeholders. That means that seniority is determined by how much you deliver value or help others do it.
+            - listitem [ref=f55e225]:
+              - paragraph [ref=f55e226]: If you are passionate about the customer, managing stakeholders, and the business domain, then the product owner role would be best suited to your desires. In most organizations, this person needs to have the respect and trust of the business, so they can make decisions. The role also requires some level of politicking as you negotiate trade-offs and keep everyone happy.
+            - listitem [ref=f55e227]:
+              - paragraph [ref=f55e228]: If you want to help teams work effectively together and also want to change the world with scrum and agile, then the scrum master role is for you; a very people-centric role with a heavy emphasis on coaching, teaching, and facilitation.
+      - generic [ref=f55e230]:
+        - heading "Recommended for you" [level=2] [ref=f55e235]
+        - generic [ref=f55e236]:
+          - generic [ref=f55e238]:
+            - heading "Ready-made Jira templates" [level=3] [ref=f55e239]
+            - paragraph [ref=f55e241]: Browse our library of custom Jira templates for various teams, departments, and workflows.
+            - link "Go to Jira templates Ready-made Jira templates" [ref=f55e244] [cursor=pointer]:
+              - /url: /software/jira/templates
+              - generic [ref=f55e245]:
+                - text: Go to Jira templates
+                - img [ref=f55e246]
+          - generic [ref=f55e249]:
+            - heading "A comprehensive introduction to Jira" [level=3] [ref=f55e250]
+            - paragraph [ref=f55e252]: Use this step-by-step guide to discover essential features and the best practices to maximize your productivity.
+            - link "Go to Jira Product guide A comprehensive introduction to Jira" [ref=f55e255] [cursor=pointer]:
+              - /url: /software/jira/guides/getting-started/introduction#what-is-jira-software
+              - generic [ref=f55e256]:
+                - text: Go to Jira Product guide
+                - img [ref=f55e257]
+          - generic [ref=f55e260]:
+            - heading "Understanding the Basics of Git" [level=3] [ref=f55e261]
+            - paragraph [ref=f55e263]: From beginners to advanced experts, use this guide to Git to learn the basics with helpful tutorials and tips.
+            - link "Learn more Understanding the Basics of Git" [ref=f55e266] [cursor=pointer]:
+              - /url: /git
+              - generic [ref=f55e267]:
+                - text: Learn more
+                - img [ref=f55e268]
+    - contentinfo [ref=f55e270]:
+      - generic [ref=f55e271]:
+        - generic [ref=f55e273]:
+          - generic [ref=f55e274]:
+            - link "Atlassian logo" [ref=f55e276] [cursor=pointer]:
+              - /url: /
+              - img [ref=f55e278]
+            - list [ref=f55e281]:
+              - listitem [ref=f55e282]:
+                - link "Company" [ref=f55e284] [cursor=pointer]:
+                  - /url: /company
+                  - generic [ref=f55e285]: Company
+              - listitem [ref=f55e286]:
+                - link "Careers" [ref=f55e288] [cursor=pointer]:
+                  - /url: /company/careers
+                  - generic [ref=f55e289]: Careers
+              - listitem [ref=f55e290]:
+                - link "Events" [ref=f55e292] [cursor=pointer]:
+                  - /url: /company/events
+                  - generic [ref=f55e293]: Events
+              - listitem [ref=f55e294]:
+                - link "Blogs" [ref=f55e296] [cursor=pointer]:
+                  - /url: /blog
+                  - generic [ref=f55e297]: Blogs
+              - listitem [ref=f55e298]:
+                - link "Investor Relations" [ref=f55e300] [cursor=pointer]:
+                  - /url: https://investors.atlassian.com
+                  - generic [ref=f55e301]: Investor Relations
+              - listitem [ref=f55e302]:
+                - link "Atlassian Foundation" [ref=f55e304] [cursor=pointer]:
+                  - /url: https://www.atlassianfoundation.org/
+                  - generic [ref=f55e305]: Atlassian Foundation
+              - listitem [ref=f55e306]:
+                - link "Press kit" [ref=f55e308] [cursor=pointer]:
+                  - /url: /company/news/press-kit
+                  - generic [ref=f55e309]: Press kit
+              - listitem [ref=f55e310]:
+                - link "Contact us" [ref=f55e312] [cursor=pointer]:
+                  - /url: /company/contact
+                  - generic [ref=f55e313]: Contact us
+          - generic [ref=f55e314]:
+            - heading "Products" [level=2] [ref=f55e316]
+            - list [ref=f55e317]:
+              - listitem [ref=f55e318]:
+                - link "Rovo" [ref=f55e320] [cursor=pointer]:
+                  - /url: /rovo
+                  - generic [ref=f55e321]: Rovo
+              - listitem [ref=f55e322]:
+                - link "Jira" [ref=f55e324] [cursor=pointer]:
+                  - /url: /software/jira
+                  - generic [ref=f55e325]: Jira
+              - listitem [ref=f55e326]:
+                - link "Jira Align" [ref=f55e328] [cursor=pointer]:
+                  - /url: /software/jira/align
+                  - generic [ref=f55e329]: Jira Align
+              - listitem [ref=f55e330]:
+                - link "Jira Service Management" [ref=f55e332] [cursor=pointer]:
+                  - /url: /software/jira/service-management
+                  - generic [ref=f55e333]: Jira Service Management
+              - listitem [ref=f55e334]:
+                - link "Confluence" [ref=f55e336] [cursor=pointer]:
+                  - /url: /software/confluence
+                  - generic [ref=f55e337]: Confluence
+              - listitem [ref=f55e338]:
+                - link "Loom" [ref=f55e340] [cursor=pointer]:
+                  - /url: /software/loom
+                  - generic [ref=f55e341]: Loom
+              - listitem [ref=f55e342]:
+                - link "Trello" [ref=f55e344] [cursor=pointer]:
+                  - /url: https://trello.com/home
+                  - generic [ref=f55e345]: Trello
+              - listitem [ref=f55e346]:
+                - link "Bitbucket" [ref=f55e348] [cursor=pointer]:
+                  - /url: /software/bitbucket
+                  - generic [ref=f55e349]: Bitbucket
+            - link "See all products" [ref=f55e352] [cursor=pointer]:
+              - /url: /software
+              - generic [ref=f55e353]:
+                - text: See all products
+                - img [ref=f55e354]
+          - generic [ref=f55e356]:
+            - heading "Resources" [level=2] [ref=f55e358]
+            - list [ref=f55e359]:
+              - listitem [ref=f55e360]:
+                - link "Technical support" [ref=f55e362] [cursor=pointer]:
+                  - /url: https://support.atlassian.com/
+                  - generic [ref=f55e363]: Technical support
+              - listitem [ref=f55e364]:
+                - link "Purchasing & licensing" [ref=f55e366] [cursor=pointer]:
+                  - /url: /licensing/purchase-licensing
+                  - generic [ref=f55e367]: Purchasing & licensing
+              - listitem [ref=f55e368]:
+                - link "Templates" [ref=f55e370] [cursor=pointer]:
+                  - /url: /templates
+                  - generic [ref=f55e371]: Templates
+              - listitem [ref=f55e372]:
+                - link "Atlassian Community" [ref=f55e374] [cursor=pointer]:
+                  - /url: https://community.atlassian.com/
+                  - generic [ref=f55e375]: Atlassian Community
+              - listitem [ref=f55e376]:
+                - link "Knowledge base" [ref=f55e378] [cursor=pointer]:
+                  - /url: https://confluence.atlassian.com/kb
+                  - generic [ref=f55e379]: Knowledge base
+              - listitem [ref=f55e380]:
+                - link "Marketplace" [ref=f55e382] [cursor=pointer]:
+                  - /url: https://marketplace.atlassian.com/
+                  - generic [ref=f55e383]: Marketplace
+              - listitem [ref=f55e384]:
+                - link "My account" [ref=f55e386] [cursor=pointer]:
+                  - /url: https://my.atlassian.com/products/index
+                  - generic [ref=f55e387]: My account
+            - link "Create support ticket" [ref=f55e390] [cursor=pointer]:
+              - /url: https://support.atlassian.com/contact/
+              - generic [ref=f55e391]:
+                - text: Create support ticket
+                - img [ref=f55e392]
+          - generic [ref=f55e394]:
+            - heading "Learn" [level=2] [ref=f55e396]
+            - list [ref=f55e397]:
+              - listitem [ref=f55e398]:
+                - link "Partners" [ref=f55e400] [cursor=pointer]:
+                  - /url: /partners
+                  - generic [ref=f55e401]: Partners
+              - listitem [ref=f55e402]:
+                - link "Training & certification" [ref=f55e404] [cursor=pointer]:
+                  - /url: /university
+                  - generic [ref=f55e405]: Training & certification
+              - listitem [ref=f55e406]:
+                - link "Documentation" [ref=f55e408] [cursor=pointer]:
+                  - /url: https://confluence.atlassian.com/display/ALLDOC/Atlassian+Documentation
+                  - generic [ref=f55e409]: Documentation
+              - listitem [ref=f55e410]:
+                - link "Developer resources" [ref=f55e412] [cursor=pointer]:
+                  - /url: /developers
+                  - generic [ref=f55e413]: Developer resources
+              - listitem [ref=f55e414]:
+                - link "Enterprise services" [ref=f55e416] [cursor=pointer]:
+                  - /url: /enterprise/services
+                  - generic [ref=f55e417]: Enterprise services
+            - link "See all resources" [ref=f55e420] [cursor=pointer]:
+              - /url: /resources
+              - generic [ref=f55e421]:
+                - text: See all resources
+                - img [ref=f55e422]
+        - generic [ref=f55e424]:
+          - generic [ref=f55e425]: Copyright © 2026 Atlassian
+          - generic [ref=f55e426]:
+            - list [ref=f55e427]:
+              - listitem [ref=f55e428]:
+                - link "Privacy policy" [ref=f55e430] [cursor=pointer]:
+                  - /url: /legal/privacy-policy
+                  - generic [ref=f55e431]: Privacy policy
+              - listitem [ref=f55e432]:
+                - link "Your Privacy Choices" [ref=f55e433] [cursor=pointer]:
+                  - /url: /legal/privacy-policy#additional-disclosures-for-ca-residents
+                  - generic "Your Privacy Choices" [ref=f55e434]
+              - listitem [ref=f55e435]:
+                - link "Terms" [ref=f55e437] [cursor=pointer]:
+                  - /url: /legal/cloud-terms-of-service
+                  - generic [ref=f55e438]: Terms
+              - listitem [ref=f55e439]:
+                - link "Impressum" [ref=f55e441] [cursor=pointer]:
+                  - /url: /legal/impressum
+                  - generic [ref=f55e442]: Impressum
+            - generic [ref=f55e443]: Language selector
+            - generic [ref=f55e448]:
+              - img [ref=f55e449]
+              - generic [ref=f55e457]:
+                - generic [ref=f55e458]: English
+                - combobox "Choose your language" [ref=f55e460]
+              - generic [ref=f55e463]: ▾
+  - iframe [ref=f55e466]:
+    - generic [ref=f58e6]:
+      - text: protection par
+      - strong [ref=f58e7]: reCAPTCHA
+  - dialog "Confidentialité" [ref=f55e468]:
+    - generic [ref=f55e470]:
+      - generic [ref=f55e473]:
+        - text: Ce site utilise des cookies pour améliorer votre expérience de navigation, effectuer des analyses et des recherches, et cibler la publicité. Pour modifier vos préférences, cliquez sur Gérer les préférences. Sinon, cliquez sur Accepter tous les cookies pour indiquer que vous consentez à leur utilisation sur votre appareil. Cliquez sur Rejeter tous les cookies signifie que vous n'acceptez pas que nous utilisions des cookies qui ne sont pas strictement nécessaires sur votre appareil.
+        - link "Pour en savoir plus sur la protection de votre vie privée, s'ouvre dans un nouvel onglet" [ref=f55e474] [cursor=pointer]:
+          - /url: https://www.atlassian.com/fr/legal/cookies
+          - text: Avis relatif aux cookies et au suivi d'Atlassian
+      - generic [ref=f55e476]:
+        - button "Gérer les préférences, Ouvre la boîte de dialogue du centre de préférences" [ref=f55e477] [cursor=pointer]: Gérer les préférences
+        - button "Rejeter tous les cookies" [ref=f55e478] [cursor=pointer]
+        - button "Accepter tous les cookies" [ref=f55e479] [cursor=pointer]
+    - button "Fermer" [ref=f55e481] [cursor=pointer]

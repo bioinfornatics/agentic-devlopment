@@ -1,0 +1,14 @@
+[     676ms] [ERROR] Docusaurus React Root onRecoverableError: Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at br (https://goose-docs.ai/assets/js/main.5fa06572.js:2:135992)
+    at vr (https://goose-docs.ai/assets/js/main.5fa06572.js:2:137361)
+    at mc (https://goose-docs.ai/assets/js/main.5fa06572.js:2:190448)
+    at mu (https://goose-docs.ai/assets/js/main.5fa06572.js:2:225612)
+    at uu (https://goose-docs.ai/assets/js/main.5fa06572.js:2:223413)
+    at lu (https://goose-docs.ai/assets/js/main.5fa06572.js:2:223324)
+    at https://goose-docs.ai/assets/js/main.5fa06572.js:2:218441
+    at Kl (https://goose-docs.ai/assets/js/main.5fa06572.js:2:218539)
+    at Bu (https://goose-docs.ai/assets/js/main.5fa06572.js:2:234418)
+    at MessagePort.P (https://goose-docs.ai/assets/js/main.5fa06572.js:2:3804) {componentStack: 
+    at div (<anonymous>)
+    at Ne (<anonymous>)
+…oose-docs.ai/assets/js/main.5fa06572.js:2:526062)} @ https://goose-docs.ai/assets/js/main.5fa06572.js:1

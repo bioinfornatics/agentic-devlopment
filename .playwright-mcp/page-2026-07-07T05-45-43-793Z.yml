@@ -1,0 +1,748 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e2]:
+    - region "Skip to main content":
+      - link "Skip to main content" [ref=f3e3] [cursor=pointer]:
+        - /url: "#__docusaurus_skipToContent_fallback"
+    - banner [ref=f3e4]:
+      - generic [ref=f3e5]:
+        - text: "✨ goose has moved to the Agentic AI Foundation (AAIF):"
+        - link "Learn more" [ref=f3e6] [cursor=pointer]:
+          - /url: /blog/2026/04/07/goose-moves-to-aaif
+        - text: "! ✨"
+      - button "Close" [ref=f3e7] [cursor=pointer]:
+        - img [ref=f3e8]
+    - navigation "Main" [ref=f3e11]:
+      - generic [ref=f3e12]:
+        - generic [ref=f3e13]:
+          - button "Toggle navigation bar" [ref=f3e14] [cursor=pointer]:
+            - img [ref=f3e15]
+          - link "goose Logo" [ref=f3e17] [cursor=pointer]:
+            - /url: /
+            - img "goose Logo" [ref=f3e19]
+        - button "Search for anything... Ctrl K" [ref=f3e28] [cursor=pointer]:
+          - generic [ref=f3e29]:
+            - img [ref=f3e31]
+            - generic [ref=f3e33]: Search for anything...
+          - generic [ref=f3e35]:
+            - generic [ref=f3e36]: Ctrl
+            - text: K
+    - main [ref=f3e40]:
+      - generic [ref=f3e44]:
+        - article [ref=f3e45]:
+          - navigation "Breadcrumbs" [ref=f3e46]:
+            - list [ref=f3e47]:
+              - listitem [ref=f3e48]:
+                - link "Home page" [ref=f3e49] [cursor=pointer]:
+                  - /url: /
+                  - img [ref=f3e50]
+              - listitem [ref=f3e52]:
+                - link "Guides" [ref=f3e53] [cursor=pointer]:
+                  - /url: /docs/category/guides
+              - listitem [ref=f3e54]:
+                - link "Context Engineering" [ref=f3e55] [cursor=pointer]:
+                  - /url: /docs/guides/context-engineering/
+              - listitem [ref=f3e56]:
+                - generic [ref=f3e57]: Subagents
+          - button "On this page" [ref=f3e59] [cursor=pointer]
+          - generic [ref=f3e60]:
+            - generic [ref=f3e61]:
+              - heading "Subagents" [level=1] [ref=f3e62]
+              - generic [ref=f3e64]:
+                - button "Copy page to clipboard" [ref=f3e66]:
+                  - img [ref=f3e67]
+                  - text: Copy page
+                - button "More page actions" [ref=f3e71]:
+                  - img [ref=f3e72]
+            - paragraph [ref=f3e74]: Subagents are independent instances that execute tasks while keeping your main conversation clean and focused. Think of them as temporary assistants that handle specific jobs, bringing process isolation and context preservation by offloading work to separate instances.
+            - group [ref=f3e75]:
+              - generic "Subagents Walkthrough" [ref=f3e76] [cursor=pointer]
+            - heading "How to Use SubagentsDirect link to How to Use Subagents" [level=2] [ref=f3e77]:
+              - text: How to Use Subagents
+              - link "Direct link to How to Use Subagents" [ref=f3e78] [cursor=pointer]:
+                - /url: "#how-to-use-subagents"
+                - text: "#"
+            - generic [ref=f3e79]:
+              - generic [ref=f3e80]:
+                - img [ref=f3e82]
+                - text: Autonomous Subagent Creation
+              - paragraph [ref=f3e85]:
+                - text: goose can autonomously decide to use subagents when it determines they would be beneficial for your task - you don't always need to explicitly request them. This happens automatically in autonomous
+                - link "permission mode" [ref=f3e86] [cursor=pointer]:
+                  - /url: /docs/guides/managing-tools/goose-permissions
+                - text: (the default). Subagents are disabled in manual approval, smart approval, and chat-only modes.
+            - paragraph [ref=f3e87]: "To use subagents, ask goose to delegate tasks using natural language. goose automatically decides when to spawn subagents and handles their lifecycle. You can:"
+            - list [ref=f3e88]:
+              - listitem [ref=f3e89]:
+                - strong [ref=f3e90]: Request specialized help
+                - text: ": \"Use a code reviewer to analyze this function for security issues\""
+              - listitem [ref=f3e91]:
+                - strong [ref=f3e92]: Reference specific recipes
+                - text: ": \"Use the 'security-auditor' recipe to scan this endpoint\""
+              - listitem [ref=f3e93]:
+                - strong [ref=f3e94]: Run parallel tasks
+                - text: ": \"Create three HTML templates simultaneously\""
+              - listitem [ref=f3e95]:
+                - strong [ref=f3e96]: Delegate complex work
+                - text: ": \"Research quantum computing developments and summarize findings\""
+              - listitem [ref=f3e97]:
+                - strong [ref=f3e98]: Control extension access
+                - text: ": \"Create a subagent with only the developer extension to refactor the code\""
+            - paragraph [ref=f3e99]: You can run multiple subagents sequentially or in parallel.
+            - table [ref=f3e100]:
+              - rowgroup [ref=f3e101]:
+                - row "Type Description Trigger Keywords Example" [ref=f3e102]:
+                  - columnheader "Type" [ref=f3e103]
+                  - columnheader "Description" [ref=f3e104]
+                  - columnheader "Trigger Keywords" [ref=f3e105]
+                  - columnheader "Example" [ref=f3e106]
+              - rowgroup [ref=f3e107]:
+                - row "Sequential (Default) Tasks execute one after another \"first...then\", \"after\" \"First analyze the code, then generate documentation\"" [ref=f3e108]:
+                  - cell "Sequential (Default)" [ref=f3e109]:
+                    - strong [ref=f3e110]: Sequential
+                    - text: (Default)
+                  - cell "Tasks execute one after another" [ref=f3e111]
+                  - cell "\"first...then\", \"after\"" [ref=f3e112]
+                  - cell "\"First analyze the code, then generate documentation\"" [ref=f3e113]:
+                    - code [ref=f3e114]: "\"First analyze the code, then generate documentation\""
+                - row "Parallel Tasks execute simultaneously \"parallel\", \"simultaneously\", \"at the same time\", \"concurrently\" \"Create three HTML templates in parallel\"" [ref=f3e115]:
+                  - cell "Parallel" [ref=f3e116]:
+                    - strong [ref=f3e117]: Parallel
+                  - cell "Tasks execute simultaneously" [ref=f3e118]
+                  - cell "\"parallel\", \"simultaneously\", \"at the same time\", \"concurrently\"" [ref=f3e119]
+                  - cell "\"Create three HTML templates in parallel\"" [ref=f3e120]:
+                    - code [ref=f3e121]: "\"Create three HTML templates in parallel\""
+            - heading "Monitoring Subagent ActivityDirect link to Monitoring Subagent Activity" [level=2] [ref=f3e122]:
+              - text: Monitoring Subagent Activity
+              - link "Direct link to Monitoring Subagent Activity" [ref=f3e123] [cursor=pointer]:
+                - /url: "#monitoring-subagent-activity"
+                - text: "#"
+            - paragraph [ref=f3e124]: When goose delegates work to a subagent, you can see the subagent's tool calls in real-time. This transparency helps you understand what the subagent is doing and verify it's on the right track.
+            - generic [ref=f3e125]:
+              - tablist [ref=f3e126]:
+                - tab "goose Desktop" [selected] [ref=f3e127] [cursor=pointer]
+                - tab "goose CLI" [ref=f3e128] [cursor=pointer]
+              - tabpanel [ref=f3e130]:
+                - paragraph [ref=f3e131]: "Subagent tool calls appear as expandable sections within the conversation. Click to expand and see the full details of each tool call, including:"
+                - list [ref=f3e132]:
+                  - listitem [ref=f3e133]: The tool name being invoked
+                  - listitem [ref=f3e134]: Arguments passed to the tool
+                  - listitem [ref=f3e135]: Tool output and results
+            - generic [ref=f3e136]:
+              - generic [ref=f3e137]:
+                - img [ref=f3e139]
+                - text: info
+              - paragraph [ref=f3e142]: If a subagent fails or times out (5-minute default), you will receive no output from that subagent. For parallel execution, if any subagent fails, you get results only from the successful ones.
+            - heading "Internal SubagentsDirect link to Internal Subagents" [level=2] [ref=f3e143]:
+              - text: Internal Subagents
+              - link "Direct link to Internal Subagents" [ref=f3e144] [cursor=pointer]:
+                - /url: "#internal-subagents"
+                - text: "#"
+            - paragraph [ref=f3e145]: "Internal subagents spawn goose instances to handle tasks using your current session's context and extensions. There are two ways to configure and execute internal subagents:"
+            - list [ref=f3e146]:
+              - listitem [ref=f3e147]:
+                - strong [ref=f3e148]: Direct Prompts
+                - text: "- Quick, one-off tasks using natural language instructions"
+              - listitem [ref=f3e149]:
+                - strong [ref=f3e150]: Recipes
+                - text: "- Reusable, structured configurations for specialized subagent behavior"
+            - heading "Direct PromptsDirect link to Direct Prompts" [level=3] [ref=f3e151]:
+              - text: Direct Prompts
+              - link "Direct link to Direct Prompts" [ref=f3e152] [cursor=pointer]:
+                - /url: "#direct-prompts"
+                - text: "#"
+            - paragraph [ref=f3e153]: Direct prompts provided for one-off tasks using natural language prompts. The main agent automatically configures the subagent based on your request.
+            - paragraph [ref=f3e154]:
+              - strong [ref=f3e155]: "goose Prompt:"
+            - generic [ref=f3e157]:
+              - code [ref=f3e159]:
+                - generic [ref=f3e160]: "\"Use 2 subagents to create hello.html with 'Hello World' content and goodbye.html with 'Goodbye World' content in parallel\""
+              - button "Copy code to clipboard" [ref=f3e162] [cursor=pointer]:
+                - generic [ref=f3e163]:
+                  - img [ref=f3e164]
+                  - img [ref=f3e166]
+            - paragraph [ref=f3e168]:
+              - strong [ref=f3e169]: "Tool Output:"
+            - generic [ref=f3e171]:
+              - code [ref=f3e173]:
+                - generic [ref=f3e174]: "{"
+                - generic [ref=f3e175]: "\"execution_summary\": {"
+                - generic [ref=f3e176]: "\"total_tasks\": 2,"
+                - generic [ref=f3e177]: "\"successful_tasks\": 2,"
+                - generic [ref=f3e178]: "\"failed_tasks\": 0,"
+                - generic [ref=f3e179]: "\"execution_time_seconds\": 16.2"
+                - generic [ref=f3e180]: "},"
+                - generic [ref=f3e181]: "\"task_results\": ["
+                - generic [ref=f3e182]: "{"
+                - generic [ref=f3e183]: "\"task_id\": \"create_hello_html\","
+                - generic [ref=f3e184]: "\"status\": \"success\","
+                - generic [ref=f3e185]: "\"result\": \"Successfully created hello.html with Hello World content\""
+                - generic [ref=f3e186]: "},"
+                - generic [ref=f3e187]: "{"
+                - generic [ref=f3e188]: "\"task_id\": \"create_goodbye_html\","
+                - generic [ref=f3e189]: "\"status\": \"success\","
+                - generic [ref=f3e190]: "\"result\": \"Successfully created goodbye.html with Goodbye World content\""
+                - generic [ref=f3e191]: "}"
+                - generic [ref=f3e192]: "]"
+                - generic [ref=f3e193]: "}"
+              - button "Copy code to clipboard" [ref=f3e195] [cursor=pointer]:
+                - generic [ref=f3e196]:
+                  - img [ref=f3e197]
+                  - img [ref=f3e199]
+            - heading "RecipesDirect link to Recipes" [level=3] [ref=f3e201]:
+              - text: Recipes
+              - link "Direct link to Recipes" [ref=f3e202] [cursor=pointer]:
+                - /url: "#recipes"
+                - text: "#"
+            - paragraph [ref=f3e203]:
+              - text: Use
+              - link "recipe" [ref=f3e204] [cursor=pointer]:
+                - /url: /docs/guides/recipes/
+              - text: files to define specific instructions, extensions, and behavior for subagents. Recipes provide reusable configurations that can be shared and referenced by name.
+            - paragraph [ref=f3e205]:
+              - strong [ref=f3e206]: Creating a Recipe File
+            - paragraph [ref=f3e207]:
+              - code [ref=f3e208]: code-reviewer.yaml
+            - generic [ref=f3e210]:
+              - code [ref=f3e212]:
+                - generic [ref=f3e213]: "id: code-reviewer"
+                - generic [ref=f3e214]: "version: 1.0.0"
+                - generic [ref=f3e215]: "title: \"Code Review Assistant\""
+                - generic [ref=f3e216]: "description: \"Specialized subagent for code quality and security analysis\""
+                - generic [ref=f3e217]: "instructions: |"
+                - generic [ref=f3e218]: "You are a code review assistant. Analyze code and provide feedback on:"
+                - generic [ref=f3e219]: "- Code quality and readability"
+                - generic [ref=f3e220]: "- Security vulnerabilities"
+                - generic [ref=f3e221]: "- Performance issues"
+                - generic [ref=f3e222]: "- Best practices adherence"
+                - generic [ref=f3e223]: "activities:"
+                - generic [ref=f3e224]: "- Analyze code structure"
+                - generic [ref=f3e225]: "- Check for security issues"
+                - generic [ref=f3e226]: "- Review performance patterns"
+                - generic [ref=f3e227]: "extensions:"
+                - generic [ref=f3e228]: "- type: builtin"
+                - generic [ref=f3e229]: "name: developer"
+                - generic [ref=f3e230]: "display_name: Developer"
+                - generic [ref=f3e231]: "timeout: 300"
+                - generic [ref=f3e232]: "bundled: true"
+                - generic [ref=f3e233]: "parameters:"
+                - generic [ref=f3e234]: "- key: focus_area"
+                - generic [ref=f3e235]: "input_type: string"
+                - generic [ref=f3e236]: "requirement: optional"
+                - generic [ref=f3e237]: "description: \"Specific area to focus on (security, performance, readability, etc.)\""
+                - generic [ref=f3e238]: "default: \"general\""
+                - generic [ref=f3e239]: "prompt: |"
+                - generic [ref=f3e240]: "Please review the following code focusing on {{focus_area}} aspects."
+                - generic [ref=f3e241]: Provide specific, actionable feedback with examples.
+              - button "Copy code to clipboard" [ref=f3e243] [cursor=pointer]:
+                - generic [ref=f3e244]:
+                  - img [ref=f3e245]
+                  - img [ref=f3e247]
+            - paragraph [ref=f3e249]:
+              - strong [ref=f3e250]: Place your recipe file where goose can find it
+            - list [ref=f3e251]:
+              - listitem [ref=f3e252]:
+                - text: Set
+                - link "GOOSE_RECIPE_PATH" [ref=f3e253] [cursor=pointer]:
+                  - /url: /docs/guides/recipes/recipe-reference#recipe-location
+                  - code [ref=f3e254]: GOOSE_RECIPE_PATH
+                - text: environment variable to your recipe directory
+              - listitem [ref=f3e255]: Or place it in your current working directory
+            - paragraph [ref=f3e256]:
+              - strong [ref=f3e257]: goose Prompt
+            - generic [ref=f3e259]:
+              - code [ref=f3e261]:
+                - generic [ref=f3e262]: Use the "code-reviewer" recipe to analyze the authentication feature I implemented
+              - button "Copy code to clipboard" [ref=f3e264] [cursor=pointer]:
+                - generic [ref=f3e265]:
+                  - img [ref=f3e266]
+                  - img [ref=f3e268]
+            - paragraph [ref=f3e270]:
+              - strong [ref=f3e271]: goose Output
+            - generic [ref=f3e273]:
+              - code [ref=f3e275]:
+                - generic [ref=f3e276]: I'll use your code-reviewer recipe to create a specialized subagent for this analysis.
+                - generic [ref=f3e277]: 🤖 Subagent created using code-reviewer recipe
+                - generic [ref=f3e278]: 💭 Analyzing authentication function for security issues...
+                - generic [ref=f3e279]: 🔧 Scanning code structure and patterns...
+                - generic [ref=f3e280]: ⚠️ Security vulnerabilities detected!
+                - generic [ref=f3e281]: "## Code Review Results"
+                - generic [ref=f3e282]: "### Critical Issues Found:"
+                - generic [ref=f3e283]: "1. **SQL Injection Vulnerability**: Direct string interpolation in SQL query"
+                - generic [ref=f3e284]: "2. **Missing Password Hashing**: Plain text password comparison"
+                - generic [ref=f3e285]: "### Recommendations:"
+                - generic [ref=f3e286]: "- Use parameterized queries or ORM"
+                - generic [ref=f3e287]: "- Implement proper password hashing (bcrypt, scrypt)"
+                - generic [ref=f3e288]: "- Add input validation and sanitization"
+              - button "Copy code to clipboard" [ref=f3e290] [cursor=pointer]:
+                - generic [ref=f3e291]:
+                  - img [ref=f3e292]
+                  - img [ref=f3e294]
+            - heading "External SubagentsDirect link to External Subagents" [level=2] [ref=f3e296]:
+              - text: External Subagents
+              - link "Direct link to External Subagents" [ref=f3e297] [cursor=pointer]:
+                - /url: "#external-subagents"
+                - text: "#"
+            - paragraph [ref=f3e298]: "External subagents let you bring in AI agents from other providers and platforms, enabling goose to coordinate and integrate your workflow with the broader ecosystem. In the below example, we use Codex as a subagent by running it as an MCP server:"
+            - paragraph [ref=f3e299]:
+              - strong [ref=f3e300]:
+                - link "goose Configuration File" [ref=f3e301] [cursor=pointer]:
+                  - /url: /docs/guides/config-files
+              - text: (
+              - code [ref=f3e302]: .~/.config/goose/config.yaml
+              - text: "):"
+            - generic [ref=f3e304]:
+              - code [ref=f3e306]:
+                - generic [ref=f3e307]: "subagent:"
+                - generic [ref=f3e308]: "args:"
+                - generic [ref=f3e309]: "- mcp-server"
+                - generic [ref=f3e310]: "bundled: true"
+                - generic [ref=f3e311]: "cmd: codex"
+                - generic [ref=f3e312]: "description: OpenAI Codex CLI Subagent"
+                - generic [ref=f3e313]: "enabled: true"
+                - generic [ref=f3e314]: "env_keys:"
+                - generic [ref=f3e315]: "- OPENAI_API_KEY"
+                - generic [ref=f3e316]: "envs: {}"
+                - generic [ref=f3e317]: "name: subagent"
+                - generic [ref=f3e318]: "timeout: 300"
+                - generic [ref=f3e319]: "type: stdio"
+              - button "Copy code to clipboard" [ref=f3e321] [cursor=pointer]:
+                - generic [ref=f3e322]:
+                  - img [ref=f3e323]
+                  - img [ref=f3e325]
+            - paragraph [ref=f3e327]:
+              - strong [ref=f3e328]: External Tool Configuration
+              - text: (
+              - code [ref=f3e329]: ~/.codex/config.toml
+              - text: "):"
+            - generic [ref=f3e331]:
+              - code [ref=f3e333]:
+                - generic [ref=f3e334]: "# Use fast model for quick responses"
+                - generic [ref=f3e335]: "# model = \"codex-mini-latest\""
+                - generic [ref=f3e336]: disable_response_storage = true
+                - generic [ref=f3e337]: "# Never prompt for approval - auto-execute"
+                - generic [ref=f3e338]: approval_policy = "never"
+                - generic [ref=f3e339]: "[sandbox]"
+                - generic [ref=f3e340]: mode = "workspace-write"
+              - button "Copy code to clipboard" [ref=f3e342] [cursor=pointer]:
+                - generic [ref=f3e343]:
+                  - img [ref=f3e344]
+                  - img [ref=f3e346]
+            - paragraph [ref=f3e348]:
+              - strong [ref=f3e349]: "goose Prompt:"
+            - generic [ref=f3e351]:
+              - code [ref=f3e353]:
+                - generic [ref=f3e354]: "\"Use the codex subagent to analyze my codebase structure and identify the main components\""
+              - button "Copy code to clipboard" [ref=f3e356] [cursor=pointer]:
+                - generic [ref=f3e357]:
+                  - img [ref=f3e358]
+                  - img [ref=f3e360]
+            - paragraph [ref=f3e362]:
+              - strong [ref=f3e363]: "goose Output:"
+            - generic [ref=f3e365]:
+              - code [ref=f3e367]:
+                - generic [ref=f3e368]: "Based on my analysis of your codebase, here are the main components:"
+                - generic [ref=f3e369]: "1. **Core Agent System** (`crates/goose/src/agents/`)"
+                - generic [ref=f3e370]: "- Agent orchestration and session management"
+                - generic [ref=f3e371]: "- Tool execution framework"
+                - generic [ref=f3e372]: "- Extension system integration"
+                - generic [ref=f3e373]: "2. **CLI Interface** (`crates/goose-cli/`)"
+                - generic [ref=f3e374]: "- Command-line interface and session handling"
+                - generic [ref=f3e375]: "- Configuration management"
+                - generic [ref=f3e376]: "3. **Server Components** (`crates/goose-server/`)"
+                - generic [ref=f3e377]: "- HTTP API endpoints"
+                - generic [ref=f3e378]: "- WebSocket communication for real-time interaction"
+                - generic [ref=f3e379]: "4. **Desktop UI** (`ui/desktop/`)"
+                - generic [ref=f3e380]: "- Electron-based desktop application"
+                - generic [ref=f3e381]: "- TypeScript frontend with React components"
+                - generic [ref=f3e382]: The architecture follows a modular design with clear separation between the core agent logic, interfaces, and UI components.
+              - button "Copy code to clipboard" [ref=f3e384] [cursor=pointer]:
+                - generic [ref=f3e385]:
+                  - img [ref=f3e386]
+                  - img [ref=f3e388]
+            - heading "Suggested Use CasesDirect link to Suggested Use Cases" [level=2] [ref=f3e390]:
+              - text: Suggested Use Cases
+              - link "Direct link to Suggested Use Cases" [ref=f3e391] [cursor=pointer]:
+                - /url: "#suggested-use-cases"
+                - text: "#"
+            - paragraph [ref=f3e392]:
+              - strong [ref=f3e393]: Independent Operations
+            - list [ref=f3e394]:
+              - listitem [ref=f3e395]: Creating multiple files with similar structure
+              - listitem [ref=f3e396]: Basic data processing tasks
+              - listitem [ref=f3e397]: File transformations and generations
+            - paragraph [ref=f3e398]:
+              - strong [ref=f3e399]: Context Preservation
+            - list [ref=f3e400]:
+              - listitem [ref=f3e401]: Complex analysis that generates lots of tool output
+              - listitem [ref=f3e402]: Specialized tasks better handled by dedicated agents
+              - listitem [ref=f3e403]: Keeping main conversation focused on high-level decisions
+            - paragraph [ref=f3e404]:
+              - strong [ref=f3e405]: Process Isolation
+            - list [ref=f3e406]:
+              - listitem [ref=f3e407]: Tasks that might fail without affecting main workflow
+              - listitem [ref=f3e408]: Operations requiring different configurations
+              - listitem [ref=f3e409]: Experimental or exploratory work
+            - heading "Lifecycle and CleanupDirect link to Lifecycle and Cleanup" [level=2] [ref=f3e410]:
+              - text: Lifecycle and Cleanup
+              - link "Direct link to Lifecycle and Cleanup" [ref=f3e411] [cursor=pointer]:
+                - /url: "#lifecycle-and-cleanup"
+                - text: "#"
+            - paragraph [ref=f3e412]: Subagents are temporary instances that exist only for task execution. After the task is completed, no manual intervention is needed for cleanup.
+            - heading "ConfigurationDirect link to Configuration" [level=2] [ref=f3e413]:
+              - text: Configuration
+              - link "Direct link to Configuration" [ref=f3e414] [cursor=pointer]:
+                - /url: "#configuration"
+                - text: "#"
+            - paragraph [ref=f3e415]: Subagents use the following pre-configured settings, but you can override any defaults using natural language in your prompts.
+            - heading "Default SettingsDirect link to Default Settings" [level=3] [ref=f3e416]:
+              - text: Default Settings
+              - link "Direct link to Default Settings" [ref=f3e417] [cursor=pointer]:
+                - /url: "#default-settings"
+                - text: "#"
+            - table [ref=f3e418]:
+              - rowgroup [ref=f3e419]:
+                - row "Parameter Default How to Customize" [ref=f3e420]:
+                  - columnheader "Parameter" [ref=f3e421]
+                  - columnheader "Default" [ref=f3e422]
+                  - columnheader "How to Customize" [ref=f3e423]
+              - rowgroup [ref=f3e424]:
+                - row "Max Turns 25 Use natural language, set GOOSE_SUBAGENT_MAX_TURNS, or configure settings.max_turns in recipes or subagent tool calls" [ref=f3e425]:
+                  - cell "Max Turns" [ref=f3e426]:
+                    - strong [ref=f3e427]: Max Turns
+                  - cell "25" [ref=f3e428]
+                  - cell "Use natural language, set GOOSE_SUBAGENT_MAX_TURNS, or configure settings.max_turns in recipes or subagent tool calls" [ref=f3e429]:
+                    - text: Use natural language, set
+                    - code [ref=f3e430]: GOOSE_SUBAGENT_MAX_TURNS
+                    - text: ", or configure"
+                    - code [ref=f3e431]: settings.max_turns
+                    - text: in
+                    - link "recipes" [ref=f3e432] [cursor=pointer]:
+                      - /url: /docs/guides/recipes/recipe-reference#settings
+                    - text: or subagent tool calls
+                - row "Timeout 5 minutes Request longer timeout in your prompt" [ref=f3e433]:
+                  - cell "Timeout" [ref=f3e434]:
+                    - strong [ref=f3e435]: Timeout
+                  - cell "5 minutes" [ref=f3e436]
+                  - cell "Request longer timeout in your prompt" [ref=f3e437]
+                - row "Extensions Inherited from parent Specify which extensions to use in your prompt" [ref=f3e438]:
+                  - cell "Extensions" [ref=f3e439]:
+                    - strong [ref=f3e440]: Extensions
+                  - cell "Inherited from parent" [ref=f3e441]
+                  - cell "Specify which extensions to use in your prompt" [ref=f3e442]
+                - row "Return Mode All subagent information provided in main session Specify how much detail you want in your prompt" [ref=f3e443]:
+                  - cell "Return Mode" [ref=f3e444]:
+                    - strong [ref=f3e445]: Return Mode
+                  - cell "All subagent information provided in main session" [ref=f3e446]
+                  - cell "Specify how much detail you want in your prompt" [ref=f3e447]
+            - generic [ref=f3e448]:
+              - generic [ref=f3e449]:
+                - img [ref=f3e451]
+                - text: Advanced Customization
+              - paragraph [ref=f3e454]:
+                - text: You can also customize subagent behavior by editing the
+                - code [ref=f3e455]: subagent_system.md
+                - link "prompt template" [ref=f3e456] [cursor=pointer]:
+                  - /url: /docs/guides/context-engineering/prompt-templates
+                - text: .
+            - heading "Customizing Settings in PromptsDirect link to Customizing Settings in Prompts" [level=3] [ref=f3e457]:
+              - text: Customizing Settings in Prompts
+              - link "Direct link to Customizing Settings in Prompts" [ref=f3e458] [cursor=pointer]:
+                - /url: "#customizing-settings-in-prompts"
+                - text: "#"
+            - paragraph [ref=f3e459]: "You can override any default by including the setting in your natural language request:"
+            - paragraph [ref=f3e460]:
+              - strong [ref=f3e461]: "Examples:"
+            - generic [ref=f3e463]:
+              - code [ref=f3e465]:
+                - generic [ref=f3e466]: "\"Use subagents to analyze code, limit each to 5 turns\""
+              - button "Copy code to clipboard" [ref=f3e468] [cursor=pointer]:
+                - generic [ref=f3e469]:
+                  - img [ref=f3e470]
+                  - img [ref=f3e472]
+            - generic [ref=f3e475]:
+              - code [ref=f3e477]:
+                - generic [ref=f3e478]: "\"Use a research subagent with 30 turns and 20-minute timeout to investigate quantum computing trends\""
+              - button "Copy code to clipboard" [ref=f3e480] [cursor=pointer]:
+                - generic [ref=f3e481]:
+                  - img [ref=f3e482]
+                  - img [ref=f3e484]
+            - paragraph [ref=f3e486]:
+              - strong [ref=f3e487]: "Environment variable:"
+              - text: Set
+              - code [ref=f3e488]: GOOSE_SUBAGENT_MAX_TURNS
+              - text: to change the default max turns for all subagents.
+            - heading "Extension ControlDirect link to Extension Control" [level=3] [ref=f3e489]:
+              - text: Extension Control
+              - link "Direct link to Extension Control" [ref=f3e490] [cursor=pointer]:
+                - /url: "#extension-control"
+                - text: "#"
+            - paragraph [ref=f3e491]: Control which tools and capabilities subagents can access. By default, subagents inherit all extensions from your main session, but you can restrict access for security, focus or performance.
+            - generic [ref=f3e492]:
+              - generic [ref=f3e493]:
+                - img [ref=f3e495]
+                - text: Summon Extension
+              - generic [ref=f3e497]:
+                - paragraph [ref=f3e498]:
+                  - text: The
+                  - code [ref=f3e499]: delegate
+                  - text: and
+                  - code [ref=f3e500]: load
+                  - text: tools are provided by the
+                  - code [ref=f3e501]: summon
+                  - text: platform extension, which is enabled by default. If you are using a
+                  - link "recipe" [ref=f3e502] [cursor=pointer]:
+                    - /url: /docs/guides/recipes/
+                  - text: with an explicit
+                  - code [ref=f3e503]: extensions
+                  - text: block, you must include
+                  - code [ref=f3e504]: summon
+                  - text: in that list or the
+                  - code [ref=f3e505]: delegate
+                  - text: "tool will not be available:"
+                - generic [ref=f3e507]:
+                  - code [ref=f3e509]:
+                    - generic [ref=f3e510]: "extensions:"
+                    - generic [ref=f3e511]: "- type: platform"
+                    - generic [ref=f3e512]: "name: summon"
+                    - generic [ref=f3e513]: "# ... your other extensions"
+                  - button "Copy code to clipboard" [ref=f3e515] [cursor=pointer]:
+                    - generic [ref=f3e516]:
+                      - img [ref=f3e517]
+                      - img [ref=f3e519]
+                - paragraph [ref=f3e521]:
+                  - text: Recipes that define
+                  - link "sub_recipes" [ref=f3e522] [cursor=pointer]:
+                    - /url: /docs/guides/recipes/subrecipes
+                    - code [ref=f3e523]: sub_recipes
+                  - text: have
+                  - code [ref=f3e524]: summon
+                  - text: auto-injected.
+            - paragraph [ref=f3e525]:
+              - strong [ref=f3e526]: "Examples:"
+            - generic [ref=f3e528]:
+              - code [ref=f3e530]:
+                - generic [ref=f3e531]: "\"Create a subagent to write a summary, but don't give it file access\""
+              - button "Copy code to clipboard" [ref=f3e533] [cursor=pointer]:
+                - generic [ref=f3e534]:
+                  - img [ref=f3e535]
+                  - img [ref=f3e537]
+            - generic [ref=f3e540]:
+              - code [ref=f3e542]:
+                - generic [ref=f3e543]: "\"Use a subagent with only code editing tools to refactor main.py\""
+              - button "Copy code to clipboard" [ref=f3e545] [cursor=pointer]:
+                - generic [ref=f3e546]:
+                  - img [ref=f3e547]
+                  - img [ref=f3e549]
+            - heading "Return Mode ControlDirect link to Return Mode Control" [level=3] [ref=f3e551]:
+              - text: Return Mode Control
+              - link "Direct link to Return Mode Control" [ref=f3e552] [cursor=pointer]:
+                - /url: "#return-mode-control"
+                - text: "#"
+            - paragraph [ref=f3e553]: Choose how much information goose provides from its subagents in your main session.
+            - paragraph [ref=f3e554]:
+              - strong [ref=f3e555]: "Full Details (Default):"
+              - text: See all tool executions and reasoning steps
+            - generic [ref=f3e557]:
+              - code [ref=f3e559]:
+                - generic [ref=f3e560]: "\"Create a subagent to debug this issue - I want to see the full investigation process\""
+              - button "Copy code to clipboard" [ref=f3e562] [cursor=pointer]:
+                - generic [ref=f3e563]:
+                  - img [ref=f3e564]
+                  - img [ref=f3e566]
+            - paragraph [ref=f3e568]:
+              - strong [ref=f3e569]: "Summary Only:"
+              - text: Get just the final result to keep your conversation clean
+            - generic [ref=f3e571]:
+              - code [ref=f3e573]:
+                - generic [ref=f3e574]: "\"Use a subagent to research this topic and summarize the key findings\""
+              - button "Copy code to clipboard" [ref=f3e576] [cursor=pointer]:
+                - generic [ref=f3e577]:
+                  - img [ref=f3e578]
+                  - img [ref=f3e580]
+            - heading "Security ConstraintsDirect link to Security Constraints" [level=2] [ref=f3e582]:
+              - text: Security Constraints
+              - link "Direct link to Security Constraints" [ref=f3e583] [cursor=pointer]:
+                - /url: "#security-constraints"
+                - text: "#"
+            - paragraph [ref=f3e584]: Subagents operate with restricted tool access to ensure safe execution and prevent interference with the main session.
+            - heading "Allowed OperationsDirect link to Allowed Operations" [level=3] [ref=f3e585]:
+              - text: Allowed Operations
+              - link "Direct link to Allowed Operations" [ref=f3e586] [cursor=pointer]:
+                - /url: "#allowed-operations"
+                - text: "#"
+            - paragraph [ref=f3e587]: "Subagents have access to these safe operations:"
+            - list [ref=f3e588]:
+              - listitem [ref=f3e589]:
+                - strong [ref=f3e590]: Extension discovery
+                - text: ": Search for available extensions to understand what tools are available"
+              - listitem [ref=f3e591]:
+                - strong [ref=f3e592]: Resource access
+                - text: ": Read and list resources from enabled extensions for context"
+              - listitem [ref=f3e593]:
+                - strong [ref=f3e594]: Extension tools
+                - text: ": Use tools from extensions specified in recipes or inherited from the parent session"
+            - heading "Restricted OperationsDirect link to Restricted Operations" [level=3] [ref=f3e595]:
+              - text: Restricted Operations
+              - link "Direct link to Restricted Operations" [ref=f3e596] [cursor=pointer]:
+                - /url: "#restricted-operations"
+                - text: "#"
+            - paragraph [ref=f3e597]: "The following operations are blocked to ensure subagents remain focused on their assigned tasks without affecting the broader system state:"
+            - list [ref=f3e598]:
+              - listitem [ref=f3e599]:
+                - strong [ref=f3e600]: Subagent spawning
+                - text: ": Cannot create additional subagents to prevent infinite recursion"
+              - listitem [ref=f3e601]:
+                - strong [ref=f3e602]: Extension management
+                - text: ": Cannot enable, disable, or modify extensions to avoid conflicts with the main session"
+              - listitem [ref=f3e603]:
+                - strong [ref=f3e604]: Schedule management
+                - text: ": Cannot create, modify, or delete scheduled tasks to prevent interference with parent workflows"
+            - generic [ref=f3e605]:
+              - generic [ref=f3e606]:
+                - img [ref=f3e608]
+                - text: info
+              - paragraph [ref=f3e611]: Subagents can browse extensions for suggestions but cannot enable them to avoid modifying the parent session.
+            - heading "Additional ResourcesDirect link to Additional Resources" [level=2] [ref=f3e612]:
+              - text: Additional Resources
+              - link "Direct link to Additional Resources" [ref=f3e613] [cursor=pointer]:
+                - /url: "#additional-resources"
+                - text: "#"
+            - generic [ref=f3e615]:
+              - generic [ref=f3e616]:
+                - 'link "Thumbnail for Agents, Subagents, and Multi Agents: What They Are and When to Use Them Agents, Subagents, and Multi Agents: What They Are and When to Use Them Compare agents, subagents, and multi agents in AI workflows. Learn how they work together and practical scenarios for each approach. BLOG Aug 14, 2025 4 min read" [ref=f3e618] [cursor=pointer]':
+                  - /url: /blog/2025/08/14/agent-coordination-patterns
+                  - 'img "Thumbnail for Agents, Subagents, and Multi Agents: What They Are and When to Use Them" [ref=f3e621]'
+                  - generic [ref=f3e622]:
+                    - 'heading "Agents, Subagents, and Multi Agents: What They Are and When to Use Them" [level=3] [ref=f3e623]'
+                    - paragraph [ref=f3e624]: Compare agents, subagents, and multi agents in AI workflows. Learn how they work together and practical scenarios for each approach.
+                    - generic [ref=f3e625]:
+                      - generic [ref=f3e626]: BLOG
+                      - generic [ref=f3e627]: Aug 14, 2025
+                      - generic [ref=f3e628]: 4 min read
+                - link "Thumbnail for How I Built an App with 6 Subagents How I Built an App with 6 Subagents Deep dive into goose subagents. Walk through building an app using 6 specialized AI agents for advanced workflow automation and development. VIDEO Oct 1, 2025 6:53" [ref=f3e630] [cursor=pointer]:
+                  - /url: https://www.youtube.com/watch?v=yIBrD5AxtTc
+                  - img "Thumbnail for How I Built an App with 6 Subagents" [ref=f3e633]
+                  - generic [ref=f3e634]:
+                    - heading "How I Built an App with 6 Subagents" [level=3] [ref=f3e635]
+                    - paragraph [ref=f3e636]: Deep dive into goose subagents. Walk through building an app using 6 specialized AI agents for advanced workflow automation and development.
+                    - generic [ref=f3e637]:
+                      - generic [ref=f3e638]: VIDEO
+                      - generic [ref=f3e639]: Oct 1, 2025
+                      - generic [ref=f3e640]: 6:53
+                - 'link "Thumbnail for Tutorial: Using Subagents Tutorial: Using Subagents Spin up a team of subagents to build a fully functional app TUTORIAL Jan 27, 2026 1 hour" [ref=f3e642] [cursor=pointer]':
+                  - /url: /docs/tutorials/subagents
+                  - 'img "Thumbnail for Tutorial: Using Subagents" [ref=f3e645]'
+                  - generic [ref=f3e646]:
+                    - 'heading "Tutorial: Using Subagents" [level=3] [ref=f3e647]'
+                    - paragraph [ref=f3e648]: Spin up a team of subagents to build a fully functional app
+                    - generic [ref=f3e649]:
+                      - generic [ref=f3e650]: TUTORIAL
+                      - generic [ref=f3e651]: Jan 27, 2026
+                      - generic [ref=f3e652]: 1 hour
+                - link "Thumbnail for Flight School - Choosing the Right Tools for AI Work Flight School - Choosing the Right Tools for AI Work Discover the differences between subagents and subrecipes for efficient task execution in goose. Learn which approach is best for your workflow. VIDEO Sep 29, 2025 6:13" [ref=f3e654] [cursor=pointer]:
+                  - /url: https://www.youtube.com/watch?v=joePzlkARjs
+                  - img "Thumbnail for Flight School - Choosing the Right Tools for AI Work" [ref=f3e657]
+                  - generic [ref=f3e658]:
+                    - heading "Flight School - Choosing the Right Tools for AI Work" [level=3] [ref=f3e659]
+                    - paragraph [ref=f3e660]: Discover the differences between subagents and subrecipes for efficient task execution in goose. Learn which approach is best for your workflow.
+                    - generic [ref=f3e661]:
+                      - generic [ref=f3e662]: VIDEO
+                      - generic [ref=f3e663]: Sep 29, 2025
+                      - generic [ref=f3e664]: 6:13
+                - link "Thumbnail for Flight School - Choosing the Right Tools for AI Work Flight School - Choosing the Right Tools for AI Work Discover the differences between subagents and subrecipes for efficient task execution in goose. Learn which approach is best for your workflow. VIDEO Sep 29, 2025 6:13" [ref=f3e666] [cursor=pointer]:
+                  - /url: https://www.youtube.com/watch?v=joePzlkARjs
+                  - img "Thumbnail for Flight School - Choosing the Right Tools for AI Work" [ref=f3e669]
+                  - generic [ref=f3e670]:
+                    - heading "Flight School - Choosing the Right Tools for AI Work" [level=3] [ref=f3e671]
+                    - paragraph [ref=f3e672]: Discover the differences between subagents and subrecipes for efficient task execution in goose. Learn which approach is best for your workflow.
+                    - generic [ref=f3e673]:
+                      - generic [ref=f3e674]: VIDEO
+                      - generic [ref=f3e675]: Sep 29, 2025
+                      - generic [ref=f3e676]: 6:13
+                - link "Thumbnail for How to Choose Between Subagents and Subrecipes in goose How to Choose Between Subagents and Subrecipes in goose Detailed guide to subagents and subrecipes in goose. Compare reusability, setup complexity, and get practical advice for choosing the right approach. BLOG Sep 26, 2025 6 min read" [ref=f3e678] [cursor=pointer]:
+                  - /url: /blog/2025/09/26/subagents-vs-subrecipes
+                  - img "Thumbnail for How to Choose Between Subagents and Subrecipes in goose" [ref=f3e681]
+                  - generic [ref=f3e682]:
+                    - heading "How to Choose Between Subagents and Subrecipes in goose" [level=3] [ref=f3e683]
+                    - paragraph [ref=f3e684]: Detailed guide to subagents and subrecipes in goose. Compare reusability, setup complexity, and get practical advice for choosing the right approach.
+                    - generic [ref=f3e685]:
+                      - generic [ref=f3e686]: BLOG
+                      - generic [ref=f3e687]: Sep 26, 2025
+                      - generic [ref=f3e688]: 6 min read
+              - generic:
+                - img
+              - generic [ref=f3e689] [cursor=pointer]:
+                - img
+        - navigation "Docs pages" [ref=f3e696]:
+          - link "Previous « Creating Plans" [ref=f3e697] [cursor=pointer]:
+            - /url: /docs/guides/context-engineering/creating-plans
+            - generic [ref=f3e698]: Previous
+            - generic [ref=f3e699]: « Creating Plans
+          - link "Next Custom Agents »" [ref=f3e700] [cursor=pointer]:
+            - /url: /docs/guides/context-engineering/custom-agents
+            - generic [ref=f3e701]: Next
+            - generic [ref=f3e702]: Custom Agents »
+    - contentinfo [ref=f3e703]:
+      - generic [ref=f3e704]:
+        - generic [ref=f3e705]:
+          - generic [ref=f3e706]:
+            - generic [ref=f3e707]: Quick Links
+            - list [ref=f3e708]:
+              - listitem [ref=f3e709]:
+                - link "Install goose" [ref=f3e710] [cursor=pointer]:
+                  - /url: /docs/getting-started/installation
+              - listitem [ref=f3e711]:
+                - link "Extensions" [ref=f3e712] [cursor=pointer]:
+                  - /url: /extensions
+          - generic [ref=f3e713]:
+            - generic [ref=f3e714]: Community
+            - list [ref=f3e715]:
+              - listitem [ref=f3e716]:
+                - link "Spotlight" [ref=f3e717] [cursor=pointer]:
+                  - /url: /community
+              - listitem [ref=f3e718]:
+                - link "Discord(opens in new tab)" [ref=f3e719] [cursor=pointer]:
+                  - /url: https://discord.gg/goose-oss
+                  - text: Discord
+                  - img "(opens in new tab)" [ref=f3e720]
+              - listitem [ref=f3e722]:
+                - link "YouTube(opens in new tab)" [ref=f3e723] [cursor=pointer]:
+                  - /url: https://www.youtube.com/@goose-oss
+                  - text: YouTube
+                  - img "(opens in new tab)" [ref=f3e724]
+              - listitem [ref=f3e726]:
+                - link "LinkedIn(opens in new tab)" [ref=f3e727] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/company/goose-oss
+                  - text: LinkedIn
+                  - img "(opens in new tab)" [ref=f3e728]
+              - listitem [ref=f3e730]:
+                - link "Twitter / X(opens in new tab)" [ref=f3e731] [cursor=pointer]:
+                  - /url: https://x.com/goose_oss
+                  - text: Twitter / X
+                  - img "(opens in new tab)" [ref=f3e732]
+              - listitem [ref=f3e734]:
+                - link "BlueSky(opens in new tab)" [ref=f3e735] [cursor=pointer]:
+                  - /url: https://bsky.app/profile/opensource.block.xyz
+                  - text: BlueSky
+                  - img "(opens in new tab)" [ref=f3e736]
+              - listitem [ref=f3e738]:
+                - link "Nostr(opens in new tab)" [ref=f3e739] [cursor=pointer]:
+                  - /url: https://njump.me/opensource@block.xyz
+                  - text: Nostr
+                  - img "(opens in new tab)" [ref=f3e740]
+          - generic [ref=f3e742]:
+            - generic [ref=f3e743]: More
+            - list [ref=f3e744]:
+              - listitem [ref=f3e745]:
+                - link "Blog" [ref=f3e746] [cursor=pointer]:
+                  - /url: /blog
+              - listitem [ref=f3e747]:
+                - link "GitHub(opens in new tab)" [ref=f3e748] [cursor=pointer]:
+                  - /url: https://github.com/aaif-goose/goose
+                  - text: GitHub
+                  - img "(opens in new tab)" [ref=f3e749]
+        - generic [ref=f3e752]: Copyright © 2026 AAIF (Agentic AI Foundation)
+  - button "Ask AI" [ref=f3e753] [cursor=pointer]:
+    - generic [ref=f3e754]:
+      - generic [ref=f3e755]: Ask AI
+      - img [ref=f3e758]

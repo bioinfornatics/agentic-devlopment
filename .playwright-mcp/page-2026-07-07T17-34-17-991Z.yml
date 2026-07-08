@@ -1,0 +1,803 @@
+- generic [active] [ref=f24e1]:
+  - generic [ref=f24e2]:
+    - heading "Paramètres des cookies" [level=3] [ref=f24e3]
+    - paragraph [ref=f24e4]:
+      - text: Nous utilisons des cookies pour fournir et améliorer nos services, analyser l'utilisation du site et, si vous êtes d'accord, pour personnaliser votre expérience et vous proposer nos services. Vous pouvez consulter notre politique relative aux cookies
+      - link "ici" [ref=f24e5] [cursor=pointer]:
+        - /url: https://www.anthropic.com/legal/cookies
+      - text: .
+    - generic [ref=f24e6]:
+      - button "Personnaliser les paramètres des cookies" [ref=f24e7] [cursor=pointer]:
+        - generic [ref=f24e8]: Personnaliser les paramètres des cookies
+      - button "Refuser tous les cookies" [ref=f24e9] [cursor=pointer]:
+        - generic [ref=f24e10]: Refuser tous les cookies
+      - button "Accepter tous les cookies" [ref=f24e11] [cursor=pointer]:
+        - generic [ref=f24e12]: Accepter tous les cookies
+  - alert [ref=f24e13]
+  - generic:
+    - generic:
+      - generic:
+        - region "Notifications"
+  - generic [ref=f24e14]:
+    - banner [ref=f24e15]:
+      - link "Claude Platform Docs Home" [ref=f24e16] [cursor=pointer]:
+        - /url: /docs/en/home
+        - generic [ref=f24e18]:
+          - img [ref=f24e19]
+          - generic [ref=f24e22]: Claude Platform Docs
+      - generic [ref=f24e24]:
+        - button "Search documentation" [ref=f24e25] [cursor=pointer]:
+          - generic [ref=f24e26]: 
+        - button [ref=f24e27] [cursor=pointer]:
+          - generic [ref=f24e28]: 
+    - generic [ref=f24e31]:
+      - generic [ref=f24e32]:
+        - button "Open navigation" [ref=f24e33] [cursor=pointer]:
+          - generic [ref=f24e34]: 
+        - button "Messages" [ref=f24e35] [cursor=pointer]:
+          - generic [ref=f24e36]: Messages
+          - generic [ref=f24e37]: 
+        - generic [ref=f24e38]: Overview
+      - main [ref=f24e39]:
+        - generic [ref=f24e40]:
+          - article [ref=f24e42]:
+            - generic [ref=f24e43]:
+              - heading "Agent Skills" [level=1] [ref=f24e45]
+              - generic [ref=f24e46]: Agent Skills are modular capabilities that extend Claude's functionality. Each Skill packages instructions, metadata, and optional resources (scripts, templates) that Claude uses automatically when relevant.
+            - group "More options" [ref=f24e48]:
+              - button "Copy page" [ref=f24e50] [cursor=pointer]:
+                - generic [ref=f24e53]:
+                  - generic [ref=f24e54]:
+                    - img
+                    - img [ref=f24e55]
+                    - img
+                    - img
+                  - generic [ref=f24e57]: Copy page
+              - button "More options" [ref=f24e60] [cursor=pointer]:
+                - generic [ref=f24e63]: 
+            - generic [ref=f24e64]:
+              - generic [ref=f24e66]: 
+              - paragraph [ref=f24e68]:
+                - text: This feature is
+                - strong [ref=f24e69]: not
+                - text: eligible for
+                - link "Zero Data Retention (ZDR)" [ref=f24e70] [cursor=pointer]:
+                  - /url: /docs/en/build-with-claude/api-and-data-retention
+                - text: . Data is retained according to the feature's standard retention policy.
+            - heading "Why use Skills" [level=2] [ref=f24e71]:
+              - generic [ref=f24e73]: Why use Skills
+            - paragraph [ref=f24e74]: "Skills are reusable, filesystem-based resources that provide Claude with domain-specific expertise: workflows, context, and best practices that transform general-purpose agents into specialists. Unlike prompts (conversation-level instructions for one-off tasks), Skills load on-demand and eliminate the need to repeatedly provide the same guidance across multiple conversations."
+            - paragraph [ref=f24e75]:
+              - strong [ref=f24e76]: Key benefits
+              - text: ":"
+            - list [ref=f24e77]:
+              - listitem [ref=f24e78]:
+                - text: •
+                - strong [ref=f24e79]: Specialize Claude
+                - text: ": Tailor capabilities for domain-specific tasks"
+              - listitem [ref=f24e80]:
+                - text: •
+                - strong [ref=f24e81]: Reduce repetition
+                - text: ": Create once, use automatically"
+              - listitem [ref=f24e82]:
+                - text: •
+                - strong [ref=f24e83]: Compose capabilities
+                - text: ": Combine Skills to build complex workflows"
+            - generic [ref=f24e84]:
+              - generic [ref=f24e86]: 
+              - paragraph [ref=f24e88]:
+                - text: For a deep dive into the architecture and real-world applications of Agent Skills, see the engineering blog post
+                - link "Equipping agents for the real world with Agent Skills" [ref=f24e89] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills
+                - text: .
+            - heading "Using Skills" [level=2] [ref=f24e90]:
+              - generic [ref=f24e92]: Using Skills
+            - paragraph [ref=f24e93]: Anthropic provides pre-built Agent Skills for common document tasks (PowerPoint, Excel, Word, PDF), and you can create your own custom Skills. Both work the same way. Claude automatically uses them when relevant to your request.
+            - paragraph [ref=f24e94]:
+              - strong [ref=f24e95]: Pre-built Agent Skills
+              - text: are available on claude.ai, the Claude API,
+              - link "Claude Platform on AWS" [ref=f24e96] [cursor=pointer]:
+                - /url: /docs/en/build-with-claude/claude-platform-on-aws
+              - text: ", and"
+              - link "Microsoft Foundry" [ref=f24e97] [cursor=pointer]:
+                - /url: /docs/en/build-with-claude/claude-in-microsoft-foundry
+              - text: . On Microsoft Foundry, Agent Skills require a
+              - link "Hosted on Anthropic deployment" [ref=f24e98] [cursor=pointer]:
+                - /url: /docs/en/build-with-claude/claude-in-microsoft-foundry#additional-features-not-supported-when-hosted-on-azure
+              - text: . See
+              - link "Available Skills" [ref=f24e99] [cursor=pointer]:
+                - /url: "#available-skills"
+              - text: for the complete list.
+            - paragraph [ref=f24e100]:
+              - strong [ref=f24e101]: Custom Skills
+              - text: "let you package domain expertise and organizational knowledge. They're available across Claude's products: create them in Claude Code, upload them through the Claude API, or add them in claude.ai settings. On"
+              - link "Claude Platform on AWS" [ref=f24e102] [cursor=pointer]:
+                - /url: /docs/en/build-with-claude/claude-platform-on-aws
+              - text: and
+              - link "Microsoft Foundry" [ref=f24e103] [cursor=pointer]:
+                - /url: /docs/en/build-with-claude/claude-in-microsoft-foundry
+              - text: ", upload custom Skills through the Skills API."
+            - generic [ref=f24e104]:
+              - generic [ref=f24e106]: 
+              - generic [ref=f24e107]:
+                - paragraph [ref=f24e108]:
+                  - strong [ref=f24e109]: "Get started:"
+                - list [ref=f24e110]:
+                  - listitem [ref=f24e111]:
+                    - text: "• For pre-built Agent Skills: See the"
+                    - link "quickstart tutorial" [ref=f24e112] [cursor=pointer]:
+                      - /url: /docs/en/agents-and-tools/agent-skills/quickstart
+                    - text: to start using PowerPoint, Excel, Word, and PDF skills in the API
+                  - listitem [ref=f24e113]:
+                    - text: "• For custom Skills: See the"
+                    - link "Agent Skills Cookbook" [ref=f24e114] [cursor=pointer]:
+                      - /url: https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction
+                    - text: to learn how to create your own Skills
+            - heading "How Skills work" [level=2] [ref=f24e115]:
+              - generic [ref=f24e117]: How Skills work
+            - paragraph [ref=f24e118]: Skills leverage Claude's VM environment to provide capabilities beyond what's possible with prompts alone. Claude operates in a virtual machine with filesystem access, allowing Skills to exist as directories containing instructions, executable code, and reference materials, organized like an onboarding guide you'd create for a new team member.
+            - paragraph [ref=f24e119]:
+              - text: This filesystem-based architecture enables
+              - strong [ref=f24e120]: progressive disclosure
+              - text: ": Claude loads information in stages as needed, rather than consuming context upfront."
+            - heading "Three types of Skill content, three levels of loading" [level=3] [ref=f24e121]:
+              - generic [ref=f24e123]: Three types of Skill content, three levels of loading
+            - paragraph [ref=f24e124]: "Skills can contain three types of content, each loaded at different times:"
+            - 'heading "Level 1: Metadata (always loaded)" [level=3] [ref=f24e125]':
+              - generic [ref=f24e127]: "Level 1: Metadata (always loaded)"
+            - paragraph [ref=f24e128]:
+              - strong [ref=f24e129]: "Content type: Instructions"
+              - text: ". The Skill's YAML frontmatter provides discovery information:"
+            - generic [ref=f24e130]:
+              - code [ref=f24e134]:
+                - generic [ref=f24e135]: "---"
+                - generic [ref=f24e136]: "name: pdf-processing"
+                - generic [ref=f24e137]: "description: Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction."
+                - generic [ref=f24e138]: "---"
+              - button "Copy code" [ref=f24e140] [cursor=pointer]:
+                - generic [ref=f24e143]: 
+            - paragraph [ref=f24e144]: Claude loads this metadata at startup and includes it in the system prompt. This lightweight approach means you can install many Skills without context penalty; Claude only knows each Skill exists and when to use it.
+            - 'heading "Level 2: Instructions (loaded when triggered)" [level=3] [ref=f24e145]':
+              - generic [ref=f24e147]: "Level 2: Instructions (loaded when triggered)"
+            - paragraph [ref=f24e148]:
+              - strong [ref=f24e149]: "Content type: Instructions"
+              - text: ". The main body of SKILL.md contains procedural knowledge: workflows, best practices, and guidance:"
+            - generic [ref=f24e150]:
+              - code [ref=f24e154]:
+                - generic [ref=f24e155]: "# PDF Processing"
+                - generic [ref=f24e156]: "## Quick start"
+                - generic [ref=f24e157]: "Use pdfplumber to extract text from PDFs:"
+                - generic [ref=f24e158]: "```python"
+                - generic [ref=f24e159]: import pdfplumber
+                - generic [ref=f24e160]: "with pdfplumber.open(\"document.pdf\") as pdf:"
+                - generic [ref=f24e161]: text = pdf.pages[0].extract_text()
+                - generic [ref=f24e162]: "```"
+                - generic [ref=f24e163]: For advanced form filling, see [FORMS.md](FORMS.md).
+              - button "Copy code" [ref=f24e165] [cursor=pointer]:
+                - generic [ref=f24e168]: 
+            - paragraph [ref=f24e169]: When you request something that matches a Skill's description, Claude reads SKILL.md from the filesystem via bash. Only then does this content enter the context window.
+            - 'heading "Level 3: Resources and code (loaded as needed)" [level=3] [ref=f24e170]':
+              - generic [ref=f24e172]: "Level 3: Resources and code (loaded as needed)"
+            - paragraph [ref=f24e173]:
+              - strong [ref=f24e174]: "Content types: Instructions, code, and resources"
+              - text: ". Skills can bundle additional materials:"
+            - generic [ref=f24e175]:
+              - code [ref=f24e178]: pdf-skill/ ├── SKILL.md (main instructions) ├── FORMS.md (form-filling guide) ├── REFERENCE.md (detailed API reference) └── scripts/ └── fill_form.py (utility script)
+              - button "Copy code" [ref=f24e180] [cursor=pointer]:
+                - generic [ref=f24e183]: 
+            - paragraph [ref=f24e184]:
+              - strong [ref=f24e185]: Instructions
+              - text: ": Additional markdown files (FORMS.md, REFERENCE.md) containing specialized guidance and workflows"
+            - paragraph [ref=f24e186]:
+              - strong [ref=f24e187]: Code
+              - text: ": Executable scripts (fill_form.py, validate.py) that Claude runs via bash; scripts provide deterministic operations without consuming context"
+            - paragraph [ref=f24e188]:
+              - strong [ref=f24e189]: Resources
+              - text: ": Reference materials like database schemas, API documentation, templates, or examples"
+            - paragraph [ref=f24e190]: "Claude accesses these files only when referenced. The filesystem model means each content type has different strengths: instructions for flexible guidance, code for reliability, resources for factual lookup."
+            - table [ref=f24e192]:
+              - rowgroup [ref=f24e193]:
+                - row "Level When Loaded Token Cost Content" [ref=f24e194]:
+                  - columnheader "Level" [ref=f24e195]
+                  - columnheader "When Loaded" [ref=f24e196]
+                  - columnheader "Token Cost" [ref=f24e197]
+                  - columnheader "Content" [ref=f24e198]
+              - rowgroup [ref=f24e199]:
+                - 'row "Level 1: Metadata Always (at startup) ~100 tokens per Skill name and description from YAML frontmatter" [ref=f24e200]':
+                  - 'cell "Level 1: Metadata" [ref=f24e201]':
+                    - strong [ref=f24e202]: "Level 1: Metadata"
+                  - cell "Always (at startup)" [ref=f24e203]
+                  - cell "~100 tokens per Skill" [ref=f24e204]
+                  - cell "name and description from YAML frontmatter" [ref=f24e205]:
+                    - code [ref=f24e206]: name
+                    - text: and
+                    - code [ref=f24e207]: description
+                    - text: from YAML frontmatter
+                - 'row "Level 2: Instructions When Skill is triggered Under 5k tokens SKILL.md body with instructions and guidance" [ref=f24e208]':
+                  - 'cell "Level 2: Instructions" [ref=f24e209]':
+                    - strong [ref=f24e210]: "Level 2: Instructions"
+                  - cell "When Skill is triggered" [ref=f24e211]
+                  - cell "Under 5k tokens" [ref=f24e212]
+                  - cell "SKILL.md body with instructions and guidance" [ref=f24e213]
+                - 'row "Level 3+: Resources As needed Effectively unlimited Bundled files executed via bash without loading contents into context" [ref=f24e214]':
+                  - 'cell "Level 3+: Resources" [ref=f24e215]':
+                    - strong [ref=f24e216]: "Level 3+: Resources"
+                  - cell "As needed" [ref=f24e217]
+                  - cell "Effectively unlimited" [ref=f24e218]
+                  - cell "Bundled files executed via bash without loading contents into context" [ref=f24e219]
+            - paragraph [ref=f24e220]: Progressive disclosure ensures only relevant content occupies the context window at any given time.
+            - heading "The Skills architecture" [level=3] [ref=f24e221]:
+              - generic [ref=f24e223]: The Skills architecture
+            - paragraph [ref=f24e224]: "Skills run in a code execution environment where Claude has filesystem access, bash commands, and code execution capabilities. Think of it like this: Skills exist as directories on a virtual machine, and Claude interacts with them using the same bash commands you'd use to navigate files on your computer."
+            - paragraph [ref=f24e225]:
+              - img "Agent Skills Architecture - showing how Skills integrate with the agent's configuration and virtual machine" [ref=f24e226]
+            - paragraph [ref=f24e227]:
+              - strong [ref=f24e228]: "How Claude accesses Skill content:"
+            - paragraph [ref=f24e229]: When a Skill is triggered, Claude uses bash to read SKILL.md from the filesystem, bringing its instructions into the context window. If those instructions reference other files (like FORMS.md or a database schema), Claude reads those files too using additional bash commands. When instructions mention executable scripts, Claude runs them via bash and receives only the output (the script code itself never enters context).
+            - paragraph [ref=f24e230]:
+              - strong [ref=f24e231]: "What this architecture enables:"
+            - paragraph [ref=f24e232]:
+              - strong [ref=f24e233]: On-demand file access
+              - text: ": Claude reads only the files needed for each specific task. A Skill can include dozens of reference files, but if your task only needs the sales schema, Claude loads just that one file. The rest remain on the filesystem consuming zero tokens."
+            - paragraph [ref=f24e234]:
+              - strong [ref=f24e235]: Efficient script execution
+              - text: ": When Claude runs"
+              - code [ref=f24e236]: validate_form.py
+              - text: ", the script's code never loads into the context window. Only the script's output (like \"Validation passed\" or specific error messages) consumes tokens. This makes scripts far more efficient than having Claude generate equivalent code on the fly."
+            - paragraph [ref=f24e237]:
+              - strong [ref=f24e238]: No practical limit on bundled content
+              - text: ": Because files don't consume context until accessed, Skills can include comprehensive API documentation, large datasets, extensive examples, or any reference materials you need. There's no context penalty for bundled content that isn't used."
+            - paragraph [ref=f24e239]: This filesystem-based model is what makes progressive disclosure work. Claude navigates your Skill like you'd reference specific sections of an onboarding guide, accessing exactly what each task requires.
+            - 'heading "Example: Loading a PDF processing skill" [level=3] [ref=f24e240]':
+              - generic [ref=f24e242]: "Example: Loading a PDF processing skill"
+            - paragraph [ref=f24e243]: "Here's how Claude loads and uses a PDF processing skill:"
+            - list [ref=f24e244]:
+              - listitem [ref=f24e245]:
+                - strong [ref=f24e246]: Startup
+                - text: ": System prompt includes:"
+                - code [ref=f24e247]: PDF Processing - Extract text and tables from PDF files, fill forms, merge documents
+              - listitem [ref=f24e248]:
+                - strong [ref=f24e249]: User request
+                - text: ": \"Extract the text from this PDF and summarize it\""
+              - listitem [ref=f24e250]:
+                - strong [ref=f24e251]: Claude invokes
+                - text: ":"
+                - code [ref=f24e252]: "bash: read pdf-skill/SKILL.md"
+                - text: → Instructions loaded into context
+              - listitem [ref=f24e253]:
+                - strong [ref=f24e254]: Claude determines
+                - text: ": Form filling is not needed, so FORMS.md is not read"
+              - listitem [ref=f24e255]:
+                - strong [ref=f24e256]: Claude executes
+                - text: ": Uses instructions from SKILL.md to complete the task"
+            - paragraph [ref=f24e257]:
+              - img "Skills loading into context window - showing the progressive loading of skill metadata and content" [ref=f24e258]
+            - paragraph [ref=f24e259]: "The diagram shows:"
+            - list [ref=f24e260]:
+              - listitem [ref=f24e261]: Default state with system prompt and skill metadata pre-loaded
+              - listitem [ref=f24e262]: Claude triggers the skill by reading SKILL.md via bash
+              - listitem [ref=f24e263]: Claude optionally reads additional bundled files like FORMS.md as needed
+              - listitem [ref=f24e264]: Claude proceeds with the task
+            - paragraph [ref=f24e265]: This dynamic loading ensures only relevant skill content occupies the context window.
+            - heading "Where Skills work" [level=2] [ref=f24e266]:
+              - generic [ref=f24e268]: Where Skills work
+            - paragraph [ref=f24e269]: "Skills are available across Claude's agent products:"
+            - generic [ref=f24e270]:
+              - generic [ref=f24e272]: 
+              - paragraph [ref=f24e274]: Claude Platform on AWS and Microsoft Foundry inherit the same Skills behavior as the Claude API in all following sections.
+            - heading "Claude API" [level=3] [ref=f24e275]:
+              - generic [ref=f24e277]: Claude API
+            - paragraph [ref=f24e278]:
+              - text: "The Claude API supports both pre-built Agent Skills and custom Skills. Both work identically: specify the relevant"
+              - code [ref=f24e279]: skill_id
+              - text: in the
+              - code [ref=f24e280]: container
+              - text: parameter along with the code execution tool.
+            - paragraph [ref=f24e281]:
+              - strong [ref=f24e282]: Prerequisites
+              - text: ": Using Skills via the API requires three beta headers:"
+            - list [ref=f24e283]:
+              - listitem [ref=f24e284]:
+                - text: •
+                - code [ref=f24e285]: code-execution-2025-08-25
+                - text: "- Skills run in the code execution container"
+              - listitem [ref=f24e286]:
+                - text: •
+                - code [ref=f24e287]: skills-2025-10-02
+                - text: "- Enables Skills functionality"
+              - listitem [ref=f24e288]:
+                - text: •
+                - code [ref=f24e289]: files-api-2025-04-14
+                - text: "- Required for uploading/downloading files to/from the container"
+            - paragraph [ref=f24e290]:
+              - text: Use pre-built Agent Skills by referencing their
+              - code [ref=f24e291]: skill_id
+              - text: (for example,
+              - code [ref=f24e292]: pptx
+              - text: ","
+              - code [ref=f24e293]: xlsx
+              - text: ), or create and upload your own through the Skills API (
+              - code [ref=f24e294]: /v1/skills
+              - text: endpoints). Custom Skills are shared workspace-wide; all workspace members can access them.
+            - paragraph [ref=f24e295]:
+              - text: To learn more, see
+              - link "Use Skills with the Claude API" [ref=f24e296] [cursor=pointer]:
+                - /url: /docs/en/build-with-claude/skills-guide
+              - text: .
+            - heading "Claude Code" [level=3] [ref=f24e297]:
+              - generic [ref=f24e299]: Claude Code
+            - paragraph [ref=f24e300]:
+              - link "Claude Code" [ref=f24e301] [cursor=pointer]:
+                - /url: https://code.claude.com/docs/en/overview
+              - text: supports only Custom Skills.
+            - paragraph [ref=f24e302]:
+              - strong [ref=f24e303]: Custom Skills
+              - text: ": Create Skills as directories with SKILL.md files. Claude discovers and uses them automatically."
+            - paragraph [ref=f24e304]: Custom Skills in Claude Code are filesystem-based and don't require API uploads.
+            - paragraph [ref=f24e305]:
+              - text: To learn more, see
+              - link "Use Skills in Claude Code" [ref=f24e306] [cursor=pointer]:
+                - /url: https://code.claude.com/docs/en/skills
+              - text: .
+            - heading "claude.ai" [level=3] [ref=f24e307]:
+              - generic [ref=f24e309]: claude.ai
+            - paragraph [ref=f24e310]:
+              - link "claude.ai" [ref=f24e311] [cursor=pointer]:
+                - /url: https://claude.ai
+              - text: supports both pre-built Agent Skills and custom Skills.
+            - paragraph [ref=f24e312]:
+              - strong [ref=f24e313]: Pre-built Agent Skills
+              - text: ": These Skills are already working behind the scenes when you create documents. Claude uses them without requiring any setup."
+            - paragraph [ref=f24e314]:
+              - strong [ref=f24e315]: Custom Skills
+              - text: ": Upload your own Skills as zip files through Settings > Features. Available on Pro, Max, Team, and Enterprise plans with code execution enabled. Custom Skills are individual to each user; they are not shared organization-wide and cannot be centrally managed by admins."
+            - paragraph [ref=f24e316]: "To learn more about using Skills in claude.ai, see the following resources in the Claude Help Center:"
+            - list [ref=f24e317]:
+              - listitem [ref=f24e318]:
+                - text: •
+                - link "What are Skills?" [ref=f24e319] [cursor=pointer]:
+                  - /url: https://support.claude.com/en/articles/12512176-what-are-skills
+              - listitem [ref=f24e320]:
+                - text: •
+                - link "Using Skills in Claude" [ref=f24e321] [cursor=pointer]:
+                  - /url: https://support.claude.com/en/articles/12512180-using-skills-in-claude
+              - listitem [ref=f24e322]:
+                - text: •
+                - link "How to create custom Skills" [ref=f24e323] [cursor=pointer]:
+                  - /url: https://support.claude.com/en/articles/12512198-creating-custom-skills
+              - listitem [ref=f24e324]:
+                - text: •
+                - link "Teach Claude your way of working using Skills" [ref=f24e325] [cursor=pointer]:
+                  - /url: https://support.claude.com/en/articles/12580051-teach-claude-your-way-of-working-using-skills
+            - heading "Skill structure" [level=2] [ref=f24e326]:
+              - generic [ref=f24e328]: Skill structure
+            - paragraph [ref=f24e329]:
+              - text: Every Skill requires a
+              - code [ref=f24e330]: SKILL.md
+              - text: "file with YAML frontmatter:"
+            - generic [ref=f24e331]:
+              - code [ref=f24e335]:
+                - generic [ref=f24e336]: "---"
+                - generic [ref=f24e337]: "name: your-skill-name"
+                - generic [ref=f24e338]: "description: Brief description of what this Skill does and when to use it"
+                - generic [ref=f24e339]: "---"
+                - generic [ref=f24e340]: "# Your Skill Name"
+                - generic [ref=f24e341]: "## Instructions"
+                - generic [ref=f24e342]: "[Clear, step-by-step guidance for Claude to follow]"
+                - generic [ref=f24e343]: "## Examples"
+                - generic [ref=f24e344]: "[Concrete examples of using this Skill]"
+              - button "Copy code" [ref=f24e346] [cursor=pointer]:
+                - generic [ref=f24e349]: 
+            - paragraph [ref=f24e350]:
+              - strong [ref=f24e351]: Required fields
+              - text: ":"
+              - code [ref=f24e352]: name
+              - text: and
+              - code [ref=f24e353]: description
+            - paragraph [ref=f24e354]:
+              - strong [ref=f24e355]: Field requirements
+              - text: ":"
+            - paragraph [ref=f24e356]:
+              - code [ref=f24e357]: name
+              - text: ":"
+            - list [ref=f24e358]:
+              - listitem [ref=f24e359]: • Maximum 64 characters
+              - listitem [ref=f24e360]: • Must contain only lowercase letters, numbers, and hyphens
+              - listitem [ref=f24e361]: • Cannot contain XML tags
+              - listitem [ref=f24e362]: "• Cannot contain reserved words: \"anthropic\", \"claude\""
+            - paragraph [ref=f24e363]:
+              - code [ref=f24e364]: description
+              - text: ":"
+            - list [ref=f24e365]:
+              - listitem [ref=f24e366]: • Must be non-empty
+              - listitem [ref=f24e367]: • Maximum 1024 characters
+              - listitem [ref=f24e368]: • Cannot contain XML tags
+            - paragraph [ref=f24e369]:
+              - text: The
+              - code [ref=f24e370]: description
+              - text: should include both what the Skill does and when Claude should use it. For complete authoring guidance, see the
+              - link "best practices guide" [ref=f24e371] [cursor=pointer]:
+                - /url: /docs/en/agents-and-tools/agent-skills/best-practices
+              - text: .
+            - heading "Security considerations" [level=2] [ref=f24e372]:
+              - generic [ref=f24e374]: Security considerations
+            - paragraph [ref=f24e375]: "Use Skills only from trusted sources: those you created yourself or obtained from Anthropic. Skills provide Claude with new capabilities through instructions and code, and while this makes them powerful, it also means a malicious Skill can direct Claude to invoke tools or execute code in ways that don't match the Skill's stated purpose."
+            - generic [ref=f24e376]:
+              - generic [ref=f24e378]: 
+              - paragraph [ref=f24e380]: If you must use a Skill from an untrusted or unknown source, exercise extreme caution and thoroughly audit it before use. Depending on what access Claude has when executing the Skill, malicious Skills could lead to data exfiltration, unauthorized system access, or other security risks.
+            - paragraph [ref=f24e381]:
+              - strong [ref=f24e382]: Key security considerations
+              - text: ":"
+            - list [ref=f24e383]:
+              - listitem [ref=f24e384]:
+                - text: •
+                - strong [ref=f24e385]: Audit thoroughly
+                - text: ": Review all files bundled in the Skill: SKILL.md, scripts, images, and other resources. Look for unusual patterns like unexpected network calls, file access patterns, or operations that don't match the Skill's stated purpose"
+              - listitem [ref=f24e386]:
+                - text: •
+                - strong [ref=f24e387]: External sources are risky
+                - text: ": Skills that fetch data from external URLs pose particular risk, as fetched content may contain malicious instructions. Even trustworthy Skills can be compromised if their external dependencies change over time"
+              - listitem [ref=f24e388]:
+                - text: •
+                - strong [ref=f24e389]: Tool misuse
+                - text: ": Malicious Skills can invoke tools (file operations, bash commands, code execution) in harmful ways"
+              - listitem [ref=f24e390]:
+                - text: •
+                - strong [ref=f24e391]: Data exposure
+                - text: ": Skills with access to sensitive data could be designed to leak information to external systems"
+              - listitem [ref=f24e392]:
+                - text: •
+                - strong [ref=f24e393]: Treat like installing software
+                - text: ": Only use Skills from trusted sources. Be especially careful when integrating Skills into production systems with access to sensitive data or critical operations"
+            - heading "Available Skills" [level=2] [ref=f24e394]:
+              - generic [ref=f24e396]: Available Skills
+            - heading "Pre-built Agent Skills" [level=3] [ref=f24e397]:
+              - generic [ref=f24e399]: Pre-built Agent Skills
+            - paragraph [ref=f24e400]: "The following pre-built Agent Skills are available for immediate use:"
+            - list [ref=f24e401]:
+              - listitem [ref=f24e402]:
+                - text: •
+                - strong [ref=f24e403]: PowerPoint (pptx)
+                - text: ": Create presentations, edit slides, analyze presentation content"
+              - listitem [ref=f24e404]:
+                - text: •
+                - strong [ref=f24e405]: Excel (xlsx)
+                - text: ": Create spreadsheets, analyze data, generate reports with charts"
+              - listitem [ref=f24e406]:
+                - text: •
+                - strong [ref=f24e407]: Word (docx)
+                - text: ": Create documents, edit content, format text"
+              - listitem [ref=f24e408]:
+                - text: •
+                - strong [ref=f24e409]: PDF (pdf)
+                - text: ": Generate formatted PDF documents and reports"
+            - paragraph [ref=f24e410]:
+              - text: These Skills are available on the Claude API,
+              - link "Claude Platform on AWS" [ref=f24e411] [cursor=pointer]:
+                - /url: /docs/en/build-with-claude/claude-platform-on-aws
+              - text: ","
+              - link "Microsoft Foundry" [ref=f24e412] [cursor=pointer]:
+                - /url: /docs/en/build-with-claude/claude-in-microsoft-foundry
+              - text: ", and claude.ai. On Microsoft Foundry, Agent Skills require a"
+              - link "Hosted on Anthropic deployment" [ref=f24e413] [cursor=pointer]:
+                - /url: /docs/en/build-with-claude/claude-in-microsoft-foundry#additional-features-not-supported-when-hosted-on-azure
+              - text: . See the
+              - link "quickstart tutorial" [ref=f24e414] [cursor=pointer]:
+                - /url: /docs/en/agents-and-tools/agent-skills/quickstart
+              - text: to start using them in the API.
+            - heading "Open-source Skills" [level=3] [ref=f24e415]:
+              - generic [ref=f24e417]: Open-source Skills
+            - paragraph [ref=f24e418]:
+              - text: Anthropic also publishes open-source Skills in the
+              - link "skills repository" [ref=f24e419] [cursor=pointer]:
+                - /url: https://github.com/anthropics/skills
+              - text: ":"
+            - list [ref=f24e420]:
+              - listitem [ref=f24e421]:
+                - text: •
+                - strong [ref=f24e422]:
+                  - link "Claude API" [ref=f24e423] [cursor=pointer]:
+                    - /url: /docs/en/agents-and-tools/agent-skills/claude-api-skill
+                - text: ": Provides Claude with up-to-date API reference material, SDK documentation, and best practices for 8 programming languages. Bundled with Claude Code and also available for installation from the skills repository."
+            - heading "Custom Skills examples" [level=3] [ref=f24e424]:
+              - generic [ref=f24e426]: Custom Skills examples
+            - paragraph [ref=f24e427]:
+              - text: For complete examples of custom Skills, see the
+              - link "Skills cookbook" [ref=f24e428] [cursor=pointer]:
+                - /url: https://platform.claude.com/cookbook/skills-notebooks-01-skills-introduction
+              - text: .
+            - heading "Data retention" [level=2] [ref=f24e429]:
+              - generic [ref=f24e431]: Data retention
+            - paragraph [ref=f24e432]: Agent Skills is not covered by ZDR arrangements. Skill definitions and execution data are retained according to Anthropic's standard data retention policy.
+            - paragraph [ref=f24e433]:
+              - text: For ZDR eligibility across all features, see
+              - link "API and data retention" [ref=f24e434] [cursor=pointer]:
+                - /url: /docs/en/manage-claude/api-and-data-retention
+              - text: .
+            - heading "Limitations and constraints" [level=2] [ref=f24e435]:
+              - generic [ref=f24e437]: Limitations and constraints
+            - paragraph [ref=f24e438]: Understanding these limitations helps you plan your Skills deployment effectively. Claude Platform on AWS and Microsoft Foundry follow the same limitations as the Claude API in the following subsections.
+            - heading "Cross-surface availability" [level=3] [ref=f24e439]:
+              - generic [ref=f24e441]: Cross-surface availability
+            - paragraph [ref=f24e442]:
+              - strong [ref=f24e443]: Custom Skills do not sync across surfaces
+              - text: ". Skills uploaded to one surface are not automatically available on others:"
+            - list [ref=f24e444]:
+              - listitem [ref=f24e445]: • Skills uploaded to claude.ai must be separately uploaded to the API
+              - listitem [ref=f24e446]: • Skills uploaded through the API are not available on claude.ai
+              - listitem [ref=f24e447]: • Claude Code Skills are filesystem-based and separate from both claude.ai and API
+            - paragraph [ref=f24e448]: You'll need to manage and upload Skills separately for each surface where you want to use them.
+            - heading "Sharing scope" [level=3] [ref=f24e449]:
+              - generic [ref=f24e451]: Sharing scope
+            - paragraph [ref=f24e452]: "Skills have different sharing models depending on where you use them:"
+            - list [ref=f24e453]:
+              - listitem [ref=f24e454]:
+                - text: •
+                - strong [ref=f24e455]: claude.ai
+                - text: ": Individual user only; each team member must upload separately"
+              - listitem [ref=f24e456]:
+                - text: •
+                - strong [ref=f24e457]: Claude API
+                - text: ": Workspace-wide; all workspace members can access uploaded Skills"
+              - listitem [ref=f24e458]:
+                - text: •
+                - strong [ref=f24e459]: Claude Code
+                - text: ": Personal ("
+                - code [ref=f24e460]: ~/.claude/skills/
+                - text: ) or project-based (
+                - code [ref=f24e461]: .claude/skills/
+                - text: ); can also be shared via Claude Code Plugins
+            - paragraph [ref=f24e462]: claude.ai does not support centralized admin management or org-wide distribution of custom Skills.
+            - heading "Runtime environment constraints" [level=3] [ref=f24e463]:
+              - generic [ref=f24e465]: Runtime environment constraints
+            - paragraph [ref=f24e466]: The exact runtime environment available to your skill depends on the product surface where you use it.
+            - list [ref=f24e467]:
+              - listitem [ref=f24e468]:
+                - text: •
+                - strong [ref=f24e469]: claude.ai
+                - text: ":"
+                - list [ref=f24e470]:
+                  - listitem [ref=f24e471]:
+                    - text: •
+                    - strong [ref=f24e472]: Varying network access
+                    - text: ": Depending on user/admin settings, Skills may have full, partial, or no network access. For more details, see the"
+                    - link "Create and Edit Files" [ref=f24e473] [cursor=pointer]:
+                      - /url: https://support.claude.com/en/articles/12111783-create-and-edit-files-with-claude#h_6b7e833898
+                    - text: support article.
+              - listitem [ref=f24e474]:
+                - text: •
+                - strong [ref=f24e475]: Claude API
+                - text: ":"
+                - list [ref=f24e476]:
+                  - listitem [ref=f24e477]:
+                    - text: •
+                    - strong [ref=f24e478]: No network access
+                    - text: ": Skills cannot make external API calls or access the internet"
+                  - listitem [ref=f24e479]:
+                    - text: •
+                    - strong [ref=f24e480]: No runtime package installation
+                    - text: ": Only pre-installed packages are available. You cannot install new packages during execution."
+                  - listitem [ref=f24e481]:
+                    - text: •
+                    - strong [ref=f24e482]: Pre-configured dependencies only
+                    - text: ": Check the"
+                    - link "code execution tool documentation" [ref=f24e483] [cursor=pointer]:
+                      - /url: /docs/en/agents-and-tools/tool-use/code-execution-tool
+                    - text: for the list of available packages
+              - listitem [ref=f24e484]:
+                - text: •
+                - strong [ref=f24e485]: Claude Code
+                - text: ":"
+                - list [ref=f24e486]:
+                  - listitem [ref=f24e487]:
+                    - text: •
+                    - strong [ref=f24e488]: Full network access
+                    - text: ": Skills have the same network access as any other program on the user's computer"
+                  - listitem [ref=f24e489]:
+                    - text: •
+                    - strong [ref=f24e490]: Global package installation discouraged
+                    - text: ": Skills should only install packages locally in order to avoid interfering with the user's computer"
+            - paragraph [ref=f24e491]: Plan your Skills to work within these constraints.
+            - heading "Next steps" [level=2] [ref=f24e492]:
+              - generic [ref=f24e494]: Next steps
+            - generic [ref=f24e495]:
+              - link "Get started with Agent Skills Create your first Skill" [ref=f24e496] [cursor=pointer]:
+                - /url: /docs/en/agents-and-tools/agent-skills/quickstart
+                - generic [ref=f24e497]:
+                  - generic [ref=f24e499]: 
+                  - generic [ref=f24e500]:
+                    - generic [ref=f24e502]: Get started with Agent Skills
+                    - paragraph [ref=f24e504]: Create your first Skill
+              - link "API Guide Use Skills with the Claude API" [ref=f24e505] [cursor=pointer]:
+                - /url: /docs/en/build-with-claude/skills-guide
+                - generic [ref=f24e506]:
+                  - generic [ref=f24e508]: 
+                  - generic [ref=f24e509]:
+                    - generic [ref=f24e511]: API Guide
+                    - paragraph [ref=f24e513]: Use Skills with the Claude API
+              - link "Use Skills in Claude Code Create and manage custom Skills in Claude Code" [ref=f24e514] [cursor=pointer]:
+                - /url: https://code.claude.com/docs/en/skills
+                - generic [ref=f24e515]:
+                  - img [ref=f24e517]
+                  - generic [ref=f24e519]:
+                    - generic [ref=f24e520]:
+                      - generic [ref=f24e521]: Use Skills in Claude Code
+                      - generic [ref=f24e522]: 
+                    - paragraph [ref=f24e524]: Create and manage custom Skills in Claude Code
+              - link "Authoring best practices Write Skills that Claude can use effectively" [ref=f24e525] [cursor=pointer]:
+                - /url: /docs/en/agents-and-tools/agent-skills/best-practices
+                - generic [ref=f24e526]:
+                  - img [ref=f24e528]
+                  - generic [ref=f24e530]:
+                    - generic [ref=f24e532]: Authoring best practices
+                    - paragraph [ref=f24e534]: Write Skills that Claude can use effectively
+            - generic [ref=f24e535]:
+              - paragraph [ref=f24e536]: Cette page vous a-t-elle été utile ?
+              - generic [ref=f24e537]:
+                - button "Pouce levé" [ref=f24e538] [cursor=pointer]:
+                  - generic [ref=f24e539]: 
+                - button "Pouce vers le bas" [ref=f24e540] [cursor=pointer]:
+                  - generic [ref=f24e541]: 
+          - button "Toggle table of contents" [ref=f24e542] [cursor=pointer]:
+            - img [ref=f24e543]
+        - generic [ref=f24e546]:
+          - generic [ref=f24e547]:
+            - link "Claude Platform Docs home page" [ref=f24e549] [cursor=pointer]:
+              - /url: /docs
+              - generic [ref=f24e551]:
+                - img [ref=f24e552]
+                - generic [ref=f24e555]: Claude Platform Docs
+            - generic [ref=f24e556]:
+              - link "X (Twitter)" [ref=f24e557] [cursor=pointer]:
+                - /url: https://x.com/claudeai
+                - img [ref=f24e558]
+              - link "Threads" [ref=f24e560] [cursor=pointer]:
+                - /url: https://www.threads.com/@claudeai
+                - img [ref=f24e561]
+              - link "LinkedIn" [ref=f24e563] [cursor=pointer]:
+                - /url: https://www.linkedin.com/showcase/claude
+                - img [ref=f24e564]
+              - link "YouTube" [ref=f24e566] [cursor=pointer]:
+                - /url: https://www.youtube.com/@anthropic-ai
+                - img [ref=f24e567]
+              - link "Instagram" [ref=f24e569] [cursor=pointer]:
+                - /url: https://instagram.com/claudeai
+                - img [ref=f24e570]
+          - generic [ref=f24e573]:
+            - generic [ref=f24e574]:
+              - generic [ref=f24e575]:
+                - heading "Solutions" [level=3] [ref=f24e576]
+                - list [ref=f24e577]:
+                  - listitem [ref=f24e578]:
+                    - link "AI agents" [ref=f24e579] [cursor=pointer]:
+                      - /url: https://claude.com/solutions/agents
+                  - listitem [ref=f24e580]:
+                    - link "Code modernization" [ref=f24e581] [cursor=pointer]:
+                      - /url: https://claude.com/solutions/code-modernization
+                  - listitem [ref=f24e582]:
+                    - link "Coding" [ref=f24e583] [cursor=pointer]:
+                      - /url: https://claude.com/solutions/coding
+                  - listitem [ref=f24e584]:
+                    - link "Customer support" [ref=f24e585] [cursor=pointer]:
+                      - /url: https://claude.com/solutions/customer-support
+                  - listitem [ref=f24e586]:
+                    - link "Education" [ref=f24e587] [cursor=pointer]:
+                      - /url: https://claude.com/solutions/education
+                  - listitem [ref=f24e588]:
+                    - link "Financial services" [ref=f24e589] [cursor=pointer]:
+                      - /url: https://claude.com/solutions/financial-services
+                  - listitem [ref=f24e590]:
+                    - link "Government" [ref=f24e591] [cursor=pointer]:
+                      - /url: https://claude.com/solutions/government
+                  - listitem [ref=f24e592]:
+                    - link "Life sciences" [ref=f24e593] [cursor=pointer]:
+                      - /url: https://claude.com/solutions/life-sciences
+              - generic [ref=f24e594]:
+                - heading "Partners" [level=3] [ref=f24e595]
+                - list [ref=f24e596]:
+                  - listitem [ref=f24e597]:
+                    - link "Claude on AWS" [ref=f24e598] [cursor=pointer]:
+                      - /url: https://claude.com/partners/amazon-bedrock
+                  - listitem [ref=f24e599]:
+                    - link "Claude on Google Cloud" [ref=f24e600] [cursor=pointer]:
+                      - /url: https://claude.com/partners/google-cloud-vertex-ai
+            - generic [ref=f24e601]:
+              - generic [ref=f24e602]:
+                - heading "Learn" [level=3] [ref=f24e603]
+                - list [ref=f24e604]:
+                  - listitem [ref=f24e605]:
+                    - link "Blog" [ref=f24e606] [cursor=pointer]:
+                      - /url: https://claude.com/blog
+                  - listitem [ref=f24e607]:
+                    - link "Courses" [ref=f24e608] [cursor=pointer]:
+                      - /url: https://claude.com/resources/courses
+                  - listitem [ref=f24e609]:
+                    - link "Use cases" [ref=f24e610] [cursor=pointer]:
+                      - /url: https://claude.com/resources/use-cases
+                  - listitem [ref=f24e611]:
+                    - link "Connectors" [ref=f24e612] [cursor=pointer]:
+                      - /url: https://claude.com/partners/mcp
+                  - listitem [ref=f24e613]:
+                    - link "Customer stories" [ref=f24e614] [cursor=pointer]:
+                      - /url: https://claude.com/customers
+                  - listitem [ref=f24e615]:
+                    - link "Engineering at Anthropic" [ref=f24e616] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/engineering
+                  - listitem [ref=f24e617]:
+                    - link "Events" [ref=f24e618] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/events
+                  - listitem [ref=f24e619]:
+                    - link "Powered by Claude" [ref=f24e620] [cursor=pointer]:
+                      - /url: https://claude.com/partners/powered-by-claude
+                  - listitem [ref=f24e621]:
+                    - link "Service partners" [ref=f24e622] [cursor=pointer]:
+                      - /url: https://claude.com/partners/services
+                  - listitem [ref=f24e623]:
+                    - link "Startups program" [ref=f24e624] [cursor=pointer]:
+                      - /url: https://claude.com/programs/startups
+              - generic [ref=f24e625]:
+                - heading "Company" [level=3] [ref=f24e626]
+                - list [ref=f24e627]:
+                  - listitem [ref=f24e628]:
+                    - link "Anthropic" [ref=f24e629] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/company
+                  - listitem [ref=f24e630]:
+                    - link "Careers" [ref=f24e631] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/careers
+                  - listitem [ref=f24e632]:
+                    - link "Economic Futures" [ref=f24e633] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/economic-futures
+                  - listitem [ref=f24e634]:
+                    - link "Research" [ref=f24e635] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/research
+                  - listitem [ref=f24e636]:
+                    - link "News" [ref=f24e637] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/news
+                  - listitem [ref=f24e638]:
+                    - link "Responsible Scaling Policy" [ref=f24e639] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/news/announcing-our-updated-responsible-scaling-policy
+                  - listitem [ref=f24e640]:
+                    - link "Security and compliance" [ref=f24e641] [cursor=pointer]:
+                      - /url: https://trust.anthropic.com
+                  - listitem [ref=f24e642]:
+                    - link "Transparency" [ref=f24e643] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/transparency
+            - generic [ref=f24e644]:
+              - generic [ref=f24e645]:
+                - heading "Help and security" [level=3] [ref=f24e646]
+                - list [ref=f24e647]:
+                  - listitem [ref=f24e648]:
+                    - link "Availability" [ref=f24e649] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/supported-countries
+                  - listitem [ref=f24e650]:
+                    - link "Status" [ref=f24e651] [cursor=pointer]:
+                      - /url: https://status.claude.com/
+                  - listitem [ref=f24e652]:
+                    - link "Support" [ref=f24e653] [cursor=pointer]:
+                      - /url: https://support.claude.com/
+                  - listitem [ref=f24e654]:
+                    - link "Discord" [ref=f24e655] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/discord
+              - generic [ref=f24e656]:
+                - heading "Terms and policies" [level=3] [ref=f24e657]
+                - list [ref=f24e658]:
+                  - listitem [ref=f24e659]:
+                    - link "Privacy policy" [ref=f24e660] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/legal/privacy
+                  - listitem [ref=f24e661]:
+                    - link "Responsible disclosure policy" [ref=f24e662] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/responsible-disclosure-policy
+                  - listitem [ref=f24e663]:
+                    - 'link "Terms of service: Commercial" [ref=f24e664] [cursor=pointer]':
+                      - /url: https://www.anthropic.com/legal/commercial-terms
+                  - listitem [ref=f24e665]:
+                    - 'link "Terms of service: Consumer" [ref=f24e666] [cursor=pointer]':
+                      - /url: https://www.anthropic.com/legal/consumer-terms
+                  - listitem [ref=f24e667]:
+                    - link "Usage policy" [ref=f24e668] [cursor=pointer]:
+                      - /url: https://www.anthropic.com/legal/aup
+  - button "Ask Docs Chat avatar" [ref=f24e672] [cursor=pointer]:
+    - generic [ref=f24e673]: Ask Docs
+    - img "Chat avatar" [ref=f24e675]
+  - iframe [ref=f24e679]:
+    

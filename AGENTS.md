@@ -250,7 +250,8 @@ bd create "Review auth PR" \
 ### Review + Quality
 - `review-critic` — confidence-filtered code review with proof requirement
 - `principal-engineer` — blast radius, breaking changes, escalation path
-- `ui-ux-auditor` — WCAG 2.2 AA + UX + browser evidence
+- `ux-researcher` — User research, personas, journey maps, usability testing
+- `ui-designer`   — Design system, WCAG 2.2 AA compliance, browser-evidence a11y audit
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
 ## Beads Issue Tracker

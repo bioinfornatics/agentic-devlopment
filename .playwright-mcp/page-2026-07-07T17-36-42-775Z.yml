@@ -1,0 +1,486 @@
+- generic [active] [ref=f32e1]:
+  - banner [ref=f32e2]:
+    - generic:
+      - link "Skip to main content" [ref=f32e3] [cursor=pointer]:
+        - /url: "#main-content"
+      - link "Skip to footer" [ref=f32e4] [cursor=pointer]:
+        - /url: "#footer"
+    - generic [ref=f32e5]:
+      - link "Home" [ref=f32e6] [cursor=pointer]:
+        - /url: /
+        - img [ref=f32e7]
+      - button "Navigation menu" [ref=f32e10] [cursor=pointer]:
+        - img
+  - main [ref=f32e11]:
+    - region "Engineering Article Hero" [ref=f32e12]:
+      - link "Engineering at Anthropic" [ref=f32e13] [cursor=pointer]:
+        - /url: /engineering
+      - generic [ref=f32e14]:
+        - heading "Equipping agents for the real world with Agent Skills" [level=1] [ref=f32e17]
+        - generic [ref=f32e18]:
+          - paragraph [ref=f32e19]: Published Oct 16, 2025
+          - paragraph [ref=f32e20]: Claude is powerful, but real work requires procedural knowledge and organizational context. Introducing Agent Skills, a new way to build specialized agents using files and folders.
+    - generic [ref=f32e21]:
+      - article [ref=f32e22]:
+        - generic [ref=f32e24]:
+          - paragraph [ref=f32e25]:
+            - emphasis [ref=f32e26]: "Update: We've published"
+            - link "Agent Skills" [ref=f32e27] [cursor=pointer]:
+              - /url: https://agentskills.io/
+              - emphasis [ref=f32e28]: Agent Skills
+            - emphasis [ref=f32e29]: as an open standard for cross-platform portability. (December 18, 2025)
+          - paragraph [ref=f32e30]:
+            - text: As model capabilities improve, we can now build general-purpose agents that interact with full-fledged computing environments.
+            - link "Claude Code" [ref=f32e31] [cursor=pointer]:
+              - /url: https://claude.com/product/claude-code
+            - text: ", for example, can accomplish complex tasks across domains using local code execution and filesystems. But as these agents become more powerful, we need more composable, scalable, and portable ways to equip them with domain-specific expertise."
+          - paragraph [ref=f32e32]:
+            - text: This led us to create
+            - link "Agent Skills" [ref=f32e33] [cursor=pointer]:
+              - /url: https://www.anthropic.com/news/skills
+              - strong [ref=f32e34]: Agent Skills
+            - text: ": organized folders of instructions, scripts, and resources that agents can discover and load dynamically to perform better at specific tasks."
+            - strong [ref=f32e35]
+            - text: Skills extend Claude’s capabilities by packaging your expertise into composable resources for Claude, transforming general-purpose agents into specialized agents that fit your needs.
+          - paragraph [ref=f32e36]: Building a skill for an agent is like putting together an onboarding guide for a new hire. Instead of building fragmented, custom-designed agents for each use case, anyone can now specialize their agents with composable capabilities by capturing and sharing their procedural knowledge. In this article, we explain what Skills are, show how they work, and share best practices for building your own.
+          - figure "A skill is a directory containing a SKILL.md file that contains organized folders of instructions, scripts, and resources that give agents additional capabilities." [ref=f32e38]:
+            - img "To activate skills, all you need to do is write a SKILL.md file with custom guidance for your agent." [ref=f32e39]
+            - generic [ref=f32e40]: A skill is a directory containing a SKILL.md file that contains organized folders of instructions, scripts, and resources that give agents additional capabilities.
+          - heading "The anatomy of a skill" [level=2] [ref=f32e41]
+          - paragraph [ref=f32e42]:
+            - text: "To see Skills in action, let’s walk through a real example: one of the skills that powers"
+            - link "Claude’s recently launched document editing abilities" [ref=f32e43] [cursor=pointer]:
+              - /url: https://www.anthropic.com/news/create-files
+            - text: . Claude already knows a lot about understanding PDFs, but is limited in its ability to manipulate them directly (e.g. to fill out a form). This
+            - link "PDF skill" [ref=f32e44] [cursor=pointer]:
+              - /url: https://github.com/anthropics/skills/tree/main/document-skills/pdf
+            - text: lets us give Claude these new abilities.
+          - paragraph [ref=f32e45]:
+            - text: At its simplest, a skill is a directory that contains a
+            - code [ref=f32e46]: SKILL.md file
+            - text: ". This file must start with YAML frontmatter that contains some required metadata:"
+            - code [ref=f32e47]: name
+            - text: and
+            - code [ref=f32e48]: description
+            - text: . At startup, the agent pre-loads the
+            - code [ref=f32e49]: name
+            - text: and
+            - code [ref=f32e50]: description
+            - text: of every installed skill into its system prompt.
+          - paragraph [ref=f32e51]:
+            - text: This metadata is the
+            - strong [ref=f32e52]: first level
+            - text: of
+            - emphasis [ref=f32e53]: progressive disclosure
+            - text: ": it provides just enough information for Claude to know when each skill should be used without loading all of it into context. The actual body of this file is the"
+            - strong [ref=f32e54]: second level
+            - text: of detail. If Claude thinks the skill is relevant to the current task, it will load the skill by reading its full
+            - code [ref=f32e55]: SKILL.md
+            - text: into context.
+          - figure "A SKILL.md file must begin with YAML Frontmatter that contains a file name and description, which is loaded into its system prompt at startup." [ref=f32e57]:
+            - 'img "Anatomy of a SKILL.md file including the relevant metadata: name, description, and context related to the specific actions the skill should take." [ref=f32e58]'
+            - generic [ref=f32e59]: A SKILL.md file must begin with YAML Frontmatter that contains a file name and description, which is loaded into its system prompt at startup.
+          - paragraph [ref=f32e60]:
+            - text: As skills grow in complexity, they may contain too much context to fit into a single
+            - code [ref=f32e61]: SKILL.md
+            - text: ", or context that’s relevant only in specific scenarios. In these cases, skills can bundle additional files within the skill directory and reference them by name from"
+            - code [ref=f32e62]: SKILL.md
+            - text: . These additional linked files are the
+            - strong [ref=f32e63]: third level
+            - text: (and beyond) of detail, which Claude can choose to navigate and discover only as needed.
+          - paragraph [ref=f32e64]:
+            - text: In the PDF skill shown below, the
+            - code [ref=f32e65]: SKILL.md
+            - text: refers to two additional files (
+            - code [ref=f32e66]: reference.md
+            - text: and
+            - code [ref=f32e67]: forms.md
+            - text: ) that the skill author chooses to bundle alongside the core
+            - code [ref=f32e68]: SKILL.md
+            - text: . By moving the form-filling instructions to a separate file (
+            - code [ref=f32e69]: forms.md
+            - text: ), the skill author is able to keep the core of the skill lean, trusting that Claude will read
+            - code [ref=f32e70]: forms.md
+            - text: only when filling out a form.
+          - figure "You can incorporate more context (via additional files) into your skill that can then be triggered by Claude based on the system prompt." [ref=f32e72]:
+            - img "How to bundle additional content into a SKILL.md file." [ref=f32e73]
+            - generic [ref=f32e74]: You can incorporate more context (via additional files) into your skill that can then be triggered by Claude based on the system prompt.
+          - paragraph [ref=f32e75]: "Progressive disclosure is the core design principle that makes Agent Skills flexible and scalable. Like a well-organized manual that starts with a table of contents, then specific chapters, and finally a detailed appendix, skills let Claude load information only as needed:"
+          - figure [ref=f32e77]:
+            - img "This image depicts how progressive disclosure of context in Skills." [ref=f32e78]
+          - paragraph [ref=f32e79]: Agents with a filesystem and code execution tools don’t need to read the entirety of a skill into their context window when working on a particular task. This means that the amount of context that can be bundled into a skill is effectively unbounded.
+          - heading "Skills and the context window" [level=3] [ref=f32e80]
+          - paragraph [ref=f32e81]: The following diagram shows how the context window changes when a skill is triggered by a user’s message.
+          - figure "Skills are triggered in the context window via your system prompt." [ref=f32e83]:
+            - img "This image depicts how skills are triggered in your context window." [ref=f32e84]
+            - generic [ref=f32e85]: Skills are triggered in the context window via your system prompt.
+          - paragraph [ref=f32e86]: "The sequence of operations shown:"
+          - list [ref=f32e87]:
+            - listitem [ref=f32e88]: To start, the context window has the core system prompt and the metadata for each of the installed skills, along with the user’s initial message;
+            - listitem [ref=f32e89]:
+              - text: Claude triggers the PDF skill by invoking a Bash tool to read the contents of
+              - code [ref=f32e90]: pdf/SKILL.md
+              - text: ;
+            - listitem [ref=f32e91]:
+              - text: Claude chooses to read the
+              - code [ref=f32e92]: forms.md
+              - text: file bundled with the skill;
+            - listitem [ref=f32e93]: Finally, Claude proceeds with the user’s task now that it has loaded relevant instructions from the PDF skill.
+          - heading "Skills and code execution" [level=3] [ref=f32e94]
+          - paragraph [ref=f32e95]: Skills can also include code for Claude to execute as tools at its discretion.
+          - paragraph [ref=f32e96]: Large language models excel at many tasks, but certain operations are better suited for traditional code execution. For example, sorting a list via token generation is far more expensive than simply running a sorting algorithm. Beyond efficiency concerns, many applications require the deterministic reliability that only code can provide.
+          - paragraph [ref=f32e97]: In our example, the PDF skill includes a pre-written Python script that reads a PDF and extracts all form fields. Claude can run this script without loading either the script or the PDF into context. And because code is deterministic, this workflow is consistent and repeatable.
+          - figure "Skills can also include code for Claude to execute as tools at its discretion based on the nature of the task." [ref=f32e99]:
+            - img "This image depicts how code is executed via Skills." [ref=f32e100]
+            - generic [ref=f32e101]: Skills can also include code for Claude to execute as tools at its discretion based on the nature of the task.
+          - heading "Developing and evaluating skills" [level=2] [ref=f32e102]
+          - paragraph [ref=f32e103]: "Here are some helpful guidelines for getting started with authoring and testing skills:"
+          - list [ref=f32e104]:
+            - listitem [ref=f32e105]:
+              - strong [ref=f32e106]: "Start with evaluation:"
+              - text: Identify specific gaps in your agents’ capabilities by running them on representative tasks and observing where they struggle or require additional context. Then build skills incrementally to address these shortcomings.
+            - listitem [ref=f32e107]:
+              - strong [ref=f32e108]: "Structure for scale:"
+              - text: When the
+              - code [ref=f32e109]: SKILL.md
+              - text: file becomes unwieldy, split its content into separate files and reference them. If certain contexts are mutually exclusive or rarely used together, keeping the paths separate will reduce the token usage. Finally, code can serve as both executable tools and as documentation. It should be clear whether Claude should run scripts directly or read them into context as reference.
+            - listitem [ref=f32e110]:
+              - strong [ref=f32e111]: "Think from Claude’s perspective:"
+              - text: "Monitor how Claude uses your skill in real scenarios and iterate based on observations: watch for unexpected trajectories or overreliance on certain contexts. Pay special attention to the"
+              - code [ref=f32e112]: name
+              - text: and
+              - code [ref=f32e113]: description
+              - text: of your skill. Claude will use these when deciding whether to trigger the skill in response to its current task.
+            - listitem [ref=f32e114]:
+              - strong [ref=f32e115]: "Iterate with Claude:"
+              - text: As you work on a task with Claude, ask Claude to capture its successful approaches and common mistakes into reusable context and code within a skill. If it goes off track when using a skill to complete a task, ask it to self-reflect on what went wrong. This process will help you discover what context Claude actually needs, instead of trying to anticipate it upfront.
+          - heading "Security considerations when using Skills" [level=3] [ref=f32e116]
+          - paragraph [ref=f32e117]: Skills provide Claude with new capabilities through instructions and code. While this makes them powerful, it also means that malicious skills may introduce vulnerabilities in the environment where they’re used or direct Claude to exfiltrate data and take unintended actions.
+          - paragraph [ref=f32e118]: We recommend installing skills only from trusted sources. When installing a skill from a less-trusted source, thoroughly audit it before use. Start by reading the contents of the files bundled in the skill to understand what it does, paying particular attention to code dependencies and bundled resources like images or scripts. Similarly, pay attention to instructions or code within the skill that instruct Claude to connect to potentially untrusted external network sources.
+          - heading "The future of Skills" [level=2] [ref=f32e119]
+          - paragraph [ref=f32e120]:
+            - text: Agent Skills are
+            - link "supported today" [ref=f32e121] [cursor=pointer]:
+              - /url: https://www.anthropic.com/news/skills
+            - text: across
+            - link "Claude.ai" [ref=f32e122] [cursor=pointer]:
+              - /url: http://claude.ai/redirect/website.v1.21259148-ac27-4b73-8746-e9fea1e3454c
+            - text: ", Claude Code, the Claude Agent SDK, and the Claude Developer Platform."
+          - paragraph [ref=f32e123]:
+            - text: In the coming weeks, we’ll continue to add features that support the full lifecycle of creating, editing, discovering, sharing, and using Skills. We’re especially excited about the opportunity for Skills to help organizations and individuals share their context and workflows with Claude. We’ll also explore how Skills can complement
+            - link "Model Context Protocol" [ref=f32e124] [cursor=pointer]:
+              - /url: https://modelcontextprotocol.io/
+            - text: (MCP) servers by teaching agents more complex workflows that involve external tools and software.
+          - paragraph [ref=f32e125]: Looking further ahead, we hope to enable agents to create, edit, and evaluate Skills on their own, letting them codify their own patterns of behavior into reusable capabilities.
+          - paragraph [ref=f32e126]: Skills are a simple concept with a correspondingly simple format. This simplicity makes it easier for organizations, developers, and end users to build customized agents and give them new capabilities.
+          - paragraph [ref=f32e127]:
+            - text: We’re excited to see what people build with Skills. Get started today by checking out our Skills
+            - link "docs" [ref=f32e128] [cursor=pointer]:
+              - /url: https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview
+            - text: and
+            - link "cookbook" [ref=f32e129] [cursor=pointer]:
+              - /url: https://github.com/anthropics/claude-cookbooks/tree/main/skills
+            - text: .
+          - heading "Acknowledgements" [level=2] [ref=f32e130]
+          - paragraph [ref=f32e131]: Written by Barry Zhang, Keith Lazuka, and Mahesh Murag, who all really like folders. Special thanks to the many others across Anthropic who championed, supported, and built Skills.
+      - generic [ref=f32e133]:
+        - generic [ref=f32e134]:
+          - heading "Get the developer newsletter" [level=2] [ref=f32e135]
+          - paragraph [ref=f32e137]: Product updates, how-tos, community spotlights, and more. Delivered monthly to your inbox.
+        - generic [ref=f32e139]:
+          - generic [ref=f32e140]:
+            - textbox "Email address" [ref=f32e141]:
+              - /placeholder: Enter your email
+            - button "Subscribe" [ref=f32e142] [cursor=pointer]:
+              - img [ref=f32e143]
+          - paragraph [ref=f32e145]: Please provide your email address if you'd like to receive our monthly developer newsletter. You can unsubscribe at any time.
+  - contentinfo "Site footer" [ref=f32e146]:
+    - generic [ref=f32e147]:
+      - link "Return to homepage" [ref=f32e149] [cursor=pointer]:
+        - /url: /
+        - img [ref=f32e150]
+      - navigation "Footer navigation" [ref=f32e152]:
+        - generic [ref=f32e153]:
+          - generic [ref=f32e154]:
+            - heading "Products" [level=3] [ref=f32e155]
+            - list [ref=f32e156]:
+              - listitem [ref=f32e157]:
+                - link "Claude" [ref=f32e158] [cursor=pointer]:
+                  - /url: https://claude.com/product/overview
+              - listitem [ref=f32e159]:
+                - link "Claude Code" [ref=f32e160] [cursor=pointer]:
+                  - /url: https://claude.com/product/claude-code
+              - listitem [ref=f32e161]:
+                - link "Claude Code Enterprise" [ref=f32e162] [cursor=pointer]:
+                  - /url: https://claude.com/product/claude-code/enterprise
+              - listitem [ref=f32e163]:
+                - link "Claude Cowork" [ref=f32e164] [cursor=pointer]:
+                  - /url: https://claude.com/product/cowork
+              - listitem [ref=f32e165]:
+                - link "@Claude" [ref=f32e166] [cursor=pointer]:
+                  - /url: https://claude.com/product/tag
+              - listitem [ref=f32e167]:
+                - link "Claude Design" [ref=f32e168] [cursor=pointer]:
+                  - /url: https://claude.com/product/design
+              - listitem [ref=f32e169]:
+                - link "Claude Science" [ref=f32e170] [cursor=pointer]:
+                  - /url: https://claude.com/product/claude-science
+              - listitem [ref=f32e171]:
+                - link "Claude Security" [ref=f32e172] [cursor=pointer]:
+                  - /url: https://claude.com/product/claude-security
+              - listitem [ref=f32e173]:
+                - link "Claude for Chrome" [ref=f32e174] [cursor=pointer]:
+                  - /url: https://claude.com/chrome
+              - listitem [ref=f32e175]:
+                - link "Claude for Microsoft 365" [ref=f32e176] [cursor=pointer]:
+                  - /url: https://claude.com/claude-for-microsoft-365
+              - listitem [ref=f32e177]:
+                - link "Skills" [ref=f32e178] [cursor=pointer]:
+                  - /url: https://www.claude.com/skills
+              - listitem [ref=f32e179]:
+                - link "Download app" [ref=f32e180] [cursor=pointer]:
+                  - /url: https://claude.ai/download
+              - listitem [ref=f32e181]:
+                - link "Pricing" [ref=f32e182] [cursor=pointer]:
+                  - /url: https://claude.com/pricing
+              - listitem [ref=f32e183]:
+                - link "Log in to Claude" [ref=f32e184] [cursor=pointer]:
+                  - /url: https://claude.ai/
+          - generic [ref=f32e185]:
+            - heading "Models" [level=3] [ref=f32e186]
+            - list [ref=f32e187]:
+              - listitem [ref=f32e188]:
+                - link "Mythos" [ref=f32e189] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/claude/mythos
+              - listitem [ref=f32e190]:
+                - link "Fable" [ref=f32e191] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/claude/fable
+              - listitem [ref=f32e192]:
+                - link "Opus" [ref=f32e193] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/claude/opus
+              - listitem [ref=f32e194]:
+                - link "Sonnet" [ref=f32e195] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/claude/sonnet
+              - listitem [ref=f32e196]:
+                - link "Haiku" [ref=f32e197] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/claude/haiku
+        - generic [ref=f32e198]:
+          - generic [ref=f32e199]:
+            - heading "Solutions" [level=3] [ref=f32e200]
+            - list [ref=f32e201]:
+              - listitem [ref=f32e202]:
+                - link "AI agents" [ref=f32e203] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/agents
+              - listitem [ref=f32e204]:
+                - link "Code modernization" [ref=f32e205] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/code-modernization
+              - listitem [ref=f32e206]:
+                - link "Coding" [ref=f32e207] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/coding
+              - listitem [ref=f32e208]:
+                - link "Customer support" [ref=f32e209] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/customer-support
+              - listitem [ref=f32e210]:
+                - link "Education" [ref=f32e211] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/education
+              - listitem [ref=f32e212]:
+                - link "Enterprise" [ref=f32e213] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/enterprise
+              - listitem [ref=f32e214]:
+                - link "Financial services" [ref=f32e215] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/financial-services
+              - listitem [ref=f32e216]:
+                - link "Government" [ref=f32e217] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/government
+              - listitem [ref=f32e218]:
+                - link "Healthcare" [ref=f32e219] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/healthcare
+              - listitem [ref=f32e220]:
+                - link "Legal" [ref=f32e221] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/legal
+              - listitem [ref=f32e222]:
+                - link "Life sciences" [ref=f32e223] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/life-sciences
+              - listitem [ref=f32e224]:
+                - link "Nonprofits" [ref=f32e225] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/nonprofits
+              - listitem [ref=f32e226]:
+                - link "Security" [ref=f32e227] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/security
+              - listitem [ref=f32e228]:
+                - link "Small business" [ref=f32e229] [cursor=pointer]:
+                  - /url: https://claude.com/solutions/small-business
+          - generic [ref=f32e230]:
+            - heading "Claude Platform" [level=3] [ref=f32e231]
+            - list [ref=f32e232]:
+              - listitem [ref=f32e233]:
+                - link "Overview" [ref=f32e234] [cursor=pointer]:
+                  - /url: https://claude.com/platform/api
+              - listitem [ref=f32e235]:
+                - link "Developer docs" [ref=f32e236] [cursor=pointer]:
+                  - /url: https://platform.claude.com/docs
+              - listitem [ref=f32e237]:
+                - link "Pricing" [ref=f32e238] [cursor=pointer]:
+                  - /url: https://claude.com/pricing#api
+              - listitem [ref=f32e239]:
+                - link "Ecosystem" [ref=f32e240] [cursor=pointer]:
+                  - /url: https://claude.com/ecosystem
+              - listitem [ref=f32e241]:
+                - link "Marketplace" [ref=f32e242] [cursor=pointer]:
+                  - /url: https://claude.com/platform/marketplace
+              - listitem [ref=f32e243]:
+                - link "Regional compliance" [ref=f32e244] [cursor=pointer]:
+                  - /url: https://claude.com/regional-compliance
+              - listitem [ref=f32e245]:
+                - link "Claude on AWS" [ref=f32e246] [cursor=pointer]:
+                  - /url: https://claude.com/partners/claude-on-aws
+              - listitem [ref=f32e247]:
+                - link "Google Cloud" [ref=f32e248] [cursor=pointer]:
+                  - /url: https://claude.com/partners/google-cloud-vertex-ai
+              - listitem [ref=f32e249]:
+                - link "Microsoft Foundry" [ref=f32e250] [cursor=pointer]:
+                  - /url: https://claude.com/partners/microsoft-foundry
+              - listitem [ref=f32e251]:
+                - link "Console login" [ref=f32e252] [cursor=pointer]:
+                  - /url: https://platform.claude.com/
+        - generic [ref=f32e253]:
+          - generic [ref=f32e254]:
+            - heading "Resources" [level=3] [ref=f32e255]
+            - list [ref=f32e256]:
+              - listitem [ref=f32e257]:
+                - link "Blog" [ref=f32e258] [cursor=pointer]:
+                  - /url: https://claude.com/blog
+              - listitem [ref=f32e259]:
+                - link "Claude partner network" [ref=f32e260] [cursor=pointer]:
+                  - /url: https://claude.com/partners
+              - listitem [ref=f32e261]:
+                - link "Community" [ref=f32e262] [cursor=pointer]:
+                  - /url: https://claude.com/community
+              - listitem [ref=f32e263]:
+                - link "Connectors" [ref=f32e264] [cursor=pointer]:
+                  - /url: https://claude.com/connectors
+              - listitem [ref=f32e265]:
+                - link "Courses" [ref=f32e266] [cursor=pointer]:
+                  - /url: /learn
+              - listitem [ref=f32e267]:
+                - link "Customer stories" [ref=f32e268] [cursor=pointer]:
+                  - /url: https://claude.com/customers
+              - listitem [ref=f32e269]:
+                - link "Engineering at Anthropic" [ref=f32e270] [cursor=pointer]:
+                  - /url: /engineering
+              - listitem [ref=f32e271]:
+                - link "Events" [ref=f32e272] [cursor=pointer]:
+                  - /url: /events
+              - listitem [ref=f32e273]:
+                - link "Plugins" [ref=f32e274] [cursor=pointer]:
+                  - /url: https://claude.com/plugins
+              - listitem [ref=f32e275]:
+                - link "Powered by Claude" [ref=f32e276] [cursor=pointer]:
+                  - /url: https://claude.com/partners/powered-by-claude
+              - listitem [ref=f32e277]:
+                - link "Service partners" [ref=f32e278] [cursor=pointer]:
+                  - /url: https://claude.com/partners/services
+              - listitem [ref=f32e279]:
+                - link "Tutorials" [ref=f32e280] [cursor=pointer]:
+                  - /url: https://claude.com/resources/tutorials
+              - listitem [ref=f32e281]:
+                - link "Use cases" [ref=f32e282] [cursor=pointer]:
+                  - /url: https://claude.com/resources/use-cases
+          - generic [ref=f32e283]:
+            - heading "Programs" [level=3] [ref=f32e284]
+            - list [ref=f32e285]:
+              - listitem [ref=f32e286]:
+                - link "Startups" [ref=f32e287] [cursor=pointer]:
+                  - /url: https://claude.com/programs/startups
+              - listitem [ref=f32e288]:
+                - link "Research Labs" [ref=f32e289] [cursor=pointer]:
+                  - /url: https://claude.com/programs/claude-team-plan-for-research-labs
+          - generic [ref=f32e290]:
+            - heading "Help and security" [level=3] [ref=f32e291]
+            - list [ref=f32e292]:
+              - listitem [ref=f32e293]:
+                - link "Availability" [ref=f32e294] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/supported-countries
+              - listitem [ref=f32e295]:
+                - link "Status" [ref=f32e296] [cursor=pointer]:
+                  - /url: https://status.anthropic.com/
+              - listitem [ref=f32e297]:
+                - link "Support center" [ref=f32e298] [cursor=pointer]:
+                  - /url: https://support.claude.com/en/
+        - generic [ref=f32e299]:
+          - generic [ref=f32e300]:
+            - heading "Company" [level=3] [ref=f32e301]
+            - list [ref=f32e302]:
+              - listitem [ref=f32e303]:
+                - link "Anthropic" [ref=f32e304] [cursor=pointer]:
+                  - /url: /company
+              - listitem [ref=f32e305]:
+                - link "Careers" [ref=f32e306] [cursor=pointer]:
+                  - /url: /careers
+              - listitem [ref=f32e307]:
+                - link "Policy" [ref=f32e308] [cursor=pointer]:
+                  - /url: /policy
+              - listitem [ref=f32e309]:
+                - link "Economic Futures" [ref=f32e310] [cursor=pointer]:
+                  - /url: /economic-futures
+              - listitem [ref=f32e311]:
+                - link "Research" [ref=f32e312] [cursor=pointer]:
+                  - /url: /research
+              - listitem [ref=f32e313]:
+                - link "News" [ref=f32e314] [cursor=pointer]:
+                  - /url: /news
+              - listitem [ref=f32e315]:
+                - link "Claude’s Constitution" [ref=f32e316] [cursor=pointer]:
+                  - /url: /constitution
+              - listitem [ref=f32e317]:
+                - link "Claude Corps" [ref=f32e318] [cursor=pointer]:
+                  - /url: /claude-corps
+              - listitem [ref=f32e319]:
+                - link "Policy on the AI Exponential" [ref=f32e320] [cursor=pointer]:
+                  - /url: /policy-on-the-ai-exponential
+              - listitem [ref=f32e321]:
+                - link "Responsible Scaling Policy" [ref=f32e322] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/news/announcing-our-updated-responsible-scaling-policy
+              - listitem [ref=f32e323]:
+                - link "Security and compliance" [ref=f32e324] [cursor=pointer]:
+                  - /url: https://trust.anthropic.com/
+              - listitem [ref=f32e325]:
+                - link "Transparency" [ref=f32e326] [cursor=pointer]:
+                  - /url: /transparency
+          - generic [ref=f32e327]:
+            - heading "Terms and policies" [level=3] [ref=f32e328]
+            - list [ref=f32e329]:
+              - listitem [ref=f32e330]:
+                - link "Privacy policy" [ref=f32e331] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/legal/privacy
+              - listitem [ref=f32e332]:
+                - link "Consumer health data privacy policy" [ref=f32e333] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/legal/consumer-health-data-privacy-policy
+              - listitem [ref=f32e334]:
+                - link "Responsible disclosure policy" [ref=f32e335] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/responsible-disclosure-policy
+              - listitem [ref=f32e336]:
+                - 'link "Terms of service: Commercial" [ref=f32e337] [cursor=pointer]':
+                  - /url: https://www.anthropic.com/legal/commercial-terms
+              - listitem [ref=f32e338]:
+                - 'link "Terms of service: Consumer" [ref=f32e339] [cursor=pointer]':
+                  - /url: https://www.anthropic.com/legal/consumer-terms
+              - listitem [ref=f32e340]:
+                - link "Usage policy" [ref=f32e341] [cursor=pointer]:
+                  - /url: https://www.anthropic.com/legal/aup
+      - generic [ref=f32e342]:
+        - contentinfo [ref=f32e343]: © 2026 Anthropic PBC
+        - navigation "Social media links" [ref=f32e344]:
+          - listitem [ref=f32e345]:
+            - link "Visit our LinkedIn page" [ref=f32e346] [cursor=pointer]:
+              - /url: https://www.linkedin.com/company/anthropicresearch
+              - img [ref=f32e347]
+          - listitem [ref=f32e349]:
+            - link "Visit our X (formerly Twitter) profile" [ref=f32e350] [cursor=pointer]:
+              - /url: https://x.com/AnthropicAI
+              - img [ref=f32e351]
+          - listitem [ref=f32e353]:
+            - link "Visit our YouTube channel" [ref=f32e354] [cursor=pointer]:
+              - /url: https://www.youtube.com/@anthropic-ai
+              - img [ref=f32e355]
+  - alert [ref=f32e357]

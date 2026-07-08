@@ -1,0 +1,840 @@
+- generic [active] [ref=f36e1]:
+  - generic [ref=f36e2]:
+    - generic [ref=f36e3]:
+      - text: 🚀 Learn to build apps with Claude Code! Use
+      - strong [ref=f36e4]: PROMPTING
+      - text: for 20% off
+      - link "Enroll now →" [ref=f36e5] [cursor=pointer]:
+        - /url: https://academy.dair.ai/courses/build-apps-with-claude-code
+    - generic [ref=f36e6]:
+      - navigation [ref=f36e8]:
+        - link "Prompt Engineering Guide" [ref=f36e9] [cursor=pointer]:
+          - /url: /
+          - img [ref=f36e10]
+          - generic [ref=f36e14]: Prompt Engineering Guide
+        - button "🎓 Courses" [ref=f36e16] [cursor=pointer]:
+          - text: 🎓 Courses
+          - img [ref=f36e17]
+        - link "About" [ref=f36e19] [cursor=pointer]:
+          - /url: /about
+          - generic [ref=f36e20]: About
+        - generic [ref=f36e22]:
+          - searchbox "Search..." [ref=f36e23]
+          - generic: CTRL K
+        - link "GitHub GitHub (opens in a new tab)" [ref=f36e24] [cursor=pointer]:
+          - /url: https://github.com/dair-ai/Prompt-Engineering-Guide
+          - img "GitHub" [ref=f36e25]
+          - generic [ref=f36e27]: GitHub
+          - generic [ref=f36e28]: (opens in a new tab)
+        - link "Discord Discord (opens in a new tab)" [ref=f36e29] [cursor=pointer]:
+          - /url: https://discord.gg/YbMT8k6GfX
+          - img "Discord" [ref=f36e30]
+          - generic [ref=f36e32]: Discord
+          - generic [ref=f36e33]: (opens in a new tab)
+        - link "✨ Services" [ref=f36e34] [cursor=pointer]:
+          - /url: /services
+      - generic [ref=f36e35]:
+        - complementary [ref=f36e36]:
+          - list [ref=f36e40]:
+            - listitem [ref=f36e41]:
+              - link "Prompt Engineering" [ref=f36e42] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=f36e43]:
+              - link "Introduction" [ref=f36e44] [cursor=pointer]:
+                - /url: /introduction
+                - text: Introduction
+                - img [ref=f36e45]
+              - list [ref=f36e49]:
+                - listitem [ref=f36e50]:
+                  - link "LLM Settings" [ref=f36e51] [cursor=pointer]:
+                    - /url: /introduction/settings
+                - listitem [ref=f36e52]:
+                  - link "Basics of Prompting" [ref=f36e53] [cursor=pointer]:
+                    - /url: /introduction/basics
+                - listitem [ref=f36e54]:
+                  - link "Prompt Elements" [ref=f36e55] [cursor=pointer]:
+                    - /url: /introduction/elements
+                - listitem [ref=f36e56]:
+                  - link "General Tips for Designing Prompts" [ref=f36e57] [cursor=pointer]:
+                    - /url: /introduction/tips
+                - listitem [ref=f36e58]:
+                  - link "Examples of Prompts" [ref=f36e59] [cursor=pointer]:
+                    - /url: /introduction/examples
+            - listitem [ref=f36e60]:
+              - link "Prompting Techniques" [ref=f36e61] [cursor=pointer]:
+                - /url: /techniques
+                - text: Prompting Techniques
+                - img [ref=f36e62]
+              - list [ref=f36e66]:
+                - listitem [ref=f36e67]:
+                  - link "Zero-shot Prompting" [ref=f36e68] [cursor=pointer]:
+                    - /url: /techniques/zeroshot
+                - listitem [ref=f36e69]:
+                  - link "Few-shot Prompting" [ref=f36e70] [cursor=pointer]:
+                    - /url: /techniques/fewshot
+                - listitem [ref=f36e71]:
+                  - link "Chain-of-Thought Prompting" [ref=f36e72] [cursor=pointer]:
+                    - /url: /techniques/cot
+                - listitem [ref=f36e73]:
+                  - link "Meta Prompting" [ref=f36e74] [cursor=pointer]:
+                    - /url: /techniques/meta-prompting
+                - listitem [ref=f36e75]:
+                  - link "Self-Consistency" [ref=f36e76] [cursor=pointer]:
+                    - /url: /techniques/consistency
+                - listitem [ref=f36e77]:
+                  - link "Generate Knowledge Prompting" [ref=f36e78] [cursor=pointer]:
+                    - /url: /techniques/knowledge
+                - listitem [ref=f36e79]:
+                  - link "Prompt Chaining" [ref=f36e80] [cursor=pointer]:
+                    - /url: /techniques/prompt_chaining
+                - listitem [ref=f36e81]:
+                  - link "Tree of Thoughts" [ref=f36e82] [cursor=pointer]:
+                    - /url: /techniques/tot
+                - listitem [ref=f36e83]:
+                  - link "Retrieval Augmented Generation" [ref=f36e84] [cursor=pointer]:
+                    - /url: /techniques/rag
+                - listitem [ref=f36e85]:
+                  - link "Automatic Reasoning and Tool-use" [ref=f36e86] [cursor=pointer]:
+                    - /url: /techniques/art
+                - listitem [ref=f36e87]:
+                  - link "Automatic Prompt Engineer" [ref=f36e88] [cursor=pointer]:
+                    - /url: /techniques/ape
+                - listitem [ref=f36e89]:
+                  - link "Active-Prompt" [ref=f36e90] [cursor=pointer]:
+                    - /url: /techniques/activeprompt
+                - listitem [ref=f36e91]:
+                  - link "Directional Stimulus Prompting" [ref=f36e92] [cursor=pointer]:
+                    - /url: /techniques/dsp
+                - listitem [ref=f36e93]:
+                  - link "Program-Aided Language Models" [ref=f36e94] [cursor=pointer]:
+                    - /url: /techniques/pal
+                - listitem [ref=f36e95]:
+                  - link "ReAct" [ref=f36e96] [cursor=pointer]:
+                    - /url: /techniques/react
+                - listitem [ref=f36e97]:
+                  - link "Reflexion" [ref=f36e98] [cursor=pointer]:
+                    - /url: /techniques/reflexion
+                - listitem [ref=f36e99]:
+                  - link "Multimodal CoT" [ref=f36e100] [cursor=pointer]:
+                    - /url: /techniques/multimodalcot
+                - listitem [ref=f36e101]:
+                  - link "Graph Prompting" [ref=f36e102] [cursor=pointer]:
+                    - /url: /techniques/graph
+            - listitem [ref=f36e103]:
+              - link "AI Agents" [ref=f36e104] [cursor=pointer]:
+                - /url: /agents
+                - text: AI Agents
+                - img [ref=f36e105]
+              - list [ref=f36e109]:
+                - listitem [ref=f36e110]:
+                  - link "Introduction to Agents" [ref=f36e111] [cursor=pointer]:
+                    - /url: /agents/introduction
+                - listitem [ref=f36e112]:
+                  - link "Agent Components" [ref=f36e113] [cursor=pointer]:
+                    - /url: /agents/components
+                - listitem [ref=f36e114]:
+                  - link "AI Workflows vs AI Agents" [ref=f36e115] [cursor=pointer]:
+                    - /url: /agents/ai-workflows-vs-ai-agents
+                - listitem [ref=f36e116]:
+                  - link "Context Engineering for AI Agents" [ref=f36e117] [cursor=pointer]:
+                    - /url: /agents/context-engineering
+                - listitem [ref=f36e118]:
+                  - link "Context Engineering Deep Dive" [ref=f36e119] [cursor=pointer]:
+                    - /url: /agents/context-engineering-deep-dive
+                - listitem [ref=f36e120]:
+                  - link "Function Calling" [ref=f36e121] [cursor=pointer]:
+                    - /url: /agents/function-calling
+                - listitem [ref=f36e122]:
+                  - link "Deep Agents" [ref=f36e123] [cursor=pointer]:
+                    - /url: /agents/deep-agents
+            - listitem [ref=f36e124]:
+              - button "Guides" [ref=f36e125] [cursor=pointer]:
+                - text: Guides
+                - img [ref=f36e126]
+              - list [ref=f36e130]:
+                - listitem [ref=f36e131]:
+                  - link "Optimizing Prompts" [ref=f36e132] [cursor=pointer]:
+                    - /url: /guides/optimizing-prompts
+                - listitem [ref=f36e133]:
+                  - link "OpenAI Deep Research" [ref=f36e134] [cursor=pointer]:
+                    - /url: /guides/deep-research
+                - listitem [ref=f36e135]:
+                  - link "Reasoning LLMs" [ref=f36e136] [cursor=pointer]:
+                    - /url: /guides/reasoning-llms
+                - listitem [ref=f36e137]:
+                  - link "4o Image Generation" [ref=f36e138] [cursor=pointer]:
+                    - /url: /guides/4o-image-generation
+                - listitem [ref=f36e139]:
+                  - link "Context Engineering Guide" [ref=f36e140] [cursor=pointer]:
+                    - /url: /guides/context-engineering-guide
+            - listitem [ref=f36e141]:
+              - link "Applications" [ref=f36e142] [cursor=pointer]:
+                - /url: /applications
+                - text: Applications
+                - img [ref=f36e143]
+              - list [ref=f36e147]:
+                - listitem [ref=f36e148]:
+                  - link "Fine-tuning GPT-4o" [ref=f36e149] [cursor=pointer]:
+                    - /url: /applications/finetuning-gpt4o
+                - listitem [ref=f36e150]:
+                  - link "Function Calling" [ref=f36e151] [cursor=pointer]:
+                    - /url: /applications/function_calling
+                - listitem [ref=f36e152]:
+                  - link "Context Caching with LLMs" [ref=f36e153] [cursor=pointer]:
+                    - /url: /applications/context-caching
+                - listitem [ref=f36e154]:
+                  - link "Generating Data" [ref=f36e155] [cursor=pointer]:
+                    - /url: /applications/generating
+                - listitem [ref=f36e156]:
+                  - link "Generating Synthetic Dataset for RAG" [ref=f36e157] [cursor=pointer]:
+                    - /url: /applications/synthetic_rag
+                - listitem [ref=f36e158]:
+                  - link "Tackling Generated Datasets Diversity" [ref=f36e159] [cursor=pointer]:
+                    - /url: /applications/generating_textbooks
+                - listitem [ref=f36e160]:
+                  - link "Generating Code" [ref=f36e161] [cursor=pointer]:
+                    - /url: /applications/coding
+                - listitem [ref=f36e162]:
+                  - link "Graduate Job Classification Case Study" [ref=f36e163] [cursor=pointer]:
+                    - /url: /applications/workplace_casestudy
+                - listitem [ref=f36e164]:
+                  - link "Prompt Function" [ref=f36e165] [cursor=pointer]:
+                    - /url: /applications/pf
+            - listitem [ref=f36e166]:
+              - link "Prompt Hub" [ref=f36e167] [cursor=pointer]:
+                - /url: /prompts
+                - text: Prompt Hub
+                - img [ref=f36e168]
+              - list [ref=f36e172]:
+                - listitem [ref=f36e173]:
+                  - link "Classification" [ref=f36e174] [cursor=pointer]:
+                    - /url: /prompts/classification
+                    - text: Classification
+                    - img [ref=f36e175]
+                  - list [ref=f36e178]:
+                    - listitem [ref=f36e179]:
+                      - link "Sentiment Classification" [ref=f36e180] [cursor=pointer]:
+                        - /url: /prompts/classification/sentiment
+                    - listitem [ref=f36e181]:
+                      - link "Few-Shot Sentiment Classification" [ref=f36e182] [cursor=pointer]:
+                        - /url: /prompts/classification/sentiment-fewshot
+                - listitem [ref=f36e183]:
+                  - link "Coding" [ref=f36e184] [cursor=pointer]:
+                    - /url: /prompts/coding
+                    - text: Coding
+                    - img [ref=f36e185]
+                  - list [ref=f36e188]:
+                    - listitem [ref=f36e189]:
+                      - link "Generate Code Snippet" [ref=f36e190] [cursor=pointer]:
+                        - /url: /prompts/coding/code-snippet
+                    - listitem [ref=f36e191]:
+                      - link "Generate MySQL Query" [ref=f36e192] [cursor=pointer]:
+                        - /url: /prompts/coding/mysql-query
+                    - listitem [ref=f36e193]:
+                      - link "Draw TiKZ Diagram" [ref=f36e194] [cursor=pointer]:
+                        - /url: /prompts/coding/tikz
+                - listitem [ref=f36e195]:
+                  - link "Creativity" [ref=f36e196] [cursor=pointer]:
+                    - /url: /prompts/creativity
+                    - text: Creativity
+                    - img [ref=f36e197]
+                  - list [ref=f36e200]:
+                    - listitem [ref=f36e201]:
+                      - link "Rhymes" [ref=f36e202] [cursor=pointer]:
+                        - /url: /prompts/creativity/rhymes
+                    - listitem [ref=f36e203]:
+                      - link "Infinite Primes" [ref=f36e204] [cursor=pointer]:
+                        - /url: /prompts/creativity/infinite-primes
+                    - listitem [ref=f36e205]:
+                      - link "Interdisciplinary" [ref=f36e206] [cursor=pointer]:
+                        - /url: /prompts/creativity/interdisciplinary
+                    - listitem [ref=f36e207]:
+                      - link "Inventing New Words" [ref=f36e208] [cursor=pointer]:
+                        - /url: /prompts/creativity/new-words
+                - listitem [ref=f36e209]:
+                  - link "Evaluation" [ref=f36e210] [cursor=pointer]:
+                    - /url: /prompts/evaluation
+                    - text: Evaluation
+                    - img [ref=f36e211]
+                  - list [ref=f36e214]:
+                    - listitem [ref=f36e215]:
+                      - link "Evaluate Plato's Dialogue" [ref=f36e216] [cursor=pointer]:
+                        - /url: /prompts/evaluation/plato-dialogue
+                - listitem [ref=f36e217]:
+                  - link "Information Extraction" [ref=f36e218] [cursor=pointer]:
+                    - /url: /prompts/information-extraction
+                    - text: Information Extraction
+                    - img [ref=f36e219]
+                  - list [ref=f36e222]:
+                    - listitem [ref=f36e223]:
+                      - link "Extract Model Names" [ref=f36e224] [cursor=pointer]:
+                        - /url: /prompts/information-extraction/extract-models
+                - listitem [ref=f36e225]:
+                  - link "Image Generation" [ref=f36e226] [cursor=pointer]:
+                    - /url: /prompts/image-generation
+                    - text: Image Generation
+                    - img [ref=f36e227]
+                  - list [ref=f36e230]:
+                    - listitem [ref=f36e231]:
+                      - link "Draw a Person Using Alphabet" [ref=f36e232] [cursor=pointer]:
+                        - /url: /prompts/image-generation/alphabet-person
+                - listitem [ref=f36e233]:
+                  - link "Mathematics" [ref=f36e234] [cursor=pointer]:
+                    - /url: /prompts/mathematics
+                    - text: Mathematics
+                    - img [ref=f36e235]
+                  - list [ref=f36e238]:
+                    - listitem [ref=f36e239]:
+                      - link "Evaluating Composite Functions" [ref=f36e240] [cursor=pointer]:
+                        - /url: /prompts/mathematics/composite-functions
+                    - listitem [ref=f36e241]:
+                      - link "Adding Odd Numbers" [ref=f36e242] [cursor=pointer]:
+                        - /url: /prompts/mathematics/odd-numbers
+                - listitem [ref=f36e243]:
+                  - link "Question Answering" [ref=f36e244] [cursor=pointer]:
+                    - /url: /prompts/question-answering
+                    - text: Question Answering
+                    - img [ref=f36e245]
+                  - list [ref=f36e248]:
+                    - listitem [ref=f36e249]:
+                      - link "Closed Domain Question Answering" [ref=f36e250] [cursor=pointer]:
+                        - /url: /prompts/question-answering/closed-domain
+                    - listitem [ref=f36e251]:
+                      - link "Open Domain Question Answering" [ref=f36e252] [cursor=pointer]:
+                        - /url: /prompts/question-answering/open-domain
+                    - listitem [ref=f36e253]:
+                      - link "Science Question Answering" [ref=f36e254] [cursor=pointer]:
+                        - /url: /prompts/question-answering/science-qa
+                - listitem [ref=f36e255]:
+                  - link "Reasoning" [ref=f36e256] [cursor=pointer]:
+                    - /url: /prompts/reasoning
+                    - text: Reasoning
+                    - img [ref=f36e257]
+                  - list [ref=f36e260]:
+                    - listitem [ref=f36e261]:
+                      - link "Indirect Reasoning" [ref=f36e262] [cursor=pointer]:
+                        - /url: /prompts/reasoning/indirect-reasoning
+                    - listitem [ref=f36e263]:
+                      - link "Physical Reasoning" [ref=f36e264] [cursor=pointer]:
+                        - /url: /prompts/reasoning/physical-reasoning
+                - listitem [ref=f36e265]:
+                  - link "Text Summarization" [ref=f36e266] [cursor=pointer]:
+                    - /url: /prompts/text-summarization
+                    - text: Text Summarization
+                    - img [ref=f36e267]
+                  - list [ref=f36e270]:
+                    - listitem [ref=f36e271]:
+                      - link "Explain A Concept" [ref=f36e272] [cursor=pointer]:
+                        - /url: /prompts/text-summarization/explain-concept
+                - listitem [ref=f36e273]:
+                  - link "Truthfulness" [ref=f36e274] [cursor=pointer]:
+                    - /url: /prompts/truthfulness
+                    - text: Truthfulness
+                    - img [ref=f36e275]
+                  - list [ref=f36e278]:
+                    - listitem [ref=f36e279]:
+                      - link "Hallucination Identification" [ref=f36e280] [cursor=pointer]:
+                        - /url: /prompts/truthfulness/identify-hallucination
+                - listitem [ref=f36e281]:
+                  - link "Adversarial Prompting" [ref=f36e282] [cursor=pointer]:
+                    - /url: /prompts/adversarial-prompting
+                    - text: Adversarial Prompting
+                    - img [ref=f36e283]
+                  - list [ref=f36e286]:
+                    - listitem [ref=f36e287]:
+                      - link "Prompt Injection" [ref=f36e288] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/prompt-injection
+                    - listitem [ref=f36e289]:
+                      - link "Prompt Leaking" [ref=f36e290] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/prompt-leaking
+                    - listitem [ref=f36e291]:
+                      - link "Jailbreaking" [ref=f36e292] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/jailbreaking-llms
+            - listitem [ref=f36e293]:
+              - link "Models" [ref=f36e294] [cursor=pointer]:
+                - /url: /models
+                - text: Models
+                - img [ref=f36e295]
+              - list [ref=f36e299]:
+                - listitem [ref=f36e300]:
+                  - link "ChatGPT" [ref=f36e301] [cursor=pointer]:
+                    - /url: /models/chatgpt
+                - listitem [ref=f36e302]:
+                  - link "Claude 3" [ref=f36e303] [cursor=pointer]:
+                    - /url: /models/claude-3
+                - listitem [ref=f36e304]:
+                  - link "Code Llama" [ref=f36e305] [cursor=pointer]:
+                    - /url: /models/code-llama
+                - listitem [ref=f36e306]:
+                  - link "Flan" [ref=f36e307] [cursor=pointer]:
+                    - /url: /models/flan
+                - listitem [ref=f36e308]:
+                  - link "Gemini" [ref=f36e309] [cursor=pointer]:
+                    - /url: /models/gemini
+                - listitem [ref=f36e310]:
+                  - link "Gemini Advanced" [ref=f36e311] [cursor=pointer]:
+                    - /url: /models/gemini-advanced
+                - listitem [ref=f36e312]:
+                  - link "Gemini 1.5 Pro" [ref=f36e313] [cursor=pointer]:
+                    - /url: /models/gemini-pro
+                - listitem [ref=f36e314]:
+                  - link "Gemma" [ref=f36e315] [cursor=pointer]:
+                    - /url: /models/gemma
+                - listitem [ref=f36e316]:
+                  - link "GPT-4" [ref=f36e317] [cursor=pointer]:
+                    - /url: /models/gpt-4
+                - listitem [ref=f36e318]:
+                  - link "Grok-1" [ref=f36e319] [cursor=pointer]:
+                    - /url: /models/grok-1
+                - listitem [ref=f36e320]:
+                  - link "Kimi K2.5" [ref=f36e321] [cursor=pointer]:
+                    - /url: /models/kimi-k2.5
+                - listitem [ref=f36e322]:
+                  - link "LLaMA" [ref=f36e323] [cursor=pointer]:
+                    - /url: /models/llama
+                - listitem [ref=f36e324]:
+                  - link "Llama 3" [ref=f36e325] [cursor=pointer]:
+                    - /url: /models/llama-3
+                - listitem [ref=f36e326]:
+                  - link "Mistral 7B" [ref=f36e327] [cursor=pointer]:
+                    - /url: /models/mistral-7b
+                - listitem [ref=f36e328]:
+                  - link "Mistral Large" [ref=f36e329] [cursor=pointer]:
+                    - /url: /models/mistral-large
+                - listitem [ref=f36e330]:
+                  - link "Mixtral" [ref=f36e331] [cursor=pointer]:
+                    - /url: /models/mixtral
+                - listitem [ref=f36e332]:
+                  - link "Mixtral 8x22B" [ref=f36e333] [cursor=pointer]:
+                    - /url: /models/mixtral-8x22b
+                - listitem [ref=f36e334]:
+                  - link "OLMo" [ref=f36e335] [cursor=pointer]:
+                    - /url: /models/olmo
+                - listitem [ref=f36e336]:
+                  - link "Phi-2" [ref=f36e337] [cursor=pointer]:
+                    - /url: /models/phi-2
+                - listitem [ref=f36e338]:
+                  - link "Sora" [ref=f36e339] [cursor=pointer]:
+                    - /url: /models/sora
+                - listitem [ref=f36e340]:
+                  - link "LLM Collection" [ref=f36e341] [cursor=pointer]:
+                    - /url: /models/collection
+            - listitem [ref=f36e342]:
+              - link "Risks & Misuses" [ref=f36e343] [cursor=pointer]:
+                - /url: /risks
+                - text: Risks & Misuses
+                - img [ref=f36e344]
+              - list [ref=f36e348]:
+                - listitem [ref=f36e349]:
+                  - link "Adversarial Prompting" [ref=f36e350] [cursor=pointer]:
+                    - /url: /risks/adversarial
+                - listitem [ref=f36e351]:
+                  - link "Factuality" [ref=f36e352] [cursor=pointer]:
+                    - /url: /risks/factuality
+                - listitem [ref=f36e353]:
+                  - link "Biases" [ref=f36e354] [cursor=pointer]:
+                    - /url: /risks/biases
+            - listitem [ref=f36e355]:
+              - link "LLM Research Findings" [ref=f36e356] [cursor=pointer]:
+                - /url: /research
+                - text: LLM Research Findings
+                - img [ref=f36e357]
+              - list [ref=f36e361]:
+                - listitem [ref=f36e362]:
+                  - link "LLM Agents" [ref=f36e363] [cursor=pointer]:
+                    - /url: /research/llm-agents
+                - listitem [ref=f36e364]:
+                  - link "RAG for LLMs" [ref=f36e365] [cursor=pointer]:
+                    - /url: /research/rag
+                - listitem [ref=f36e366]:
+                  - link "LLM Reasoning" [ref=f36e367] [cursor=pointer]:
+                    - /url: /research/llm-reasoning
+                - listitem [ref=f36e368]:
+                  - link "RAG Faithfulness" [ref=f36e369] [cursor=pointer]:
+                    - /url: /research/rag-faithfulness
+                - listitem [ref=f36e370]:
+                  - link "LLM In-Context Recall" [ref=f36e371] [cursor=pointer]:
+                    - /url: /research/llm-recall
+                - listitem [ref=f36e372]:
+                  - link "RAG Reduces Hallucination" [ref=f36e373] [cursor=pointer]:
+                    - /url: /research/rag_hallucinations
+                - listitem [ref=f36e374]:
+                  - link "Synthetic Data" [ref=f36e375] [cursor=pointer]:
+                    - /url: /research/synthetic_data
+                - listitem [ref=f36e376]:
+                  - link "ThoughtSculpt" [ref=f36e377] [cursor=pointer]:
+                    - /url: /research/thoughtsculpt
+                - listitem [ref=f36e378]:
+                  - link "Infini-Attention" [ref=f36e379] [cursor=pointer]:
+                    - /url: /research/infini-attention
+                - listitem [ref=f36e380]:
+                  - link "LM-Guided CoT" [ref=f36e381] [cursor=pointer]:
+                    - /url: /research/guided-cot
+                - listitem [ref=f36e382]:
+                  - link "Trustworthiness in LLMs" [ref=f36e383] [cursor=pointer]:
+                    - /url: /research/trustworthiness-in-llms
+                - listitem [ref=f36e384]:
+                  - link "LLM Tokenization" [ref=f36e385] [cursor=pointer]:
+                    - /url: /research/llm-tokenization
+                - listitem [ref=f36e386]:
+                  - link "What is Groq?" [ref=f36e387] [cursor=pointer]:
+                    - /url: /research/groq
+            - listitem [ref=f36e388]:
+              - link "Papers" [ref=f36e389] [cursor=pointer]:
+                - /url: /papers
+            - listitem [ref=f36e390]:
+              - link "Tools" [ref=f36e391] [cursor=pointer]:
+                - /url: /tools
+            - listitem [ref=f36e392]:
+              - link "Notebooks" [ref=f36e393] [cursor=pointer]:
+                - /url: /notebooks
+            - listitem [ref=f36e394]:
+              - link "Datasets" [ref=f36e395] [cursor=pointer]:
+                - /url: /datasets
+            - listitem [ref=f36e396]:
+              - link "Additional Readings" [ref=f36e397] [cursor=pointer]:
+                - /url: /readings
+            - listitem [ref=f36e398]:
+              - link "Services" [ref=f36e399] [cursor=pointer]:
+                - /url: /services
+          - generic [ref=f36e400]:
+            - button "English" [ref=f36e401] [cursor=pointer]:
+              - generic [ref=f36e402]:
+                - img [ref=f36e403]
+                - generic [ref=f36e405]: English
+            - button "Change theme" [ref=f36e407] [cursor=pointer]:
+              - img [ref=f36e409]
+        - article [ref=f36e411]:
+          - main [ref=f36e412]:
+            - generic [ref=f36e413]:
+              - generic "Prompting Techniques" [ref=f36e414]:
+                - link "Prompting Techniques" [ref=f36e415] [cursor=pointer]:
+                  - /url: /techniques
+              - img [ref=f36e416]
+              - generic "ReAct" [ref=f36e418]
+            - button "Copy page" [ref=f36e421] [cursor=pointer]:
+              - img [ref=f36e422]
+              - text: Copy page
+              - img [ref=f36e425]
+            - heading "ReAct Prompting" [level=1] [ref=f36e427]
+            - paragraph [ref=f36e428]:
+              - link "Yao et al., 2022 (opens in a new tab)" [ref=f36e429] [cursor=pointer]:
+                - /url: https://arxiv.org/abs/2210.03629
+                - text: Yao et al., 2022
+                - generic [ref=f36e430]: (opens in a new tab)
+              - text: introduced a framework named ReAct where LLMs are used to generate both
+              - emphasis [ref=f36e431]: reasoning traces
+              - text: and
+              - emphasis [ref=f36e432]: task-specific actions
+              - text: in an interleaved manner.
+            - paragraph [ref=f36e433]: Generating reasoning traces allow the model to induce, track, and update action plans, and even handle exceptions. The action step allows to interface with and gather information from external sources such as knowledge bases or environments.
+            - paragraph [ref=f36e434]: The ReAct framework can allow LLMs to interact with external tools to retrieve additional information that leads to more reliable and factual responses.
+            - paragraph [ref=f36e435]: Results show that ReAct can outperform several state-of-the-art baselines on language and decision-making tasks. ReAct also leads to improved human interpretability and trustworthiness of LLMs. Overall, the authors found that best approach uses ReAct combined with chain-of-thought (CoT) that allows use of both internal knowledge and external information obtained during reasoning.
+            - heading "How it Works?Permalink for this section" [level=2] [ref=f36e436]:
+              - text: How it Works?
+              - link "Permalink for this section" [ref=f36e437] [cursor=pointer]:
+                - /url: "#how-it-works"
+                - text: "#"
+            - paragraph [ref=f36e438]: ReAct is inspired by the synergies between "acting" and "reasoning" which allow humans to learn new tasks and make decisions or reasoning.
+            - paragraph [ref=f36e439]:
+              - text: Chain-of-thought (CoT) prompting has shown the capabilities of LLMs to carry out reasoning traces to generate answers to questions involving arithmetic and commonsense reasoning, among other tasks
+              - link "(Wei et al., 2022) (opens in a new tab)" [ref=f36e440] [cursor=pointer]:
+                - /url: https://arxiv.org/abs/2201.11903
+                - text: (Wei et al., 2022)
+                - generic [ref=f36e441]: (opens in a new tab)
+              - text: . But its lack of access to the external world or inability to update its knowledge can lead to issues like fact hallucination and error propagation.
+            - paragraph [ref=f36e442]: ReAct is a general paradigm that combines reasoning and acting with LLMs. ReAct prompts LLMs to generate verbal reasoning traces and actions for a task. This allows the system to perform dynamic reasoning to create, maintain, and adjust plans for acting while also enabling interaction to external environments (e.g., Wikipedia) to incorporate additional information into the reasoning. The figure below shows an example of ReAct and the different steps involved to perform question answering.
+            - img "REACT" [ref=f36e444]
+            - paragraph [ref=f36e445]:
+              - text: "Image Source:"
+              - link "Yao et al., 2022 (opens in a new tab)" [ref=f36e446] [cursor=pointer]:
+                - /url: https://arxiv.org/abs/2210.03629
+                - text: Yao et al., 2022
+                - generic [ref=f36e447]: (opens in a new tab)
+            - paragraph [ref=f36e448]:
+              - text: In the example above, we pass a prompt like the following question from
+              - link "HotpotQA (opens in a new tab)" [ref=f36e449] [cursor=pointer]:
+                - /url: https://hotpotqa.github.io/
+                - text: HotpotQA
+                - generic [ref=f36e450]: (opens in a new tab)
+              - text: ":"
+            - generic [ref=f36e451]:
+              - code [ref=f36e453]:
+                - generic [ref=f36e454]: Aside from the Apple Remote, what other devices can control the program Apple Remote was originally designed to interact with?
+              - button [ref=f36e456] [cursor=pointer]:
+                - img
+            - paragraph [ref=f36e457]:
+              - text: Note that in-context examples are also added to the prompt but we exclude that here for simplicity. We can see that the model generates
+              - emphasis [ref=f36e458]: task solving trajectories
+              - text: (Thought, Act). Obs corresponds to observation from the environment that's being interacted with (e.g., Search engine). In essence, ReAct can retrieve information to support reasoning, while reasoning helps to target what to retrieve next.
+            - heading "ReAct PromptingPermalink for this section" [level=2] [ref=f36e459]:
+              - text: ReAct Prompting
+              - link "Permalink for this section" [ref=f36e460] [cursor=pointer]:
+                - /url: "#react-prompting"
+                - text: "#"
+            - paragraph [ref=f36e461]: To demonstrate how ReAct prompting works, let's follow an example from the paper.
+            - paragraph [ref=f36e462]: The first step is to select cases from a training set (e.g., HotPotQA) and compose ReAct-format trajectories. These are used as few-shot exemplars in the prompts. The trajectories consist of multiple thought-action-observation steps as shown in the figure above. The free-form thoughts are used to achieve different tasks such as decomposing questions, extracting information, performing commonsense/arithmetic reasoning, guide search formulation, and synthesizing final answer.
+            - paragraph [ref=f36e463]: "Here is an example of what the ReAct prompt exemplars look like (obtained from the paper and shortened to one example for simplicity):"
+            - generic [ref=f36e464]:
+              - code [ref=f36e466]:
+                - generic [ref=f36e467]: Question What is the elevation range for the area that the eastern sector of the
+                - generic [ref=f36e468]: Colorado orogeny extends into?
+                - generic [ref=f36e469]: Thought 1 I need to search Colorado orogeny, find the area that the eastern sector
+                - generic [ref=f36e470]: of the Colorado orogeny extends into, then find the elevation range of the
+                - generic [ref=f36e471]: area.
+                - generic [ref=f36e472]: Action 1 Search[Colorado orogeny]
+                - generic [ref=f36e473]: Observation 1 The Colorado orogeny was an episode of mountain building (an orogeny) in
+                - generic [ref=f36e474]: Colorado and surrounding areas.
+                - generic [ref=f36e475]: Thought 2 It does not mention the eastern sector. So I need to look up eastern
+                - generic [ref=f36e476]: sector.
+                - generic [ref=f36e477]: Action 2 Lookup[eastern sector]
+                - generic [ref=f36e478]: Observation 2 (Result 1 / 1) The eastern sector extends into the High Plains and is called
+                - generic [ref=f36e479]: the Central Plains orogeny.
+                - generic [ref=f36e480]: Thought 3 The eastern sector of Colorado orogeny extends into the High Plains. So I
+                - generic [ref=f36e481]: need to search High Plains and find its elevation range.
+                - generic [ref=f36e482]: Action 3 Search[High Plains]
+                - generic [ref=f36e483]: Observation 3 High Plains refers to one of two distinct land regions
+                - generic [ref=f36e484]: Thought 4 I need to instead search High Plains (United States).
+                - generic [ref=f36e485]: Action 4 Search[High Plains (United States)]
+                - generic [ref=f36e486]: Observation 4 The High Plains are a subregion of the Great Plains. From east to west, the
+                - generic [ref=f36e487]: High Plains rise in elevation from around 1,800 to 7,000 ft (550 to 2,130
+                - generic [ref=f36e488]: m).[3]
+                - generic [ref=f36e489]: Thought 5 High Plains rise in elevation from around 1,800 to 7,000 ft, so the answer
+                - generic [ref=f36e490]: is 1,800 to 7,000 ft.
+                - generic [ref=f36e491]: Action 5 Finish[1,800 to 7,000 ft]
+                - generic [ref=f36e492]: ...
+              - button [ref=f36e494] [cursor=pointer]:
+                - img
+            - paragraph [ref=f36e495]: Note that different prompts setups are used for different types of tasks. For tasks where reasoning is of primary importance (e.g., HotpotQA), multiple thought-action-observation steps are used for the task-solving trajectory. For decision making tasks involving lots of action steps, thoughts are used sparsely.
+            - iframe [ref=f36e496]:
+              - generic [active] [ref=f37e1]:
+                - generic "Lecteur vidéo YouTube" [ref=f37e3]
+                - generic [ref=f37e5]:
+                  - generic:
+                    - generic:
+                      - button "Regarder la vidéo" [ref=f37e10] [cursor=pointer]
+                      - button "Masquer les commandes du lecteur" [ref=f37e12] [cursor=pointer]
+                      - generic [ref=f37e14]:
+                        - generic [ref=f37e19]:
+                          - generic [ref=f37e20]:
+                            - link "Building a ReAct AI Agent (Tutorial)" [ref=f37e21] [cursor=pointer]:
+                              - /url: https://www.youtube.com/watch?v=f8whjxDBcd8
+                            - link "Elvis Saravia" [ref=f37e22] [cursor=pointer]:
+                              - /url: /channel/UCyna_OxOWL7IEuOwb7WhmxQ
+                              - generic [ref=f37e23]: Elvis Saravia
+                          - generic [ref=f37e24]:
+                            - button [ref=f37e25] [cursor=pointer]
+                            - generic [ref=f37e27]:
+                              - generic: Elvis Saravia
+                              - generic: 25,1 k abonnés
+                        - generic [ref=f37e28]:
+                          - button "Partager" [ref=f37e31] [cursor=pointer]:
+                            - generic [ref=f37e35]:
+                              - img
+                          - link "Regarder sur YouTube" [ref=f37e42] [cursor=pointer]:
+                            - /url: https://www.youtube.com/watch?v=f8whjxDBcd8
+                            - generic [ref=f37e45]:
+                              - text: Regarder sur
+                              - img [ref=f37e47]:
+                                - generic [ref=f37e49]:
+                                  - img
+            - heading "Results on Knowledge-Intensive TasksPermalink for this section" [level=2] [ref=f36e497]:
+              - text: Results on Knowledge-Intensive Tasks
+              - link "Permalink for this section" [ref=f36e498] [cursor=pointer]:
+                - /url: "#results-on-knowledge-intensive-tasks"
+                - text: "#"
+            - paragraph [ref=f36e499]:
+              - text: The paper first evaluates ReAct on knowledge-intensive reasoning tasks such as question answering (HotPotQA) and fact verification (
+              - link "Fever (opens in a new tab)" [ref=f36e500] [cursor=pointer]:
+                - /url: https://fever.ai/resources.html
+                - text: Fever
+                - generic [ref=f36e501]: (opens in a new tab)
+              - text: ). PaLM-540B is used as the base model for prompting.
+            - img "REACT1" [ref=f36e503]
+            - paragraph [ref=f36e504]:
+              - text: "Image Source:"
+              - link "Yao et al., 2022 (opens in a new tab)" [ref=f36e505] [cursor=pointer]:
+                - /url: https://arxiv.org/abs/2210.03629
+                - text: Yao et al., 2022
+                - generic [ref=f36e506]: (opens in a new tab)
+            - paragraph [ref=f36e507]: The prompting results on HotPotQA and Fever using different prompting methods show that ReAct generally performs better than Act (involves acting only) on both tasks.
+            - paragraph [ref=f36e508]: "We can also observe that ReAct outperforms CoT on Fever and lags behind CoT on HotpotQA. A detailed error analysis is provided in the paper. In summary:"
+            - list [ref=f36e509]:
+              - listitem [ref=f36e510]: CoT suffers from fact hallucination
+              - listitem [ref=f36e511]: ReAct's structural constraint reduces its flexibility in formulating reasoning steps
+              - listitem [ref=f36e512]: ReAct depends a lot on the information it's retrieving; non-informative search results derails the model reasoning and leads to difficulty in recovering and reformulating thoughts
+            - paragraph [ref=f36e513]: Prompting methods that combine and support switching between ReAct and CoT+Self-Consistency generally outperform all the other prompting methods.
+            - heading "Results on Decision Making TasksPermalink for this section" [level=2] [ref=f36e514]:
+              - text: Results on Decision Making Tasks
+              - link "Permalink for this section" [ref=f36e515] [cursor=pointer]:
+                - /url: "#results-on-decision-making-tasks"
+                - text: "#"
+            - paragraph [ref=f36e516]:
+              - text: The paper also reports results demonstrating ReAct's performance on decision making tasks. ReAct is evaluated on two benchmarks called
+              - link "ALFWorld (opens in a new tab)" [ref=f36e517] [cursor=pointer]:
+                - /url: https://alfworld.github.io/
+                - text: ALFWorld
+                - generic [ref=f36e518]: (opens in a new tab)
+              - text: (text-based game) and
+              - link "WebShop (opens in a new tab)" [ref=f36e519] [cursor=pointer]:
+                - /url: https://webshop-pnlp.github.io/
+                - text: WebShop
+                - generic [ref=f36e520]: (opens in a new tab)
+              - text: (online shopping website environment). Both involve complex environments that require reasoning to act and explore effectively.
+            - paragraph [ref=f36e521]: Note that the ReAct prompts are designed differently for these tasks while still keeping the same core idea of combining reasoning and acting. Below is an example for an ALFWorld problem involving ReAct prompting.
+            - img "REACT2" [ref=f36e523]
+            - paragraph [ref=f36e524]:
+              - text: "Image Source:"
+              - link "Yao et al., 2022 (opens in a new tab)" [ref=f36e525] [cursor=pointer]:
+                - /url: https://arxiv.org/abs/2210.03629
+                - text: Yao et al., 2022
+                - generic [ref=f36e526]: (opens in a new tab)
+            - paragraph [ref=f36e527]: ReAct outperforms Act on both ALFWorld and Webshop. Act, without any thoughts, fails to correctly decompose goals into subgoals. Reasoning seems to be advantageous in ReAct for these types of tasks but current prompting-based methods are still far from the performance of expert humans on these tasks.
+            - paragraph [ref=f36e528]: Check out the paper for more detailed results.
+            - heading "LangChain ReAct UsagePermalink for this section" [level=2] [ref=f36e529]:
+              - text: LangChain ReAct Usage
+              - link "Permalink for this section" [ref=f36e530] [cursor=pointer]:
+                - /url: "#langchain-react-usage"
+                - text: "#"
+            - paragraph [ref=f36e531]:
+              - text: Below is a high-level example of how the ReAct prompting approach works in practice. We will be using OpenAI for the LLM and
+              - link "LangChain (opens in a new tab)" [ref=f36e532] [cursor=pointer]:
+                - /url: https://python.langchain.com/en/latest/index.html
+                - text: LangChain
+                - generic [ref=f36e533]: (opens in a new tab)
+              - text: as it already has built-in functionality that leverages the ReAct framework to build agents that perform tasks by combining the power of LLMs and different tools.
+            - paragraph [ref=f36e534]: "First, let's install and import the necessary libraries:"
+            - generic [ref=f36e535]:
+              - code [ref=f36e537]:
+                - generic [ref=f36e538]: "%%capture"
+                - generic [ref=f36e539]: "# update or install the necessary libraries"
+                - generic [ref=f36e540]: "!pip install --upgrade openai"
+                - generic [ref=f36e541]: "!pip install --upgrade langchain"
+                - generic [ref=f36e542]: "!pip install --upgrade python-dotenv"
+                - generic [ref=f36e543]: "!pip install google-search-results"
+                - generic [ref=f36e545]: "# import libraries"
+                - generic [ref=f36e546]: import openai
+                - generic [ref=f36e547]: import os
+                - generic [ref=f36e548]: from langchain.llms import OpenAI
+                - generic [ref=f36e549]: from langchain.agents import load_tools
+                - generic [ref=f36e550]: from langchain.agents import initialize_agent
+                - generic [ref=f36e551]: from dotenv import load_dotenv
+                - generic [ref=f36e552]: load_dotenv()
+                - generic [ref=f36e554]: "# load API keys; you will need to obtain these if you haven't yet"
+                - generic [ref=f36e555]: os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+                - generic [ref=f36e556]: os.environ["SERPER_API_KEY"] = os.getenv("SERPER_API_KEY")
+              - button [ref=f36e559] [cursor=pointer]:
+                - img
+            - paragraph [ref=f36e560]: Now we can configure the LLM, the tools we will use, and the agent that allows us to leverage the ReAct framework together with the LLM and tools. Note that we are using a search API for searching external information and LLM as a math tool.
+            - generic [ref=f36e561]:
+              - code [ref=f36e563]:
+                - generic [ref=f36e564]: llm = OpenAI(model_name="text-davinci-003" ,temperature=0)
+                - generic [ref=f36e565]: tools = load_tools(["google-serper", "llm-math"], llm=llm)
+                - generic [ref=f36e566]: agent = initialize_agent(tools, llm, agent="zero-shot-react-description", verbose=True)
+              - button [ref=f36e568] [cursor=pointer]:
+                - img
+            - paragraph [ref=f36e569]: Once that's configured, we can now run the agent with the desired query/prompt. Notice that here we are not expected to provide few-shot exemplars as explained in the paper.
+            - generic [ref=f36e570]:
+              - code [ref=f36e572]:
+                - generic [ref=f36e573]: agent.run("Who is Olivia Wilde's boyfriend? What is his current age raised to the 0.23 power?")
+              - button [ref=f36e575] [cursor=pointer]:
+                - img
+            - paragraph [ref=f36e576]: "The chain execution looks as follows:"
+            - generic [ref=f36e577]:
+              - code [ref=f36e579]:
+                - generic [ref=f36e580]: "> Entering new AgentExecutor chain..."
+                - generic [ref=f36e581]: I need to find out who Olivia Wilde's boyfriend is and then calculate his age raised to the 0.23 power.
+                - generic [ref=f36e582]: "Action: Search"
+                - generic [ref=f36e583]: "Action Input: \"Olivia Wilde boyfriend\""
+                - generic [ref=f36e584]: "Observation: Olivia Wilde started dating Harry Styles after ending her years-long engagement to Jason Sudeikis — see their relationship timeline."
+                - generic [ref=f36e585]: "Thought: I need to find out Harry Styles' age."
+                - generic [ref=f36e586]: "Action: Search"
+                - generic [ref=f36e587]: "Action Input: \"Harry Styles age\""
+                - generic [ref=f36e588]: "Observation: 29 years"
+                - generic [ref=f36e589]: "Thought: I need to calculate 29 raised to the 0.23 power."
+                - generic [ref=f36e590]: "Action: Calculator"
+                - generic [ref=f36e591]: "Action Input: 29^0.23"
+                - generic [ref=f36e592]: "Observation: Answer: 2.169459462491557"
+                - generic [ref=f36e594]: "Thought: I now know the final answer."
+                - generic [ref=f36e595]: "Final Answer: Harry Styles, Olivia Wilde's boyfriend, is 29 years old and his age raised to the 0.23 power is 2.169459462491557."
+                - generic [ref=f36e597]: "> Finished chain."
+              - button [ref=f36e599] [cursor=pointer]:
+                - img
+            - paragraph [ref=f36e600]: "The output we get is as follows:"
+            - generic [ref=f36e601]:
+              - code [ref=f36e603]:
+                - generic [ref=f36e604]: "\"Harry Styles, Olivia Wilde's boyfriend, is 29 years old and his age raised to the 0.23 power is 2.169459462491557.\""
+              - button [ref=f36e606] [cursor=pointer]:
+                - img
+            - paragraph [ref=f36e607]:
+              - text: We adapted the example from the
+              - link "LangChain documentation (opens in a new tab)" [ref=f36e608] [cursor=pointer]:
+                - /url: https://python.langchain.com/docs/modules/agents/agent_types/react
+                - text: LangChain documentation
+                - generic [ref=f36e609]: (opens in a new tab)
+              - text: ", so credit goes to them. We encourage the learner to explore different combination of tools and tasks."
+            - paragraph [ref=f36e610]:
+              - text: "You can find the notebook for this code here:"
+              - link "https://github.com/dair-ai/Prompt-Engineering-Guide/blob/main/notebooks/react.ipynb (opens in a new tab)" [ref=f36e611] [cursor=pointer]:
+                - /url: https://github.com/dair-ai/Prompt-Engineering-Guide/blob/main/notebooks/react.ipynb
+                - text: https://github.com/dair-ai/Prompt-Engineering-Guide/blob/main/notebooks/react.ipynb
+                - generic [ref=f36e612]: (opens in a new tab)
+            - generic [ref=f36e613]:
+              - heading "Related Learning" [level=2] [ref=f36e614]
+              - generic [ref=f36e615]:
+                - link "Course Prompt Engineering for LLMs Master ReAct prompting, chain-of-thought, and advanced reasoning techniques for complex tasks. Beginner 2 hours" [ref=f36e616] [cursor=pointer]:
+                  - /url: https://academy.dair.ai/courses/introduction-prompt-engineering
+                  - generic [ref=f36e617]: Course
+                  - generic [ref=f36e618]:
+                    - heading "Prompt Engineering for LLMs" [level=3] [ref=f36e619]
+                    - paragraph [ref=f36e620]: Master ReAct prompting, chain-of-thought, and advanced reasoning techniques for complex tasks.
+                    - generic [ref=f36e621]:
+                      - generic [ref=f36e622]:
+                        - img [ref=f36e623]
+                        - generic [ref=f36e625]: Beginner
+                      - generic [ref=f36e626]: 2 hours
+                - link "Course Building Effective AI Agents Learn to build effective AI agents with ReAct patterns. Covers function calling, tool integration, and agentic systems. Intermediate 5 hours" [ref=f36e627] [cursor=pointer]:
+                  - /url: https://academy.dair.ai/courses/building-effective-ai-agents
+                  - generic [ref=f36e628]: Course
+                  - generic [ref=f36e629]:
+                    - heading "Building Effective AI Agents" [level=3] [ref=f36e630]
+                    - paragraph [ref=f36e631]: Learn to build effective AI agents with ReAct patterns. Covers function calling, tool integration, and agentic systems.
+                    - generic [ref=f36e632]:
+                      - generic [ref=f36e633]:
+                        - img [ref=f36e634]
+                        - generic [ref=f36e636]: Intermediate
+                      - generic [ref=f36e637]: 5 hours
+            - generic [ref=f36e639]:
+              - img [ref=f36e641]
+              - generic [ref=f36e644]:
+                - heading "Explore All Courses" [level=3] [ref=f36e645]
+                - paragraph [ref=f36e646]:
+                  - text: Discover our full catalog of AI and prompt engineering courses. From beginners to advanced practitioners.
+                  - generic [ref=f36e647]:
+                    - text: Use code
+                    - code [ref=f36e648]: PROMPTING20
+                    - text: for 20% off!
+                - link "Browse Academy" [ref=f36e649] [cursor=pointer]:
+                  - /url: https://academy.dair.ai/
+                  - text: Browse Academy
+                  - img [ref=f36e650]
+            - generic [ref=f36e653]:
+              - generic [ref=f36e654]: Last updated on Sun Feb 01 2026
+              - generic [ref=f36e655]:
+                - generic [ref=f36e656]: Sponsored by
+                - link "SerpAPI" [ref=f36e657] [cursor=pointer]:
+                  - /url: https://serpapi.com/
+                  - img "SerpAPI" [ref=f36e658]
+            - generic [ref=f36e659]:
+              - link "Program-Aided Language Models" [ref=f36e660] [cursor=pointer]:
+                - /url: /techniques/pal
+                - img [ref=f36e661]
+                - text: Program-Aided Language Models
+              - link "Reflexion" [ref=f36e663] [cursor=pointer]:
+                - /url: /techniques/reflexion
+                - text: Reflexion
+                - img [ref=f36e664]
+      - contentinfo [ref=f36e666]:
+        - separator [ref=f36e667]
+        - generic [ref=f36e669]: Copyright © 2026 DAIR.AI
+  - alert [ref=f36e670]

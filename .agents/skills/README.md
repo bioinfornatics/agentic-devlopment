@@ -18,7 +18,8 @@ Agents are thin operating protocols (130–180 lines); skills hold the methodolo
 | review-critic | code-review |
 | principal-engineer | agentic-dev-harness, code-review |
 | qa-automation | agentic-dev-harness, webapp-testing, systematic-debugging |
-| ui-ux-auditor | ui-ux-quality, webapp-testing |
+| ux-researcher | ui-ux-quality, webapp-testing |
+| ui-designer   | ui-ux-quality, webapp-testing |
 
 ## Core skills
 

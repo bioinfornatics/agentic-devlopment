@@ -1,0 +1,2 @@
+[    1100ms] [INFO] [O11Y] [DatadogRUM] Initialized {service: app-console, env: production, version: c40d1a2f94eb789f7575d5f8015dea8d0a65578e} @ https://platform.claude.com/_next/static/chunks/5837-face4a558765335d.js:12
+[    3678ms] [WARNING] [Intercom] The App ID in your code snippet has not been set. Set it to your App ID found in settings to complete installation: https://app.intercom.com/a/apps/_/settings/web @ https://js.intercomcdn.com/frame-modern.04759a69.js:0

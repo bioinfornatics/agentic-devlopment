@@ -92,7 +92,8 @@ Named agents live in `.agents/agents/` and can be invoked through Goose Summon. 
 |---|---|---|
 | `review-critic` | Confidence-filtered code review with proof requirement | After any implementation, before closing a bead |
 | `principal-engineer` | Blast radius, breaking changes, architecture coherence | Change touches shared infra, public APIs, or 2+ BLOCK verdicts |
-| `ui-ux-auditor` | WCAG 2.2 AA + UX + browser evidence | After any UI change |
+| `ux-researcher` | User research, personas, journey maps | New feature, user validation |
+| `ui-designer`   | Design system, WCAG 2.2 AA, a11y audit | Any UI change |
 
 ### SDD+TDD Orchestration Flow
 
@@ -105,7 +106,7 @@ product-owner → architect → beads-planner → tdd-guide
 
 codebase-researcher   (read-only, parallel, any phase)
 harness-orchestrator  (coordinates the full loop)
-ui-ux-auditor         (parallel for UI-bearing changes)
+ux-researcher + ui-designer  (parallel for UI-bearing changes)
 ```
 
 Example invocations:

@@ -1,0 +1,636 @@
+- generic [active] [ref=f27e1]:
+  - blockquote [ref=f27e2]:
+    - heading [level=2] [ref=f27e3]: Documentation Index
+    - paragraph [ref=f27e4]:
+      - text: "Fetch the complete documentation index at:"
+      - link [ref=f27e5] [cursor=pointer]:
+        - /url: /llms.txt
+        - text: /llms.txt
+    - paragraph [ref=f27e6]: Use this file to discover all available pages before exploring further.
+  - generic [ref=f27e7]:
+    - link "Skip to main content" [ref=f27e8] [cursor=pointer]:
+      - /url: "#content-area"
+    - generic [ref=f27e10]:
+      - banner [ref=f27e11]:
+        - generic [ref=f27e13]:
+          - paragraph [ref=f27e15]:
+            - text: Agent Skills now has an official
+            - link "Discord server" [ref=f27e16] [cursor=pointer]:
+              - /url: https://discord.gg/MKPE9g8aUy
+            - text: . See the
+            - link "announcement" [ref=f27e17] [cursor=pointer]:
+              - /url: https://github.com/agentskills/agentskills/discussions/273
+            - text: for details.
+          - button "Dismiss banner" [ref=f27e18] [cursor=pointer]:
+            - img [ref=f27e19]
+        - generic [ref=f27e24]:
+          - generic [ref=f27e26]:
+            - link "Agent Skills home page Agent Skills" [ref=f27e28] [cursor=pointer]:
+              - /url: /
+              - generic [ref=f27e29]: Agent Skills home page
+              - generic [ref=f27e30]: Agent Skills
+            - generic [ref=f27e31]:
+              - button "Open search" [ref=f27e32] [cursor=pointer]:
+                - generic [ref=f27e33]: Search...
+                - img [ref=f27e34]
+              - button "Toggle assistant panel" [ref=f27e35] [cursor=pointer]:
+                - img [ref=f27e36]
+              - button "More actions" [ref=f27e39] [cursor=pointer]:
+                - img [ref=f27e40]
+          - button "Navigation Specification" [ref=f27e41] [cursor=pointer]:
+            - generic [ref=f27e42]:
+              - generic [ref=f27e43]: Navigation
+              - img [ref=f27e44]
+            - generic [ref=f27e47]: Specification
+      - main [ref=f27e49]:
+        - generic [ref=f27e51]:
+          - generic [ref=f27e52]:
+            - generic [ref=f27e54]:
+              - heading "Specification" [level=1] [ref=f27e55]
+              - generic [ref=f27e56]:
+                - button "Copy page" [ref=f27e57] [cursor=pointer]:
+                  - generic [ref=f27e58]:
+                    - img [ref=f27e59]
+                    - generic [ref=f27e62]: Copy page
+                - button "More actions" [ref=f27e63] [cursor=pointer]:
+                  - img [ref=f27e64]
+            - paragraph [ref=f27e818]: The complete format specification for Agent Skills.
+          - generic [ref=f27e68]:
+            - heading "Navigate to header Directory structure" [level=2] [ref=f27e819]:
+              - link "Navigate to header" [ref=f27e820] [cursor=pointer]:
+                - /url: "#directory-structure"
+                - img [ref=f27e822]
+              - generic [ref=f27e824] [cursor=pointer]: Directory structure
+            - generic [ref=f27e825]:
+              - text: A skill is a directory containing, at minimum, a
+              - code [ref=f27e826]: SKILL.md
+              - text: "file:"
+            - generic [ref=f27e827]:
+              - generic [ref=f27e828]:
+                - button "Report incorrect code" [ref=f27e830] [cursor=pointer]:
+                  - img [ref=f27e831]
+                - button "Copy the contents from the code block" [ref=f27e834] [cursor=pointer]:
+                  - img [ref=f27e835]
+                - button "Ask Assistant" [ref=f27e839] [cursor=pointer]:
+                  - img [ref=f27e840]
+              - code [ref=f27e846]:
+                - generic [ref=f27e847]: skill-name/
+                - generic [ref=f27e848]: "├── SKILL.md # Required: metadata + instructions"
+                - generic [ref=f27e849]: "├── scripts/ # Optional: executable code"
+                - generic [ref=f27e850]: "├── references/ # Optional: documentation"
+                - generic [ref=f27e851]: "├── assets/ # Optional: templates, resources"
+                - generic [ref=f27e852]: "└── ... # Any additional files or directories"
+            - heading "Navigate to header SKILL.md format" [level=2] [ref=f27e853]:
+              - link "Navigate to header" [ref=f27e854] [cursor=pointer]:
+                - /url: "#skill-md-format"
+                - img [ref=f27e856]
+              - generic [ref=f27e858] [cursor=pointer]:
+                - code [ref=f27e859]: SKILL.md
+                - text: format
+            - generic [ref=f27e860]:
+              - text: The
+              - code [ref=f27e861]: SKILL.md
+              - text: file must contain YAML frontmatter followed by Markdown content.
+            - heading "Navigate to header Frontmatter" [level=3] [ref=f27e862]:
+              - link "Navigate to header" [ref=f27e863] [cursor=pointer]:
+                - /url: "#frontmatter"
+                - img [ref=f27e865]
+              - generic [ref=f27e867] [cursor=pointer]: Frontmatter
+            - table [ref=f27e870]:
+              - rowgroup [ref=f27e871]:
+                - row "Field Required Constraints" [ref=f27e872]:
+                  - columnheader "Field" [ref=f27e873]
+                  - columnheader "Required" [ref=f27e874]
+                  - columnheader "Constraints" [ref=f27e875]
+              - rowgroup [ref=f27e876]:
+                - row "name Yes Max 64 characters. Lowercase letters, numbers, and hyphens only. Must not start or end with a hyphen." [ref=f27e877]:
+                  - cell "name" [ref=f27e878]:
+                    - code [ref=f27e879]: name
+                  - cell "Yes" [ref=f27e880]
+                  - cell "Max 64 characters. Lowercase letters, numbers, and hyphens only. Must not start or end with a hyphen." [ref=f27e881]
+                - row "description Yes Max 1024 characters. Non-empty. Describes what the skill does and when to use it." [ref=f27e882]:
+                  - cell "description" [ref=f27e883]:
+                    - code [ref=f27e884]: description
+                  - cell "Yes" [ref=f27e885]
+                  - cell "Max 1024 characters. Non-empty. Describes what the skill does and when to use it." [ref=f27e886]
+                - row "license No License name or reference to a bundled license file." [ref=f27e887]:
+                  - cell "license" [ref=f27e888]:
+                    - code [ref=f27e889]: license
+                  - cell "No" [ref=f27e890]
+                  - cell "License name or reference to a bundled license file." [ref=f27e891]
+                - row "compatibility No Max 500 characters. Indicates environment requirements (intended product, system packages, network access, etc.)." [ref=f27e892]:
+                  - cell "compatibility" [ref=f27e893]:
+                    - code [ref=f27e894]: compatibility
+                  - cell "No" [ref=f27e895]
+                  - cell "Max 500 characters. Indicates environment requirements (intended product, system packages, network access, etc.)." [ref=f27e896]
+                - row "metadata No Arbitrary key-value mapping for additional metadata." [ref=f27e897]:
+                  - cell "metadata" [ref=f27e898]:
+                    - code [ref=f27e899]: metadata
+                  - cell "No" [ref=f27e900]
+                  - cell "Arbitrary key-value mapping for additional metadata." [ref=f27e901]
+                - row "allowed-tools No Space-separated string of pre-approved tools the skill may use. (Experimental)" [ref=f27e902]:
+                  - cell "allowed-tools" [ref=f27e903]:
+                    - code [ref=f27e904]: allowed-tools
+                  - cell "No" [ref=f27e905]
+                  - cell "Space-separated string of pre-approved tools the skill may use. (Experimental)" [ref=f27e906]
+            - generic [ref=f27e909]:
+              - heading [level=2]
+              - generic [ref=f27e910]:
+                - strong [ref=f27e912]: "Minimal example:"
+                - generic [ref=f27e913]:
+                  - generic [ref=f27e914]:
+                    - generic "SKILL.md" [ref=f27e916]
+                    - generic [ref=f27e917]:
+                      - button "Report incorrect code" [ref=f27e919] [cursor=pointer]:
+                        - img [ref=f27e920]
+                      - button "Copy the contents from the code block" [ref=f27e923] [cursor=pointer]:
+                        - img [ref=f27e924]
+                      - button "Ask Assistant" [ref=f27e928] [cursor=pointer]:
+                        - img [ref=f27e929]
+                  - code [ref=f27e935]:
+                    - generic [ref=f27e936]: "---"
+                    - generic [ref=f27e937]: "name: skill-name"
+                    - generic [ref=f27e938]: "description: A description of what this skill does and when to use it."
+                    - generic [ref=f27e939]: "---"
+                - strong [ref=f27e941]: "Example with optional fields:"
+                - generic [ref=f27e942]:
+                  - generic [ref=f27e943]:
+                    - generic "SKILL.md" [ref=f27e945]
+                    - generic [ref=f27e946]:
+                      - button "Report incorrect code" [ref=f27e948] [cursor=pointer]:
+                        - img [ref=f27e949]
+                      - button "Copy the contents from the code block" [ref=f27e952] [cursor=pointer]:
+                        - img [ref=f27e953]
+                      - button "Ask Assistant" [ref=f27e957] [cursor=pointer]:
+                        - img [ref=f27e958]
+                  - code [ref=f27e964]:
+                    - generic [ref=f27e965]: "---"
+                    - generic [ref=f27e966]: "name: pdf-processing"
+                    - generic [ref=f27e967]: "description: Extract PDF text, fill forms, merge files. Use when handling PDFs."
+                    - generic [ref=f27e968]: "license: Apache-2.0"
+                    - generic [ref=f27e969]: "metadata:"
+                    - generic [ref=f27e970]: "author: example-org"
+                    - generic [ref=f27e971]: "version: \"1.0\""
+                    - generic [ref=f27e972]: "---"
+            - heading "Navigate to header name field" [level=4] [ref=f27e973]:
+              - link "Navigate to header" [ref=f27e974] [cursor=pointer]:
+                - /url: "#name-field"
+                - img [ref=f27e976]
+              - generic [ref=f27e978] [cursor=pointer]:
+                - code [ref=f27e979]: name
+                - text: field
+            - generic [ref=f27e980]:
+              - text: The required
+              - code [ref=f27e981]: name
+              - text: "field:"
+            - list [ref=f27e982]:
+              - listitem [ref=f27e983]: Must be 1-64 characters
+              - listitem [ref=f27e984]:
+                - text: May only contain unicode lowercase alphanumeric characters (
+                - code [ref=f27e985]: a-z
+                - text: ","
+                - code [ref=f27e986]: 0-9
+                - text: ) and hyphens (
+                - code [ref=f27e987]: "-"
+                - text: )
+              - listitem [ref=f27e988]:
+                - text: Must not start or end with a hyphen (
+                - code [ref=f27e989]: "-"
+                - text: )
+              - listitem [ref=f27e990]:
+                - text: Must not contain consecutive hyphens (
+                - code [ref=f27e991]: "--"
+                - text: )
+              - listitem [ref=f27e992]: Must match the parent directory name
+            - generic [ref=f27e995]:
+              - heading [level=2]
+              - generic [ref=f27e996]:
+                - strong [ref=f27e998]: "Valid examples:"
+                - generic [ref=f27e999]:
+                  - generic [ref=f27e1000]:
+                    - button "Report incorrect code" [ref=f27e1002] [cursor=pointer]:
+                      - img [ref=f27e1003]
+                    - button "Copy the contents from the code block" [ref=f27e1006] [cursor=pointer]:
+                      - img [ref=f27e1007]
+                    - button "Ask Assistant" [ref=f27e1011] [cursor=pointer]:
+                      - img [ref=f27e1012]
+                  - code [ref=f27e1018]:
+                    - generic [ref=f27e1019]: "name: pdf-processing"
+                - generic [ref=f27e1020]:
+                  - generic [ref=f27e1021]:
+                    - button "Report incorrect code" [ref=f27e1023] [cursor=pointer]:
+                      - img [ref=f27e1024]
+                    - button "Copy the contents from the code block" [ref=f27e1027] [cursor=pointer]:
+                      - img [ref=f27e1028]
+                    - button "Ask Assistant" [ref=f27e1032] [cursor=pointer]:
+                      - img [ref=f27e1033]
+                  - code [ref=f27e1039]:
+                    - generic [ref=f27e1040]: "name: data-analysis"
+                - generic [ref=f27e1041]:
+                  - generic [ref=f27e1042]:
+                    - button "Report incorrect code" [ref=f27e1044] [cursor=pointer]:
+                      - img [ref=f27e1045]
+                    - button "Copy the contents from the code block" [ref=f27e1048] [cursor=pointer]:
+                      - img [ref=f27e1049]
+                    - button "Ask Assistant" [ref=f27e1053] [cursor=pointer]:
+                      - img [ref=f27e1054]
+                  - code [ref=f27e1060]:
+                    - generic [ref=f27e1061]: "name: code-review"
+                - strong [ref=f27e1063]: "Invalid examples:"
+                - generic [ref=f27e1064]:
+                  - generic [ref=f27e1065]:
+                    - button "Report incorrect code" [ref=f27e1067] [cursor=pointer]:
+                      - img [ref=f27e1068]
+                    - button "Copy the contents from the code block" [ref=f27e1071] [cursor=pointer]:
+                      - img [ref=f27e1072]
+                    - button "Ask Assistant" [ref=f27e1076] [cursor=pointer]:
+                      - img [ref=f27e1077]
+                  - code [ref=f27e1083]:
+                    - generic [ref=f27e1084]: "name: PDF-Processing # uppercase not allowed"
+                - generic [ref=f27e1085]:
+                  - generic [ref=f27e1086]:
+                    - button "Report incorrect code" [ref=f27e1088] [cursor=pointer]:
+                      - img [ref=f27e1089]
+                    - button "Copy the contents from the code block" [ref=f27e1092] [cursor=pointer]:
+                      - img [ref=f27e1093]
+                    - button "Ask Assistant" [ref=f27e1097] [cursor=pointer]:
+                      - img [ref=f27e1098]
+                  - code [ref=f27e1104]:
+                    - generic [ref=f27e1105]: "name: -pdf # cannot start with hyphen"
+                - generic [ref=f27e1106]:
+                  - generic [ref=f27e1107]:
+                    - button "Report incorrect code" [ref=f27e1109] [cursor=pointer]:
+                      - img [ref=f27e1110]
+                    - button "Copy the contents from the code block" [ref=f27e1113] [cursor=pointer]:
+                      - img [ref=f27e1114]
+                    - button "Ask Assistant" [ref=f27e1118] [cursor=pointer]:
+                      - img [ref=f27e1119]
+                  - code [ref=f27e1125]:
+                    - generic [ref=f27e1126]: "name: pdf--processing # consecutive hyphens not allowed"
+            - heading "Navigate to header description field" [level=4] [ref=f27e1127]:
+              - link "Navigate to header" [ref=f27e1128] [cursor=pointer]:
+                - /url: "#description-field"
+                - img [ref=f27e1130]
+              - generic [ref=f27e1132] [cursor=pointer]:
+                - code [ref=f27e1133]: description
+                - text: field
+            - generic [ref=f27e1134]:
+              - text: The required
+              - code [ref=f27e1135]: description
+              - text: "field:"
+            - list [ref=f27e1136]:
+              - listitem [ref=f27e1137]: Must be 1-1024 characters
+              - listitem [ref=f27e1138]: Should describe both what the skill does and when to use it
+              - listitem [ref=f27e1139]: Should include specific keywords that help agents identify relevant tasks
+            - generic [ref=f27e1142]:
+              - heading [level=2]
+              - generic [ref=f27e1143]:
+                - strong [ref=f27e1145]: "Good example:"
+                - generic [ref=f27e1146]:
+                  - generic [ref=f27e1147]:
+                    - button "Report incorrect code" [ref=f27e1149] [cursor=pointer]:
+                      - img [ref=f27e1150]
+                    - button "Copy the contents from the code block" [ref=f27e1153] [cursor=pointer]:
+                      - img [ref=f27e1154]
+                    - button "Ask Assistant" [ref=f27e1158] [cursor=pointer]:
+                      - img [ref=f27e1159]
+                  - code [ref=f27e1165]:
+                    - generic [ref=f27e1166]: "description: Extracts text and tables from PDF files, fills PDF forms, and merges multiple PDFs. Use when working with PDF documents or when the user mentions PDFs, forms, or document extraction."
+                - strong [ref=f27e1168]: "Poor example:"
+                - generic [ref=f27e1169]:
+                  - generic [ref=f27e1170]:
+                    - button "Report incorrect code" [ref=f27e1172] [cursor=pointer]:
+                      - img [ref=f27e1173]
+                    - button "Copy the contents from the code block" [ref=f27e1176] [cursor=pointer]:
+                      - img [ref=f27e1177]
+                    - button "Ask Assistant" [ref=f27e1181] [cursor=pointer]:
+                      - img [ref=f27e1182]
+                  - code [ref=f27e1188]:
+                    - generic [ref=f27e1189]: "description: Helps with PDFs."
+            - heading "Navigate to header license field" [level=4] [ref=f27e1190]:
+              - link "Navigate to header" [ref=f27e1191] [cursor=pointer]:
+                - /url: "#license-field"
+                - img [ref=f27e1193]
+              - generic [ref=f27e1195] [cursor=pointer]:
+                - code [ref=f27e1196]: license
+                - text: field
+            - generic [ref=f27e1197]:
+              - text: The optional
+              - code [ref=f27e1198]: license
+              - text: "field:"
+            - list [ref=f27e1199]:
+              - listitem [ref=f27e1200]: Specifies the license applied to the skill
+              - listitem [ref=f27e1201]: We recommend keeping it short (either the name of a license or the name of a bundled license file)
+            - generic [ref=f27e1204]:
+              - heading [level=2]
+              - generic [ref=f27e1205]:
+                - strong [ref=f27e1207]: "Example:"
+                - generic [ref=f27e1208]:
+                  - generic [ref=f27e1209]:
+                    - button "Report incorrect code" [ref=f27e1211] [cursor=pointer]:
+                      - img [ref=f27e1212]
+                    - button "Copy the contents from the code block" [ref=f27e1215] [cursor=pointer]:
+                      - img [ref=f27e1216]
+                    - button "Ask Assistant" [ref=f27e1220] [cursor=pointer]:
+                      - img [ref=f27e1221]
+                  - code [ref=f27e1227]:
+                    - generic [ref=f27e1228]: "license: Proprietary. LICENSE.txt has complete terms"
+            - heading "Navigate to header compatibility field" [level=4] [ref=f27e1229]:
+              - link "Navigate to header" [ref=f27e1230] [cursor=pointer]:
+                - /url: "#compatibility-field"
+                - img [ref=f27e1232]
+              - generic [ref=f27e1234] [cursor=pointer]:
+                - code [ref=f27e1235]: compatibility
+                - text: field
+            - generic [ref=f27e1236]:
+              - text: The optional
+              - code [ref=f27e1237]: compatibility
+              - text: "field:"
+            - list [ref=f27e1238]:
+              - listitem [ref=f27e1239]: Must be 1-500 characters if provided
+              - listitem [ref=f27e1240]: Should only be included if your skill has specific environment requirements
+              - listitem [ref=f27e1241]: Can indicate intended product, required system packages, network access needs, etc.
+            - generic [ref=f27e1244]:
+              - heading [level=2]
+              - generic [ref=f27e1245]:
+                - strong [ref=f27e1247]: "Examples:"
+                - generic [ref=f27e1248]:
+                  - generic [ref=f27e1249]:
+                    - button "Report incorrect code" [ref=f27e1251] [cursor=pointer]:
+                      - img [ref=f27e1252]
+                    - button "Copy the contents from the code block" [ref=f27e1255] [cursor=pointer]:
+                      - img [ref=f27e1256]
+                    - button "Ask Assistant" [ref=f27e1260] [cursor=pointer]:
+                      - img [ref=f27e1261]
+                  - code [ref=f27e1267]:
+                    - generic [ref=f27e1268]: "compatibility: Designed for Claude Code (or similar products)"
+                - generic [ref=f27e1269]:
+                  - generic [ref=f27e1270]:
+                    - button "Report incorrect code" [ref=f27e1272] [cursor=pointer]:
+                      - img [ref=f27e1273]
+                    - button "Copy the contents from the code block" [ref=f27e1276] [cursor=pointer]:
+                      - img [ref=f27e1277]
+                    - button "Ask Assistant" [ref=f27e1281] [cursor=pointer]:
+                      - img [ref=f27e1282]
+                  - code [ref=f27e1288]:
+                    - generic [ref=f27e1289]: "compatibility: Requires git, docker, jq, and access to the internet"
+                - generic [ref=f27e1290]:
+                  - generic [ref=f27e1291]:
+                    - button "Report incorrect code" [ref=f27e1293] [cursor=pointer]:
+                      - img [ref=f27e1294]
+                    - button "Copy the contents from the code block" [ref=f27e1297] [cursor=pointer]:
+                      - img [ref=f27e1298]
+                    - button "Ask Assistant" [ref=f27e1302] [cursor=pointer]:
+                      - img [ref=f27e1303]
+                  - code [ref=f27e1309]:
+                    - generic [ref=f27e1310]: "compatibility: Requires Python 3.14+ and uv"
+            - generic [ref=f27e1311]:
+              - img "Note" [ref=f27e1313]
+              - generic [ref=f27e1316]:
+                - text: Most skills do not need the
+                - code [ref=f27e1317]: compatibility
+                - text: field.
+            - heading "Navigate to header metadata field" [level=4] [ref=f27e1318]:
+              - link "Navigate to header" [ref=f27e1319] [cursor=pointer]:
+                - /url: "#metadata-field"
+                - img [ref=f27e1321]
+              - generic [ref=f27e1323] [cursor=pointer]:
+                - code [ref=f27e1324]: metadata
+                - text: field
+            - generic [ref=f27e1325]:
+              - text: The optional
+              - code [ref=f27e1326]: metadata
+              - text: "field:"
+            - list [ref=f27e1327]:
+              - listitem [ref=f27e1328]: A map from string keys to string values
+              - listitem [ref=f27e1329]: Clients can use this to store additional properties not defined by the Agent Skills spec
+              - listitem [ref=f27e1330]: We recommend making your key names reasonably unique to avoid accidental conflicts
+            - generic [ref=f27e1333]:
+              - heading [level=2]
+              - generic [ref=f27e1334]:
+                - strong [ref=f27e1336]: "Example:"
+                - generic [ref=f27e1337]:
+                  - generic [ref=f27e1338]:
+                    - button "Report incorrect code" [ref=f27e1340] [cursor=pointer]:
+                      - img [ref=f27e1341]
+                    - button "Copy the contents from the code block" [ref=f27e1344] [cursor=pointer]:
+                      - img [ref=f27e1345]
+                    - button "Ask Assistant" [ref=f27e1349] [cursor=pointer]:
+                      - img [ref=f27e1350]
+                  - code [ref=f27e1356]:
+                    - generic [ref=f27e1357]: "metadata:"
+                    - generic [ref=f27e1358]: "author: example-org"
+                    - generic [ref=f27e1359]: "version: \"1.0\""
+            - heading "Navigate to header allowed-tools field" [level=4] [ref=f27e1360]:
+              - link "Navigate to header" [ref=f27e1361] [cursor=pointer]:
+                - /url: "#allowed-tools-field"
+                - img [ref=f27e1363]
+              - generic [ref=f27e1365] [cursor=pointer]:
+                - code [ref=f27e1366]: allowed-tools
+                - text: field
+            - generic [ref=f27e1367]:
+              - text: The optional
+              - code [ref=f27e1368]: allowed-tools
+              - text: "field:"
+            - list [ref=f27e1369]:
+              - listitem [ref=f27e1370]: A space-separated string of tools that are pre-approved to run
+              - listitem [ref=f27e1371]: Experimental. Support for this field may vary between agent implementations
+            - generic [ref=f27e1374]:
+              - heading [level=2]
+              - generic [ref=f27e1375]:
+                - strong [ref=f27e1377]: "Example:"
+                - generic [ref=f27e1378]:
+                  - generic [ref=f27e1379]:
+                    - button "Report incorrect code" [ref=f27e1381] [cursor=pointer]:
+                      - img [ref=f27e1382]
+                    - button "Copy the contents from the code block" [ref=f27e1385] [cursor=pointer]:
+                      - img [ref=f27e1386]
+                    - button "Ask Assistant" [ref=f27e1390] [cursor=pointer]:
+                      - img [ref=f27e1391]
+                  - code [ref=f27e1397]:
+                    - generic [ref=f27e1398]: "allowed-tools: Bash(git:*) Bash(jq:*) Read"
+            - heading "Navigate to header Body content" [level=3] [ref=f27e1399]:
+              - link "Navigate to header" [ref=f27e1400] [cursor=pointer]:
+                - /url: "#body-content"
+                - img [ref=f27e1402]
+              - generic [ref=f27e1404] [cursor=pointer]: Body content
+            - generic [ref=f27e1405]: The Markdown body after the frontmatter contains the skill instructions. There are no format restrictions. Write whatever helps agents perform the task effectively.
+            - generic [ref=f27e1406]: "Recommended sections:"
+            - list [ref=f27e1407]:
+              - listitem [ref=f27e1408]: Step-by-step instructions
+              - listitem [ref=f27e1409]: Examples of inputs and outputs
+              - listitem [ref=f27e1410]: Common edge cases
+            - generic [ref=f27e1411]:
+              - text: Note that the agent will load this entire file once it’s decided to activate a skill. Consider splitting longer
+              - code [ref=f27e1412]: SKILL.md
+              - text: content into referenced files.
+            - heading "Navigate to header Optional directories" [level=2] [ref=f27e1413]:
+              - link "Navigate to header" [ref=f27e1414] [cursor=pointer]:
+                - /url: "#optional-directories"
+                - img [ref=f27e1416]
+              - generic [ref=f27e1418] [cursor=pointer]: Optional directories
+            - heading "Navigate to header scripts/" [level=3] [ref=f27e1419]:
+              - link "Navigate to header" [ref=f27e1420] [cursor=pointer]:
+                - /url: "#scripts/"
+                - img [ref=f27e1422]
+              - code [ref=f27e1425] [cursor=pointer]: scripts/
+            - generic [ref=f27e1426]: "Contains executable code that agents can run. Scripts should:"
+            - list [ref=f27e1427]:
+              - listitem [ref=f27e1428]: Be self-contained or clearly document dependencies
+              - listitem [ref=f27e1429]: Include helpful error messages
+              - listitem [ref=f27e1430]: Handle edge cases gracefully
+            - generic [ref=f27e1431]: Supported languages depend on the agent implementation. Common options include Python, Bash, and JavaScript.
+            - heading "Navigate to header references/" [level=3] [ref=f27e1432]:
+              - link "Navigate to header" [ref=f27e1433] [cursor=pointer]:
+                - /url: "#references/"
+                - img [ref=f27e1435]
+              - code [ref=f27e1438] [cursor=pointer]: references/
+            - generic [ref=f27e1439]: "Contains additional documentation that agents can read when needed:"
+            - list [ref=f27e1440]:
+              - listitem [ref=f27e1441]:
+                - code [ref=f27e1442]: REFERENCE.md
+                - text: "- Detailed technical reference"
+              - listitem [ref=f27e1443]:
+                - code [ref=f27e1444]: FORMS.md
+                - text: "- Form templates or structured data formats"
+              - listitem [ref=f27e1445]:
+                - text: Domain-specific files (
+                - code [ref=f27e1446]: finance.md
+                - text: ","
+                - code [ref=f27e1447]: legal.md
+                - text: ", etc.)"
+            - generic [ref=f27e1448]:
+              - text: Keep individual
+              - link "reference files" [ref=f27e1449] [cursor=pointer]:
+                - /url: "#file-references"
+              - text: focused. Agents load these on demand, so smaller files mean less use of context.
+            - heading "Navigate to header assets/" [level=3] [ref=f27e1450]:
+              - link "Navigate to header" [ref=f27e1451] [cursor=pointer]:
+                - /url: "#assets/"
+                - img [ref=f27e1453]
+              - code [ref=f27e1456] [cursor=pointer]: assets/
+            - generic [ref=f27e1457]: "Contains static resources:"
+            - list [ref=f27e1458]:
+              - listitem [ref=f27e1459]: Templates (document templates, configuration templates)
+              - listitem [ref=f27e1460]: Images (diagrams, examples)
+              - listitem [ref=f27e1461]: Data files (lookup tables, schemas)
+            - heading "Navigate to header Progressive disclosure" [level=2] [ref=f27e1462]:
+              - link "Navigate to header" [ref=f27e1463] [cursor=pointer]:
+                - /url: "#progressive-disclosure"
+                - img [ref=f27e1465]
+              - generic [ref=f27e1467] [cursor=pointer]: Progressive disclosure
+            - generic [ref=f27e1468]:
+              - text: Agents load skills
+              - emphasis [ref=f27e1469]: progressively
+              - text: ", pulling in more detail only as a task calls for it. Skills should be structured to take advantage of this:"
+            - list [ref=f27e1470]:
+              - listitem [ref=f27e1471]:
+                - strong [ref=f27e1472]: Metadata
+                - text: "(~100 tokens): The"
+                - code [ref=f27e1473]: name
+                - text: and
+                - code [ref=f27e1474]: description
+                - text: fields are loaded at startup for all skills
+              - listitem [ref=f27e1475]:
+                - strong [ref=f27e1476]: Instructions
+                - text: "(< 5000 tokens recommended): The full"
+                - code [ref=f27e1477]: SKILL.md
+                - text: body is loaded when the skill is activated
+              - listitem [ref=f27e1478]:
+                - strong [ref=f27e1479]: Resources
+                - text: "(as needed): Files (e.g. those in"
+                - code [ref=f27e1480]: scripts/
+                - text: ","
+                - code [ref=f27e1481]: references/
+                - text: ", or"
+                - code [ref=f27e1482]: assets/
+                - text: ) are loaded only when required
+            - generic [ref=f27e1483]:
+              - text: Keep your main
+              - code [ref=f27e1484]: SKILL.md
+              - text: under 500 lines. Move detailed reference material to separate files.
+            - heading "Navigate to header File references" [level=2] [ref=f27e1485]:
+              - link "Navigate to header" [ref=f27e1486] [cursor=pointer]:
+                - /url: "#file-references"
+                - img [ref=f27e1488]
+              - generic [ref=f27e1490] [cursor=pointer]: File references
+            - generic [ref=f27e1491]: "When referencing other files in your skill, use relative paths from the skill root:"
+            - generic [ref=f27e1492]:
+              - generic [ref=f27e1493]:
+                - generic "SKILL.md" [ref=f27e1495]
+                - generic [ref=f27e1496]:
+                  - button "Report incorrect code" [ref=f27e1498] [cursor=pointer]:
+                    - img [ref=f27e1499]
+                  - button "Copy the contents from the code block" [ref=f27e1502] [cursor=pointer]:
+                    - img [ref=f27e1503]
+                  - button "Ask Assistant" [ref=f27e1507] [cursor=pointer]:
+                    - img [ref=f27e1508]
+              - code [ref=f27e1514]:
+                - generic [ref=f27e1515]: See [the reference guide](references/REFERENCE.md) for details.
+                - generic [ref=f27e1516]: "Run the extraction script:"
+                - generic [ref=f27e1517]: scripts/extract.py
+            - generic [ref=f27e1518]:
+              - text: Keep file references one level deep from
+              - code [ref=f27e1519]: SKILL.md
+              - text: . Avoid deeply nested reference chains.
+            - heading "Navigate to header Validation" [level=2] [ref=f27e1520]:
+              - link "Navigate to header" [ref=f27e1521] [cursor=pointer]:
+                - /url: "#validation"
+                - img [ref=f27e1523]
+              - generic [ref=f27e1525] [cursor=pointer]: Validation
+            - generic [ref=f27e1526]:
+              - text: Use the
+              - link "skills-ref" [ref=f27e1527] [cursor=pointer]:
+                - /url: https://github.com/agentskills/agentskills/tree/main/skills-ref
+              - text: "reference library to validate your skills:"
+            - generic [ref=f27e1528]:
+              - generic [ref=f27e1529]:
+                - button "Report incorrect code" [ref=f27e1531] [cursor=pointer]:
+                  - img [ref=f27e1532]
+                - button "Copy the contents from the code block" [ref=f27e1535] [cursor=pointer]:
+                  - img [ref=f27e1536]
+                - button "Ask Assistant" [ref=f27e1540] [cursor=pointer]:
+                  - img [ref=f27e1541]
+              - code [ref=f27e1547]:
+                - generic [ref=f27e1548]: skills-ref validate ./my-skill
+            - generic [ref=f27e1549]:
+              - text: This checks that your
+              - code [ref=f27e1550]: SKILL.md
+              - text: frontmatter is valid and follows all naming conventions.
+          - generic [ref=f27e801]:
+            - link "Overview" [ref=f27e802] [cursor=pointer]:
+              - /url: /home
+              - img [ref=f27e803]
+              - generic [ref=f27e805]: Overview
+            - link "Client Showcase" [ref=f27e806] [cursor=pointer]:
+              - /url: /clients
+              - generic [ref=f27e807]: Client Showcase
+              - img [ref=f27e808]
+          - generic [ref=f27e811]:
+            - textbox "Ask a question..." [ref=f27e812]
+            - generic: Ctrl+I
+            - button "Send message" [disabled] [ref=f27e813]:
+              - img [ref=f27e814]
+  - alert [ref=f27e1551]
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - generic: Assistant
+          - generic:
+            - button:
+              - img
+        - generic:
+          - generic:
+            - generic:
+              - generic: Responses are generated using AI and may contain mistakes.
+        - generic [ref=f27e1552]:
+          - textbox [ref=f27e1554]:
+            - /placeholder: Ask a question...
+          - generic [ref=f27e1555]:
+            - button [ref=f27e1556] [cursor=pointer]:
+              - img [ref=f27e1557]
+            - button [disabled] [ref=f27e1559]:
+              - img [ref=f27e1560]

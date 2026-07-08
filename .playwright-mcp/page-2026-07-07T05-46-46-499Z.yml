@@ -1,0 +1,46 @@
+- generic [active] [ref=f7e1]:
+  - generic "Lecteur vidéo YouTube" [ref=f7e5]:
+    - button "Lire" [ref=f7e9] [cursor=pointer]:
+      - img
+    - generic [ref=f7e10]:
+      - generic [ref=f7e11] [cursor=pointer]:
+        - slider "Barre de lecture" [ref=f7e12]
+        - generic:
+          - generic:
+            - generic:
+              - slider "Cliquez sur le panneau ou faites-le défiler pour une recherche précise."
+      - generic [ref=f7e21]:
+        - generic [ref=f7e22]:
+          - button "Pause (k)" [ref=f7e23] [cursor=pointer]:
+            - img
+          - generic [ref=f7e24]:
+            - button "Désactiver le son (m)" [ref=f7e26] [cursor=pointer]:
+              - img
+            - slider "Volume"
+          - button "0 minute(s) 0 seconde(s) sur 6 minute(s) 53 seconde(s)" [ref=f7e30] [cursor=pointer]: 0:00 / 6:53
+        - generic [ref=f7e31]:
+          - generic [ref=f7e32]:
+            - button "Sous-titres non disponibles" [ref=f7e33] [cursor=pointer]:
+              - generic [ref=f7e34]:
+                - img
+            - button "Paramètres" [ref=f7e35] [cursor=pointer]:
+              - img
+          - generic [ref=f7e36]:
+            - button "Mode cinéma (t)" [ref=f7e37] [cursor=pointer]:
+              - img
+            - button "Plein écran (f)" [ref=f7e38] [cursor=pointer]:
+              - img
+  - banner [ref=f7e62]:
+    - generic [ref=f7e64]:
+      - generic [ref=f7e65]:
+        - button "Guide" [ref=f7e67] [cursor=pointer]
+        - generic [ref=f7e69]:
+          - link:
+            - /url: /
+            - generic:
+              - generic:
+                - img
+      - search [ref=f7e71]:
+        - generic [ref=f7e73]:
+          - combobox [expanded] [ref=f7e76]
+          - button "Search" [ref=f7e77] [cursor=pointer]

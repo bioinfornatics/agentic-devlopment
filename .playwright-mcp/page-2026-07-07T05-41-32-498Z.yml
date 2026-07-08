@@ -1,0 +1,430 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e2]:
+    - region "Skip to main content":
+      - link "Skip to main content" [ref=f2e3] [cursor=pointer]:
+        - /url: "#__docusaurus_skipToContent_fallback"
+    - banner [ref=f2e4]:
+      - generic [ref=f2e5]:
+        - text: "✨ goose has moved to the Agentic AI Foundation (AAIF):"
+        - link "Learn more" [ref=f2e6] [cursor=pointer]:
+          - /url: /blog/2026/04/07/goose-moves-to-aaif
+        - text: "! ✨"
+      - button "Close" [ref=f2e7] [cursor=pointer]:
+        - img [ref=f2e8]
+    - navigation "Main" [ref=f2e11]:
+      - generic [ref=f2e12]:
+        - generic [ref=f2e13]:
+          - button "Toggle navigation bar" [ref=f2e14] [cursor=pointer]:
+            - img [ref=f2e15]
+          - link "goose Logo" [ref=f2e17] [cursor=pointer]:
+            - /url: /
+            - img "goose Logo" [ref=f2e19]
+        - button "Search for anything... Ctrl K" [ref=f2e28] [cursor=pointer]:
+          - generic [ref=f2e29]:
+            - img [ref=f2e31]
+            - generic [ref=f2e33]: Search for anything...
+          - generic [ref=f2e35]:
+            - generic [ref=f2e36]: Ctrl
+            - text: K
+    - main [ref=f2e40]:
+      - generic [ref=f2e44]:
+        - article [ref=f2e45]:
+          - navigation "Breadcrumbs" [ref=f2e46]:
+            - list [ref=f2e47]:
+              - listitem [ref=f2e48]:
+                - link "Home page" [ref=f2e49] [cursor=pointer]:
+                  - /url: /
+                  - img [ref=f2e50]
+              - listitem [ref=f2e52]:
+                - link "Guides" [ref=f2e53] [cursor=pointer]:
+                  - /url: /docs/category/guides
+              - listitem [ref=f2e54]:
+                - link "Context Engineering" [ref=f2e55] [cursor=pointer]:
+                  - /url: /docs/guides/context-engineering/
+              - listitem [ref=f2e56]:
+                - generic [ref=f2e57]: Custom Agents
+          - button "On this page" [ref=f2e59] [cursor=pointer]
+          - generic [ref=f2e60]:
+            - generic [ref=f2e61]:
+              - heading "Custom Agents" [level=1] [ref=f2e62]
+              - generic [ref=f2e64]:
+                - button "Copy page to clipboard" [ref=f2e66]:
+                  - img [ref=f2e67]
+                  - text: Copy page
+                - button "More page actions" [ref=f2e71]:
+                  - img [ref=f2e72]
+            - paragraph [ref=f2e74]: Custom agents are reusable goose configurations for specific roles, behaviors, or areas of expertise. Each agent packages a name, description, optional model preference, and instructions so you can quickly ask goose to work with a specialized role such as code reviewer, documentation writer, test planner, or release assistant.
+            - paragraph [ref=f2e75]: Use custom agents when you want the same role or behavior across multiple sessions without retyping the same instructions.
+            - heading "Create an Agent FileDirect link to Create an Agent File" [level=2] [ref=f2e76]:
+              - text: Create an Agent File
+              - link "Direct link to Create an Agent File" [ref=f2e77] [cursor=pointer]:
+                - /url: "#create-an-agent-file"
+                - text: "#"
+            - paragraph [ref=f2e78]: Agents are stored as Markdown files with YAML frontmatter. You can create or edit these files directly in your editor.
+            - paragraph [ref=f2e79]: "Global agents are available across goose sessions:"
+            - generic [ref=f2e81]:
+              - code [ref=f2e83]:
+                - generic [ref=f2e84]: ~/.agents/agents/
+              - button "Copy code to clipboard" [ref=f2e86] [cursor=pointer]:
+                - generic [ref=f2e87]:
+                  - img [ref=f2e88]
+                  - img [ref=f2e90]
+            - paragraph [ref=f2e92]: "Project agents are available when goose is working in that project:"
+            - generic [ref=f2e94]:
+              - code [ref=f2e96]:
+                - generic [ref=f2e97]: <project>/.agents/agents/
+              - button "Copy code to clipboard" [ref=f2e99] [cursor=pointer]:
+                - generic [ref=f2e100]:
+                  - img [ref=f2e101]
+                  - img [ref=f2e103]
+            - generic [ref=f2e105]:
+              - generic [ref=f2e106]:
+                - img [ref=f2e108]
+                - text: Compatibility paths
+              - paragraph [ref=f2e111]:
+                - text: goose also discovers agents from
+                - code [ref=f2e112]: .goose/agents/
+                - text: ","
+                - code [ref=f2e113]: .claude/agents/
+                - text: ","
+                - code [ref=f2e114]: ~/.goose/agents/
+                - text: ","
+                - code [ref=f2e115]: ~/.claude/agents/
+                - text: ", goose's platform-specific config agents directory, and project-local"
+                - code [ref=f2e116]: .agents/agents/
+                - text: . New shared agents should use
+                - code [ref=f2e117]: .agents/agents/
+                - text: for project agents or
+                - code [ref=f2e118]: ~/.agents/agents/
+                - text: for global agents.
+            - paragraph [ref=f2e119]: "Create the directory if it does not already exist, then add a Markdown file for your agent:"
+            - generic [ref=f2e120]:
+              - generic [ref=f2e121]: ~/.agents/agents/code-reviewer.md
+              - generic [ref=f2e122]:
+                - code [ref=f2e124]:
+                  - generic [ref=f2e125]: "---"
+                  - generic [ref=f2e126]: "name: code-reviewer"
+                  - generic [ref=f2e127]: "description: Reviews code for correctness, maintainability, and risk"
+                  - generic [ref=f2e128]: "model: gpt-5.5"
+                  - generic [ref=f2e129]: "---"
+                  - generic [ref=f2e130]: You are a senior code reviewer. Review changes for correctness, maintainability, security, and test coverage. Be direct, prioritize issues by severity, and suggest concrete fixes.
+                - button "Copy code to clipboard" [ref=f2e132] [cursor=pointer]:
+                  - generic [ref=f2e133]:
+                    - img [ref=f2e134]
+                    - img [ref=f2e136]
+            - paragraph [ref=f2e138]: "The frontmatter supports:"
+            - table [ref=f2e139]:
+              - rowgroup [ref=f2e140]:
+                - row "Field Required Description" [ref=f2e141]:
+                  - columnheader "Field" [ref=f2e142]
+                  - columnheader "Required" [ref=f2e143]
+                  - columnheader "Description" [ref=f2e144]
+              - rowgroup [ref=f2e145]:
+                - row "name Yes Name used to list, load, mention, or delegate to the agent." [ref=f2e146]:
+                  - cell "name" [ref=f2e147]:
+                    - code [ref=f2e148]: name
+                  - cell "Yes" [ref=f2e149]
+                  - cell "Name used to list, load, mention, or delegate to the agent." [ref=f2e150]
+                - row "description No Short summary shown when listing agents." [ref=f2e151]:
+                  - cell "description" [ref=f2e152]:
+                    - code [ref=f2e153]: description
+                  - cell "No" [ref=f2e154]
+                  - cell "Short summary shown when listing agents." [ref=f2e155]
+                - row "model No Preferred model for the agent." [ref=f2e156]:
+                  - cell "model" [ref=f2e157]:
+                    - code [ref=f2e158]: model
+                  - cell "No" [ref=f2e159]
+                  - cell "Preferred model for the agent." [ref=f2e160]
+            - paragraph [ref=f2e161]:
+              - text: Only
+              - code [ref=f2e162]: name
+              - text: is required in the frontmatter.
+              - code [ref=f2e163]: description
+              - text: and
+              - code [ref=f2e164]: model
+              - text: are optional. The Markdown body is the agent's instructions and should not be empty if you want the agent to appear as a usable source in chat.
+            - heading "Use an AgentDirect link to Use an Agent" [level=2] [ref=f2e165]:
+              - text: Use an Agent
+              - link "Direct link to Use an Agent" [ref=f2e166] [cursor=pointer]:
+                - /url: "#use-an-agent"
+                - text: "#"
+            - paragraph [ref=f2e167]: After you create an agent file, start goose from a working directory where the agent can be discovered. Project agents are discovered from the current working directory, while global agents are discovered from your home/config directories.
+            - heading "List available agentsDirect link to List available agents" [level=3] [ref=f2e168]:
+              - text: List available agents
+              - link "Direct link to List available agents" [ref=f2e169] [cursor=pointer]:
+                - /url: "#list-available-agents"
+                - text: "#"
+            - paragraph [ref=f2e170]: "In a goose chat session, ask goose to list available sources:"
+            - generic [ref=f2e172]:
+              - code [ref=f2e174]:
+                - generic [ref=f2e175]: list available sources
+              - button "Copy code to clipboard" [ref=f2e177] [cursor=pointer]:
+                - generic [ref=f2e178]:
+                  - img [ref=f2e179]
+                  - img [ref=f2e181]
+            - paragraph [ref=f2e183]: This is a prompt to goose, not a terminal command. When source loading is available, goose lists discoverable agents alongside recipes and subrecipes.
+            - paragraph [ref=f2e184]: "You can invoke an agent by mentioning it by name:"
+            - generic [ref=f2e186]:
+              - code [ref=f2e188]:
+                - generic [ref=f2e189]: "@code-reviewer review the current diff"
+              - button "Copy code to clipboard" [ref=f2e191] [cursor=pointer]:
+                - generic [ref=f2e192]:
+                  - img [ref=f2e193]
+                  - img [ref=f2e195]
+            - paragraph [ref=f2e197]: "Or ask goose to use it:"
+            - generic [ref=f2e199]:
+              - code [ref=f2e201]:
+                - generic [ref=f2e202]: Use the code-reviewer agent to review this pull request.
+              - button "Copy code to clipboard" [ref=f2e204] [cursor=pointer]:
+                - generic [ref=f2e205]:
+                  - img [ref=f2e206]
+                  - img [ref=f2e208]
+            - paragraph [ref=f2e210]:
+              - text: In chat interfaces with a mention picker, type
+              - code [ref=f2e211]: "@"
+              - text: and choose the agent by name, such as
+              - code [ref=f2e212]: code-reviewer
+              - text: .
+            - heading "Delegate work to an agentDirect link to Delegate work to an agent" [level=3] [ref=f2e213]:
+              - text: Delegate work to an agent
+              - link "Direct link to Delegate work to an agent" [ref=f2e214] [cursor=pointer]:
+                - /url: "#delegate-work-to-an-agent"
+                - text: "#"
+            - paragraph [ref=f2e215]: Use a custom agent when you want an isolated specialist to perform a task and return the result to the current conversation.
+            - generic [ref=f2e217]:
+              - code [ref=f2e219]:
+                - generic [ref=f2e220]: "Delegate to code-reviewer: review the current diff and identify the highest-risk issues."
+              - button "Copy code to clipboard" [ref=f2e222] [cursor=pointer]:
+                - generic [ref=f2e223]:
+                  - img [ref=f2e224]
+                  - img [ref=f2e226]
+            - paragraph [ref=f2e228]:
+              - text: Or, if you are writing prompts that call the delegation tool directly, use the agent's
+              - code [ref=f2e229]: name
+              - text: "as the source:"
+            - generic [ref=f2e231]:
+              - code [ref=f2e233]:
+                - generic [ref=f2e234]: Use the code-reviewer agent to review this pull request.
+              - button "Copy code to clipboard" [ref=f2e236] [cursor=pointer]:
+                - generic [ref=f2e237]:
+                  - img [ref=f2e238]
+                  - img [ref=f2e240]
+            - paragraph [ref=f2e242]: The delegated agent runs in a separate session with the instructions from the agent file. It can use the model specified in the agent frontmatter. Some interfaces also let you override settings such as model, provider, temperature, or max turns when you delegate.
+            - heading "Load an agent's instructions into the current conversationDirect link to Load an agent's instructions into the current conversation" [level=3] [ref=f2e243]:
+              - text: Load an agent's instructions into the current conversation
+              - link "Direct link to Load an agent's instructions into the current conversation" [ref=f2e244] [cursor=pointer]:
+                - /url: "#load-an-agents-instructions-into-the-current-conversation"
+                - text: "#"
+            - paragraph [ref=f2e245]: Use an agent as loaded context when you want the current conversation to adopt the agent's instructions without creating a separate delegated session.
+            - generic [ref=f2e247]:
+              - code [ref=f2e249]:
+                - generic [ref=f2e250]: Load the code-reviewer agent, then review this change.
+              - button "Copy code to clipboard" [ref=f2e252] [cursor=pointer]:
+                - generic [ref=f2e253]:
+                  - img [ref=f2e254]
+                  - img [ref=f2e256]
+            - paragraph [ref=f2e258]: Loading an agent adds its instructions to the current conversation context. Delegating to an agent runs it separately and returns a result.
+            - heading "Example AgentsDirect link to Example Agents" [level=2] [ref=f2e259]:
+              - text: Example Agents
+              - link "Direct link to Example Agents" [ref=f2e260] [cursor=pointer]:
+                - /url: "#example-agents"
+                - text: "#"
+            - heading "Code reviewerDirect link to Code reviewer" [level=3] [ref=f2e261]:
+              - text: Code reviewer
+              - link "Direct link to Code reviewer" [ref=f2e262] [cursor=pointer]:
+                - /url: "#code-reviewer"
+                - text: "#"
+            - generic [ref=f2e263]:
+              - generic [ref=f2e264]: ~/.agents/agents/code-reviewer.md
+              - generic [ref=f2e265]:
+                - code [ref=f2e267]:
+                  - generic [ref=f2e268]: "---"
+                  - generic [ref=f2e269]: "name: code-reviewer"
+                  - generic [ref=f2e270]: "description: Reviews code for correctness, maintainability, and risk"
+                  - generic [ref=f2e271]: "model: gpt-5.5"
+                  - generic [ref=f2e272]: "---"
+                  - generic [ref=f2e273]: You are a senior code reviewer. Review changes for correctness, maintainability, security, and test coverage.
+                  - generic [ref=f2e274]: "Prioritize:"
+                  - generic [ref=f2e275]: "- bugs and correctness issues"
+                  - generic [ref=f2e276]: "- security or privacy risks"
+                  - generic [ref=f2e277]: "- missing tests"
+                  - generic [ref=f2e278]: "- unnecessary complexity"
+                  - generic [ref=f2e279]: "- unclear naming or structure"
+                  - generic [ref=f2e280]: Be direct. Group findings by severity and suggest concrete fixes.
+                - button "Copy code to clipboard" [ref=f2e282] [cursor=pointer]:
+                  - generic [ref=f2e283]:
+                    - img [ref=f2e284]
+                    - img [ref=f2e286]
+            - heading "Documentation writerDirect link to Documentation writer" [level=3] [ref=f2e288]:
+              - text: Documentation writer
+              - link "Direct link to Documentation writer" [ref=f2e289] [cursor=pointer]:
+                - /url: "#documentation-writer"
+                - text: "#"
+            - generic [ref=f2e290]:
+              - generic [ref=f2e291]: ~/.agents/agents/docs-writer.md
+              - generic [ref=f2e292]:
+                - code [ref=f2e294]:
+                  - generic [ref=f2e295]: "---"
+                  - generic [ref=f2e296]: "name: docs-writer"
+                  - generic [ref=f2e297]: "description: Writes clear developer documentation"
+                  - generic [ref=f2e298]: "---"
+                  - generic [ref=f2e299]: You are a developer documentation writer. Explain features clearly, use practical examples, and avoid marketing language.
+                  - generic [ref=f2e300]: "When writing docs:"
+                  - generic [ref=f2e301]: "- start with what the user can accomplish"
+                  - generic [ref=f2e302]: "- show the shortest working example"
+                  - generic [ref=f2e303]: "- explain important options after the example"
+                  - generic [ref=f2e304]: "- call out limitations and prerequisites"
+                - button "Copy code to clipboard" [ref=f2e306] [cursor=pointer]:
+                  - generic [ref=f2e307]:
+                    - img [ref=f2e308]
+                    - img [ref=f2e310]
+            - heading "When to Use Agents, Skills, or RecipesDirect link to When to Use Agents, Skills, or Recipes" [level=2] [ref=f2e312]:
+              - text: When to Use Agents, Skills, or Recipes
+              - link "Direct link to When to Use Agents, Skills, or Recipes" [ref=f2e313] [cursor=pointer]:
+                - /url: "#when-to-use-agents-skills-or-recipes"
+                - text: "#"
+            - table [ref=f2e314]:
+              - rowgroup [ref=f2e315]:
+                - row "Use Best fit" [ref=f2e316]:
+                  - columnheader "Use" [ref=f2e317]
+                  - columnheader "Best fit" [ref=f2e318]
+              - rowgroup [ref=f2e319]:
+                - row "Change goose's role, tone, or instructions for a task Custom agent" [ref=f2e320]:
+                  - cell "Change goose's role, tone, or instructions for a task" [ref=f2e321]
+                  - cell "Custom agent" [ref=f2e322]
+                - row "Teach goose a reusable workflow or domain-specific procedure it can load on demand Skill" [ref=f2e323]:
+                  - cell "Teach goose a reusable workflow or domain-specific procedure it can load on demand" [ref=f2e324]
+                  - cell "Skill" [ref=f2e325]:
+                    - link "Skill" [ref=f2e326] [cursor=pointer]:
+                      - /url: /docs/guides/context-engineering/using-skills
+                - row "Package a repeatable task with prompts, settings, extensions, and parameters Recipe" [ref=f2e327]:
+                  - cell "Package a repeatable task with prompts, settings, extensions, and parameters" [ref=f2e328]
+                  - cell "Recipe" [ref=f2e329]:
+                    - link "Recipe" [ref=f2e330] [cursor=pointer]:
+                      - /url: /docs/guides/recipes
+                - row "Delegate work to another isolated goose instance Subagent" [ref=f2e331]:
+                  - cell "Delegate work to another isolated goose instance" [ref=f2e332]
+                  - cell "Subagent" [ref=f2e333]:
+                    - link "Subagent" [ref=f2e334] [cursor=pointer]:
+                      - /url: /docs/guides/context-engineering/subagents
+            - paragraph [ref=f2e335]: Agents define who goose should be for a task. Skills and recipes define what goose should know or do.
+            - heading "Can custom agents be scheduled to run?Direct link to Can custom agents be scheduled to run?" [level=3] [ref=f2e336]:
+              - text: Can custom agents be scheduled to run?
+              - link "Direct link to Can custom agents be scheduled to run?" [ref=f2e337] [cursor=pointer]:
+                - /url: "#can-custom-agents-be-scheduled-to-run"
+                - text: "#"
+            - paragraph [ref=f2e338]:
+              - text: Not directly. Custom agents are reusable roles, not scheduled jobs. To run something on a schedule, create a
+              - link "recipe" [ref=f2e339] [cursor=pointer]:
+                - /url: /docs/guides/recipes
+              - text: and schedule the recipe. If you want the scheduled job to behave like a custom agent, put the agent's instructions into the recipe or have the recipe delegate to that agent.
+            - heading "Do custom agents have workflows?Direct link to Do custom agents have workflows?" [level=3] [ref=f2e340]:
+              - text: Do custom agents have workflows?
+              - link "Direct link to Do custom agents have workflows?" [ref=f2e341] [cursor=pointer]:
+                - /url: "#do-custom-agents-have-workflows"
+                - text: "#"
+            - paragraph [ref=f2e342]: "No. A custom agent defines who goose should be for a task: its role, behavior, instructions, and optional model preference. It does not define a step-by-step workflow. Use a recipe when you need repeatable steps, parameters, extension configuration, or scheduled execution."
+            - heading "Can custom agents use skills?Direct link to Can custom agents use skills?" [level=3] [ref=f2e343]:
+              - text: Can custom agents use skills?
+              - link "Direct link to Can custom agents use skills?" [ref=f2e344] [cursor=pointer]:
+                - /url: "#can-custom-agents-use-skills"
+                - text: "#"
+            - paragraph [ref=f2e345]: Yes. A custom agent can use skills that are available in the session. Skills are still discovered and loaded through goose's normal skill behavior, so the agent can use them when your request matches a skill or when you explicitly ask for one.
+            - heading "Can custom agents run recipes?Direct link to Can custom agents run recipes?" [level=3] [ref=f2e346]:
+              - text: Can custom agents run recipes?
+              - link "Direct link to Can custom agents run recipes?" [ref=f2e347] [cursor=pointer]:
+                - /url: "#can-custom-agents-run-recipes"
+                - text: "#"
+            - paragraph [ref=f2e348]: A custom agent does not contain or automatically run a recipe. You can start goose with a recipe, ask goose to load or delegate a recipe when the relevant tools are available, or create a recipe that uses custom-agent instructions as part of its workflow.
+            - heading "Can custom agents use MCP servers?Direct link to Can custom agents use MCP servers?" [level=3] [ref=f2e349]:
+              - text: Can custom agents use MCP servers?
+              - link "Direct link to Can custom agents use MCP servers?" [ref=f2e350] [cursor=pointer]:
+                - /url: "#can-custom-agents-use-mcp-servers"
+                - text: "#"
+            - paragraph [ref=f2e351]: Yes. Custom agents can use the MCP servers and extensions that are enabled in the current session. The agent file itself does not define a separate MCP server list. If you need a reusable setup with a specific extension set, use a recipe.
+            - heading "Can custom agents call subagents?Direct link to Can custom agents call subagents?" [level=3] [ref=f2e352]:
+              - text: Can custom agents call subagents?
+              - link "Direct link to Can custom agents call subagents?" [ref=f2e353] [cursor=pointer]:
+                - /url: "#can-custom-agents-call-subagents"
+                - text: "#"
+            - paragraph [ref=f2e354]: Yes, when delegation tools are available in the session. A custom agent can ask goose to delegate work to a subagent just like the default goose agent can. Delegated subagents run in isolated sessions and do not automatically inherit the full parent conversation.
+            - heading "Can one custom agent call another custom agent?Direct link to Can one custom agent call another custom agent?" [level=3] [ref=f2e355]:
+              - text: Can one custom agent call another custom agent?
+              - link "Direct link to Can one custom agent call another custom agent?" [ref=f2e356] [cursor=pointer]:
+                - /url: "#can-one-custom-agent-call-another-custom-agent"
+                - text: "#"
+            - paragraph [ref=f2e357]: Yes, through delegation. For example, one custom agent can delegate a task to another custom agent by name if that agent is discoverable. This is useful for one-off collaboration between specialized agents.
+            - paragraph [ref=f2e358]: For repeatable chains, use a recipe that explicitly defines the sequence, such as delegating first to a reviewer agent, then to a docs agent, then combining the results.
+        - navigation "Docs pages" [ref=f2e359]:
+          - link "Previous « Subagents" [ref=f2e360] [cursor=pointer]:
+            - /url: /docs/guides/context-engineering/subagents
+            - generic [ref=f2e361]: Previous
+            - generic [ref=f2e362]: « Subagents
+          - link "Next Agent Skills »" [ref=f2e363] [cursor=pointer]:
+            - /url: /docs/guides/context-engineering/using-skills
+            - generic [ref=f2e364]: Next
+            - generic [ref=f2e365]: Agent Skills »
+    - contentinfo [ref=f2e366]:
+      - generic [ref=f2e367]:
+        - generic [ref=f2e368]:
+          - generic [ref=f2e369]:
+            - generic [ref=f2e370]: Quick Links
+            - list [ref=f2e371]:
+              - listitem [ref=f2e372]:
+                - link "Install goose" [ref=f2e373] [cursor=pointer]:
+                  - /url: /docs/getting-started/installation
+              - listitem [ref=f2e374]:
+                - link "Extensions" [ref=f2e375] [cursor=pointer]:
+                  - /url: /extensions
+          - generic [ref=f2e376]:
+            - generic [ref=f2e377]: Community
+            - list [ref=f2e378]:
+              - listitem [ref=f2e379]:
+                - link "Spotlight" [ref=f2e380] [cursor=pointer]:
+                  - /url: /community
+              - listitem [ref=f2e381]:
+                - link "Discord(opens in new tab)" [ref=f2e382] [cursor=pointer]:
+                  - /url: https://discord.gg/goose-oss
+                  - text: Discord
+                  - img "(opens in new tab)" [ref=f2e383]
+              - listitem [ref=f2e385]:
+                - link "YouTube(opens in new tab)" [ref=f2e386] [cursor=pointer]:
+                  - /url: https://www.youtube.com/@goose-oss
+                  - text: YouTube
+                  - img "(opens in new tab)" [ref=f2e387]
+              - listitem [ref=f2e389]:
+                - link "LinkedIn(opens in new tab)" [ref=f2e390] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/company/goose-oss
+                  - text: LinkedIn
+                  - img "(opens in new tab)" [ref=f2e391]
+              - listitem [ref=f2e393]:
+                - link "Twitter / X(opens in new tab)" [ref=f2e394] [cursor=pointer]:
+                  - /url: https://x.com/goose_oss
+                  - text: Twitter / X
+                  - img "(opens in new tab)" [ref=f2e395]
+              - listitem [ref=f2e397]:
+                - link "BlueSky(opens in new tab)" [ref=f2e398] [cursor=pointer]:
+                  - /url: https://bsky.app/profile/opensource.block.xyz
+                  - text: BlueSky
+                  - img "(opens in new tab)" [ref=f2e399]
+              - listitem [ref=f2e401]:
+                - link "Nostr(opens in new tab)" [ref=f2e402] [cursor=pointer]:
+                  - /url: https://njump.me/opensource@block.xyz
+                  - text: Nostr
+                  - img "(opens in new tab)" [ref=f2e403]
+          - generic [ref=f2e405]:
+            - generic [ref=f2e406]: More
+            - list [ref=f2e407]:
+              - listitem [ref=f2e408]:
+                - link "Blog" [ref=f2e409] [cursor=pointer]:
+                  - /url: /blog
+              - listitem [ref=f2e410]:
+                - link "GitHub(opens in new tab)" [ref=f2e411] [cursor=pointer]:
+                  - /url: https://github.com/aaif-goose/goose
+                  - text: GitHub
+                  - img "(opens in new tab)" [ref=f2e412]
+        - generic [ref=f2e415]: Copyright © 2026 AAIF (Agentic AI Foundation)
+  - button "Ask AI" [ref=f2e416] [cursor=pointer]:
+    - generic [ref=f2e417]:
+      - generic [ref=f2e418]: Ask AI
+      - img [ref=f2e421]

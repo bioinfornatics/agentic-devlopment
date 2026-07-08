@@ -56,7 +56,7 @@ Do **not** use markdown TODOs as durable task tracking.
 Delegate to subagents when:
 
 - the work is read-only and parallelizable;
-- a specialist role helps, e.g. `review-critic` or `ui-ux-auditor`;
+- a specialist role helps, e.g. `review-critic`, `ux-researcher`, or `ui-designer`;
 - you want to preserve the main context;
 - you need independent critique.
 

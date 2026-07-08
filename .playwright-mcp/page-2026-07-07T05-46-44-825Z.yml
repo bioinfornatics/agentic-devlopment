@@ -1,0 +1,634 @@
+- generic [active] [ref=f6e1]:
+  - generic [ref=f6e2]:
+    - region "Skip to main content":
+      - link "Skip to main content" [ref=f6e3] [cursor=pointer]:
+        - /url: "#__docusaurus_skipToContent_fallback"
+    - banner [ref=f6e4]:
+      - generic [ref=f6e5]:
+        - text: "✨ goose has moved to the Agentic AI Foundation (AAIF):"
+        - link "Learn more" [ref=f6e6] [cursor=pointer]:
+          - /url: /blog/2026/04/07/goose-moves-to-aaif
+        - text: "! ✨"
+      - button "Close" [ref=f6e7] [cursor=pointer]:
+        - img [ref=f6e8]
+    - navigation "Main" [ref=f6e11]:
+      - generic [ref=f6e12]:
+        - generic [ref=f6e13]:
+          - button "Toggle navigation bar" [ref=f6e14] [cursor=pointer]:
+            - img [ref=f6e15]
+          - link "goose Logo" [ref=f6e17] [cursor=pointer]:
+            - /url: /
+            - img "goose Logo" [ref=f6e19]
+        - button "Search for anything... Ctrl K" [ref=f6e28] [cursor=pointer]:
+          - generic [ref=f6e29]:
+            - img [ref=f6e31]
+            - generic [ref=f6e33]: Search for anything...
+          - generic [ref=f6e35]:
+            - generic [ref=f6e36]: Ctrl
+            - text: K
+    - main [ref=f6e40]:
+      - generic [ref=f6e44]:
+        - article [ref=f6e45]:
+          - navigation "Breadcrumbs" [ref=f6e46]:
+            - list [ref=f6e47]:
+              - listitem [ref=f6e48]:
+                - link "Home page" [ref=f6e49] [cursor=pointer]:
+                  - /url: /
+                  - img [ref=f6e50]
+              - listitem [ref=f6e52]:
+                - link "Tutorials" [ref=f6e53] [cursor=pointer]:
+                  - /url: /docs/category/tutorials
+              - listitem [ref=f6e54]:
+                - generic [ref=f6e55]: Using Subagents
+          - button "On this page" [ref=f6e57] [cursor=pointer]
+          - generic [ref=f6e58]:
+            - generic [ref=f6e59]:
+              - heading "Using Subagents" [level=1] [ref=f6e60]
+              - generic [ref=f6e62]:
+                - button "Copy page to clipboard" [ref=f6e64]:
+                  - img [ref=f6e65]
+                  - text: Copy page
+                - button "More page actions" [ref=f6e69]:
+                  - img [ref=f6e70]
+            - paragraph [ref=f6e72]:
+              - text: This tutorial walks you through how to spin up a team of AI
+              - link "subagents" [ref=f6e73] [cursor=pointer]:
+                - /url: /docs/guides/context-engineering/subagents/
+              - text: and guide them through building a fully functional app.
+            - paragraph [ref=f6e74]:
+              - text: You'll build
+              - strong [ref=f6e75]: AI BriefMe
+              - text: ", an app that generates a structured executive style briefing based on any topic."
+            - paragraph [ref=f6e76]: "You'll use goose to orchestrate a full software team of subagents:"
+            - list [ref=f6e77]:
+              - listitem [ref=f6e78]:
+                - text: 🧠
+                - strong [ref=f6e79]: Planner
+                - text: – defines the product and MVP scope
+              - listitem [ref=f6e80]:
+                - text: 📋
+                - strong [ref=f6e81]: Project Manager
+                - text: – breaks down tasks and coordinates execution
+              - listitem [ref=f6e82]:
+                - text: 🏗️
+                - strong [ref=f6e83]: Architect
+                - text: – sets up the project structure and tech stack
+              - listitem [ref=f6e84]:
+                - text: 💻
+                - strong [ref=f6e85]: Frontend and Backend Devs
+                - text: – build the interface and API logic
+              - listitem [ref=f6e86]:
+                - text: 🧪
+                - strong [ref=f6e87]: QA
+                - text: – writes tests and flags bugs or production blockers
+              - listitem [ref=f6e88]:
+                - text: 📝
+                - strong [ref=f6e89]: Tech Writer
+                - text: – documents setup, usage, and API details
+            - paragraph [ref=f6e90]: By the end of the session, you'll have a working prototype and a clear understanding of how to use AI agents for realistic workflows.
+            - heading "SetupDirect link to Setup" [level=2] [ref=f6e91]:
+              - text: Setup
+              - link "Direct link to Setup" [ref=f6e92] [cursor=pointer]:
+                - /url: "#setup"
+                - text: "#"
+            - list [ref=f6e93]:
+              - listitem [ref=f6e94]:
+                - link "Install goose" [ref=f6e95] [cursor=pointer]:
+                  - /url: /docs/getting-started/installation
+              - listitem [ref=f6e96]: Within goose, choose your working directory. It's recommended to work in a newly created directory.
+              - listitem [ref=f6e97]:
+                - text: Add the following to
+                - link ".goosehints" [ref=f6e98] [cursor=pointer]:
+                  - /url: /docs/guides/context-engineering/using-goosehints/#local-hints-file
+            - generic [ref=f6e484]:
+              - code [ref=f6e486]:
+                - generic [ref=f6e487]: Create apps in html, javascript, and css when possible.
+                - generic [ref=f6e488]: NEVER run blocking server commands (node server.js, npm start, etc.) - provide commands for user to run separately.
+              - button "Copy code to clipboard" [ref=f6e490] [cursor=pointer]:
+                - generic [ref=f6e491]:
+                  - img [ref=f6e492]
+                  - img [ref=f6e494]
+            - list [ref=f6e105]:
+              - listitem [ref=f6e106]:
+                - text: (Optional) Install the
+                - link "goose docs extension" [ref=f6e107] [cursor=pointer]:
+                  - /url: /docs/mcp/goose-docs-mcp
+                - text: in case you need to ask goose about itself
+            - heading "TasksDirect link to Tasks" [level=2] [ref=f6e108]:
+              - text: Tasks
+              - link "Direct link to Tasks" [ref=f6e109] [cursor=pointer]:
+                - /url: "#tasks"
+                - text: "#"
+            - paragraph [ref=f6e110]: You'll be building an AI-powered briefing app by spinning up a team of subagents to help you. Each agent has a clear role. Your job is to figure out how to prompt goose to delegate the work.
+            - blockquote [ref=f6e111]:
+              - paragraph [ref=f6e112]: 🛟 If you get stuck, you can peek to the prompts for examples.
+            - separator [ref=f6e113]
+            - heading "1. 🧠 PlannerDirect link to 1. 🧠 Planner" [level=3] [ref=f6e114]:
+              - text: 1. 🧠 Planner
+              - link "Direct link to 1. 🧠 Planner" [ref=f6e115] [cursor=pointer]:
+                - /url: "#1--planner"
+                - text: "#"
+            - paragraph [ref=f6e116]: "Have the Planner define the product vision and scope. The Planner should decide:"
+            - list [ref=f6e117]:
+              - listitem [ref=f6e118]: What the app is
+              - listitem [ref=f6e119]: Who it's for
+              - listitem [ref=f6e120]: What problem it solves
+              - listitem [ref=f6e121]: The core features for the MVP
+            - paragraph [ref=f6e122]: This output should be a clear product definition, not code.
+            - group [ref=f6e123]:
+              - generic "Planner Agent Prompt" [ref=f6e124] [cursor=pointer]
+            - separator [ref=f6e125]
+            - heading "2. 📋 Project ManagerDirect link to 2. 📋 Project Manager" [level=3] [ref=f6e126]:
+              - text: 2. 📋 Project Manager
+              - link "Direct link to 2. 📋 Project Manager" [ref=f6e127] [cursor=pointer]:
+                - /url: "#2--project-manager"
+                - text: "#"
+            - paragraph [ref=f6e128]: "Ask the Project Manager to break the product down into development tasks. The output should:"
+            - list [ref=f6e129]:
+              - listitem [ref=f6e130]: Define which roles are needed (e.g. frontend, backend)
+              - listitem [ref=f6e131]: List the specific tasks and assign them
+              - listitem [ref=f6e132]: Indicate which tasks can happen in parallel vs sequentially
+            - group [ref=f6e133]:
+              - generic "PM Agent Prompt" [ref=f6e134] [cursor=pointer]
+            - separator [ref=f6e135]
+            - heading "3. 🏗️ ArchitectDirect link to 3. 🏗️ Architect" [level=3] [ref=f6e136]:
+              - text: 3. 🏗️ Architect
+              - link "Direct link to 3. 🏗️ Architect" [ref=f6e137] [cursor=pointer]:
+                - /url: "#3-️-architect"
+                - text: "#"
+            - paragraph [ref=f6e138]: "Have the Architect plan the technical setup. They should:"
+            - list [ref=f6e139]:
+              - listitem [ref=f6e140]: Choose the stack (frontend + backend frameworks, any libraries)
+              - listitem [ref=f6e141]: Describe folder structure and file organization
+              - listitem [ref=f6e142]: Flag anything you'll need to install (and optionally provide install commands)
+            - group [ref=f6e143]:
+              - generic "Architect Agent Prompt" [ref=f6e144] [cursor=pointer]
+            - separator [ref=f6e145]
+            - heading "4. 💻 Frontend + Backend Developers (Parallel)Direct link to 4. 💻 Frontend + Backend Developers (Parallel)" [level=3] [ref=f6e146]:
+              - text: 4. 💻 Frontend + Backend Developers (Parallel)
+              - link "Direct link to 4. 💻 Frontend + Backend Developers (Parallel)" [ref=f6e147] [cursor=pointer]:
+                - /url: "#4--frontend--backend-developers-parallel"
+                - text: "#"
+            - paragraph [ref=f6e148]: Spin up two developer subagents in parallel to build the core app. One will handle the Express server and backend logic, the other will build the UI and wire up the form. goose should execute both agents at the same time, not one after the other.
+            - list [ref=f6e149]:
+              - listitem [ref=f6e150]: Use the file structure and API contract from the Architect
+              - listitem [ref=f6e151]: Backend writes the API logic using Headless goose
+              - listitem [ref=f6e152]: Frontend builds a responsive UI that hits the API
+              - listitem [ref=f6e153]: Make sure agents avoid writing to the same files
+            - group [ref=f6e154]:
+              - generic "Dev Agents Prompt" [ref=f6e155] [cursor=pointer]
+            - separator [ref=f6e156]
+            - heading "5. 🧪📝 QA + Tech Writer (Parallel)Direct link to 5. 🧪📝 QA + Tech Writer (Parallel)" [level=3] [ref=f6e157]:
+              - text: 5. 🧪📝 QA + Tech Writer (Parallel)
+              - link "Direct link to 5. 🧪📝 QA + Tech Writer (Parallel)" [ref=f6e158] [cursor=pointer]:
+                - /url: "#5--qa--tech-writer-parallel"
+                - text: "#"
+            - paragraph [ref=f6e159]:
+              - text: "Now that development is done, spin up two final subagents: a"
+              - strong [ref=f6e160]: QA Engineer
+              - text: and a
+              - strong [ref=f6e161]: Tech Writer
+              - text: . They'll work together to assess the app's quality and document how to use it. Your job is to prompt goose in a way that gets both agents to collaborate without overlapping or duplicating work.
+            - heading "QA Agent Tasks:Direct link to QA Agent Tasks:" [level=4] [ref=f6e162]:
+              - text: "QA Agent Tasks:"
+              - link "Direct link to QA Agent Tasks:" [ref=f6e163] [cursor=pointer]:
+                - /url: "#qa-agent-tasks"
+                - text: "#"
+            - list [ref=f6e164]:
+              - listitem [ref=f6e165]:
+                - text: Write a unit test suite for the
+                - code [ref=f6e166]: /api/briefing
+                - text: endpoint using a framework like Jest
+              - listitem [ref=f6e167]:
+                - text: Create a
+                - code [ref=f6e168]: QA_NOTES.md
+                - text: "file:"
+                - list [ref=f6e169]:
+                  - listitem [ref=f6e170]: Flag bugs or edge cases
+                  - listitem [ref=f6e171]: Identify production-readiness blockers (e.g. security, error handling)
+                  - listitem [ref=f6e172]: Recommend next steps to improve reliability
+            - heading "Tech Writer Tasks:Direct link to Tech Writer Tasks:" [level=4] [ref=f6e173]:
+              - text: "Tech Writer Tasks:"
+              - link "Direct link to Tech Writer Tasks:" [ref=f6e174] [cursor=pointer]:
+                - /url: "#tech-writer-tasks"
+                - text: "#"
+            - list [ref=f6e175]:
+              - listitem [ref=f6e176]: Collaborate with QA to understand the current state of the app
+              - listitem [ref=f6e177]:
+                - text: Create a
+                - code [ref=f6e178]: README.md
+                - text: "file with:"
+                - list [ref=f6e179]:
+                  - listitem [ref=f6e180]: What the app does (in plain language)
+                  - listitem [ref=f6e181]: How to install and run it
+                  - listitem [ref=f6e182]: Example API usage
+            - paragraph [ref=f6e183]: "⚠️ Important:"
+            - list [ref=f6e184]:
+              - listitem [ref=f6e185]:
+                - strong [ref=f6e186]: QA should not start the server manually
+                - text: — just write test files and mock interactions
+            - group [ref=f6e187]:
+              - generic "QA Agent + 📝 Tech Writer Agent Prompt (Parallel)" [ref=f6e188] [cursor=pointer]
+            - separator [ref=f6e189]
+            - heading "Test Your Completed AppDirect link to Test Your Completed App" [level=2] [ref=f6e190]:
+              - text: Test Your Completed App
+              - link "Direct link to Test Your Completed App" [ref=f6e191] [cursor=pointer]:
+                - /url: "#test-your-completed-app"
+                - text: "#"
+            - paragraph [ref=f6e192]: "Once all agents complete their work, you should have a working prototype. Here's how to see it in action:"
+            - 'heading "Step 1: Install DependenciesDirect link to Step 1: Install Dependencies" [level=3] [ref=f6e193]':
+              - text: "Step 1: Install Dependencies"
+              - 'link "Direct link to Step 1: Install Dependencies" [ref=f6e194] [cursor=pointer]':
+                - /url: "#step-1-install-dependencies"
+                - text: "#"
+            - generic [ref=f6e497]:
+              - code [ref=f6e499]:
+                - generic [ref=f6e500]: cd your-project-folder
+                - generic [ref=f6e501]: npm install
+              - button "Copy code to clipboard" [ref=f6e503] [cursor=pointer]:
+                - generic [ref=f6e504]:
+                  - img [ref=f6e505]
+                  - img [ref=f6e507]
+            - 'heading "Step 2: Start the ServerDirect link to Step 2: Start the Server" [level=3] [ref=f6e201]':
+              - text: "Step 2: Start the Server"
+              - 'link "Direct link to Step 2: Start the Server" [ref=f6e202] [cursor=pointer]':
+                - /url: "#step-2-start-the-server"
+                - text: "#"
+            - paragraph [ref=f6e203]:
+              - strong [ref=f6e204]: Important
+              - text: ": Run this in a"
+              - strong [ref=f6e205]: separate terminal window
+              - text: "(not in goose):"
+            - generic [ref=f6e510]:
+              - code [ref=f6e512]:
+                - generic [ref=f6e513]: npm start
+              - button "Copy code to clipboard" [ref=f6e515] [cursor=pointer]:
+                - generic [ref=f6e516]:
+                  - img [ref=f6e517]
+                  - img [ref=f6e519]
+            - paragraph [ref=f6e211]: "You should see:"
+            - generic [ref=f6e522]:
+              - code [ref=f6e524]:
+                - generic [ref=f6e525]: AI BriefMe server running on port 3000
+                - generic [ref=f6e526]: "Health check: http://localhost:3000/health"
+                - generic [ref=f6e527]: "Briefing endpoint: http://localhost:3000/api/briefing"
+              - button "Copy code to clipboard" [ref=f6e529] [cursor=pointer]:
+                - generic [ref=f6e530]:
+                  - img [ref=f6e531]
+                  - img [ref=f6e533]
+            - 'heading "Step 3: Open the AppDirect link to Step 3: Open the App" [level=3] [ref=f6e219]':
+              - text: "Step 3: Open the App"
+              - 'link "Direct link to Step 3: Open the App" [ref=f6e220] [cursor=pointer]':
+                - /url: "#step-3-open-the-app"
+                - text: "#"
+            - paragraph [ref=f6e221]: "Open your browser and go to:"
+            - generic [ref=f6e536]:
+              - code [ref=f6e538]:
+                - generic [ref=f6e539]: http://localhost:3000/
+              - button "Copy code to clipboard" [ref=f6e541] [cursor=pointer]:
+                - generic [ref=f6e542]:
+                  - img [ref=f6e543]
+                  - img [ref=f6e545]
+            - paragraph [ref=f6e227]:
+              - strong [ref=f6e228]: Note
+              - text: ": Use the root URL ("
+              - code [ref=f6e229]: /
+              - text: ), not
+              - code [ref=f6e230]: /ai-briefme/
+            - 'heading "Step 4: Test ItDirect link to Step 4: Test It" [level=3] [ref=f6e231]':
+              - text: "Step 4: Test It"
+              - 'link "Direct link to Step 4: Test It" [ref=f6e232] [cursor=pointer]':
+                - /url: "#step-4-test-it"
+                - text: "#"
+            - list [ref=f6e233]:
+              - listitem [ref=f6e234]: Enter a topic like "JavaScript frameworks" or "climate change"
+              - listitem [ref=f6e235]: Click "Get Briefing"
+              - listitem [ref=f6e236]: Watch the AI generate your briefing!
+            - paragraph [ref=f6e237]: "You should see:"
+            - list [ref=f6e238]:
+              - listitem [ref=f6e239]: A clean, responsive interface
+              - listitem [ref=f6e240]: AI-generated briefings with title, date, and takeaways
+              - listitem [ref=f6e241]: Code examples for technical topics
+              - listitem [ref=f6e242]: Copy-to-clipboard functionality
+            - generic [ref=f6e243]:
+              - generic [ref=f6e244]:
+                - img [ref=f6e246]
+                - text: Keep the Server Running
+              - list [ref=f6e249]:
+                - listitem [ref=f6e250]:
+                  - strong [ref=f6e251]: Don't close the terminal
+                  - text: where the server is running
+                - listitem [ref=f6e252]:
+                  - strong [ref=f6e253]: Don't run the server in goose
+                  - text: "- it will get stuck"
+                - listitem [ref=f6e254]:
+                  - text: "If you need to stop it: Press"
+                  - code [ref=f6e255]: Ctrl+C
+                  - text: in the server terminal
+                - listitem [ref=f6e256]: If you need goose to fix or add something, let it know! Once it's done, restart the server
+            - paragraph [ref=f6e257]:
+              - strong [ref=f6e258]: Congratulations! You've built a full-stack AI app using goose subagents!
+              - text: 🎉
+            - generic [ref=f6e259]:
+              - generic [ref=f6e260]:
+                - img [ref=f6e262]
+                - text: warning
+              - paragraph [ref=f6e265]: Don't expect your app to be production ready. This workshop shows how vibe coding with goose can accelerate prototyping, but the human still owns the judgment and polish.
+            - separator [ref=f6e266]
+            - heading "TroubleshootingDirect link to Troubleshooting" [level=2] [ref=f6e267]:
+              - text: Troubleshooting
+              - link "Direct link to Troubleshooting" [ref=f6e268] [cursor=pointer]:
+                - /url: "#troubleshooting"
+                - text: "#"
+            - heading "Cannot POST /api/briefing (404 Error)Direct link to Cannot POST /api/briefing (404 Error)" [level=3] [ref=f6e269]:
+              - text: Cannot POST /api/briefing (404 Error)
+              - link "Direct link to Cannot POST /api/briefing (404 Error)" [ref=f6e270] [cursor=pointer]:
+                - /url: "#cannot-post-apibriefing-404-error"
+                - text: "#"
+            - paragraph [ref=f6e271]:
+              - strong [ref=f6e272]: Cause
+              - text: ": Route not registered or server not restarted"
+              - strong [ref=f6e273]: Solutions
+              - text: ":"
+            - list [ref=f6e274]:
+              - listitem [ref=f6e275]:
+                - strong [ref=f6e276]: Stop your server
+                - text: (Ctrl+C in terminal)
+              - listitem [ref=f6e277]:
+                - strong [ref=f6e278]: Restart the server
+                - text: ":"
+                - code [ref=f6e279]: node server.js
+              - listitem [ref=f6e280]:
+                - strong [ref=f6e281]: Test with curl
+                - text: ":"
+                - generic [ref=f6e548]:
+                  - code [ref=f6e550]:
+                    - generic [ref=f6e551]: "curl -X POST http://localhost:3000/api/briefing -H \"Content-Type: application/json\" -d '{\"topic\":\"test\"}'"
+                  - button "Copy code to clipboard" [ref=f6e553] [cursor=pointer]:
+                    - generic [ref=f6e554]:
+                      - img [ref=f6e555]
+                      - img [ref=f6e557]
+              - listitem [ref=f6e287]:
+                - strong [ref=f6e288]: Should return JSON, not HTML
+            - separator [ref=f6e289]
+            - heading "Unexpected tokenDirect link to Unexpected token" [level=3] [ref=f6e290]:
+              - text: Unexpected token
+              - link "Direct link to Unexpected token" [ref=f6e291] [cursor=pointer]:
+                - /url: "#unexpected-token"
+                - text: "#"
+            - paragraph [ref=f6e292]:
+              - strong [ref=f6e293]: Cause
+              - text: ": Frontend receiving HTML instead of JSON (usually a 404 page)"
+              - strong [ref=f6e294]: Solutions
+              - text: ":"
+            - list [ref=f6e295]:
+              - listitem [ref=f6e296]:
+                - strong [ref=f6e297]: First, test the API directly
+                - text: ":"
+                - generic [ref=f6e560]:
+                  - code [ref=f6e562]:
+                    - generic [ref=f6e563]: "curl -X POST http://localhost:3000/api/briefing -H \"Content-Type: application/json\" -d '{\"topic\":\"test\"}'"
+                  - button "Copy code to clipboard" [ref=f6e565] [cursor=pointer]:
+                    - generic [ref=f6e566]:
+                      - img [ref=f6e567]
+                      - img [ref=f6e569]
+              - listitem [ref=f6e303]:
+                - strong [ref=f6e304]: If you get HTML back
+                - text: ": Your API route isn't working (see Issue 1)"
+              - listitem [ref=f6e305]:
+                - strong [ref=f6e306]: If you get JSON back
+                - text: ": Check browser Network tab to see what URL the frontend is actually calling"
+              - listitem [ref=f6e307]:
+                - strong [ref=f6e308]: Common fix
+                - text: ": Make sure you're accessing the app at"
+                - code [ref=f6e309]: http://localhost:3000/
+                - text: not
+                - code [ref=f6e310]: /ai-briefme/
+            - separator [ref=f6e311]
+            - heading "Process TimeoutDirect link to Process Timeout" [level=3] [ref=f6e312]:
+              - text: Process Timeout
+              - link "Direct link to Process Timeout" [ref=f6e313] [cursor=pointer]:
+                - /url: "#process-timeout"
+                - text: "#"
+            - paragraph [ref=f6e314]:
+              - strong [ref=f6e315]: Cause
+              - text: ": goose taking too long or hanging"
+              - strong [ref=f6e316]: Solutions
+              - text: ":"
+            - list [ref=f6e317]:
+              - listitem [ref=f6e318]:
+                - strong [ref=f6e319]: Check your goose command flags
+                - text: ":"
+                - generic [ref=f6e572]:
+                  - code [ref=f6e574]:
+                    - generic [ref=f6e575]: "['run', '-t', prompt, '--quiet', '--no-session', '--max-turns', '1']"
+                  - button "Copy code to clipboard" [ref=f6e577] [cursor=pointer]:
+                    - generic [ref=f6e578]:
+                      - img [ref=f6e579]
+                      - img [ref=f6e581]
+              - listitem [ref=f6e325]:
+                - strong [ref=f6e326]: Test goose manually
+                - text: ":"
+                - generic [ref=f6e584]:
+                  - code [ref=f6e586]:
+                    - generic [ref=f6e587]: "goose run -t \"Return JSON: {\\\"test\\\": \\\"value\\\"}\" --quiet --no-session --max-turns 1"
+                  - button "Copy code to clipboard" [ref=f6e589] [cursor=pointer]:
+                    - generic [ref=f6e590]:
+                      - img [ref=f6e591]
+                      - img [ref=f6e593]
+              - listitem [ref=f6e332]:
+                - strong [ref=f6e333]: If manual test works
+                - text: ": Check your spawn() implementation"
+              - listitem [ref=f6e334]:
+                - strong [ref=f6e335]: If manual test hangs
+                - text: ": Try a simpler prompt first"
+            - separator [ref=f6e336]
+            - heading "JSON Parsing ErrorsDirect link to JSON Parsing Errors" [level=3] [ref=f6e337]:
+              - text: JSON Parsing Errors
+              - link "Direct link to JSON Parsing Errors" [ref=f6e338] [cursor=pointer]:
+                - /url: "#json-parsing-errors"
+                - text: "#"
+            - paragraph [ref=f6e339]:
+              - strong [ref=f6e340]: Cause
+              - text: ": goose returns formatted output with color codes"
+              - strong [ref=f6e341]: Solutions
+              - text: ":"
+            - list [ref=f6e342]:
+              - listitem [ref=f6e343]:
+                - strong [ref=f6e344]: Add this cleaning code
+                - text: "before JSON.parse():"
+                - generic [ref=f6e596]:
+                  - code [ref=f6e598]:
+                    - generic [ref=f6e599]: // Remove ANSI color codes
+                    - generic [ref=f6e600]: jsonString = jsonString.replace(/\x1b\[[0-9;]*m/g, '');
+                    - generic [ref=f6e601]: // Remove markdown formatting
+                    - generic [ref=f6e602]: "jsonString = jsonString.replace(/```json\\s*/, '').replace(/```\\s*$/, '');"
+                    - generic [ref=f6e603]: "jsonString = jsonString.replace(/```\\s*/, '');"
+                  - button "Copy code to clipboard" [ref=f6e605] [cursor=pointer]:
+                    - generic [ref=f6e606]:
+                      - img [ref=f6e607]
+                      - img [ref=f6e609]
+              - listitem [ref=f6e354]:
+                - strong [ref=f6e355]: Add debug logging
+                - text: "to see what you're getting:"
+                - generic [ref=f6e612]:
+                  - code [ref=f6e614]:
+                    - generic [ref=f6e615]: console.log('Raw goose response:', aiResponse);
+                    - generic [ref=f6e616]: console.log('Cleaned JSON string:', jsonString);
+                  - button "Copy code to clipboard" [ref=f6e618] [cursor=pointer]:
+                    - generic [ref=f6e619]:
+                      - img [ref=f6e620]
+                      - img [ref=f6e622]
+            - separator [ref=f6e362]
+            - heading "Port Already in Use (EADDRINUSE)Direct link to Port Already in Use (EADDRINUSE)" [level=3] [ref=f6e363]:
+              - text: Port Already in Use (EADDRINUSE)
+              - link "Direct link to Port Already in Use (EADDRINUSE)" [ref=f6e364] [cursor=pointer]:
+                - /url: "#port-already-in-use-eaddrinuse"
+                - text: "#"
+            - paragraph [ref=f6e365]:
+              - strong [ref=f6e366]: Solutions
+              - text: ":"
+            - list [ref=f6e367]:
+              - listitem [ref=f6e368]:
+                - strong [ref=f6e369]: Find what's using port 3000
+                - text: ":"
+                - generic [ref=f6e625]:
+                  - code [ref=f6e627]:
+                    - generic [ref=f6e628]: lsof -ti:3000
+                  - button "Copy code to clipboard" [ref=f6e630] [cursor=pointer]:
+                    - generic [ref=f6e631]:
+                      - img [ref=f6e632]
+                      - img [ref=f6e634]
+              - listitem [ref=f6e375]:
+                - strong [ref=f6e376]: Kill the process
+                - text: ":"
+                - generic [ref=f6e637]:
+                  - code [ref=f6e639]:
+                    - generic [ref=f6e640]: lsof -ti:3000 | xargs kill -9
+                  - button "Copy code to clipboard" [ref=f6e642] [cursor=pointer]:
+                    - generic [ref=f6e643]:
+                      - img [ref=f6e644]
+                      - img [ref=f6e646]
+              - listitem [ref=f6e382]:
+                - strong [ref=f6e383]: Or use a different port
+                - text: ":"
+                - generic [ref=f6e649]:
+                  - code [ref=f6e651]:
+                    - generic [ref=f6e652]: const PORT = process.env.PORT || 3001;
+                  - button "Copy code to clipboard" [ref=f6e654] [cursor=pointer]:
+                    - generic [ref=f6e655]:
+                      - img [ref=f6e656]
+                      - img [ref=f6e658]
+            - separator [ref=f6e389]
+            - heading "App Shows Blank PageDirect link to App Shows Blank Page" [level=3] [ref=f6e390]:
+              - text: App Shows Blank Page
+              - link "Direct link to App Shows Blank Page" [ref=f6e391] [cursor=pointer]:
+                - /url: "#app-shows-blank-page"
+                - text: "#"
+            - paragraph [ref=f6e392]:
+              - strong [ref=f6e393]: Solutions
+              - text: ":"
+            - list [ref=f6e394]:
+              - listitem [ref=f6e395]:
+                - strong [ref=f6e396]: Check you're at the right URL
+                - text: ":"
+                - code [ref=f6e397]: http://localhost:3000/
+                - text: (not
+                - code [ref=f6e398]: /ai-briefme/
+                - text: )
+              - listitem [ref=f6e399]:
+                - strong [ref=f6e400]: Check browser console
+                - text: for JavaScript errors
+              - listitem [ref=f6e401]:
+                - strong [ref=f6e402]: Verify static files are served
+                - text: ":"
+                - generic [ref=f6e661]:
+                  - code [ref=f6e663]:
+                    - generic [ref=f6e664]: app.use(express.static(__dirname));
+                  - button "Copy code to clipboard" [ref=f6e666] [cursor=pointer]:
+                    - generic [ref=f6e667]:
+                      - img [ref=f6e668]
+                      - img [ref=f6e670]
+              - listitem [ref=f6e408]:
+                - strong [ref=f6e409]: Test individual files
+                - text: ":"
+                - list [ref=f6e410]:
+                  - listitem [ref=f6e411]:
+                    - code [ref=f6e412]: http://localhost:3000/index.html
+                  - listitem [ref=f6e413]:
+                    - code [ref=f6e414]: http://localhost:3000/style.css
+                  - listitem [ref=f6e415]:
+                    - code [ref=f6e416]: http://localhost:3000/script.js
+        - navigation "Docs pages" [ref=f6e417]:
+          - link "Previous « Spraay x402 Extension" [ref=f6e418] [cursor=pointer]:
+            - /url: /docs/tutorials/spraay-mcp
+            - generic [ref=f6e419]: Previous
+            - generic [ref=f6e420]: « Spraay x402 Extension
+          - link "Next Subrecipes In Parallel »" [ref=f6e421] [cursor=pointer]:
+            - /url: /docs/tutorials/subrecipes-in-parallel
+            - generic [ref=f6e422]: Next
+            - generic [ref=f6e423]: Subrecipes In Parallel »
+    - contentinfo [ref=f6e424]:
+      - generic [ref=f6e425]:
+        - generic [ref=f6e426]:
+          - generic [ref=f6e427]:
+            - generic [ref=f6e428]: Quick Links
+            - list [ref=f6e429]:
+              - listitem [ref=f6e430]:
+                - link "Install goose" [ref=f6e431] [cursor=pointer]:
+                  - /url: /docs/getting-started/installation
+              - listitem [ref=f6e432]:
+                - link "Extensions" [ref=f6e433] [cursor=pointer]:
+                  - /url: /extensions
+          - generic [ref=f6e434]:
+            - generic [ref=f6e435]: Community
+            - list [ref=f6e436]:
+              - listitem [ref=f6e437]:
+                - link "Spotlight" [ref=f6e438] [cursor=pointer]:
+                  - /url: /community
+              - listitem [ref=f6e439]:
+                - link "Discord(opens in new tab)" [ref=f6e440] [cursor=pointer]:
+                  - /url: https://discord.gg/goose-oss
+                  - text: Discord
+                  - img "(opens in new tab)" [ref=f6e441]
+              - listitem [ref=f6e443]:
+                - link "YouTube(opens in new tab)" [ref=f6e444] [cursor=pointer]:
+                  - /url: https://www.youtube.com/@goose-oss
+                  - text: YouTube
+                  - img "(opens in new tab)" [ref=f6e445]
+              - listitem [ref=f6e447]:
+                - link "LinkedIn(opens in new tab)" [ref=f6e448] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/company/goose-oss
+                  - text: LinkedIn
+                  - img "(opens in new tab)" [ref=f6e449]
+              - listitem [ref=f6e451]:
+                - link "Twitter / X(opens in new tab)" [ref=f6e452] [cursor=pointer]:
+                  - /url: https://x.com/goose_oss
+                  - text: Twitter / X
+                  - img "(opens in new tab)" [ref=f6e453]
+              - listitem [ref=f6e455]:
+                - link "BlueSky(opens in new tab)" [ref=f6e456] [cursor=pointer]:
+                  - /url: https://bsky.app/profile/opensource.block.xyz
+                  - text: BlueSky
+                  - img "(opens in new tab)" [ref=f6e457]
+              - listitem [ref=f6e459]:
+                - link "Nostr(opens in new tab)" [ref=f6e460] [cursor=pointer]:
+                  - /url: https://njump.me/opensource@block.xyz
+                  - text: Nostr
+                  - img "(opens in new tab)" [ref=f6e461]
+          - generic [ref=f6e463]:
+            - generic [ref=f6e464]: More
+            - list [ref=f6e465]:
+              - listitem [ref=f6e466]:
+                - link "Blog" [ref=f6e467] [cursor=pointer]:
+                  - /url: /blog
+              - listitem [ref=f6e468]:
+                - link "GitHub(opens in new tab)" [ref=f6e469] [cursor=pointer]:
+                  - /url: https://github.com/aaif-goose/goose
+                  - text: GitHub
+                  - img "(opens in new tab)" [ref=f6e470]
+        - generic [ref=f6e473]: Copyright © 2026 AAIF (Agentic AI Foundation)
+  - button "Ask AI" [ref=f6e474] [cursor=pointer]:
+    - generic [ref=f6e475]:
+      - generic [ref=f6e476]: Ask AI
+      - img [ref=f6e479]

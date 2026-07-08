@@ -1,0 +1,728 @@
+- generic [active] [ref=f40e1]:
+  - generic [ref=f40e2]:
+    - generic [ref=f40e3]:
+      - text: 🚀 Learn to build apps with Claude Code! Use
+      - strong [ref=f40e4]: PROMPTING
+      - text: for 20% off
+      - link "Enroll now →" [ref=f40e5] [cursor=pointer]:
+        - /url: https://academy.dair.ai/courses/build-apps-with-claude-code
+    - generic [ref=f40e6]:
+      - navigation [ref=f40e8]:
+        - link "Prompt Engineering Guide" [ref=f40e9] [cursor=pointer]:
+          - /url: /
+          - img [ref=f40e10]
+          - generic [ref=f40e14]: Prompt Engineering Guide
+        - button "🎓 Courses" [ref=f40e16] [cursor=pointer]:
+          - text: 🎓 Courses
+          - img [ref=f40e17]
+        - link "About" [ref=f40e19] [cursor=pointer]:
+          - /url: /about
+          - generic [ref=f40e20]: About
+        - generic [ref=f40e22]:
+          - searchbox "Search..." [ref=f40e23]
+          - generic: CTRL K
+        - link "GitHub GitHub (opens in a new tab)" [ref=f40e24] [cursor=pointer]:
+          - /url: https://github.com/dair-ai/Prompt-Engineering-Guide
+          - img "GitHub" [ref=f40e25]
+          - generic [ref=f40e27]: GitHub
+          - generic [ref=f40e28]: (opens in a new tab)
+        - link "Discord Discord (opens in a new tab)" [ref=f40e29] [cursor=pointer]:
+          - /url: https://discord.gg/YbMT8k6GfX
+          - img "Discord" [ref=f40e30]
+          - generic [ref=f40e32]: Discord
+          - generic [ref=f40e33]: (opens in a new tab)
+        - link "✨ Services" [ref=f40e34] [cursor=pointer]:
+          - /url: /services
+      - generic [ref=f40e35]:
+        - complementary [ref=f40e36]:
+          - list [ref=f40e40]:
+            - listitem [ref=f40e41]:
+              - link "Prompt Engineering" [ref=f40e42] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=f40e43]:
+              - link "Introduction" [ref=f40e44] [cursor=pointer]:
+                - /url: /introduction
+                - text: Introduction
+                - img [ref=f40e45]
+              - list [ref=f40e49]:
+                - listitem [ref=f40e50]:
+                  - link "LLM Settings" [ref=f40e51] [cursor=pointer]:
+                    - /url: /introduction/settings
+                - listitem [ref=f40e52]:
+                  - link "Basics of Prompting" [ref=f40e53] [cursor=pointer]:
+                    - /url: /introduction/basics
+                - listitem [ref=f40e54]:
+                  - link "Prompt Elements" [ref=f40e55] [cursor=pointer]:
+                    - /url: /introduction/elements
+                - listitem [ref=f40e56]:
+                  - link "General Tips for Designing Prompts" [ref=f40e57] [cursor=pointer]:
+                    - /url: /introduction/tips
+                - listitem [ref=f40e58]:
+                  - link "Examples of Prompts" [ref=f40e59] [cursor=pointer]:
+                    - /url: /introduction/examples
+            - listitem [ref=f40e60]:
+              - link "Prompting Techniques" [ref=f40e61] [cursor=pointer]:
+                - /url: /techniques
+                - text: Prompting Techniques
+                - img [ref=f40e62]
+              - list [ref=f40e66]:
+                - listitem [ref=f40e67]:
+                  - link "Zero-shot Prompting" [ref=f40e68] [cursor=pointer]:
+                    - /url: /techniques/zeroshot
+                - listitem [ref=f40e69]:
+                  - link "Few-shot Prompting" [ref=f40e70] [cursor=pointer]:
+                    - /url: /techniques/fewshot
+                - listitem [ref=f40e71]:
+                  - link "Chain-of-Thought Prompting" [ref=f40e72] [cursor=pointer]:
+                    - /url: /techniques/cot
+                - listitem [ref=f40e73]:
+                  - link "Meta Prompting" [ref=f40e74] [cursor=pointer]:
+                    - /url: /techniques/meta-prompting
+                - listitem [ref=f40e75]:
+                  - link "Self-Consistency" [ref=f40e76] [cursor=pointer]:
+                    - /url: /techniques/consistency
+                - listitem [ref=f40e77]:
+                  - link "Generate Knowledge Prompting" [ref=f40e78] [cursor=pointer]:
+                    - /url: /techniques/knowledge
+                - listitem [ref=f40e79]:
+                  - link "Prompt Chaining" [ref=f40e80] [cursor=pointer]:
+                    - /url: /techniques/prompt_chaining
+                - listitem [ref=f40e81]:
+                  - link "Tree of Thoughts" [ref=f40e82] [cursor=pointer]:
+                    - /url: /techniques/tot
+                - listitem [ref=f40e83]:
+                  - link "Retrieval Augmented Generation" [ref=f40e84] [cursor=pointer]:
+                    - /url: /techniques/rag
+                - listitem [ref=f40e85]:
+                  - link "Automatic Reasoning and Tool-use" [ref=f40e86] [cursor=pointer]:
+                    - /url: /techniques/art
+                - listitem [ref=f40e87]:
+                  - link "Automatic Prompt Engineer" [ref=f40e88] [cursor=pointer]:
+                    - /url: /techniques/ape
+                - listitem [ref=f40e89]:
+                  - link "Active-Prompt" [ref=f40e90] [cursor=pointer]:
+                    - /url: /techniques/activeprompt
+                - listitem [ref=f40e91]:
+                  - link "Directional Stimulus Prompting" [ref=f40e92] [cursor=pointer]:
+                    - /url: /techniques/dsp
+                - listitem [ref=f40e93]:
+                  - link "Program-Aided Language Models" [ref=f40e94] [cursor=pointer]:
+                    - /url: /techniques/pal
+                - listitem [ref=f40e95]:
+                  - link "ReAct" [ref=f40e96] [cursor=pointer]:
+                    - /url: /techniques/react
+                - listitem [ref=f40e97]:
+                  - link "Reflexion" [ref=f40e98] [cursor=pointer]:
+                    - /url: /techniques/reflexion
+                - listitem [ref=f40e99]:
+                  - link "Multimodal CoT" [ref=f40e100] [cursor=pointer]:
+                    - /url: /techniques/multimodalcot
+                - listitem [ref=f40e101]:
+                  - link "Graph Prompting" [ref=f40e102] [cursor=pointer]:
+                    - /url: /techniques/graph
+            - listitem [ref=f40e103]:
+              - link "AI Agents" [ref=f40e104] [cursor=pointer]:
+                - /url: /agents
+                - text: AI Agents
+                - img [ref=f40e105]
+              - list [ref=f40e109]:
+                - listitem [ref=f40e110]:
+                  - link "Introduction to Agents" [ref=f40e111] [cursor=pointer]:
+                    - /url: /agents/introduction
+                - listitem [ref=f40e112]:
+                  - link "Agent Components" [ref=f40e113] [cursor=pointer]:
+                    - /url: /agents/components
+                - listitem [ref=f40e114]:
+                  - link "AI Workflows vs AI Agents" [ref=f40e115] [cursor=pointer]:
+                    - /url: /agents/ai-workflows-vs-ai-agents
+                - listitem [ref=f40e116]:
+                  - link "Context Engineering for AI Agents" [ref=f40e117] [cursor=pointer]:
+                    - /url: /agents/context-engineering
+                - listitem [ref=f40e118]:
+                  - link "Context Engineering Deep Dive" [ref=f40e119] [cursor=pointer]:
+                    - /url: /agents/context-engineering-deep-dive
+                - listitem [ref=f40e120]:
+                  - link "Function Calling" [ref=f40e121] [cursor=pointer]:
+                    - /url: /agents/function-calling
+                - listitem [ref=f40e122]:
+                  - link "Deep Agents" [ref=f40e123] [cursor=pointer]:
+                    - /url: /agents/deep-agents
+            - listitem [ref=f40e124]:
+              - button "Guides" [ref=f40e125] [cursor=pointer]:
+                - text: Guides
+                - img [ref=f40e126]
+              - list [ref=f40e130]:
+                - listitem [ref=f40e131]:
+                  - link "Optimizing Prompts" [ref=f40e132] [cursor=pointer]:
+                    - /url: /guides/optimizing-prompts
+                - listitem [ref=f40e133]:
+                  - link "OpenAI Deep Research" [ref=f40e134] [cursor=pointer]:
+                    - /url: /guides/deep-research
+                - listitem [ref=f40e135]:
+                  - link "Reasoning LLMs" [ref=f40e136] [cursor=pointer]:
+                    - /url: /guides/reasoning-llms
+                - listitem [ref=f40e137]:
+                  - link "4o Image Generation" [ref=f40e138] [cursor=pointer]:
+                    - /url: /guides/4o-image-generation
+                - listitem [ref=f40e139]:
+                  - link "Context Engineering Guide" [ref=f40e140] [cursor=pointer]:
+                    - /url: /guides/context-engineering-guide
+            - listitem [ref=f40e141]:
+              - link "Applications" [ref=f40e142] [cursor=pointer]:
+                - /url: /applications
+                - text: Applications
+                - img [ref=f40e143]
+              - list [ref=f40e147]:
+                - listitem [ref=f40e148]:
+                  - link "Fine-tuning GPT-4o" [ref=f40e149] [cursor=pointer]:
+                    - /url: /applications/finetuning-gpt4o
+                - listitem [ref=f40e150]:
+                  - link "Function Calling" [ref=f40e151] [cursor=pointer]:
+                    - /url: /applications/function_calling
+                - listitem [ref=f40e152]:
+                  - link "Context Caching with LLMs" [ref=f40e153] [cursor=pointer]:
+                    - /url: /applications/context-caching
+                - listitem [ref=f40e154]:
+                  - link "Generating Data" [ref=f40e155] [cursor=pointer]:
+                    - /url: /applications/generating
+                - listitem [ref=f40e156]:
+                  - link "Generating Synthetic Dataset for RAG" [ref=f40e157] [cursor=pointer]:
+                    - /url: /applications/synthetic_rag
+                - listitem [ref=f40e158]:
+                  - link "Tackling Generated Datasets Diversity" [ref=f40e159] [cursor=pointer]:
+                    - /url: /applications/generating_textbooks
+                - listitem [ref=f40e160]:
+                  - link "Generating Code" [ref=f40e161] [cursor=pointer]:
+                    - /url: /applications/coding
+                - listitem [ref=f40e162]:
+                  - link "Graduate Job Classification Case Study" [ref=f40e163] [cursor=pointer]:
+                    - /url: /applications/workplace_casestudy
+                - listitem [ref=f40e164]:
+                  - link "Prompt Function" [ref=f40e165] [cursor=pointer]:
+                    - /url: /applications/pf
+            - listitem [ref=f40e166]:
+              - link "Prompt Hub" [ref=f40e167] [cursor=pointer]:
+                - /url: /prompts
+                - text: Prompt Hub
+                - img [ref=f40e168]
+              - list [ref=f40e172]:
+                - listitem [ref=f40e173]:
+                  - link "Classification" [ref=f40e174] [cursor=pointer]:
+                    - /url: /prompts/classification
+                    - text: Classification
+                    - img [ref=f40e175]
+                  - list [ref=f40e178]:
+                    - listitem [ref=f40e179]:
+                      - link "Sentiment Classification" [ref=f40e180] [cursor=pointer]:
+                        - /url: /prompts/classification/sentiment
+                    - listitem [ref=f40e181]:
+                      - link "Few-Shot Sentiment Classification" [ref=f40e182] [cursor=pointer]:
+                        - /url: /prompts/classification/sentiment-fewshot
+                - listitem [ref=f40e183]:
+                  - link "Coding" [ref=f40e184] [cursor=pointer]:
+                    - /url: /prompts/coding
+                    - text: Coding
+                    - img [ref=f40e185]
+                  - list [ref=f40e188]:
+                    - listitem [ref=f40e189]:
+                      - link "Generate Code Snippet" [ref=f40e190] [cursor=pointer]:
+                        - /url: /prompts/coding/code-snippet
+                    - listitem [ref=f40e191]:
+                      - link "Generate MySQL Query" [ref=f40e192] [cursor=pointer]:
+                        - /url: /prompts/coding/mysql-query
+                    - listitem [ref=f40e193]:
+                      - link "Draw TiKZ Diagram" [ref=f40e194] [cursor=pointer]:
+                        - /url: /prompts/coding/tikz
+                - listitem [ref=f40e195]:
+                  - link "Creativity" [ref=f40e196] [cursor=pointer]:
+                    - /url: /prompts/creativity
+                    - text: Creativity
+                    - img [ref=f40e197]
+                  - list [ref=f40e200]:
+                    - listitem [ref=f40e201]:
+                      - link "Rhymes" [ref=f40e202] [cursor=pointer]:
+                        - /url: /prompts/creativity/rhymes
+                    - listitem [ref=f40e203]:
+                      - link "Infinite Primes" [ref=f40e204] [cursor=pointer]:
+                        - /url: /prompts/creativity/infinite-primes
+                    - listitem [ref=f40e205]:
+                      - link "Interdisciplinary" [ref=f40e206] [cursor=pointer]:
+                        - /url: /prompts/creativity/interdisciplinary
+                    - listitem [ref=f40e207]:
+                      - link "Inventing New Words" [ref=f40e208] [cursor=pointer]:
+                        - /url: /prompts/creativity/new-words
+                - listitem [ref=f40e209]:
+                  - link "Evaluation" [ref=f40e210] [cursor=pointer]:
+                    - /url: /prompts/evaluation
+                    - text: Evaluation
+                    - img [ref=f40e211]
+                  - list [ref=f40e214]:
+                    - listitem [ref=f40e215]:
+                      - link "Evaluate Plato's Dialogue" [ref=f40e216] [cursor=pointer]:
+                        - /url: /prompts/evaluation/plato-dialogue
+                - listitem [ref=f40e217]:
+                  - link "Information Extraction" [ref=f40e218] [cursor=pointer]:
+                    - /url: /prompts/information-extraction
+                    - text: Information Extraction
+                    - img [ref=f40e219]
+                  - list [ref=f40e222]:
+                    - listitem [ref=f40e223]:
+                      - link "Extract Model Names" [ref=f40e224] [cursor=pointer]:
+                        - /url: /prompts/information-extraction/extract-models
+                - listitem [ref=f40e225]:
+                  - link "Image Generation" [ref=f40e226] [cursor=pointer]:
+                    - /url: /prompts/image-generation
+                    - text: Image Generation
+                    - img [ref=f40e227]
+                  - list [ref=f40e230]:
+                    - listitem [ref=f40e231]:
+                      - link "Draw a Person Using Alphabet" [ref=f40e232] [cursor=pointer]:
+                        - /url: /prompts/image-generation/alphabet-person
+                - listitem [ref=f40e233]:
+                  - link "Mathematics" [ref=f40e234] [cursor=pointer]:
+                    - /url: /prompts/mathematics
+                    - text: Mathematics
+                    - img [ref=f40e235]
+                  - list [ref=f40e238]:
+                    - listitem [ref=f40e239]:
+                      - link "Evaluating Composite Functions" [ref=f40e240] [cursor=pointer]:
+                        - /url: /prompts/mathematics/composite-functions
+                    - listitem [ref=f40e241]:
+                      - link "Adding Odd Numbers" [ref=f40e242] [cursor=pointer]:
+                        - /url: /prompts/mathematics/odd-numbers
+                - listitem [ref=f40e243]:
+                  - link "Question Answering" [ref=f40e244] [cursor=pointer]:
+                    - /url: /prompts/question-answering
+                    - text: Question Answering
+                    - img [ref=f40e245]
+                  - list [ref=f40e248]:
+                    - listitem [ref=f40e249]:
+                      - link "Closed Domain Question Answering" [ref=f40e250] [cursor=pointer]:
+                        - /url: /prompts/question-answering/closed-domain
+                    - listitem [ref=f40e251]:
+                      - link "Open Domain Question Answering" [ref=f40e252] [cursor=pointer]:
+                        - /url: /prompts/question-answering/open-domain
+                    - listitem [ref=f40e253]:
+                      - link "Science Question Answering" [ref=f40e254] [cursor=pointer]:
+                        - /url: /prompts/question-answering/science-qa
+                - listitem [ref=f40e255]:
+                  - link "Reasoning" [ref=f40e256] [cursor=pointer]:
+                    - /url: /prompts/reasoning
+                    - text: Reasoning
+                    - img [ref=f40e257]
+                  - list [ref=f40e260]:
+                    - listitem [ref=f40e261]:
+                      - link "Indirect Reasoning" [ref=f40e262] [cursor=pointer]:
+                        - /url: /prompts/reasoning/indirect-reasoning
+                    - listitem [ref=f40e263]:
+                      - link "Physical Reasoning" [ref=f40e264] [cursor=pointer]:
+                        - /url: /prompts/reasoning/physical-reasoning
+                - listitem [ref=f40e265]:
+                  - link "Text Summarization" [ref=f40e266] [cursor=pointer]:
+                    - /url: /prompts/text-summarization
+                    - text: Text Summarization
+                    - img [ref=f40e267]
+                  - list [ref=f40e270]:
+                    - listitem [ref=f40e271]:
+                      - link "Explain A Concept" [ref=f40e272] [cursor=pointer]:
+                        - /url: /prompts/text-summarization/explain-concept
+                - listitem [ref=f40e273]:
+                  - link "Truthfulness" [ref=f40e274] [cursor=pointer]:
+                    - /url: /prompts/truthfulness
+                    - text: Truthfulness
+                    - img [ref=f40e275]
+                  - list [ref=f40e278]:
+                    - listitem [ref=f40e279]:
+                      - link "Hallucination Identification" [ref=f40e280] [cursor=pointer]:
+                        - /url: /prompts/truthfulness/identify-hallucination
+                - listitem [ref=f40e281]:
+                  - link "Adversarial Prompting" [ref=f40e282] [cursor=pointer]:
+                    - /url: /prompts/adversarial-prompting
+                    - text: Adversarial Prompting
+                    - img [ref=f40e283]
+                  - list [ref=f40e286]:
+                    - listitem [ref=f40e287]:
+                      - link "Prompt Injection" [ref=f40e288] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/prompt-injection
+                    - listitem [ref=f40e289]:
+                      - link "Prompt Leaking" [ref=f40e290] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/prompt-leaking
+                    - listitem [ref=f40e291]:
+                      - link "Jailbreaking" [ref=f40e292] [cursor=pointer]:
+                        - /url: /prompts/adversarial-prompting/jailbreaking-llms
+            - listitem [ref=f40e293]:
+              - link "Models" [ref=f40e294] [cursor=pointer]:
+                - /url: /models
+                - text: Models
+                - img [ref=f40e295]
+              - list [ref=f40e299]:
+                - listitem [ref=f40e300]:
+                  - link "ChatGPT" [ref=f40e301] [cursor=pointer]:
+                    - /url: /models/chatgpt
+                - listitem [ref=f40e302]:
+                  - link "Claude 3" [ref=f40e303] [cursor=pointer]:
+                    - /url: /models/claude-3
+                - listitem [ref=f40e304]:
+                  - link "Code Llama" [ref=f40e305] [cursor=pointer]:
+                    - /url: /models/code-llama
+                - listitem [ref=f40e306]:
+                  - link "Flan" [ref=f40e307] [cursor=pointer]:
+                    - /url: /models/flan
+                - listitem [ref=f40e308]:
+                  - link "Gemini" [ref=f40e309] [cursor=pointer]:
+                    - /url: /models/gemini
+                - listitem [ref=f40e310]:
+                  - link "Gemini Advanced" [ref=f40e311] [cursor=pointer]:
+                    - /url: /models/gemini-advanced
+                - listitem [ref=f40e312]:
+                  - link "Gemini 1.5 Pro" [ref=f40e313] [cursor=pointer]:
+                    - /url: /models/gemini-pro
+                - listitem [ref=f40e314]:
+                  - link "Gemma" [ref=f40e315] [cursor=pointer]:
+                    - /url: /models/gemma
+                - listitem [ref=f40e316]:
+                  - link "GPT-4" [ref=f40e317] [cursor=pointer]:
+                    - /url: /models/gpt-4
+                - listitem [ref=f40e318]:
+                  - link "Grok-1" [ref=f40e319] [cursor=pointer]:
+                    - /url: /models/grok-1
+                - listitem [ref=f40e320]:
+                  - link "Kimi K2.5" [ref=f40e321] [cursor=pointer]:
+                    - /url: /models/kimi-k2.5
+                - listitem [ref=f40e322]:
+                  - link "LLaMA" [ref=f40e323] [cursor=pointer]:
+                    - /url: /models/llama
+                - listitem [ref=f40e324]:
+                  - link "Llama 3" [ref=f40e325] [cursor=pointer]:
+                    - /url: /models/llama-3
+                - listitem [ref=f40e326]:
+                  - link "Mistral 7B" [ref=f40e327] [cursor=pointer]:
+                    - /url: /models/mistral-7b
+                - listitem [ref=f40e328]:
+                  - link "Mistral Large" [ref=f40e329] [cursor=pointer]:
+                    - /url: /models/mistral-large
+                - listitem [ref=f40e330]:
+                  - link "Mixtral" [ref=f40e331] [cursor=pointer]:
+                    - /url: /models/mixtral
+                - listitem [ref=f40e332]:
+                  - link "Mixtral 8x22B" [ref=f40e333] [cursor=pointer]:
+                    - /url: /models/mixtral-8x22b
+                - listitem [ref=f40e334]:
+                  - link "OLMo" [ref=f40e335] [cursor=pointer]:
+                    - /url: /models/olmo
+                - listitem [ref=f40e336]:
+                  - link "Phi-2" [ref=f40e337] [cursor=pointer]:
+                    - /url: /models/phi-2
+                - listitem [ref=f40e338]:
+                  - link "Sora" [ref=f40e339] [cursor=pointer]:
+                    - /url: /models/sora
+                - listitem [ref=f40e340]:
+                  - link "LLM Collection" [ref=f40e341] [cursor=pointer]:
+                    - /url: /models/collection
+            - listitem [ref=f40e342]:
+              - link "Risks & Misuses" [ref=f40e343] [cursor=pointer]:
+                - /url: /risks
+                - text: Risks & Misuses
+                - img [ref=f40e344]
+              - list [ref=f40e348]:
+                - listitem [ref=f40e349]:
+                  - link "Adversarial Prompting" [ref=f40e350] [cursor=pointer]:
+                    - /url: /risks/adversarial
+                - listitem [ref=f40e351]:
+                  - link "Factuality" [ref=f40e352] [cursor=pointer]:
+                    - /url: /risks/factuality
+                - listitem [ref=f40e353]:
+                  - link "Biases" [ref=f40e354] [cursor=pointer]:
+                    - /url: /risks/biases
+            - listitem [ref=f40e355]:
+              - link "LLM Research Findings" [ref=f40e356] [cursor=pointer]:
+                - /url: /research
+                - text: LLM Research Findings
+                - img [ref=f40e357]
+              - list [ref=f40e361]:
+                - listitem [ref=f40e362]:
+                  - link "LLM Agents" [ref=f40e363] [cursor=pointer]:
+                    - /url: /research/llm-agents
+                - listitem [ref=f40e364]:
+                  - link "RAG for LLMs" [ref=f40e365] [cursor=pointer]:
+                    - /url: /research/rag
+                - listitem [ref=f40e366]:
+                  - link "LLM Reasoning" [ref=f40e367] [cursor=pointer]:
+                    - /url: /research/llm-reasoning
+                - listitem [ref=f40e368]:
+                  - link "RAG Faithfulness" [ref=f40e369] [cursor=pointer]:
+                    - /url: /research/rag-faithfulness
+                - listitem [ref=f40e370]:
+                  - link "LLM In-Context Recall" [ref=f40e371] [cursor=pointer]:
+                    - /url: /research/llm-recall
+                - listitem [ref=f40e372]:
+                  - link "RAG Reduces Hallucination" [ref=f40e373] [cursor=pointer]:
+                    - /url: /research/rag_hallucinations
+                - listitem [ref=f40e374]:
+                  - link "Synthetic Data" [ref=f40e375] [cursor=pointer]:
+                    - /url: /research/synthetic_data
+                - listitem [ref=f40e376]:
+                  - link "ThoughtSculpt" [ref=f40e377] [cursor=pointer]:
+                    - /url: /research/thoughtsculpt
+                - listitem [ref=f40e378]:
+                  - link "Infini-Attention" [ref=f40e379] [cursor=pointer]:
+                    - /url: /research/infini-attention
+                - listitem [ref=f40e380]:
+                  - link "LM-Guided CoT" [ref=f40e381] [cursor=pointer]:
+                    - /url: /research/guided-cot
+                - listitem [ref=f40e382]:
+                  - link "Trustworthiness in LLMs" [ref=f40e383] [cursor=pointer]:
+                    - /url: /research/trustworthiness-in-llms
+                - listitem [ref=f40e384]:
+                  - link "LLM Tokenization" [ref=f40e385] [cursor=pointer]:
+                    - /url: /research/llm-tokenization
+                - listitem [ref=f40e386]:
+                  - link "What is Groq?" [ref=f40e387] [cursor=pointer]:
+                    - /url: /research/groq
+            - listitem [ref=f40e388]:
+              - link "Papers" [ref=f40e389] [cursor=pointer]:
+                - /url: /papers
+            - listitem [ref=f40e390]:
+              - link "Tools" [ref=f40e391] [cursor=pointer]:
+                - /url: /tools
+            - listitem [ref=f40e392]:
+              - link "Notebooks" [ref=f40e393] [cursor=pointer]:
+                - /url: /notebooks
+            - listitem [ref=f40e394]:
+              - link "Datasets" [ref=f40e395] [cursor=pointer]:
+                - /url: /datasets
+            - listitem [ref=f40e396]:
+              - link "Additional Readings" [ref=f40e397] [cursor=pointer]:
+                - /url: /readings
+            - listitem [ref=f40e398]:
+              - link "Services" [ref=f40e399] [cursor=pointer]:
+                - /url: /services
+          - generic [ref=f40e400]:
+            - button "English" [ref=f40e401] [cursor=pointer]:
+              - generic [ref=f40e402]:
+                - img [ref=f40e403]
+                - generic [ref=f40e405]: English
+            - button "Change theme" [ref=f40e407] [cursor=pointer]:
+              - img [ref=f40e409]
+        - article [ref=f40e411]:
+          - main [ref=f40e412]:
+            - generic [ref=f40e413]:
+              - generic "Prompting Techniques" [ref=f40e414]:
+                - link "Prompting Techniques" [ref=f40e415] [cursor=pointer]:
+                  - /url: /techniques
+              - img [ref=f40e416]
+              - generic "Prompt Chaining" [ref=f40e418]
+            - button "Copy page" [ref=f40e421] [cursor=pointer]:
+              - img [ref=f40e422]
+              - text: Copy page
+              - img [ref=f40e425]
+            - heading "Prompt Chaining" [level=1] [ref=f40e427]
+            - heading "Introduction to Prompt ChainingPermalink for this section" [level=2] [ref=f40e428]:
+              - text: Introduction to Prompt Chaining
+              - link "Permalink for this section" [ref=f40e429] [cursor=pointer]:
+                - /url: "#introduction-to-prompt-chaining"
+                - text: "#"
+            - iframe [ref=f40e430]:
+              - generic [active] [ref=f41e1]:
+                - generic "Lecteur vidéo YouTube" [ref=f41e3]
+                - generic [ref=f41e5]:
+                  - generic:
+                    - generic:
+                      - button "Regarder la vidéo" [ref=f41e10] [cursor=pointer]:
+                        - generic [ref=f41e13]:
+                          - img
+                      - button "Masquer les commandes du lecteur" [ref=f41e14] [cursor=pointer]
+                      - generic [ref=f41e16]:
+                        - generic [ref=f41e21]:
+                          - generic [ref=f41e22]:
+                            - link "Prompt Chaining with GPT-4o and Flowise AI (Tutorial)" [ref=f41e23] [cursor=pointer]:
+                              - /url: https://www.youtube.com/watch?v=CKZC5RigYEc
+                            - link "Elvis Saravia" [ref=f41e24] [cursor=pointer]:
+                              - /url: /channel/UCyna_OxOWL7IEuOwb7WhmxQ
+                              - generic [ref=f41e25]: Elvis Saravia
+                          - generic [ref=f41e26]:
+                            - button "thumbnail-image" [ref=f41e27] [cursor=pointer]:
+                              - img "thumbnail-image" [ref=f41e28]
+                            - generic [ref=f41e30]:
+                              - generic: Elvis Saravia
+                              - generic: 25,1 k abonnés
+                        - generic [ref=f41e31]:
+                          - button "Partager" [ref=f41e34] [cursor=pointer]:
+                            - generic [ref=f41e38]:
+                              - img
+                          - link "Regarder sur YouTube" [ref=f41e45] [cursor=pointer]:
+                            - /url: https://www.youtube.com/watch?v=CKZC5RigYEc
+                            - generic [ref=f41e48]:
+                              - text: Regarder sur
+                              - img [ref=f41e50]:
+                                - generic [ref=f41e52]:
+                                  - img
+            - paragraph [ref=f40e431]: To improve the reliability and performance of LLMs, one of the important prompt engineering techniques is to break tasks into its subtasks. Once those subtasks have been identified, the LLM is prompted with a subtask and then its response is used as input to another prompt. This is what's referred to as prompt chaining, where a task is split into subtasks with the idea to create a chain of prompt operations.
+            - paragraph [ref=f40e432]: Prompt chaining is useful to accomplish complex tasks which an LLM might struggle to address if prompted with a very detailed prompt. In prompt chaining, chain prompts perform transformations or additional processes on the generated responses before reaching a final desired state.
+            - paragraph [ref=f40e433]: Besides achieving better performance, prompt chaining helps to boost the transparency of your LLM application, increases controllability, and reliability. This means that you can debug problems with model responses much more easily and analyze and improve performance in the different stages that need improvement.
+            - paragraph [ref=f40e434]: Prompt chaining is particularly useful when building LLM-powered conversational assistants and improving the personalization and user experience of your applications.
+            - heading "Use Cases for Prompt ChainingPermalink for this section" [level=2] [ref=f40e435]:
+              - text: Use Cases for Prompt Chaining
+              - link "Permalink for this section" [ref=f40e436] [cursor=pointer]:
+                - /url: "#use-cases-for-prompt-chaining"
+                - text: "#"
+            - heading "Prompt Chaining for Document QAPermalink for this section" [level=3] [ref=f40e437]:
+              - text: Prompt Chaining for Document QA
+              - link "Permalink for this section" [ref=f40e438] [cursor=pointer]:
+                - /url: "#prompt-chaining-for-document-qa"
+                - text: "#"
+            - paragraph [ref=f40e439]: Prompt chaining can be used in different scenarios that could involve several operations or transformations. For instance, one common use case of LLMs involves answering questions about a large text document. It helps if you design two different prompts where the first prompt is responsible for extracting relevant quotes to answer a question and a second prompt takes as input the quotes and original document to answer a given question. In other words, you will be creating two different prompts to perform the task of answering a question given in a document.
+            - paragraph [ref=f40e440]:
+              - text: The first prompt below extracts the relevant quotes from the document given the question. Note that for simplicity, we have added a placeholder for the document
+              - code [ref=f40e441]: "{{document}}"
+              - text: . To test the prompt you can copy and paste an article from Wikipedia such as this page for
+              - link "prompt engineering (opens in a new tab)" [ref=f40e442] [cursor=pointer]:
+                - /url: https://en.wikipedia.org/wiki/Prompt_engineering
+                - text: prompt engineering
+                - generic [ref=f40e443]: (opens in a new tab)
+              - text: . Due to larger context used for this task, we are using the
+              - code [ref=f40e444]: gpt-4-1106-preview
+              - text: model from OpenAI. You can use the prompt with other long-context LLMs like Claude.
+            - paragraph [ref=f40e445]: "Prompt 1:"
+            - generic [ref=f40e446]:
+              - code [ref=f40e448]:
+                - generic [ref=f40e449]: "You are a helpful assistant. Your task is to help answer a question given in a document. The first step is to extract quotes relevant to the question from the document, delimited by ####. Please output the list of quotes using <quotes></quotes>. Respond with \"No relevant quotes found!\" if no relevant quotes were found."
+                - generic [ref=f40e450]: "####"
+                - generic [ref=f40e451]: "{{document}}"
+                - generic [ref=f40e452]: "####"
+              - button [ref=f40e454] [cursor=pointer]:
+                - img
+            - paragraph [ref=f40e455]:
+              - text: Here is a screenshot of the entire prompt including the question which is passed using the
+              - code [ref=f40e456]: user
+              - text: role.
+            - img "Prompt Chaining Part 1" [ref=f40e458]
+            - paragraph [ref=f40e459]: "Output of Prompt 1:"
+            - generic [ref=f40e460]:
+              - code [ref=f40e462]:
+                - generic [ref=f40e463]: <quotes>
+                - generic [ref=f40e464]: "- Chain-of-thought (CoT) prompting[27]"
+                - generic [ref=f40e465]: "- Generated knowledge prompting[37]"
+                - generic [ref=f40e466]: "- Least-to-most prompting[38]"
+                - generic [ref=f40e467]: "- Self-consistency decoding[39]"
+                - generic [ref=f40e468]: "- Complexity-based prompting[41]"
+                - generic [ref=f40e469]: "- Self-refine[42]"
+                - generic [ref=f40e470]: "- Tree-of-thought prompting[43]"
+                - generic [ref=f40e471]: "- Maieutic prompting[45]"
+                - generic [ref=f40e472]: "- Directional-stimulus prompting[46]"
+                - generic [ref=f40e473]: "- Textual inversion and embeddings[59]"
+                - generic [ref=f40e474]: "- Using gradient descent to search for prompts[61][62][63][64]"
+                - generic [ref=f40e475]: "- Prompt injection[65][66][67]"
+                - generic [ref=f40e476]: </quotes>
+              - button [ref=f40e478] [cursor=pointer]:
+                - img
+            - paragraph [ref=f40e479]: "The quotes that were returned in the first prompt can now be used as input to the second prompt below. Note that you can clean up the quotes a bit more, i.e., remove the citations. Those citations could be removed or utilized as part of another prompt in the chain but you can ignore this for now. The second prompt then takes the relevant quotes extracted by prompt 1 and prepares a helpful response to the question given in the document and those extracted quotes. The second prompt can be the following:"
+            - paragraph [ref=f40e480]: "Prompt 2:"
+            - generic [ref=f40e481]:
+              - code [ref=f40e483]:
+                - generic [ref=f40e484]: "Given a set of relevant quotes (delimited by <quotes></quotes>) extracted from a document and the original document (delimited by ####), please compose an answer to the question. Ensure that the answer is accurate, has a friendly tone, and sounds helpful."
+                - generic [ref=f40e485]: "####"
+                - generic [ref=f40e486]: "{{document}}"
+                - generic [ref=f40e487]: "####"
+                - generic [ref=f40e488]: <quotes>
+                - generic [ref=f40e489]: "- Chain-of-thought (CoT) prompting[27]"
+                - generic [ref=f40e490]: "- Generated knowledge prompting[37]"
+                - generic [ref=f40e491]: "- Least-to-most prompting[38]"
+                - generic [ref=f40e492]: "- Self-consistency decoding[39]"
+                - generic [ref=f40e493]: "- Complexity-based prompting[41]"
+                - generic [ref=f40e494]: "- Self-refine[42]"
+                - generic [ref=f40e495]: "- Tree-of-thought prompting[43]"
+                - generic [ref=f40e496]: "- Maieutic prompting[45]"
+                - generic [ref=f40e497]: "- Directional-stimulus prompting[46]"
+                - generic [ref=f40e498]: "- Textual inversion and embeddings[59]"
+                - generic [ref=f40e499]: "- Using gradient descent to search for prompts[61][62][63][64]"
+                - generic [ref=f40e500]: "- Prompt injection[65][66][67]"
+                - generic [ref=f40e501]: </quotes>
+              - button [ref=f40e503] [cursor=pointer]:
+                - img
+            - paragraph [ref=f40e504]: "Output of Prompt 2:"
+            - generic [ref=f40e505]:
+              - code [ref=f40e507]:
+                - generic [ref=f40e508]: "The prompting techniques mentioned in the document include:"
+                - generic [ref=f40e509]: 1. Chain-of-thought (CoT) prompting[27]
+                - generic [ref=f40e510]: 2. Generated knowledge prompting[37]
+                - generic [ref=f40e511]: 3. Least-to-most prompting[38]
+                - generic [ref=f40e512]: 4. Self-consistency decoding[39]
+                - generic [ref=f40e513]: 5. Complexity-based prompting[41]
+                - generic [ref=f40e514]: 6. Self-refine[42]
+                - generic [ref=f40e515]: 7. Tree-of-thought prompting[43]
+                - generic [ref=f40e516]: 8. Maieutic prompting[45]
+                - generic [ref=f40e517]: 9. Directional-stimulus prompting[46]
+                - generic [ref=f40e518]: 10. Textual inversion and embeddings[59]
+                - generic [ref=f40e519]: 11. Using gradient descent to search for prompts[61][62][63][64]
+                - generic [ref=f40e520]: 12. Prompt injection[65][66][67]
+                - generic [ref=f40e521]: Each of these techniques employs unique strategies to enhance or specify the interactions with large language models to produce the desired outcomes.
+              - button [ref=f40e523] [cursor=pointer]:
+                - img
+            - paragraph [ref=f40e524]: As you can see, simplifying and creating prompt chains is a useful prompting approach where the responses need to undergo several operations or transformations. As an exercise, feel free to design a prompt that removes the citations (e.g., [27]) from the response before sending this as a final response to the user of your application.
+            - paragraph [ref=f40e525]:
+              - text: You can also find more examples of prompt chaining in this
+              - link "documentation (opens in a new tab)" [ref=f40e526] [cursor=pointer]:
+                - /url: https://docs.anthropic.com/claude/docs/prompt-chaining
+                - text: documentation
+                - generic [ref=f40e527]: (opens in a new tab)
+              - text: that leverages the Claude LLM. Our example is inspired and adapted from their examples.
+            - generic [ref=f40e528]:
+              - heading "Related Learning" [level=2] [ref=f40e529]
+              - generic [ref=f40e530]:
+                - link "Course Prompt Engineering for LLMs Master prompt chaining, document QA, and advanced techniques for complex multi-step tasks. Beginner 2 hours" [ref=f40e531] [cursor=pointer]:
+                  - /url: https://academy.dair.ai/courses/introduction-prompt-engineering
+                  - generic [ref=f40e532]: Course
+                  - generic [ref=f40e533]:
+                    - heading "Prompt Engineering for LLMs" [level=3] [ref=f40e534]
+                    - paragraph [ref=f40e535]: Master prompt chaining, document QA, and advanced techniques for complex multi-step tasks.
+                    - generic [ref=f40e536]:
+                      - generic [ref=f40e537]:
+                        - img [ref=f40e538]
+                        - generic [ref=f40e540]: Beginner
+                      - generic [ref=f40e541]: 2 hours
+                - link "Course Building Effective AI Agents Learn to build effective AI agents. Covers function calling, tool integration, and debugging agentic systems. Intermediate 5 hours" [ref=f40e542] [cursor=pointer]:
+                  - /url: https://academy.dair.ai/courses/building-effective-ai-agents
+                  - generic [ref=f40e543]: Course
+                  - generic [ref=f40e544]:
+                    - heading "Building Effective AI Agents" [level=3] [ref=f40e545]
+                    - paragraph [ref=f40e546]: Learn to build effective AI agents. Covers function calling, tool integration, and debugging agentic systems.
+                    - generic [ref=f40e547]:
+                      - generic [ref=f40e548]:
+                        - img [ref=f40e549]
+                        - generic [ref=f40e551]: Intermediate
+                      - generic [ref=f40e552]: 5 hours
+            - generic [ref=f40e554]:
+              - img [ref=f40e556]
+              - generic [ref=f40e559]:
+                - heading "Explore All Courses" [level=3] [ref=f40e560]
+                - paragraph [ref=f40e561]:
+                  - text: Discover our full catalog of AI and prompt engineering courses. From beginners to advanced practitioners.
+                  - generic [ref=f40e562]:
+                    - text: Use code
+                    - code [ref=f40e563]: PROMPTING20
+                    - text: for 20% off!
+                - link "Browse Academy" [ref=f40e564] [cursor=pointer]:
+                  - /url: https://academy.dair.ai/
+                  - text: Browse Academy
+                  - img [ref=f40e565]
+            - generic [ref=f40e568]:
+              - generic [ref=f40e569]: Last updated on Sun Feb 01 2026
+              - generic [ref=f40e570]:
+                - generic [ref=f40e571]: Sponsored by
+                - link "SerpAPI" [ref=f40e572] [cursor=pointer]:
+                  - /url: https://serpapi.com/
+                  - img "SerpAPI" [ref=f40e573]
+            - generic [ref=f40e574]:
+              - link "Generate Knowledge Prompting" [ref=f40e575] [cursor=pointer]:
+                - /url: /techniques/knowledge
+                - img [ref=f40e576]
+                - text: Generate Knowledge Prompting
+              - link "Tree of Thoughts" [ref=f40e578] [cursor=pointer]:
+                - /url: /techniques/tot
+                - text: Tree of Thoughts
+                - img [ref=f40e579]
+      - contentinfo [ref=f40e581]:
+        - separator [ref=f40e582]
+        - generic [ref=f40e584]: Copyright © 2026 DAIR.AI
+  - alert [ref=f40e585]
