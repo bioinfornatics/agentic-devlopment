@@ -1,6 +1,6 @@
 ---
 name: codebase-researcher
-description: "Read-only codebase researcher. Use to map architecture, trace blast radius, and gather evidence before planning or implementation. Safe to run in parallel. NEVER modifies files, Beads state, or memories."
+description: "Read-only codebase researcher. Use to map architecture, trace blast radius, and gather evidence before planning or implementation. Safe to run in parallel. Produces file-level evidence reports."
 model: claude-sonnet-4-5
 ---
 

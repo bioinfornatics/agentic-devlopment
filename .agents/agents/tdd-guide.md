@@ -1,6 +1,6 @@
 ---
 name: tdd-guide
-description: "Use PROACTIVELY before any new feature implementation or bug fix. Enforces write-tests-first methodology with 80%+ coverage gates. Invoke BEFORE implementation-worker. Do NOT invoke for read-only research or planning."
+description: "Use PROACTIVELY before any new feature implementation or bug fix. Enforces write-tests-first with 80%+ coverage gates. Invoke before implementation-worker to establish the failing RED test first."
 model: claude-sonnet-4-5
 ---
 

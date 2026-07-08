@@ -1,6 +1,6 @@
 ---
 name: harness-orchestrator
-description: "Lead orchestrator for the SDD+TDD loop. Coordinates the full team: routes work via product-owner (backlog), architect (design), implementation-worker (code), review-critic (quality). Default entry point for multi-step or multi-agent work. Do NOT invoke for single-scope tasks, standalone research, or individual specialist work."
+description: "Lead orchestrator for the SDD+TDD loop. Coordinates the full team: routes work via product-owner (backlog), architect (design), implementation-worker (code), review-critic (quality). Invoke for work spanning two or more specialist agents or phases."
 model: claude-opus-4-5
 ---
 

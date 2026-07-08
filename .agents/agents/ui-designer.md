@@ -1,6 +1,6 @@
 ---
 name: ui-designer
-description: "User interface designer. Use PROACTIVELY after UX research validates the direction, when designing components, evaluating design system consistency, checking WCAG 2.2 AA compliance, or reviewing visual implementation against specs. Do NOT invoke for user research, persona definition, or usability testing — those belong to ux-researcher."
+description: "User interface designer. Invoke after UX research validates the direction: for component design, design system consistency, WCAG 2.2 AA compliance, and visual implementation review."
 model: claude-sonnet-4-5
 ---
 

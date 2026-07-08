@@ -3,9 +3,7 @@ name: ui-quality
 description: >
   UI quality evaluation: design system token compliance, WCAG 2.2 AA accessibility,
   keyboard navigation, colour contrast, accessible names, and Core Web Vitals.
-  Load after implementation or for accessibility gate checks. Do NOT load for user
-  research, persona definition, usability testing, or information architecture — use
-  ux-quality for those.
+  Load after implementation or for accessibility gate checks.
 metadata:
   version: 1.0.0
   scope: tactical

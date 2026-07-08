@@ -3,8 +3,7 @@ name: ux-quality
 description: >
   UX quality evaluation: user intent alignment, information architecture, interaction
   state completeness, and design coherence. Load when validating a user flow, planning
-  a new feature, or investigating why users struggle. Do NOT load for accessibility
-  compliance, design system tokens, or performance — use ui-quality for those.
+  a new feature, or investigating why users struggle.
 metadata:
   version: 1.0.0
   scope: strategic
