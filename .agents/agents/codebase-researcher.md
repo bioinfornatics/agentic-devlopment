@@ -89,6 +89,18 @@ If the requesting agent asks for something write-adjacent: refuse, explain the c
 If the 20-file budget is reached before coverage is complete, state it explicitly in the output and list uncovered modules by name.
 Prioritize files that own public interfaces over implementation details when the budget is tight.
 
+## Knowledge Verification Chain (strict order — never skip)
+
+When researching any technical question, follow this chain in strict order:
+
+1. **Codebase** — check existing code, conventions, and patterns already in use
+2. **Project docs** — README, docs/, AGENTS.md, Beads memories (`bd prime`)
+3. **Context / MCP** — query available MCP sources for current API or patterns
+4. **Web search** — official docs, reputable sources
+5. **Flag as uncertain** — "I'm not certain about X — here's my reasoning, but verify"
+
+**NEVER assume or fabricate.** If you cannot find an answer through the chain, say "I don't know" or "I couldn't find documentation for this." Inventing APIs, patterns, or behaviours causes cascading failures downstream.
+
 ## Knowledge generation (always first)
 Before any research:
 1. Run `analyze` on the root directory (depth 3) — understand structure without reading files.

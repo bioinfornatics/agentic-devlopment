@@ -91,6 +91,17 @@ If any answer is NO → downgrade severity one level or drop the finding entirel
 | MEDIUM | Unhandled edge case, meaningful test gap, performance concern in a measured hot path | File + line + example triggering input |
 | LOW | Naming clarity, doc gap, non-critical improvement with zero behavior risk | File reference + rationale |
 
+**Spec-Anchored Outcome Check (add to every test review):**
+
+For every test in the diff, verify the assertion is spec-anchored:
+- The asserted **value** matches the spec-defined expected outcome — not just that an assertion exists
+- If the spec defines a precise outcome (status code, field value, error message) → the test must target that exact value
+- If the spec does not define a precise outcome → flag as ⚠️ spec-precision gap; do NOT pass silently
+- `expect(result).toBeDefined()` on a criterion requiring `{status: 201, id: string}` is a spec-precision gap, not coverage
+
+**SPEC_DEVIATION detection:**
+Flag any code comment `// SPEC_DEVIATION:` as a finding — it means the implementation knowingly diverged from spec. Review the deviation rationale and assess whether a follow-up bead is needed.
+
 **Review Checklist (ordered — do not skip or reorder)**
 
 1. Intent fit — does the change satisfy the bead acceptance criteria completely? Are any criteria missing from the diff?
