@@ -1356,9 +1356,14 @@ def main() -> int:
                 try:
                     _edb = __import__("sqlite3").connect(args.db)
                     _erows = _edb.execute(
-                        "SELECT eval_id, configuration, efficiency_json FROM eval_analysis "
-                        "WHERE subject=? AND efficiency_json IS NOT NULL",
-                        (subject,)
+                        "SELECT ea.eval_id, ea.configuration, ea.efficiency_json "
+                        "FROM eval_analysis ea "
+                        "INNER JOIN (SELECT eval_id, configuration, MAX(created_at) lat "
+                        "            FROM eval_analysis WHERE subject=? AND efficiency_json IS NOT NULL "
+                        "            GROUP BY eval_id, configuration) L "
+                        "ON ea.eval_id=L.eval_id AND ea.configuration=L.configuration AND ea.created_at=L.lat "
+                        "WHERE ea.subject=?",
+                        (subject, subject)
                     ).fetchall()
                     _edb.close()
                     for _eid, _cfg, _ejson in _erows:
