@@ -20,7 +20,49 @@ SDD is a lightweight development method over the Goose+Beads harness.
 6. **Verify** — tests, review, UX/security/perf as relevant.
 7. **Learn** — remember durable facts as short pointer memories when possible, and file follow-up beads for work.
 
+## Auto-sizing (apply before starting any SDD phase)
+
+Assess scope first. Apply only the depth the complexity warrants:
+
+| Scope | Signal | Specify | Design | TDD | Implement | Review |
+|---|---|---|---|---|---|---|
+| **Micro** | 1 file, obvious change | 1-sentence inline | skip | skip | inline | skip |
+| **Small** | ≤3 files, clear intent | brief AC | skip | tests only | standard | quick |
+| **Medium** | clear feature, <10 tasks | full AC | inline | full TDD | standard | full |
+| **Large** | multi-component, >10 tasks | full spec + requirement IDs | full ADR | full TDD per task | per-task | full |
+| **Complex** | ambiguity, new domain | full spec + discuss gray areas | research + ADR | full TDD | per-task | full + UAT |
+
+**Discuss gray areas** when the feature has any implicit-requirement dimension present:
+- Failure / partial-failure states (timeouts, rollbacks, partial saves)
+- Idempotency / retry / duplicate handling
+- Auth boundaries or rate limits
+- Concurrency or ordering guarantees
+- Data lifecycle or expiry (TTL, archival, deletion)
+- Observability requirements (logging, metrics, tracing hooks)
+- External-dependency failure handling (circuit breakers, fallbacks)
+- State-transition integrity (valid transitions, guards)
+- Input validation bounds (limits, formats, sanitization)
+
+For Micro/Small: if listing steps reveals >5 steps or complex dependencies, STOP and escalate to Medium.
+
 ## Principles
+
+## Requirement traceability
+
+Every spec must assign a unique ID to each acceptance criterion:
+- Format: `[FEAT]-01`, `[FEAT]-02` (e.g., `AUTH-01`, `CART-03`)
+- IDs trace through: spec → tasks → tests → validation
+- Every Beads task references the requirement IDs it satisfies
+- Every test assertion cites the requirement it verifies
+
+**Spec-Anchored Outcome Rule (from TLC v3.2.0):**
+A test is spec-anchored only when its asserted value matches the **spec-defined expected outcome** — not just that an assertion exists. Where the spec does not define a precise outcome, mark the criterion as a **spec-precision gap** rather than writing a vague assertion and calling it covered.
+
+Example:
+  Spec says: "WHEN login fails THEN system SHALL return 401 with body `{error: 'invalid_credentials'}`"
+  ✅ spec-anchored: `expect(response.status).toBe(401)` + `expect(response.body.error).toBe('invalid_credentials')`
+  ❌ not spec-anchored: `expect(response.status).not.toBe(200)` (too vague)
+  ⚠️ spec-precision gap: spec says "return an error" without a defined code or body → flag, do not pass silently
 
 ## Mode rules
 

@@ -189,6 +189,32 @@ For complex technical dependency decomposition, delegate to `beads-planner` agen
   bd gate <id> --signal "acceptance-criteria-approved"  → quality gates
   bd close <id> --reason "Done: accepted by PO"         → accept story
 
+## Implicit Requirement Dimensions sweep
+
+Before confirming any spec, run this sweep. For Large/Complex features every dimension must resolve to a requirement OR an explicit `N/A because [reason]`. For Medium, cover only the dimensions present for this domain. For Small/Micro, skip.
+
+| Dimension | What to verify |
+|---|---|
+| Input validation & bounds | Limits, formats, sanitization, maximum sizes |
+| Failure / partial-failure states | Timeouts, partial saves, rollbacks, retry behavior |
+| Idempotency / retry / duplicate handling | Safe retries, dedup keys, replay safety |
+| Auth boundaries & rate limits | Who can call what, per-user throttle rules |
+| Concurrency / ordering | Race conditions, ordering guarantees, locks |
+| Data lifecycle / expiry | TTL, archival, deletion, retention policies |
+| Observability | Logging, metrics, tracing hooks, alerting |
+| External-dependency failure | Circuit breakers, fallbacks, degraded mode |
+| State-transition integrity | Valid transitions, guards, forbidden transitions |
+
+**The N/A escape is mandatory** — blank entries are not allowed. Write `N/A because [reason]` for dimensions that genuinely do not apply.
+
+**This sweep never invents requirements** — it clarifies existing ones or makes exclusions explicit.
+
+After the sweep, every unresolved question must be either:
+1. Resolved with the user, OR
+2. Recorded as an **assumption** (chosen default + rationale) in the PRD's Assumptions section.
+
+Nothing proceeds silently unclear.
+
 ## Reference
 For SDD spec and TDD planning after PRD approval, load skill: `sdd`.  
 For harness workflow and Beads issue creation, load skill: `agentic-dev-harness`.
