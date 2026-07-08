@@ -174,7 +174,8 @@ Architecture decisions are verified by:
 ```
 
 ## Reference
-For SDD spec and TDD planning after ADR approval, load skill: `sdd`.  
+For SDD spec and TDD planning after ADR approval, load skill: `sdd`.
 For harness-wide workflow orchestration and Beads task creation, load skill: `agentic-dev-harness`.
+For design system architecture (tokens W3C, component patterns, governance, maturity model), load skill: `design-systems-arch`.
 
 **Remember**: Good architecture is the simplest design that satisfies requirements — every added layer is a liability until proven otherwise.

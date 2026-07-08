@@ -250,8 +250,13 @@ bd create "Review auth PR" \
 ### Review + Quality
 - `review-critic` — confidence-filtered code review with proof requirement
 - `principal-engineer` — blast radius, breaking changes, escalation path
-- `ux-researcher` — User research, personas, journey maps, usability testing
-- `ui-designer`   — Design system, WCAG 2.2 AA compliance, browser-evidence a11y audit
+- `ux-researcher`        — User research, personas, journey maps, usability testing
+- `ui-designer`          — Design system, WCAG 2.2 AA compliance, browser-evidence a11y audit
+- `atomic-design`        — Brad Frost component hierarchy (Atoms/Molecules/Organisms/Templates)
+- `cognitive-ux`         — Laws of UX, Gestalt, cognitive biases applied to interface design
+- `agentic-ux`           — Agentic AI interface patterns, trust calibration, AI safety UX
+- `design-systems-arch`  — Token W3C architecture, component library patterns, governance
+- `frontend-blueprint`   — Structured design consultation (discovery → design direction → build)
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:ca08a54f -->
 ## Beads Issue Tracker

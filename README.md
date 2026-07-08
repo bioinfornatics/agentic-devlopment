@@ -92,8 +92,13 @@ Named agents live in `.agents/agents/` and can be invoked through Goose Summon. 
 |---|---|---|
 | `review-critic` | Confidence-filtered code review with proof requirement | After any implementation, before closing a bead |
 | `principal-engineer` | Blast radius, breaking changes, architecture coherence | Change touches shared infra, public APIs, or 2+ BLOCK verdicts |
-| `ux-researcher` | User research, personas, journey maps | New feature, user validation |
-| `ui-designer`   | Design system, WCAG 2.2 AA, a11y audit | Any UI change |
+| `ux-researcher`       | User research, personas, journey maps         | New feature, user validation |
+| `ui-designer`         | Design system, WCAG 2.2 AA, a11y audit       | Any UI change |
+| `atomic-design`       | Component hierarchy (Atoms→Templates)         | Building component libraries |
+| `cognitive-ux`        | Laws of UX, Gestalt, cognitive biases         | Evaluating/justifying design decisions |
+| `agentic-ux`          | Agentic AI UX, trust calibration              | Designing AI agent interfaces |
+| `design-systems-arch` | Token architecture, governance, maturity      | Design system strategy |
+| `frontend-blueprint`  | Discovery → design direction → atomic build   | Creating new interfaces |
 
 ### SDD+TDD Orchestration Flow
 

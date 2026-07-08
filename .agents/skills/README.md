@@ -36,3 +36,8 @@ Old copies are available in `~/.agents/skills.old`.
 ## Evaluations
 
 Skill evaluations live outside the production skill packages in `evals/skills/`. Build or update those evals before expanding skill instructions, then keep each `SKILL.md` minimal enough to pass the observed scenarios.
+| atomic-design        | standalone (jwilger CC0) |
+| cognitive-ux         | standalone (phazurlabs) |
+| agentic-ux           | standalone (phazurlabs) |
+| design-systems-arch  | standalone (phazurlabs) |
+| frontend-blueprint   | standalone (TLC CC-BY-4.0) |
