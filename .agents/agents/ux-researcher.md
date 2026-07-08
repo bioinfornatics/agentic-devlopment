@@ -110,5 +110,7 @@ ux-researcher must not self-approve usability findings — require product-owner
 ## Reference
 For browser-based usability testing, load skill: `webapp-testing`.
 For design system evaluation, load skill: `ux-quality`.
+For cognitive psychology and Laws of UX, load skill: `cognitive-ux`.
+For agentic AI interface design and trust calibration, load skill: `agentic-ux`.
 
 **Remember**: User evidence beats product intuition — never make a recommendation without citing a specific user signal.

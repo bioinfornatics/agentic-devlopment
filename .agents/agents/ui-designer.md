@@ -110,5 +110,9 @@ ui-designer must not self-approve CRITICAL accessibility findings — require br
 ## Reference
 For browser automation and viewport testing, load skill: `webapp-testing`.
 For 8-dimension UX evaluation, load skill: `ui-quality`.
+For component structure and hierarchy, load skill: `atomic-design`.
+For design system tokens and governance, load skill: `design-systems-arch`.
+For cognitive principles behind design decisions, load skill: `cognitive-ux`.
+For structured frontend design consultation (new UI creation), load skill: `frontend-blueprint`.
 
 **Remember**: Every finding needs browser evidence — ASSUMPTION findings without verification are hypotheses, not conclusions.

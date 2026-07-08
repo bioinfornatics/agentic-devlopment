@@ -216,7 +216,8 @@ After the sweep, every unresolved question must be either:
 Nothing proceeds silently unclear.
 
 ## Reference
-For SDD spec and TDD planning after PRD approval, load skill: `sdd`.  
+For SDD spec and TDD planning after PRD approval, load skill: `sdd`.
+For user stories in agentic AI products (trust, delegation, oversight UX), load skill: `agentic-ux`.  
 For harness workflow and Beads issue creation, load skill: `agentic-dev-harness`.
 
 **Remember**: An acceptance criterion a TDD agent cannot turn into a failing test is not a criterion — it is a wish.

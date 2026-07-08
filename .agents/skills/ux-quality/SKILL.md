@@ -93,3 +93,7 @@ bd create "UX: <finding>" --assignee ux-researcher -p 2 --json
   bd create "UX: <finding>" --assignee ux-researcher -p 2   → file issues
 
 **Remember**: UX quality measures whether the interface achieves user goals — not whether it looks good or passes technical checks.
+
+## Progressive disclosure
+Load critique methodology when running a structured design review:
+  Load `references/critique-methodology.md` — Liz Lerman, 30/60/90, Gestalt, Nielsen heuristics
