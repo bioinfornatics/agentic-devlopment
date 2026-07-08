@@ -60,13 +60,13 @@ Show enough detail to maintain trust; not so much that it overwhelms.
 
 ## AI Safety UX Patterns
 
-| Anti-pattern | Safe alternative |
-|---|---|
-| Agent acts on ambiguous instructions | Clarify before acting; list interpretations |
-| Irreversible action with no confirmation | Require explicit approval; show consequences |
-| No visibility into tool use | Show tool calls in plain language in real time |
-| Agent "tries harder" after failure | Escalate to human after N failures |
-| Hallucinated confidence | Explicit uncertainty: "I'm not sure, but..." |
+| Anti-pattern                             | Safe alternative                               |
+|------------------------------------------|------------------------------------------------|
+| Agent acts on ambiguous instructions     | Clarify before acting; list interpretations    |
+| Irreversible action with no confirmation | Require explicit approval; show consequences   |
+| No visibility into tool use              | Show tool calls in plain language in real time |
+| Agent "tries harder" after failure       | Escalate to human after N failures             |
+| Hallucinated confidence                  | Explicit uncertainty: "I'm not sure, but..."   |
 
 ## Trust Calibration Spectrum
 

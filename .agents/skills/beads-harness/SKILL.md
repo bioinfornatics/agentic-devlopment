@@ -8,6 +8,7 @@ metadata:
 
 # Beads Harness
 
+Canonical Beads reference. All other skills that use Beads load this skill instead of duplicating commands.
 Use Beads as the durable scheduler and audit log for agentic development.
 
 ## Core commands
@@ -26,16 +27,16 @@ bd create "Title" -t task -p 2 --json
 
 Beads replaces Loop Engineering's STATE.md + triage + memory with a durable, dependency-aware, git-synced alternative:
 
-| Loop Engineering need | Beads command |
-|---|---|
-| Triage — what to work on now | `bd prime` + `bd ready --json` |
-| Task progress — claim, update, close | `bd update <id> --claim` → work → `bd close <id>` |
-| Human inbox — what is blocked | `bd blocked --json` |
-| Memory — cross-session facts | `bd remember "..." --key <key>` |
+| Loop Engineering need                | Beads command                                        |
+|--------------------------------------|------------------------------------------------------|
+| Triage — what to work on now         | `bd prime` + `bd ready --json`                       |
+| Task progress — claim, update, close | `bd update <id> --claim` → work → `bd close <id>`    |
+| Human inbox — what is blocked        | `bd blocked --json`                                  |
+| Memory — cross-session facts         | `bd remember "..." --key <key>`                      |
 | Attempt cap — escalate after N fails | comment count on bead + `bd update --status blocked` |
-| Dependency graph | `bd dep add B A` (B needs A) |
-| Async gate | `bd gate <id> --signal "CI green"` |
-| Resolved / pruned | `bd close <id> --reason "..."` |
+| Dependency graph                     | `bd dep add B A` (B needs A)                         |
+| Async gate                           | `bd gate <id> --signal "CI green"`                   |
+| Resolved / pruned                    | `bd close <id> --reason "..."`                       |
 
 ## Dependency semantics
 
@@ -117,10 +118,10 @@ bd remember "Release checklist: canonical source is docs/10-release-readiness.md
 ### Self-validation checklist (run before finalising any memory store)
 
 Before calling `bd remember`, verify:
-- [ ] Value starts with topic, then "canonical source is", then file path
+- [ ] Value starts with a topic, then "canonical source is", then file path
 - [ ] Contains "read when <trigger>" (not "read before", not "read always")
 - [ ] Contains "invariant: <one-line rule>"
-- [ ] Total value is under 250 characters
+- [ ] The total value is under 250 characters
 - [ ] No checklist content, documentation body, or long prose in the value
 - [ ] Key is kebab-case and describes the topic (not the file name)
 
@@ -198,16 +199,16 @@ bd gate <id> --signal "CI green on branch X"              # register async gate
 
 ### Duplicate Check Protocol
 
-| Situation | Action |
-|---|---|
+| Situation               | Action                                              |
+|-------------------------|-----------------------------------------------------|
 | Exact title match found | Report bead ID; do not create; propose `bd dep add` |
 | Partial / keyword match | Report match; ask for clarification before creating |
-| No match found | Proceed; list all checked keyword queries in output |
-| Match found but closed | Create new with `--deps discovered-from:<old-id>` |
+| No match found          | Proceed; list all checked keyword queries in output |
+| Match found but closed  | Create new with `--deps discovered-from:<old-id>`   |
 
 ### Dependency Ordering Rules
 
-1. Epics must be created before their child tasks.
+1. Epics must be created before their child's tasks.
 2. Decision beads (ADRs) must precede every task they constrain.
 3. Infrastructure and setup beads must precede feature beads that depend on them.
 4. Discovered follow-up beads are always created last with `--deps discovered-from`.
@@ -241,7 +242,7 @@ Beads pointer memories after diagnosis. This is the harness Reflexion layer.
 ### Key conventions
 - Keys: lesson-<domain>-<NNN> (e.g., lesson-sdd-001, lesson-beads-001)
 - Status in value: [candidate] or [confirmed: features X, Y]
-- Load at session start: bd memories --query lesson
+- Load at session start: `bd memories --query lesson`
 
 ### Example
     bd remember "Pointer memories use 'read when' not 'read before' [confirmed: sdd-eval-0, adh-eval-2]." \

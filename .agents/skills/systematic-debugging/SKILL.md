@@ -289,6 +289,8 @@ These techniques are part of systematic debugging and available in this director
 
 ## Beads integration
 
+For Beads workflow commands, load skill: `beads-harness`.
+
 When a bug is diagnosed and a fix is planned:
 
     bd create "Fix: <root cause in title>" --issue_type task -p 2 --json

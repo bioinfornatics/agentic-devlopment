@@ -31,13 +31,13 @@ Only after this: name the SDD phase and proceed.
 
 Assess scope. Apply only the depth the complexity warrants.
 
-| Scope | Signal | Specify | Design | TDD | Implement | Review |
-|---|---|---|---|---|---|---|
-| **Micro** | 1 file, obvious change | 1-sentence inline | skip | skip | inline | skip |
-| **Small** | ≤3 files, clear intent | brief AC | skip | tests only | standard | quick |
-| **Medium** | clear feature, <10 tasks | full AC | inline | full TDD | standard | full |
-| **Large** | multi-component, >10 tasks | full spec + requirement IDs | full ADR | full TDD per task | per-task | full |
-| **Complex** | ambiguity, new domain | full spec + discuss gray areas | research + ADR | full TDD | per-task | full + UAT |
+| Scope       | Signal                     | Specify                        | Design         | TDD               | Implement | Review     |
+|-------------|----------------------------|--------------------------------|----------------|-------------------|-----------|------------|
+| **Micro**   | 1 file, obvious change     | 1-sentence inline              | skip           | skip              | inline    | skip       |
+| **Small**   | ≤3 files, clear intent     | brief AC                       | skip           | tests only        | standard  | quick      |
+| **Medium**  | clear feature, <10 tasks   | full AC                        | inline         | full TDD          | standard  | full       |
+| **Large**   | multi-component, >10 tasks | full spec + requirement IDs    | full ADR       | full TDD per task | per-task  | full       |
+| **Complex** | ambiguity, new domain      | full spec + discuss gray areas | research + ADR | full TDD          | per-task  | full + UAT |
 
 **Escalate to next size tier** when listing steps reveals >5 steps or complex dependencies not visible at the start.
 
@@ -60,9 +60,9 @@ Assess scope. Apply only the depth the complexity warrants.
 
 1. **Intent** — clarify user, outcome, constraints, non-goals.
 2. **Spec** — acceptance criteria, risks, data model/API/UI contracts.
-3. **Graph** — encode work in Beads with dependencies and gates.
+3. **Graph** — encode works in Beads with dependencies and gates.
 4. **TDD** — write the failing test first; confirm it fails before any implementation.
-5. **Implement** — smallest coherent slice that makes the failing test pass.
+5. **Implement** — the smallest coherent slice that makes the failing test pass.
 6. **Verify** — run tests, code review, UX/security/perf as relevant.
    **Branch point — do not proceed linearly:**
    - ✅ **All AC met** → advance to (7) Learn, close the bead.
@@ -75,13 +75,13 @@ Assess scope. Apply only the depth the complexity warrants.
 ### Beads commands for the loop
 
 ```bash
-bd prime                               # orient
-bd ready --json                        # triage: which SDD bead is next?
-bd update <id> --claim                 # claim before any phase artifact
+`bd prime`                               # orient
+`bd ready --json`                        # triage: which SDD bead is next?
+`bd update <id> --claim`                 # claim before any phase artifact
 # [produce phase artifact]             # spec / test / code / review
-bd create --deps discovered-from:<id>  # file discovered follow-up work
-bd close <id> --reason "phase done"
-bd remember "..." --key <key>          # store durable phase decisions
+`bd create --deps discovered-from:<id>`  # file discovered follow-up work
+`bd close <id> --reason "phase done"`
+`bd remember "..." --key <key>`          # store durable phase decisions
 ```
 
 ---
@@ -148,10 +148,10 @@ recipe validation · rollback · observability · open blockers — each marked 
 ### Self-validation checklist
 
 Before advancing to the next SDD phase:
-- [ ] Phase name is stated explicitly in output (Intent / Spec / TDD / Implement / Review / Verify)
+- [ ] The phase name is stated explicitly in the output (Intent / Spec / TDD / Implement / Review / Verify)
 - [ ] Acceptance criteria are testable (measurable outcome, not aspirational prose)
-- [ ] No file writes before a bead was claimed
-- [ ] TDD phase: failing test was run and output shows the failure before implementation
+- [ ] Do not write a file before a bead was claimed
+- [ ] TDD phase: the failing test was run, and the output shows the failure before implementation
 - [ ] Implement phase: `bd update --claim` appears before the first `write` or `edit` tool call
 
 At phase (6) Verify — record the branch decision explicitly:
@@ -165,10 +165,10 @@ At phase (6) Verify — record the branch decision explicitly:
 
 Each SDD phase has a designated checker — never advance a phase using the same agent that produced it:
 
-| Phase | Maker | Checker |
-|---|---|---|
-| Spec + AC | product-owner | architect (feasibility), tdd-guide (testability) |
-| Design | architect | principal-engineer (blast radius) |
-| TDD | tdd-guide | implementation-worker (can RED be reproduced?) |
-| Implement | implementation-worker | review-critic (diff review) |
-| Release readiness | review-critic | principal-engineer (blast radius check) |
+| Phase             | Maker                 | Checker                                          |
+|-------------------|-----------------------|--------------------------------------------------|
+| Spec + AC         | product-owner         | architect (feasibility), tdd-guide (testability) |
+| Design            | architect             | principal-engineer (blast radius)                |
+| TDD               | tdd-guide             | implementation-worker (can RED be reproduced?)   |
+| Implement         | implementation-worker | review-critic (diff review)                      |
+| Release readiness | review-critic         | principal-engineer (blast radius check)          |

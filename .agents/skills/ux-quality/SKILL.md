@@ -88,12 +88,10 @@ bd create "UX: <finding>" --assignee ux-researcher -p 2 --json
 
 ## Beads loop
 
-  bd prime                    → load existing UX findings and product decisions
-  bd ready --json             → check for open UX quality beads
-  bd create "UX: <finding>" --assignee ux-researcher -p 2   → file issues
+For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads-harness`.
 
-**Remember**: UX quality measures whether the interface achieves user goals — not whether it looks good or passes technical checks.
-
+Skill-specific commands:
+    bd create "UX: <finding>" --assignee ux-researcher -p 2  → file UX research findings
 ## Progressive disclosure
 Load critique methodology when running a structured design review:
   Load `references/critique-methodology.md` — Liz Lerman, 30/60/90, Gestalt, Nielsen heuristics

@@ -94,9 +94,10 @@ Browser tests follow the same maker/checker split as code:
 
 Do not self-approve accessibility or layout findings — cross-check with at least one browser-based tool output (screenshot, axe snapshot, console log).
 
-## Beads loop for browser testing
+## Beads loop
 
-  bd prime            → load existing UI/accessibility issues and testing memories
-  bd ready --json     → check for open web-test beads
-  bd create "WebTest: <finding>" --assignee qa-automation   → file discovered issues
-  bd remember "Base URL: canonical source is scripts/build-docs.sh; read when starting the docs server; invariant: always use localhost:PORT not 0.0.0.0" --key docs-server-url
+For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads-harness`.
+
+Skill-specific commands:
+    bd create "WebTest: <finding>" --assignee qa-automation   → file test/a11y findings
+    bd remember "Base URL: canonical source is scripts/build-docs.sh; read when starting the docs server; invariant: always use localhost:PORT not 0.0.0.0" --key docs-server-url

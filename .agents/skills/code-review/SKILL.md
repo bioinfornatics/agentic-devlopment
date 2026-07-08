@@ -70,6 +70,7 @@ Do not manufacture findings to justify the invocation.
 
 | Severity | File:Line | Issue | Fix |
 | -------- | --------- | ----- | --- |
+|          |           |       |     |
 
 ## Missing tests
 [list or "None identified"]
@@ -150,14 +151,14 @@ For HIGH / CRITICAL: is there a concrete exploit scenario or exact reproduction 
 - explore_pct rises when you read files before reading the diff. Read the diff first.
 - "Consider adding error handling" is not a finding unless you can name the exact uncaught error and its consequence.
 
-## Beads loop for code review
+## Beads loop
 
-  bd prime                     → load project coding standards and past review decisions
-  bd ready --json              → check for review beads already in flight
-  bd create "Review: <title>" --assignee review-critic   → file the review as a bead
-  bd close <id> --reason "APPROVE|PASS-WITH-NITS|BLOCK: <summary>"
-  bd create "Follow-up: <issue>" --deps discovered-from:<review-bead-id>  → file regressions
+For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads-harness`.
 
+Skill-specific commands:
+    bd create "Review: <title>" --assignee review-critic       → file the review as a bead
+    bd close <id> --reason "APPROVE|PASS-WITH-NITS|BLOCK: <summary>"
+    bd create "Follow-up: <issue>" --deps discovered-from:<id> → file regressions
 ## Maker/Checker
 
 Code review IS the checker role. The implementation-worker is the maker.

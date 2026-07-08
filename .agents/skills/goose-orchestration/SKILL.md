@@ -100,27 +100,29 @@ there must match the "Invoke when" column below.
 
 ### Agent vs subrecipe selection
 
-| Criterion | Named agent | Subrecipe |
-|---|---|---|
-| Invocation context | Inside a Goose session | CLI / headless recipe run |
-| Parameter style | Free-form instructions | Typed key=value params |
-| Parent context sharing | Yes — carries over | No — isolated session |
-| Discovery | `load()` at runtime | `sub_recipes` block |
+| Criterion              | Named agent            | Subrecipe                 |
+|------------------------|------------------------|---------------------------|
+| Invocation context     | Inside a Goose session | CLI / headless recipe run |
+| Parameter style        | Free-form instructions | Typed key=value params    |
+| Parent context sharing | Yes — carries over     | No — isolated session     |
+| Discovery              | `load()` at runtime    | `sub_recipes` block       |
 
 ---
 
 ## Beads as orchestration state (Loop Engineering pattern)
 
+For full Beads command reference, load skill: `beads-harness`.
+
 Beads replaces STATE.md from Loop Engineering. The full orchestration loop:
 
-  bd prime                              → knowledge generation (triage context)
-  bd ready --json                       → structured watchlist of claimable beads
-  bd update <id> --claim                → atomic claim (prevents dual assignment)
-  delegate(source: "<agent>", ...)      → maker executes
-  review-critic agent                   → checker verifies
-  bd close <id> --reason "done"         → remove from ready list
-  bd remember "..." --key <key>         → store orchestration decision for future sessions
-  bd gate <id> --signal "CI green"      → async wait (circuit breaker pattern)
+  `bd prime`                              → knowledge generation (triage context)
+  `bd ready --json`                       → structured watchlist of claimable beads
+  `bd update <id> --claim`                → atomic claim (prevents dual assignment)
+  `delegate(source: "<agent>", ...)`      → maker executes
+  `review-critic agent`                   → checker verifies
+  `bd close <id> --reason "done"`         → remove from ready list
+  `bd remember "..." --key <key>`         → store orchestration decision for future sessions
+  `bd gate <id> --signal "CI green"`      → async wait (circuit breaker pattern)
 
 **Attempt cap (circuit breaker):** If a bead has been claimed and reset >2 times without closing, add a note explaining the blocker and escalate to human. Do not retry infinitely.
 
@@ -197,12 +199,12 @@ load()  ← discover agents + subrecipes + their descriptions
 
 ### When to prefer agents over subrecipes
 
-| Use subrecipe when | Use named agent when |
-|---|---|
-| Fixed parameter schema (task, repo_path) | Free-form instruction with rich context |
-| Fully isolated session preferred | Parent context (bead IDs, files) must carry over |
-| Headless / CLI invocation | Invoked from inside an orchestrated session |
-| Structured JSON response schema needed | Narrative or markdown output expected |
+| Use subrecipe when                       | Use named agent when                             |
+|------------------------------------------|--------------------------------------------------|
+| Fixed parameter schema (task, repo_path) | Free-form instruction with rich context          |
+| Fully isolated session preferred         | Parent context (bead IDs, files) must carry over |
+| Headless / CLI invocation                | Invoked from inside an orchestrated session      |
+| Structured JSON response schema needed   | Narrative or markdown output expected            |
 
 ### Orchestration decision block (emit before every delegate())
 
@@ -284,22 +286,22 @@ bd close <id> --reason "Done: <summary>"
 
 ### Hard restrictions (enforced by the runtime — not overridable)
 
-| Restricted operation | Why |
-|---|---|
-| Spawning a subagent from within a subagent | Prevents infinite recursion |
-| Enabling, disabling, or modifying extensions | Avoids conflicts with parent session state |
+| Restricted operation                             | Why                                         |
+|--------------------------------------------------|---------------------------------------------|
+| Spawning a subagent from within a subagent       | Prevents infinite recursion                 |
+| Enabling, disabling, or modifying extensions     | Avoids conflicts with parent session state  |
 | Creating, modifying, or deleting scheduled tasks | Prevents interference with parent workflows |
 
 **Critical for the harness**: `delegate()` is an orchestrator-only capability. A subagent (e.g. implementation-worker) cannot call another subagent. Only the top-level session or recipe can delegate.
 
 ### Trigger keywords (natural language routing)
 
-| Intent | Keywords | Example |
-|---|---|---|
-| Sequential (default) | "first…then", "after" | "First plan, then implement" |
-| Parallel | "parallel", "simultaneously", "concurrently" | "Create three files in parallel" |
-| Ad-hoc agent | "create a subagent according to this description: …" | — |
-| Recipe-backed | "use the <recipe-name> recipe as a subagent" | — |
+| Intent               | Keywords                                             | Example                          |
+|----------------------|------------------------------------------------------|----------------------------------|
+| Sequential (default) | "first…then", "after"                                | "First plan, then implement"     |
+| Parallel             | "parallel", "simultaneously", "concurrently"         | "Create three files in parallel" |
+| Ad-hoc agent         | "create a subagent according to this description: …" | —                                |
+| Recipe-backed        | "use the <recipe-name> recipe as a subagent"         | —                                |
 
 ### Context preservation pattern
 

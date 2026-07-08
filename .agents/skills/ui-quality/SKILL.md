@@ -34,14 +34,14 @@ Only after these four steps: begin the evaluation below.
 
 **Mandatory browser tests — code inspection is NOT sufficient:**
 
-| Check | Method |
-|---|---|
-| Keyboard navigation | Press Tab/Shift-Tab through every interactive element in the browser |
-| Focus indicator | Observe visible outline after each Tab keypress in Playwright |
-| Accessible names | Read `browser_snapshot` tree — all images, inputs, buttons must have names |
-| Colour contrast | DevTools computed style or axe-core — never calculated from hex alone |
-| Error announcement | Trigger form error; confirm the error text is in the accessibility tree |
-| Landmark structure | `<nav>`, `<main>`, `<aside>` each have `aria-label` when >1 exists |
+| Check               | Method                                                                     |
+|---------------------|----------------------------------------------------------------------------|
+| Keyboard navigation | Press Tab/Shift-Tab through every interactive element in the browser       |
+| Focus indicator     | Observe visible outline after each Tab keypress in Playwright              |
+| Accessible names    | Read `browser_snapshot` tree — all images, inputs, buttons must have names |
+| Colour contrast     | DevTools computed style or axe-core — never calculated from hex alone      |
+| Error announcement  | Trigger form error; confirm the error text is in the accessibility tree    |
+| Landmark structure  | `<nav>`, `<main>`, `<aside>` each have `aria-label` when >1 exists         |
 
 **Evidence labelling (mandatory for every finding):**
 - **[VERIFIED — browser-tested]** : tested in Playwright or confirmed via axe-core output
@@ -112,9 +112,8 @@ bd create "UI: <finding>" --assignee ui-designer -p 2 --json
 
 ## Beads loop
 
-  bd prime                    → load design-system pointers and known a11y issues
-  bd ready --json             → check for open UI quality beads
-  bd remember "Design system: canonical source is <file>; read when auditing tokens; invariant: never hardcode values that bypass the token system." --key design-system-pointer
-  bd create "UI: <finding>" --assignee ui-designer -p 2   → file issues
+For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads-harness`.
 
-**Remember**: UI quality is the implementation layer — browser evidence is the only acceptable proof; code inspection alone is always [ASSUMPTION].
+Skill-specific commands:
+    bd create "UI: <finding>" --assignee ui-designer -p 2    → file design/a11y findings
+    bd remember "Design system: canonical source is <file>; read when auditing tokens; invariant: never hardcode values that bypass tokens." --key design-system-pointer
