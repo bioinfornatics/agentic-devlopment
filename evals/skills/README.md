@@ -82,7 +82,7 @@ Editor shortcuts:
 - `code-review.json`
 - `goose-orchestration.json`
 - `sdd.json`
-- `ui-ux-quality.json`
+- `ux-quality.json`
 - `webapp-testing.json`
 
 

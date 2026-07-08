@@ -347,7 +347,7 @@ If you create workspaces by hand instead of using the runner, the viewer expects
 | Code review | `evals/skills/code-review.json` |
 | Goose orchestration | `evals/skills/goose-orchestration.json` |
 | SDD | `evals/skills/sdd.json` |
-| UI/UX quality | `evals/skills/ui-ux-quality.json` |
+| UI/UX quality | `evals/skills/ux-quality.json` |
 | Webapp testing | `evals/skills/webapp-testing.json` |
 
 ## Done criteria

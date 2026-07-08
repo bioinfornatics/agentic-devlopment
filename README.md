@@ -51,7 +51,7 @@ intent → spec → Beads graph → TDD/implementation → review → validation
 | `goose-orchestration` | Goose recipes, skills, subagents, Summon, and extension rules |
 | `sdd` | Spec-Driven Development loop |
 | `code-review` | Code review method for correctness, tests, security, and handoff |
-| `ui-ux-quality` | Unified UI/UX quality framework |
+| `ux-quality` | Unified UI/UX quality framework |
 | `webapp-testing` | Browser automation and local web-app verification method |
 
 

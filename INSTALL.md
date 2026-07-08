@@ -122,7 +122,7 @@ beads-harness
 goose-orchestration
 sdd
 code-review
-ui-ux-quality
+ux-quality
 webapp-testing
 ```
 

@@ -41,7 +41,7 @@ instructions: |
   | Implementation (TDD)   | `beads-harness`         | `implementation-worker` | implementation-worker   |
   | Test-first cycle       | `agentic-dev-harness`   | `tdd-guide`             | tdd-guide               |
   | Full test pipeline / CI| `webapp-testing`        | `qa-automation`         | qa-automation           |
-  | UX research + personas | `ui-ux-quality`         | `ux-researcher`         | ux-researcher           |
+  | UX research + personas | `ux-quality`         | `ux-researcher`         | ux-researcher           |
   | UI design + a11y audit | `webapp-testing`        | `ui-designer`           | ui-designer             |
   | Breaking-change review | `code-review`           | `principal-engineer`    | principal-engineer      |
   | Multi-step orchestration| `goose-orchestration`  | `harness-orchestrator`  | harness-orchestrator    |

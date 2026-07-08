@@ -18,8 +18,8 @@ Agents are thin operating protocols (130–180 lines); skills hold the methodolo
 | review-critic | code-review |
 | principal-engineer | agentic-dev-harness, code-review |
 | qa-automation | agentic-dev-harness, webapp-testing, systematic-debugging |
-| ux-researcher | ui-ux-quality, webapp-testing |
-| ui-designer   | ui-ux-quality, webapp-testing |
+| ux-researcher | ux-quality / ui-quality, webapp-testing |
+| ui-designer   | ux-quality / ui-quality, webapp-testing |
 
 ## Core skills
 
@@ -28,7 +28,7 @@ Agents are thin operating protocols (130–180 lines); skills hold the methodolo
 - `goose-orchestration` — Goose extensions, recipes, subrecipes, subagents, Summon.
 - `sdd` — product engineering governance loop.
 - `code-review` — review methodology.
-- `ui-ux-quality` — unified UI/UX quality framework.
+- `ux-quality / ui-quality` — unified UI/UX quality framework.
 - `webapp-testing` — browser verification method.
 
 Old copies are available in `~/.agents/skills.old`.

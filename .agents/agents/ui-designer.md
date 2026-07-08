@@ -109,6 +109,6 @@ ui-designer must not self-approve CRITICAL accessibility findings — require br
 
 ## Reference
 For browser automation and viewport testing, load skill: `webapp-testing`.
-For 8-dimension UX evaluation, load skill: `ui-ux-quality`.
+For 8-dimension UX evaluation, load skill: `ui-quality`.
 
 **Remember**: Every finding needs browser evidence — ASSUMPTION findings without verification are hypotheses, not conclusions.

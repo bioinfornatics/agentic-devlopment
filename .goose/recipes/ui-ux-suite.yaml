@@ -5,7 +5,7 @@ instructions: |
   Explicit routing — TWO specialist agents, run in sequence:
 
   Phase 1 — UX Research (validate user needs before visual evaluation):
-  - Load skill: `ui-ux-quality`
+  - Load skill: `ux-quality`
   - In-session: `delegate(source: "ux-researcher", instructions: "...")`
   - Beads: `bd create "<title>" --assignee ux-researcher -p 2 --json`
 
@@ -16,7 +16,7 @@ instructions: |
 
   Run Phase 1 first; use its findings to scope Phase 2.
   Do NOT run both phases simultaneously — UI design depends on UX research output.
-  Load ui-ux-quality and webapp-testing when relevant. Evaluate product UI across:
+  Load ux-quality and webapp-testing when relevant. Evaluate product UI across:
   user intent, visual taste, information architecture, design tokens/components,
   frontend states/performance, accessibility, and browser evidence.
 settings:

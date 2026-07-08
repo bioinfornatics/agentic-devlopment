@@ -246,10 +246,10 @@ Orchestration decision:
 | `goose-orchestration` | 336 | ❌ no refs | ✅ added Jul 2026 | ✅ added Jul 2026 | ✅ verbatim blocks |
 | `sdd` | 49 | ❌ no refs | ❌ | ❌ | ❌ |
 | `systematic-debugging` | 296 + refs | ✅ 5 ref files | ❌ | ❌ | ❌ |
-| `ui-ux-quality` | 28 | ❌ | ❌ | ❌ | ❌ |
+| `ux-quality` | 28 | ❌ | ❌ | ❌ | ❌ |
 | `webapp-testing` | 69 | ❌ | ✅ (no sudo) | ✅ server lifecycle | ✅ evidence labeling |
 
-**Gaps:** sdd, ui-ux-quality need gotchas + validation loops.
+**Gaps:** sdd, ux-quality need gotchas + validation loops.
 
 ### Agent Inventory (11 agents)
 
@@ -281,7 +281,7 @@ Orchestration decision:
 | harness-memory | ✅ beads-harness | ❌ direct ops | ❌ | ✅ |
 | harness-release | ✅ agentic-dev-harness | ✅ principal-engineer | ✅ | ✅ |
 | harness-web-test | ✅ webapp-testing | ✅ ux-researcher + ui-designer | ✅ | ✅ |
-| ui-ux-suite      | ✅ ui-ux-quality | ✅ ux-researcher → ui-designer  | ✅ | ❌ no subrecipe |
+| ui-ux-suite      | ✅ ux-quality | ✅ ux-researcher → ui-designer  | ✅ | ❌ no subrecipe |
 
 ---
 
@@ -289,7 +289,7 @@ Orchestration decision:
 
 ### P0 — Missing in skills (high impact)
 1. **`sdd` skill:** No gotchas, no validation loop, no output template. SDD has strict phase ordering (Intent→Spec→TDD) that agents skip — needs a CoT sequence template + "never skip to implement" gotcha.
-2. **`ui-ux-quality` skill:** 28 lines only. No gotchas for evidence-first rule (no evidence = no finding), no 8-dimension checklist template, no WCAG 2.2 AA gotchas.
+2. **`ux-quality` skill:** 28 lines only. No gotchas for evidence-first rule (no evidence = no finding), no 8-dimension checklist template, no WCAG 2.2 AA gotchas.
 3. **All skills:** Missing `allowed-tools` field (experimental but signals intent to eval graders).
 
 ### P1 — Missing in agents

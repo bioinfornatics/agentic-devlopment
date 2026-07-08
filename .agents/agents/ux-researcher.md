@@ -109,6 +109,6 @@ ux-researcher must not self-approve usability findings — require product-owner
 
 ## Reference
 For browser-based usability testing, load skill: `webapp-testing`.
-For design system evaluation, load skill: `ui-ux-quality`.
+For design system evaluation, load skill: `ux-quality`.
 
 **Remember**: User evidence beats product intuition — never make a recommendation without citing a specific user signal.
