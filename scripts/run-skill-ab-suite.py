@@ -7,7 +7,7 @@ import html
 import json
 import os
 import subprocess
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -350,7 +350,7 @@ def main() -> int:
     else:
         # Parallel mode — skills run concurrently, output printed as blocks.
         print(f"== Parallel suite: {len(skills)} skills, max_workers={args.max_workers} ==", flush=True)
-        with ProcessPoolExecutor(max_workers=args.max_workers) as pool:
+        with ThreadPoolExecutor(max_workers=args.max_workers) as pool:
             future_to_skill = {pool.submit(_run_one_skill, skill): skill for skill in skills}
             for future in as_completed(future_to_skill):
                 skill = future_to_skill[future]
