@@ -1,16 +1,55 @@
 ---
 name: sdd
 description: >
-  Spec-Driven Development: product intent, spec-driven development, TDD, operational readiness, and continuous learning.
+  Spec-Driven Development: lightweight method for intent→spec→graph→TDD→implement→verify→learn
+  over the Goose+Beads harness. Load when planning, speccing, implementing, or verifying any
+  feature work in this harness.
 metadata:
-  version: 2.0.0
+  version: 3.0.0
 ---
 
 # SDD — Spec-Driven Development
 
-SDD means Spec-Driven Development, is a lightweight development method over the Goose+Beads harness.
+Lightweight development method: every change starts from a spec with testable acceptance criteria,
+runs through TDD, is verified by a separate checker, and closes with durable memory.
 
-## Loop
+---
+
+## 1. Orient first (before any SDD phase)
+
+Generate explicit knowledge before naming a phase:
+
+1. Run `bd prime` — loads current issues, memories, and workflow context.
+2. Run `bd ready --json` — identifies what is claimable.
+3. Read the nearest spec file or acceptance criteria if they exist.
+
+Only after this: name the SDD phase and proceed.
+
+---
+
+## 2. Scale — choose depth before starting
+
+Assess scope. Apply only the depth the complexity warrants.
+
+| Scope | Signal | Specify | Design | TDD | Implement | Review |
+|---|---|---|---|---|---|---|
+| **Micro** | 1 file, obvious change | 1-sentence inline | skip | skip | inline | skip |
+| **Small** | ≤3 files, clear intent | brief AC | skip | tests only | standard | quick |
+| **Medium** | clear feature, <10 tasks | full AC | inline | full TDD | standard | full |
+| **Large** | multi-component, >10 tasks | full spec + requirement IDs | full ADR | full TDD per task | per-task | full |
+| **Complex** | ambiguity, new domain | full spec + discuss gray areas | research + ADR | full TDD | per-task | full + UAT |
+
+**Escalate to next size tier** when listing steps reveals >5 steps or complex dependencies not visible at the start.
+
+**Discuss gray areas** (always for Large/Complex) when any of these dimensions is present:
+- Failure / partial-failure states · Idempotency / retry / duplicate handling
+- Auth boundaries or rate limits · Concurrency or ordering guarantees
+- Data lifecycle or expiry · Observability requirements
+- External-dependency failure handling · State-transition integrity · Input validation bounds
+
+---
+
+## 3. Execute — the SDD loop
 
 ```
 1. Intent ─→ 2. Spec ─→ 3. Graph ─→ 4. TDD ─→ 5. Implement ─→ 6. Verify ─┬─ AC met ─→ 7. Learn → close bead
@@ -31,124 +70,105 @@ SDD means Spec-Driven Development, is a lightweight development method over the 
    - ❌ **Review finding** → loop back to (5) Implement, address findings.
    - ❌ **Spec gap discovered** → loop back to (2) Spec, clarify AC before re-implementing.
    - ⚠️ **After 3 loops without resolution** → escalate to user; do not loop further.
-7. **Learn** — remember durable facts as short pointer memories; file follow-up beads for discovered work.
+7. **Learn** — remember durable facts as short pointer memories; file follow-up beads.
 
-## Auto-sizing (apply before starting any SDD phase)
+### Beads commands for the loop
 
-Assess scope first. Apply only the depth the complexity warrants:
+```bash
+bd prime                               # orient
+bd ready --json                        # triage: which SDD bead is next?
+bd update <id> --claim                 # claim before any phase artifact
+# [produce phase artifact]             # spec / test / code / review
+bd create --deps discovered-from:<id>  # file discovered follow-up work
+bd close <id> --reason "phase done"
+bd remember "..." --key <key>          # store durable phase decisions
+```
 
-| Scope | Signal | Specify | Design | TDD | Implement | Review |
-|---|---|---|---|---|---|---|
-| **Micro** | 1 file, obvious change | 1-sentence inline | skip | skip | inline | skip |
-| **Small** | ≤3 files, clear intent | brief AC | skip | tests only | standard | quick |
-| **Medium** | clear feature, <10 tasks | full AC | inline | full TDD | standard | full |
-| **Large** | multi-component, >10 tasks | full spec + requirement IDs | full ADR | full TDD per task | per-task | full |
-| **Complex** | ambiguity, new domain | full spec + discuss gray areas | research + ADR | full TDD | per-task | full + UAT |
+---
 
-**Discuss gray areas** when the feature has any implicit-requirement dimension present:
-- Failure / partial-failure states (timeouts, rollbacks, partial saves)
-- Idempotency / retry / duplicate handling
-- Auth boundaries or rate limits
-- Concurrency or ordering guarantees
-- Data lifecycle or expiry (TTL, archival, deletion)
-- Observability requirements (logging, metrics, tracing hooks)
-- External-dependency failure handling (circuit breakers, fallbacks)
-- State-transition integrity (valid transitions, guards)
-- Input validation bounds (limits, formats, sanitization)
+## 4. Quality rules
 
-For Micro/Small: if listing steps reveals >5 steps or complex dependencies, STOP and escalate to Medium.
+### Requirement traceability
 
-## Principles
-
-## Requirement traceability
-
-Every spec must assign a unique ID to each acceptance criterion:
+Assign a unique ID to every acceptance criterion:
 - Format: `[FEAT]-01`, `[FEAT]-02` (e.g., `AUTH-01`, `CART-03`)
 - IDs trace through: spec → tasks → tests → validation
 - Every Beads task references the requirement IDs it satisfies
 - Every test assertion cites the requirement it verifies
 
-**Spec-Anchored Outcome Rule (from TLC v3.2.0):**
-A test is spec-anchored only when its asserted value matches the **spec-defined expected outcome** — not just that an assertion exists. Where the spec does not define a precise outcome, mark the criterion as a **spec-precision gap** rather than writing a vague assertion and calling it covered.
+### Spec-anchored outcome rule
 
-Example:
-  Spec says: "WHEN login fails THEN system SHALL return 401 with body `{error: 'invalid_credentials'}`"
-  ✅ spec-anchored: `expect(response.status).toBe(401)` + `expect(response.body.error).toBe('invalid_credentials')`
-  ❌ not spec-anchored: `expect(response.status).not.toBe(200)` (too vague)
-  ⚠️ spec-precision gap: spec says "return an error" without a defined code or body → flag, do not pass silently
+A test is spec-anchored only when its asserted value matches the **spec-defined expected outcome** — not just that an assertion exists. Where the spec does not define a precise outcome, mark it as a **spec-precision gap**, not a pass.
 
-## Mode rules
+```
+Spec: "WHEN login fails THEN system SHALL return 401 with {error: 'invalid_credentials'}"
 
-If the request says `plan`, `do not implement yet`, `spec`, or `proposal`, stay in planning mode:
+✅  expect(response.status).toBe(401) + expect(response.body.error).toBe('invalid_credentials')
+❌  expect(response.status).not.toBe(200)   ← too vague
+⚠️  spec says "return an error" with no code → flag as spec-precision gap, do not pass silently
+```
 
-- do not edit files;
-- do not create, claim, update, close, or link Beads unless the user explicitly asks to persist the plan;
-- inspect only the minimum context needed;
-- output proposed Beads graph as titles/dependencies, not executed commands.
+---
 
-Planning outputs must include:
+## 5. Constraints
 
-- user/stakeholder;
-- desired outcome;
-- constraints and assumptions;
-- non-goals;
-- acceptance criteria;
-- risks;
-- proposed dependency-aware Beads graph.
-
-Release readiness outputs must use an explicit matrix covering tests, docs, install-script safety, recipe validation, rollback, observability/diagnostics, and open blockers, each marked pass/fail/blocked/unknown.
+### Principles
 
 - Prefer reversible increments.
 - Make dependencies explicit.
-- Optimize for handoff: every future agent should know current state from Beads.
+- Optimize for handoff: every future agent must know current state from Beads alone.
 - Treat quality gates as product requirements, not cleanup.
 
-## Knowledge generation (before any SDD phase)
+### Planning-only mode
 
-Before starting any SDD phase, generate explicit knowledge:
-1. Run `bd prime` — loads current issues, memories, and workflow context.
-2. Run `bd ready --json` — identifies what is claimable.
-3. Read the nearest spec file or acceptance criteria if they exist.
-Only after this knowledge is generated: name the SDD phase and proceed.
+When the request says `plan`, `do not implement yet`, `spec`, or `proposal`:
 
-## Gotchas
+- Do not edit files.
+- Do not create, claim, update, close, or link Beads unless the user explicitly asks.
+- Inspect only the minimum context needed.
+- Output proposed Beads graph as titles/dependencies, not executed commands.
 
-- **Never skip to implement** — the SDD loop is Intent→Spec→Graph→TDD→Implement→Review→Verify. Skipping Spec or TDD to reach Implement faster violates the loop and produces unverifiable code.
-- **Acceptance criteria must be testable** — "the system should be fast" is not acceptance criteria. "endpoint responds in <200ms at p95 under 100 rps" is.
-- **RED before GREEN** — in the TDD phase, the failing test must be written and confirmed to fail before any implementation code is written. A test written after implementation is not TDD.
-- **Beads before edits** — claim a bead before any file write. A retrospective claim after editing is not atomic.
+Planning output must cover: user/stakeholder · desired outcome · constraints · non-goals ·
+acceptance criteria · risks · proposed dependency-aware Beads graph.
 
-## Self-validation loop
+Release readiness output must use an explicit matrix: tests · docs · install-script safety ·
+recipe validation · rollback · observability · open blockers — each marked pass/fail/blocked/unknown.
 
-### Before advancing to the next SDD phase, verify:
-- [ ] Current phase is explicitly named in the output (Intent / Spec / TDD / Implement / Review / Verify)
-- [ ] Acceptance criteria are testable (specific measurable outcome, not aspirational prose)
-- [ ] No file writes happened before a bead was claimed
-- [ ] If TDD phase: failing test was written and confirmed to fail before implementation
-- [ ] If Implement phase: `bd update --claim` appears before the first `write` or `edit` tool call
+---
 
-### At phase (6) Verify — branch decision (never skip this):
-- [ ] All acceptance criteria have been checked against the spec-anchored outcome rule
-- [ ] Decision recorded: **PASS** (→ 7 Learn) | **FAIL-IMPL** (→ 5) | **FAIL-SPEC** (→ 2) | **ESCALATE** (>3 loops)
-- [ ] Loop count tracked: if this is iteration 3 with the same failure mode → escalate, do not loop again
+## 6. Safety rails
 
-## Maker/Checker
+### Gotchas
 
-SDD phases have built-in maker/checker splits:
-- Spec → verified by Architect (ADR trade-off analysis)
-- Acceptance criteria → verified by TDD-guide (can a failing test be written?)
-- Implementation → verified by Review-critic (diff review)
-- Release readiness → verified by Principal-engineer (blast radius check)
+- **Never skip to implement** — skipping Spec or TDD produces unverifiable code.
+- **AC must be testable** — "the system should be fast" is not a criterion. "endpoint responds in <200ms at p95 under 100 rps" is.
+- **RED before GREEN** — the failing test must be confirmed to fail before any implementation code.
+- **Beads before edits** — claim a bead before any file write; a retrospective claim is not atomic.
 
-Never advance a phase using the same agent that produced it.
+### Self-validation checklist
 
-## Beads loop
+Before advancing to the next SDD phase:
+- [ ] Phase name is stated explicitly in output (Intent / Spec / TDD / Implement / Review / Verify)
+- [ ] Acceptance criteria are testable (measurable outcome, not aspirational prose)
+- [ ] No file writes before a bead was claimed
+- [ ] TDD phase: failing test was run and output shows the failure before implementation
+- [ ] Implement phase: `bd update --claim` appears before the first `write` or `edit` tool call
 
-The SDD loop runs on Beads:
-  bd prime                           → knowledge generation (orient)
-  bd ready --json                    → triage: which SDD bead is next?
-  bd update <id> --claim             → claim before any phase artifact
-  [produce phase artifact]           → spec / test / code / review
-  bd create --deps discovered-from   → file discovered follow-up work
-  bd close <id> --reason "phase done"
-  bd remember "..." --key <key>      → store durable phase decisions
+At phase (6) Verify — record the branch decision explicitly:
+- [ ] All AC checked against spec-anchored outcome rule
+- [ ] Decision recorded: **PASS** (→ 7) | **FAIL-IMPL** (→ 5) | **FAIL-SPEC** (→ 2) | **ESCALATE** (>3 loops)
+- [ ] Loop count tracked: iteration 3 with same failure → escalate, do not loop again
+
+---
+
+## 7. Maker/Checker splits
+
+Each SDD phase has a designated checker — never advance a phase using the same agent that produced it:
+
+| Phase | Maker | Checker |
+|---|---|---|
+| Spec + AC | product-owner | architect (feasibility), tdd-guide (testability) |
+| Design | architect | principal-engineer (blast radius) |
+| TDD | tdd-guide | implementation-worker (can RED be reproduced?) |
+| Implement | implementation-worker | review-critic (diff review) |
+| Release readiness | review-critic | principal-engineer (blast radius check) |
