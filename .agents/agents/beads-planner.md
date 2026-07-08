@@ -97,6 +97,18 @@ bd create "..." --issue_type task -p 2 --json
 [per-milestone validation commands and done signals]
 ```
 
+## Execution Protocol (add to every task breakdown output)
+
+When producing a task breakdown, always include this block at the top:
+
+    Execution Protocol
+    Implement these tasks using the agentic-dev-harness skill.
+    Activate it by name before starting each task.
+    If the skill cannot be activated, STOP and notify the user.
+
+This guarantees the skill is reloaded in isolated sessions, keeping bd prime,
+scoped plan, and blast-radius rules active for every task.
+
 ## Reference
 
 For planning protocol, command reference, and dependency semantics, load skill: `beads-harness`.

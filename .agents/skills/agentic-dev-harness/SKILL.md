@@ -145,6 +145,39 @@ Final handoff must include: bead ID/status, files changed, validation commands/r
 - Subagents cannot coordinate with each other; the parent synthesizes.
 - Prefer `async: true` for independent research, then `load(task_id)`.
 
+## Lessons layer (P3 — self-improving via Beads pointer memories)
+
+After every verification failure, crystallize it as a reusable lesson using bd remember.
+This is the Reflexion cycle (Shinn 2023) made durable — failures become guidance for
+future sessions.
+
+### Capture (after any failure: test, grader, review BLOCK, SPEC_DEVIATION)
+    bd remember "<lesson in one actionable sentence>" --key lesson-<domain>-<NNN>
+
+    Example:
+    bd remember "Pointer memories use 'read when <trigger>' not 'read before' — grader checks exact wording." \
+      --key lesson-sdd-001
+
+### Promotion (candidate -> confirmed)
+A lesson is candidate until it prevents the same failure in a second independent feature.
+Add a [confirmed: features X, Y] marker to the value after the second prevention.
+
+### Load (at Specify / Design — before writing spec or design)
+    bd memories --query <domain>     # load domain-relevant lessons
+    bd recall lesson-sdd-001         # load a specific lesson
+
+### Phrasing rules
+- Write the general rule, not the specific incident.
+  YES: "assert exact status code, not just non-200"
+  NO:  "test on line 42 was too weak"
+- One lesson per failure signal — do not bundle.
+- Terse and actionable — a future agent can apply it without extra context.
+
+### Scope discipline
+Only capture execution failures grounded in a real signal (failing test, grader
+failure, SPEC_DEVIATION, surviving mutant). Do NOT capture methodology opinions
+about the SDD process — those go in skill Gotchas, updated by the maintainer.
+
 ## Durable-state rules
 
 - Do not use markdown TODOs as the source of truth.

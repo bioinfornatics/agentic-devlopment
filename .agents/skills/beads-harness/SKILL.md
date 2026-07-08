@@ -10,6 +10,20 @@ metadata:
 
 Use Beads as the durable scheduler and audit log for agentic development.
 
+## Lessons layer — pointer memories as crystallized Reflexion
+
+Failed tests, grader failures, SPEC_DEVIATIONs, and surviving mutants are captured as
+Beads pointer memories after diagnosis. This is the harness Reflexion layer.
+
+### Key conventions
+- Keys: lesson-<domain>-<NNN> (e.g., lesson-sdd-001, lesson-beads-001)
+- Status in value: [candidate] or [confirmed: features X, Y]
+- Load at session start: bd memories --query lesson
+
+### Example
+    bd remember "Pointer memories use 'read when' not 'read before' [confirmed: sdd-eval-0, adh-eval-2]." \
+      --key lesson-sdd-001
+
 ## Beads as Loop Engineering state layer
 
 Beads replaces Loop Engineering's STATE.md + triage + memory with a durable, dependency-aware, git-synced alternative:

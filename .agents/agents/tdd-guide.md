@@ -155,6 +155,34 @@ describe('[unit under test]', () => {
 | Statements | % | ✅ / ❌ |
 ```
 
+## Discrimination Sensor (P2 — run after final GREEN, before handoff)
+
+After the last GREEN in a feature cycle, confirm tests can detect regressions using
+lightweight mutation testing. Run in a scratch state only (git stash / temp copy) —
+never mutate the real working tree.
+
+### Procedure (3 targeted mutations per feature)
+1. Prepare scratch state: git stash or copy affected files to a temp location.
+2. Inject a behavior-level fault:
+   - Flip a boolean condition
+   - Change a return value (wrong status code, field, or zero instead of computed)
+   - Off-by-one: shift a loop bound or index
+   - Remove a required side effect (method call the spec requires)
+3. Run the tests that cover the mutated code.
+4. Confirm the mutant is killed (tests FAIL). Restore the scratch state.
+5. If a mutant survives (tests still pass): tests are not discriminating for that
+   behavior — file a Beads bead to strengthen the assertion.
+
+### Report format
+Discrimination sensor: 3 mutations injected
+  Mutation 1: flip condition guard → KILLED
+  Mutation 2: change return status → KILLED
+  Mutation 3: remove side-effect call → SURVIVED → bead filed
+
+### When to skip
+- Micro/Small scope with a single pure function (one mutation is sufficient)
+- Agent is a batch worker and orchestrator decided not to run sensor
+
 ## Reference
 For harness workflow context and Beads (`bd`) commands, load skill: `agentic-dev-harness`.  
 For diagnosing unexpected test failures or environment issues, load skill: `systematic-debugging`.
