@@ -1023,7 +1023,12 @@ def apply_fixture_patch(scenario: dict[str, Any], worktree: Path) -> None:
     patch_path = (ROOT / patch).resolve()
     if not patch_path.exists():
         raise FileNotFoundError(f"Fixture patch not found: {patch_path}")
-    subprocess.run(["git", "apply", str(patch_path)], cwd=worktree, check=True)
+    if patch_path.suffix == ".py":
+        # Durable transformation-based fixture — no line numbers, survives file growth
+        subprocess.run([sys.executable, str(patch_path), str(worktree)], check=True)
+    else:
+        # Legacy unified-diff patch — may become stale if target files grow
+        subprocess.run(["git", "apply", str(patch_path)], cwd=worktree, check=True)
 
 
 def prepare_configs(args: argparse.Namespace, scenario: dict[str, Any]) -> list[Config]:

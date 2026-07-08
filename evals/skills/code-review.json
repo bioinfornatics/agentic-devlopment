@@ -65,7 +65,7 @@
       ".agents/skills/code-review/SKILL.md",
       "docs/15-skill-evaluations.md"
     ],
-    "fixture_patch": "evals/fixtures/code-review/current-diff-regression.patch",
+    "fixture_patch": "evals/fixtures/code-review/current-diff-regression.py",
     "fixture_description": "Applied a patch that modifies harness-review.yaml, code-review/SKILL.md, and docs/15-skill-evaluations.md.",
     "fixture_intent": "Very difficult fixture: mixed recipe/skill/docs regression; expected to connect multiple harness rules and validation gaps.",
     "difficulty": "very_difficult",
