@@ -10,12 +10,6 @@ metadata:
 
 Use when validating a local web UI.
 
-## Tool constraints
-
-- **Never use `sudo`** — if a command requires elevated privileges, stop, explain why it is needed, and ask the user to run it.
-- **Never use `sleep` or `waitForTimeout`** — use condition-based waiting: `waitForResponse`, `waitForSelector`, `waitForLoadState`, `waitForURL`.
-- **Never kill unrelated running processes** — only stop the server you started.
-
 ## Knowledge generation (before any browser test)
 
 Before navigating:
@@ -24,6 +18,12 @@ Before navigating:
 3. Read one existing test or script for patterns (do not reinvent fixtures).
 4. Open browser tooling (Playwright) and confirm the page loads before testing anything.
 Only after these four steps: begin the test protocol.
+
+## Tool constraints
+
+- **Never use `sudo`** — if a command requires elevated privileges, stop, explain why it is needed, and ask the user to run it.
+- **Never use `sleep` or `waitForTimeout`** — use condition-based waiting: `waitForResponse`, `waitForSelector`, `waitForLoadState`, `waitForURL`.
+- **Never kill unrelated running processes** — only stop the server you started.
 
 ## Protocol
 

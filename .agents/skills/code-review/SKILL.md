@@ -128,6 +128,20 @@ AFTER THE LOOP:
 
 ---
 
+## Self-validation (before emitting any finding)
+
+Run this loop for every candidate finding before writing it to output:
+
+- [ ] Can I cite the exact file and line number?
+- [ ] Can I describe the concrete failure mode (specific input → wrong outcome)?
+- [ ] Have I read the surrounding context, callers, and type signatures?
+- [ ] Is the severity defensible to a senior engineer on this team?
+- [ ] Confidence > 80%?
+
+If any answer is NO → downgrade severity or drop the finding.
+
+For HIGH / CRITICAL: is there a concrete exploit scenario or exact reproduction case? If not → downgrade to MEDIUM.
+
 ## Gotchas
 
 - Beads hygiene violations are always reportable regardless of confidence filtering.

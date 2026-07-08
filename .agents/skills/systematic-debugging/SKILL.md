@@ -231,7 +231,7 @@ If you catch yourself thinking:
 
 **If 3+ fixes failed:** Question the architecture (see Phase 4.5)
 
-## your human partner's Signals You're Doing It Wrong
+## Signals you are doing it wrong
 
 **Watch for these redirections:**
 - "Is that not happening?" - You assumed without verifying
@@ -287,10 +287,22 @@ These techniques are part of systematic debugging and available in this director
 - **superpowers:test-driven-development** - For creating failing test case (Phase 4, Step 1)
 - **superpowers:verification-before-completion** - Verify fix worked before claiming success
 
-## Real-World Impact
+## Beads integration
 
-From debugging sessions:
-- Systematic approach: 15-30 minutes to fix
-- Random fixes approach: 2-3 hours of thrashing
-- First-time fix rate: 95% vs 40%
-- New bugs introduced: Near zero vs common
+When a bug is diagnosed and a fix is planned:
+
+    bd create "Fix: <root cause in title>" --issue_type task -p 2 --json
+    bd update <id> --claim
+    # implement fix + regression test
+    bd close <id> --reason "Fixed: <root cause>. Regression test added at <file:line>."
+
+File a separate bead for each distinct root cause — do not bundle unrelated fixes.
+
+## Self-validation (before reporting a fix)
+
+- [ ] Root cause is stated with exact file:line and causal chain
+- [ ] Hypothesis was verified against evidence (not just plausible)
+- [ ] Blast radius was assessed — other call sites / code paths identified
+- [ ] Regression test is written and confirmed to catch the original failure
+- [ ] Fix addresses the root cause, not just the symptom
+

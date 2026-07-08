@@ -40,6 +40,16 @@ Use this skill when doing software development, planning, research, review, rele
 
 ## Delegation rules
 
+**Parallel (read-only research):** delegate aggressively — each subagent has its own context window; the orchestrator stays lean.
+
+**Sequential (durable writes):** partition files strictly — two delegates must never write to the same file. The orchestrator synthesises.
+
+**Invariant:** subagents cannot call `delegate()`. Only the top-level orchestrator session may spawn subagents. Subagents cannot enable/disable extensions or manage scheduled tasks.
+
+**When to delegate vs. inline:**
+- Delegate when: the task is isolated, parallelisable, or needs a separate context window to stay lean.
+- Inline when: the task is a single tool call or the result is needed immediately to decide the next step.
+
 ## First visible output rule (applies to every task type)
 
 Before any tool call, your first assistant-turn text must contain a scoping declaration.

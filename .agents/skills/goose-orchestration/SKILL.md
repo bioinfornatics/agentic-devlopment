@@ -8,6 +8,14 @@ metadata:
 
 # Goose Orchestration
 
+## Knowledge generation (before any delegation decision)
+
+Before emitting an Orchestration decision, generate explicit knowledge:
+1. Call `load()` with no arguments — list available agents and their descriptions.
+2. Run `bd prime` — load current Beads state (open issues, memories, workflow context).
+3. Check `bd ready --json` — identify which beads are waiting for assignment.
+Only after this knowledge is generated: emit the Orchestration decision block.
+
 ## Runtime primitives
 
 - **Extensions**: tool/capability surface. Keep active tools focused.
@@ -100,14 +108,6 @@ there must match the "Invoke when" column below.
 | Discovery | `load()` at runtime | `sub_recipes` block |
 
 ---
-
-## Knowledge generation (before any delegation decision)
-
-Before emitting an Orchestration decision, generate explicit knowledge:
-1. Call `load()` with no arguments — list available agents and their descriptions.
-2. Run `bd prime` — load current Beads state (open issues, memories, workflow context).
-3. Check `bd ready --json` — identify which beads are waiting for assignment.
-Only after this knowledge is generated: emit the Orchestration decision block.
 
 ## Beads as orchestration state (Loop Engineering pattern)
 
@@ -324,6 +324,13 @@ A project-local `subagent_system.md` file sets the base system prompt injected i
 Use it to add harness-wide context (Beads discipline, handoff format, stop rules) to all subagents automatically.
 
 ## Recipe design rules
+
+- Put durable **methodology in skills**, not duplicated in recipes or agents.
+- Put **workflow routing** in recipes (thin wrappers: load skill → route to subrecipe or agent).
+- Put **specialized repeatable units** in subrecipes (isolated sessions with their own protocol).
+- Use **response schemas** (`response: json_schema:`) for automation; use narrative output for human review.
+- Include `summon` explicitly in a recipe's `extensions` block when it needs `delegate()` — it is not auto-injected unless `sub_recipes` is present.
+- Always run `goose recipe validate <path>` and report the result before closing a recipe-related bead.
 
 ## Orchestration decision protocol
 

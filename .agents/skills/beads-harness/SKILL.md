@@ -10,19 +10,17 @@ metadata:
 
 Use Beads as the durable scheduler and audit log for agentic development.
 
-## Lessons layer — pointer memories as crystallized Reflexion
+## Core commands
 
-Failed tests, grader failures, SPEC_DEVIATIONs, and surviving mutants are captured as
-Beads pointer memories after diagnosis. This is the harness Reflexion layer.
-
-### Key conventions
-- Keys: lesson-<domain>-<NNN> (e.g., lesson-sdd-001, lesson-beads-001)
-- Status in value: [candidate] or [confirmed: features X, Y]
-- Load at session start: bd memories --query lesson
-
-### Example
-    bd remember "Pointer memories use 'read when' not 'read before' [confirmed: sdd-eval-0, adh-eval-2]." \
-      --key lesson-sdd-001
+```bash
+bd prime                  # inject workflow + memories
+bd ready --json           # claimable work
+bd blocked --json         # blocked work and blockers
+bd show <id> --json       # issue detail
+bd update <id> --claim    # atomic claim
+bd close <id> --reason "Done"
+bd create "Title" -t task -p 2 --json
+```
 
 ## Beads as Loop Engineering state layer
 
@@ -39,19 +37,20 @@ Beads replaces Loop Engineering's STATE.md + triage + memory with a durable, dep
 | Async gate | `bd gate <id> --signal "CI green"` |
 | Resolved / pruned | `bd close <id> --reason "..."` |
 
-## Core commands
-
-```bash
-bd prime                  # inject workflow + memories
-bd ready --json           # claimable work
-bd blocked --json         # blocked work and blockers
-bd show <id> --json       # issue detail
-bd update <id> --claim    # atomic claim
-bd close <id> --reason "Done"
-bd create "Title" -t task -p 2 --json
-```
-
 ## Dependency semantics
+
+When adding a dependency, state the direction explicitly:
+- `bd dep add B A` means "B depends on A" — B cannot start until A closes.
+- Use `--type blocks` for hard blockers, `--type related` for soft informational links, `--type discovered-from` for follow-up work found during a task.
+- Never add circular dependencies — bd validates and rejects them.
+
+Naming convention for dependency types:
+| Type | Meaning |
+|---|---|
+| `blocks` (default) | B cannot start until A is closed |
+| `related` | informational link; does not block |
+| `discovered-from` | B was found while working on A |
+| `partOf` | B is a sub-task of epic A |
 
 ## Selection discipline
 
@@ -234,3 +233,16 @@ For Loop Engineering context (scheduling, circuit breakers, multi-loop coordinat
 - Load `docs/sota-knowledge-base.md#12` — Beads as Loop Engineering state layer
 - Load `docs/sota-knowledge-base.md#11` — Loop Engineering patterns
 
+## Lessons layer — pointer memories as crystallized Reflexion
+
+Failed tests, grader failures, SPEC_DEVIATIONs, and surviving mutants are captured as
+Beads pointer memories after diagnosis. This is the harness Reflexion layer.
+
+### Key conventions
+- Keys: lesson-<domain>-<NNN> (e.g., lesson-sdd-001, lesson-beads-001)
+- Status in value: [candidate] or [confirmed: features X, Y]
+- Load at session start: bd memories --query lesson
+
+### Example
+    bd remember "Pointer memories use 'read when' not 'read before' [confirmed: sdd-eval-0, adh-eval-2]." \
+      --key lesson-sdd-001
