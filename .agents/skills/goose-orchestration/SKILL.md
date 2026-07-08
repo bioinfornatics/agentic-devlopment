@@ -206,7 +206,9 @@ load()  ← discover agents + subrecipes + their descriptions
 
 ### Orchestration decision block (emit before every delegate())
 
-> **SOTA insight (July 2026):** Agents pattern-match against concrete templates far better than prose descriptions. Copy the template below verbatim — including exact casing and the colon. Do NOT format it as a markdown heading (`## Orchestration Decision` ≠ `Orchestration decision:`).
+> **SOTA insight (July 2026):** Agents pattern-match against concrete templates far better than prose descriptions. Copy the template below verbatim — including exact casing and the colon. Do NOT format it as a markdown heading.
+
+> **Timing rule:** This block must appear in your first assistant message, before any tool call. A block that appears after tool calls — even if the content is correct — does not satisfy the requirement.
 
 **Emit this exact block — inline text, not a markdown heading:**
 

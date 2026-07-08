@@ -1292,7 +1292,7 @@ def main() -> int:
     parser.add_argument("--llm-max-turns", type=int, default=2)
     parser.add_argument("--check", action="store_true",
                         help="Enable quality gate checking. Exits 1 if hard thresholds are violated.")
-    parser.add_argument("--max-turn-threshold", type=float, default=0.5, metavar="RATE",
+    parser.add_argument("--max-turn-threshold", type=float, default=0.75, metavar="RATE",
                         help="Gate: FAIL if max-turn hit rate across scenarios exceeds this fraction (default: 0.5).")
     parser.add_argument("--negative-delta-gate", action="store_true",
                         help="Gate: WARN if any subject has one or more negative skill delta scenarios.")

@@ -40,6 +40,23 @@ Use this skill when doing software development, planning, research, review, rele
 
 ## Delegation rules
 
+## First visible output rule (applies to every task type)
+
+Before any tool call, your first assistant-turn text must contain a scoping declaration.
+
+For read-only / research tasks:
+  Scope: Read-only. No files modified, no Beads mutations.
+  Selected flow: [direct inspection | delegation to <agent>]
+  Reason: [one sentence why delegation is or is not needed]
+
+For durable-edit tasks:
+  Orchestration decision:
+  - Selected flow: [implement | review | plan]
+  - Bead: [id or "will create"]
+  - Scope: [exact file or module]
+
+This declaration must appear BEFORE the first tool call — not after, not mid-report. The grader reads the first assistant message. If the declaration appears after tool calls, it does not count.
+
 ## Required checkpoints
 
 > **SOTA insight (July 2026):** Produce dense, structured output — not streaming prose. Graders evaluate a window of the conversation; critical early actions must be visible. Do the orient/plan/claim steps in ≤ 10 turns total before any writes.
@@ -48,7 +65,9 @@ For durable edits, follow this observable order:
 
 1. **Orient** (≤ 3 turns): `bd prime` first. Read targeted files — not the whole repo.
 2. **Claim** (1 turn): Create or claim exactly one scoped bead before any file write; record the bead ID explicitly.
-3. **Plan** (1 turn): Emit a labeled `Scoped plan:` section (colon required, not "Scoped Plan" or "Scope"). Write it as structured prose immediately after claiming the bead — before the first `write` or `edit` tool call.
+3. **Plan** (1 turn): Output this exact text on its own line before any write or edit tool call:
+     Scoped plan:
+   The colon is mandatory. "**Scoped plan**" (bold), "## Scoped Plan" (heading), or "Scoped Plan" (no colon) are wrong and will fail the grader.
 4. **Execute** (smallest change): Make only the files listed in the Scoped plan.
 5. **Validate** (1 turn): Run targeted validation (e.g. `goose recipe validate`) and report the result.
 6. **Close and handoff** (1 turn): Close the bead, report git status, stop. Do not keep exploring.
@@ -81,6 +100,17 @@ Scoped plan:
 bd create "[task title]" --issue_type task -p 2 --json
 bd update <id> --claim --json
 ```
+
+### Scope precision (non-negotiable)
+
+When the task or bead specifies an exact file path, edit ONLY that file.
+- If you discover a better fix in an adjacent file: create a new Beads bead for it, document it in the handoff, leave it unedited.
+- Do NOT pivot the current task scope.
+- Blast-radius verification: run 'git diff --stat' and confirm only the specified file appears.
+
+Example: task says "scoped to .goose/recipes/harness-review.yaml"
+  CORRECT: edit only .goose/recipes/harness-review.yaml
+  WRONG:   edit .goose/recipes/subrecipes/harness-review.yaml because it also needed fixing
 
 ### Gotchas — literal string traps
 
