@@ -7,6 +7,7 @@ import html
 import json
 import os
 import subprocess
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -209,6 +210,9 @@ def main() -> int:
     parser.add_argument("--no-history", action="store_true", help="Do not record this run in the eval history database.")
     parser.add_argument("--no-feedback", action="store_true", help="Skip automatic feedback generation for each eval run.")
     parser.add_argument("--runs-per-config", type=int, default=1)
+    parser.add_argument("--max-workers", type=int, default=1, metavar="N",
+        help="Number of skills to evaluate in parallel (default: 1 = sequential). "
+             "Set to 3-4 for parallel runs. Requires evaluation.db in WAL mode (auto-enabled).")
     parser.add_argument("--skills", nargs="*", help="Optional subset. Defaults to every evals/skills/*.json file.")
     parser.add_argument("--mode", choices=["with-without", "with-without-available"], default="with-without", help="Eval comparison mode forwarded to per-skill runs.")
     parser.add_argument("--max-turns", type=int, default=8)
@@ -251,9 +255,15 @@ def main() -> int:
         raise SystemExit(f"Runner not found: {runner}")
 
     results: dict[str, dict[str, Any]] = {}
-    for skill in skills:
+
+    def _run_one_skill(skill: str) -> dict[str, Any]:
+        """Worker: run one skill eval in an isolated subprocess, return result dict."""
         skill_run_id = resolve_skill_run_id(args, skill)
-        skill_workspace = default_subject_workspace(skill, skill_run_id, DEFAULT_EVAL_KIND) if args.workspace_root is None else args.workspace_root / skill / skill_run_id
+        skill_workspace = (
+            default_subject_workspace(skill, skill_run_id, DEFAULT_EVAL_KIND)
+            if args.workspace_root is None
+            else args.workspace_root / skill / skill_run_id
+        )
         cmd = [
             sys.executable,
             str(runner),
@@ -300,19 +310,52 @@ def main() -> int:
             cmd.append("--no-feedback")
 
         started = datetime.now(timezone.utc)
-        print(f"== Running skill eval suite item: {skill} ==", flush=True)
-        print(f"[start] suite skill={skill} workspace={skill_workspace}", flush=True)
-        proc = subprocess.run(cmd, cwd=ROOT)
+        # stdout/stderr captured: printed as a block when the skill completes to avoid interleaving.
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=(args.max_workers > 1), text=True)
         elapsed = (datetime.now(timezone.utc) - started).total_seconds()
-        print(f"[done] suite skill={skill} rc={proc.returncode} duration={elapsed:.1f}s", flush=True)
-        results[skill] = {"returncode": proc.returncode, "command": cmd, "workspace": str(skill_workspace), "run_id": skill_run_id}
-        if proc.returncode != 0 and not args.continue_on_failure:
+        return {
+            "skill": skill,
+            "returncode": proc.returncode,
+            "command": cmd,
+            "workspace": str(skill_workspace),
+            "run_id": skill_run_id,
+            "elapsed": elapsed,
+            "stdout": getattr(proc, "stdout", None) or "",
+            "stderr": getattr(proc, "stderr", None) or "",
+        }
+
+    def _handle_skill_result(result: dict[str, Any]) -> None:
+        """Print buffered output (parallel mode) and record in results dict."""
+        skill = result["skill"]
+        if result["stdout"]:
+            print(result["stdout"], end="", flush=True)
+        if result["stderr"]:
+            print(result["stderr"], end="", flush=True)
+        print(f"[done] suite skill={skill} rc={result['returncode']} duration={result['elapsed']:.1f}s", flush=True)
+        results[skill] = result
+        if result["returncode"] != 0 and not args.continue_on_failure:
             output = args.output or (args.workspace_root / "index.html")
             generate_index(output=output, skills=skills, workspace_root=args.workspace_root, results=results, command=sys.argv)
             latest = args.workspace_root / "index.html"
             if output.resolve() != latest.resolve():
                 latest.write_text(output.read_text())
-            raise SystemExit(proc.returncode)
+            raise SystemExit(result["returncode"])
+
+    if args.max_workers <= 1:
+        # Sequential mode (default) — behaviour identical to previous implementation.
+        for skill in skills:
+            print(f"== Running skill eval suite item: {skill} ==", flush=True)
+            print(f"[start] suite skill={skill}", flush=True)
+            _handle_skill_result(_run_one_skill(skill))
+    else:
+        # Parallel mode — skills run concurrently, output printed as blocks.
+        print(f"== Parallel suite: {len(skills)} skills, max_workers={args.max_workers} ==", flush=True)
+        with ProcessPoolExecutor(max_workers=args.max_workers) as pool:
+            future_to_skill = {pool.submit(_run_one_skill, skill): skill for skill in skills}
+            for future in as_completed(future_to_skill):
+                skill = future_to_skill[future]
+                print(f"== Completed skill eval suite item: {skill} ==", flush=True)
+                _handle_skill_result(future.result())
 
     output = args.output or (args.workspace_root / "index.html")
     generate_index(output=output, skills=skills, workspace_root=args.workspace_root, results=results, command=sys.argv)

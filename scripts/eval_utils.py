@@ -166,6 +166,10 @@ def init_history_db(path: Path = DEFAULT_HISTORY_DB) -> None:
         legacy.rename(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(path) as db:
+        # WAL mode: serialises concurrent writers via retry; safe for parallel skill runs.
+        # busy_timeout: wait up to 30 s before raising OperationalError on lock contention.
+        db.execute("PRAGMA journal_mode=WAL")
+        db.execute("PRAGMA busy_timeout=30000")
         db.execute(
             """
             CREATE TABLE IF NOT EXISTS eval_runs (
@@ -327,6 +331,8 @@ def record_eval_run(
     turn_summary = extract_turn_summary(summary or {})
     summary_json = json.dumps(summary or {}, sort_keys=True)
     with sqlite3.connect(db_path) as db:
+        db.execute("PRAGMA journal_mode=WAL")
+        db.execute("PRAGMA busy_timeout=30000")
         db.execute(
             """
             INSERT INTO eval_runs(

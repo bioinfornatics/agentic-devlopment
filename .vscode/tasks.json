@@ -38,7 +38,14 @@
       }
     },
     {
-      "label": "Eval: Full A/B Suite + Post-Suite Workflow",
+      "label": "Eval: Full A/B Suite (parallel --max-workers 3)"
+        {
+            "label": "Eval: Full A/B Suite (parallel --max-workers 3)",
+            "type": "shell",
+            "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --runs-per-config 1 --max-workers 3",
+            "group": "test",
+            "presentation": { "reveal": "always", "panel": "new" }
+        }"label": "Eval: Full A/B Suite + Post-Suite Workflow",
       "type": "shell",
       "command": "python scripts/run-skill-ab-suite.py --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate && python scripts/export-eval-history.py && python scripts/build-eval-report.py && xdg-open dist/evals/report/index.html",
       "group": "test",
