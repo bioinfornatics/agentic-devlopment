@@ -109,6 +109,11 @@ def prepare_goose_environment(args: argparse.Namespace, run_dir: Path, config: "
     """
     env = os.environ.copy()
     if args.ambient_goose:
+        # Ambient mode: use real HOME so keychain credentials are accessible.
+        # Required when the active Goose provider stores its API key in the system
+        # keychain (e.g. azure_foundry, custom_claude_from_azure) rather than in
+        # environment variables. Skill content isolation is maintained via explicit
+        # prompt injection; filesystem-level isolation is intentionally skipped.
         neutral_cwd = run_dir / "goose-cwd"
         neutral_cwd.mkdir(parents=True, exist_ok=True)
         return env, neutral_cwd, None

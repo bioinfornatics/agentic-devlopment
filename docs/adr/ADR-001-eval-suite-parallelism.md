@@ -244,3 +244,46 @@ L'implémentation niveau 1 est recommandée dès que :
 - [ ] Rate limits API vérifiés empiriquement sur 3 skills simultanés
 - [ ] `max_workers` ajouté à VSCode tasks / .run configs
 
+---
+
+## Addendum 2 — Keychain credentials bloquent l'environnement isolé (2026-07-08)
+
+### Symptôme observé
+
+Tous les runs webapp-testing terminent en `rc=1 duration=0.1s` :
+```
+error: Error Unknown provider: azure_foundry.
+Please check your system keychain and run 'goose configure' again.
+```
+
+### Cause racine
+
+`prepare_goose_environment()` crée un HOME isolé et copie `config.yaml`.
+Le fichier config référence `active_provider: azure_foundry` dont l'API key
+est **uniquement dans le keychain système** (GNOME Keyring, pas dans les env vars).
+
+Goose cherche les credentials dans `$HOME/.local/share/keyrings/` —
+qui pointe vers le HOME isolé vide. Résultat : provider inconnu, exit immédiat.
+
+### Solution : `--ambient-goose`
+
+Le flag `--ambient-goose` existe pour ce cas exact :
+- HOME réel utilisé → keychain accessible → credentials trouvés
+- Isolation fonctionnelle préservée : skill content injecté dans le prompt
+- Isolation filesystem intentionnellement abandonnée (acceptable)
+
+```bash
+python3 scripts/run-skill-ab-suite.py \
+  --ambient-goose --max-workers 3 --continue-on-failure
+```
+
+**Impact sur le design parallèle :** aucun. ThreadPoolExecutor + WAL + `--ambient-goose`
+fonctionnent ensemble. Les VSCode tasks et .run configs ont été mis à jour pour inclure
+`--ambient-goose` par défaut.
+
+### Alternative future (backlog)
+
+Si isolation complète est requise : injecter l'API key via env var dans
+`prepare_goose_environment()` en lisant depuis le keyring Python (`keyring` package)
+et en la passant comme `AZURE_FOUNDRY_API_KEY` dans `env[]`.
+

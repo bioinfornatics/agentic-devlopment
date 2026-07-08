@@ -42,7 +42,7 @@
         {
             "label": "Eval: Full A/B Suite (parallel --max-workers 3)",
             "type": "shell",
-            "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --runs-per-config 1 --max-workers 3",
+            "command": ""python3 scripts/run-skill-ab-suite.py --continue-on-failure --runs-per-config 1 --max-workers 3 --ambient-goose",
             "group": "test",
             "presentation": { "reveal": "always", "panel": "new" }
         }"label": "Eval: Full A/B Suite + Post-Suite Workflow",
