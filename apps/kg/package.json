@@ -1,1 +1,21 @@
-{"name":"@harness/kg","version":"1.0.0","type":"module","bin":{"kg":"./dist/cli.js"},"scripts":{"build":"tsc","bootstrap":"node dist/cli.js bootstrap","reason":"node dist/cli.js reason","pipeline":"node dist/cli.js pipeline","dev":"tsc --watch"},"devDependencies":{"typescript":"^5.5.0","@types/node":"^22.0.0"}}
+{
+  "name": "@harness/kg",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "kg": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "bootstrap": "node dist/cli.js bootstrap",
+    "reason": "node dist/cli.js reason",
+    "pipeline": "node dist/cli.js pipeline",
+    "dev": "tsc --watch",
+    "test": "node --test dist/*.test.js",
+    "test:src": "node --test --import tsx src/*.test.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
+  }
+}
