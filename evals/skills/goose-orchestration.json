@@ -10,7 +10,7 @@
     ],
     "fixture_intent": "Normal scenario: read-only mapping of recipe delegation chain \u2014 tests Orchestration decision naming the correct flow, focused analysis without broad scanning, and Delegation audit closure.",
     "difficulty": "normal",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The orchestration skill should emit a literal `Orchestration decision:` block before any analysis naming the read-only research flow, justify why delegation is or is not used, return evidence from specific recipe and subrecipe files, and close with a literal `Delegation audit:` \u2014 a baseline agent skips both structural blocks and just lists findings.",
     "baseline_gaps": [
       "Agent inspects files and lists findings without ever emitting an Orchestration decision block.",
@@ -36,7 +36,7 @@
     ],
     "fixture_intent": "Difficult scenario: delegation decision with justification \u2014 Orchestration decision, non-overlapping scopes if delegated, risk-ranked synthesis, Delegation audit.",
     "difficulty": "difficult",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The orchestration skill should produce an `Orchestration decision:` before work and a `Delegation audit:` after \u2014 baseline agents skip both and just inspect files.",
     "baseline_gaps": [
       "Agent may create overlapping or vague delegated tasks without a stated routing decision.",
@@ -60,7 +60,7 @@
     ],
     "fixture_intent": "Very difficult scenario: multi-worker contract with verbatim invariant \u2014 discriminant is (1) verbatim invariant string and (2) explicit non-overlapping scope assignment. Heading capitalisation variants are accepted.",
     "difficulty": "very_difficult",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The orchestration skill should produce an Orchestration decision block, worker contracts with non-overlapping scopes, the verbatim coordination invariant (exact sentence), and a Delegation audit block. The skill now provides verbatim templates and gotchas for casing \u2014 the key discriminant is the verbatim invariant and non-overlapping scopes, not heading capitalisation.",
     "baseline_gaps": [
       "Agent may allow same-file writes or assume subagents can coordinate.",

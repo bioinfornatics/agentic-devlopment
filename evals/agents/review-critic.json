@@ -6,18 +6,18 @@
       ".agents/agents/",
       "AGENTS.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The review-critic should apply the pre-report gate (4 questions), confidence filtering, severity taxonomy, and explicit verdict — baseline lists issues without filtering or verdict.",
-    "fixture_intent": "Confirm that the agent reads the actual diff via git commands before reviewing, filters observations through the confidence threshold, and always emits a verdict — even when the diff is clean and the correct output is zero findings.",
+    "expected_skill_contribution": "The review-critic should apply the pre-report gate (4 questions), confidence filtering, severity taxonomy, and explicit verdict \u2014 baseline lists issues without filtering or verdict.",
+    "fixture_intent": "Confirm that the agent reads the actual diff via git commands before reviewing, filters observations through the confidence threshold, and always emits a verdict \u2014 even when the diff is clean and the correct output is zero findings.",
     "baseline_gaps": [
       "Lists observations about file contents without running `git diff` or `git diff --staged` to read the actual diff",
       "Reports findings without applying the >80% confidence threshold, allowing speculative or low-confidence noise",
       "Omits an explicit APPROVE / PASS-WITH-NITS / BLOCK verdict from the review output"
     ],
     "expected_behavior": [
-      "Runs `git diff --staged` and `git diff` to read the actual diff before forming any finding — does not review file contents in isolation",
-      "Applies confidence filtering — only reports findings it is >80% confident about, and states confidence level for each finding reported",
+      "Runs `git diff --staged` and `git diff` to read the actual diff before forming any finding \u2014 does not review file contents in isolation",
+      "Applies confidence filtering \u2014 only reports findings it is >80% confident about, and states confidence level for each finding reported",
       "Produces an explicit verdict (APPROVE / PASS-WITH-NITS / BLOCK) placed before the findings list, not buried at the end",
       "Treats zero findings with a clean diff as a valid outcome and emits APPROVE without manufacturing findings to fill the report"
     ]
@@ -27,7 +27,7 @@
     "files": [
       ".agents/skills/code-review/SKILL.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "difficult",
     "expected_skill_contribution": "The review-critic should apply the pre-report 4-question gate for each finding and require exact snippet + failure mode + why guards don't catch it for HIGH severity.",
     "fixture_intent": "Verify that the agent enforces the HIGH-severity proof requirement rather than asserting severity without evidence, and that it consolidates similar findings rather than producing a bloated list of the same pattern.",
@@ -38,8 +38,8 @@
     ],
     "expected_behavior": [
       "Applies the pre-report gate before each finding: cites exact line, states a concrete failure mode, confirms context was read, and defends the severity assignment",
-      "For any HIGH finding: includes exact file and line, a specific failure scenario expressed as input→state→outcome, and explains why existing guards in the skill do not catch it",
-      "Checks Beads hygiene as a non-discretionary category — Beads violations are always reported regardless of confidence percentage",
+      "For any HIGH finding: includes exact file and line, a specific failure scenario expressed as input\u2192state\u2192outcome, and explains why existing guards in the skill do not catch it",
+      "Checks Beads hygiene as a non-discretionary category \u2014 Beads violations are always reported regardless of confidence percentage",
       "Consolidates similar findings into a single entry with examples rather than creating 5 separate findings for the same repeated pattern"
     ]
   },
@@ -50,17 +50,17 @@
       ".agents/skills/code-review/SKILL.md",
       ".agents/agents/review-critic.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The review-critic must handle multi-surface review with cross-surface connections, apply false-positive filtering from its list, and propose exact Beads follow-ups.",
-    "fixture_intent": "Stress-test the agent's false-positive suppression and cross-surface reasoning on a diff spanning three artifact types — the discriminant is whether the verdict is holistic and whether follow-ups are actionable `bd create` commands rather than prose.",
+    "fixture_intent": "Stress-test the agent's false-positive suppression and cross-surface reasoning on a diff spanning three artifact types \u2014 the discriminant is whether the verdict is holistic and whether follow-ups are actionable `bd create` commands rather than prose.",
     "baseline_gaps": [
       "Reviews each file in isolation and produces per-file verdicts instead of a single holistic verdict covering the full diff",
       "Flags at least one pattern from the false positives list (missing JSDoc, magic numbers, or switch-statement length)",
       "Proposes follow-up work as prose recommendations rather than exact `bd create` commands"
     ],
     "expected_behavior": [
-      "States a single verdict covering the full multi-surface diff — not three separate per-file verdicts — reflecting cross-surface coherence assessment",
+      "States a single verdict covering the full multi-surface diff \u2014 not three separate per-file verdicts \u2014 reflecting cross-surface coherence assessment",
       "Explicitly avoids at least 3 named false-positive patterns: missing JSDoc comments, flagging magic numbers that are domain constants, and reporting function-too-long for switch statements",
       "Identifies any cross-surface issue where a recipe change affects skill routing or an agent description change breaks an existing invocation pattern",
       "Proposes exact `bd create \"<title>\" -t task -p <priority> --json` commands for follow-up work rather than prose like 'consider improving X'"

@@ -6,9 +6,9 @@
       "evals/",
       "docs/15-skill-evaluations.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The product-owner agent should apply the 100-pt PRD rubric, score the PRD, write Given/When/Then acceptance criteria, and state explicit non-goals — baseline produces vague requirements.",
+    "expected_skill_contribution": "The product-owner agent should apply the 100-pt PRD rubric, score the PRD, write Given/When/Then acceptance criteria, and state explicit non-goals \u2014 baseline produces vague requirements.",
     "fixture_intent": "Existing recipe files and a partial evals directory give the PO concrete scope to anchor acceptance criteria and non-goals against real artefacts rather than hypotheticals.",
     "baseline_gaps": [
       "Writes requirements without scoring them against a quality rubric or stating what threshold must be reached before hand-off.",
@@ -17,7 +17,7 @@
     ],
     "expected_behavior": [
       "Scores the PRD against the 100-pt rubric broken into 5 dimensions: Business Value (30) + Functional (25) + UX (20) + Technical (15) + Scope (10).",
-      "Does not hand off to any downstream agent until the total score reaches ≥85/100.",
+      "Does not hand off to any downstream agent until the total score reaches \u226585/100.",
       "Writes all acceptance criteria in testable Given/When/Then form (or equivalent structured format), not as prose assertions.",
       "States explicit non-goals in a dedicated section before the acceptance criteria so scope boundaries are unambiguous."
     ]
@@ -29,7 +29,7 @@
       "AGENTS.md",
       "docs/03-security-review.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "difficult",
     "expected_skill_contribution": "The product-owner should clarify intent through targeted questions, score the PRD, iterate if below 85, and ensure each acceptance criterion is testable by the tdd-guide agent.",
     "fixture_intent": "The referenced doc and recipe directory provide partial context for a security-review recipe so the PO must identify missing information through targeted questions before producing a scoreable PRD.",
@@ -40,32 +40,32 @@
     ],
     "expected_behavior": [
       "Asks at most 5 targeted clarifying questions before producing any PRD content, each question tied to a specific gap in the spec.",
-      "States the PRD score with a per-dimension breakdown explicitly (e.g., Business Value: 28/30, Functional: 20/25, …).",
+      "States the PRD score with a per-dimension breakdown explicitly (e.g., Business Value: 28/30, Functional: 20/25, \u2026).",
       "If total score is <85, names the specific gap dimensions and asks targeted questions to address them before proceeding.",
       "Each acceptance criterion is specific enough that tdd-guide could write a failing test directly from it without requesting clarification."
     ]
   },
   {
-    "query": "Produce a complete PRD for a multi-tenant version of this harness. User personas, success metrics, epics, stories, Given/When/Then criteria, and technical constraints. Gate at ≥85/100.",
+    "query": "Produce a complete PRD for a multi-tenant version of this harness. User personas, success metrics, epics, stories, Given/When/Then criteria, and technical constraints. Gate at \u226585/100.",
     "files": [
       "README.md",
       "AGENTS.md",
       "docs/"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "The product-owner should produce a full PRD covering all 5 rubric dimensions, define distinct personas, write epic→story hierarchy, reach ≥85/100, and block implementation routing until the gate is met.",
+    "expected_skill_contribution": "The product-owner should produce a full PRD covering all 5 rubric dimensions, define distinct personas, write epic\u2192story hierarchy, reach \u226585/100, and block implementation routing until the gate is met.",
     "fixture_intent": "A single-tenant harness with documented agents and recipes gives the PO enough context to identify what multi-tenancy would change, derive distinct personas, and structure epics that map to real harness components.",
     "baseline_gaps": [
-      "Writes a flat requirements list without distinct personas or an Epic→Story hierarchy.",
-      "Applies no PRD quality gate — hands off to implementation with a score below 85 or without scoring at all.",
+      "Writes a flat requirements list without distinct personas or an Epic\u2192Story hierarchy.",
+      "Applies no PRD quality gate \u2014 hands off to implementation with a score below 85 or without scoring at all.",
       "Mixes non-goals into the requirements body rather than isolating them in a dedicated section."
     ],
     "expected_behavior": [
       "Defines at least 2 distinct user personas with named goals and specific pain points relevant to multi-tenancy.",
-      "Structures all requirements as an Epic→Story hierarchy with each story linked to exactly one parent epic.",
+      "Structures all requirements as an Epic\u2192Story hierarchy with each story linked to exactly one parent epic.",
       "Scores the PRD against all 5 rubric dimensions and states the total score explicitly.",
-      "Explicitly states 'PRD gate: PASS (≥85)' before handing off, or lists the failing dimensions and iterates until the gate is met."
+      "Explicitly states 'PRD gate: PASS (\u226585)' before handing off, or lists the failing dimensions and iterates until the gate is met."
     ]
   }
 ]

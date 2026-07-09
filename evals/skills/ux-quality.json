@@ -12,7 +12,7 @@
     ],
     "fixture_intent": "Normal scenario: UX quality review using the 8-dimension evaluation stack with browser evidence.",
     "difficulty": "normal",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The UI/UX skill should apply the 8-dimension evaluation stack in sequence and produce a user-impact-ranked review with evidence for hierarchy, visual quality, and accessibility.",
     "baseline_gaps": [
       "Agent may give generic aesthetic feedback without evidence.",
@@ -20,7 +20,7 @@
     ],
     "expected_behavior": [
       "Evaluates at least 5 of the 8 dimensions in order: User Intent, Information Architecture, Interaction States, Visual Taste, Design System, Accessibility, Performance, Evidence.",
-      "Requests or captures browser evidence (screenshot, console output, or a11y snapshot) before stating findings — no evidence means no finding.",
+      "Requests or captures browser evidence (screenshot, console output, or a11y snapshot) before stating findings \u2014 no evidence means no finding.",
       "Ranks the top issues by user impact, not by ease of detection.",
       "Separates accessibility blockers from visual polish recommendations."
     ]
@@ -37,9 +37,9 @@
       "docs/00-index.md",
       "dist/docs/html/index.html"
     ],
-    "fixture_intent": "Difficult scenario: scoped IA + accessibility review — accessibility blockers separated from content polish, exact locations for findings.",
+    "fixture_intent": "Difficult scenario: scoped IA + accessibility review \u2014 accessibility blockers separated from content polish, exact locations for findings.",
     "difficulty": "difficult",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The UI/UX skill should focus on navigation and contributor discovery, separating accessibility blockers from content/discovery polish with concrete locations or reproduction steps.",
     "baseline_gaps": [
       "Agent may ignore keyboard and screen-reader behavior.",

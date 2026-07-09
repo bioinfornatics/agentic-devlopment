@@ -8,10 +8,10 @@
       "dist/docs/html/index.html",
       "scripts/build-docs.sh"
     ],
-    "fixture_intent": "Normal scenario: skill-guided browser smoke test — requires exact port URL, named condition-based wait API from the skill (not generic), explicit server lifecycle report, and console/network evidence. Baseline passes only if it independently uses all four without the skill's guidance.",
+    "fixture_intent": "Normal scenario: skill-guided browser smoke test \u2014 requires exact port URL, named condition-based wait API from the skill (not generic), explicit server lifecycle report, and console/network evidence. Baseline passes only if it independently uses all four without the skill's guidance.",
     "difficulty": "normal",
-    "max_turns": 200,
-    "expected_skill_contribution": "The webapp-testing skill adds three specific behaviours a baseline omits: (1) it names the exact condition-based wait API used (waitForResponse or waitForSelector — never waitForTimeout or sleep); (2) it includes an explicit server stop command in the cleanup report; (3) it states the full base URL with port number (e.g., http://localhost:8000) not just 'the local server'.",
+    "max_turns": 500,
+    "expected_skill_contribution": "The webapp-testing skill adds three specific behaviours a baseline omits: (1) it names the exact condition-based wait API used (waitForResponse or waitForSelector \u2014 never waitForTimeout or sleep); (2) it includes an explicit server stop command in the cleanup report; (3) it states the full base URL with port number (e.g., http://localhost:8000) not just 'the local server'.",
     "baseline_gaps": [
       "Agent uses sleep() or waitForTimeout() instead of condition-based waiting.",
       "Agent reports test results without an explicit server cleanup step.",
@@ -19,34 +19,34 @@
     ],
     "expected_behavior": [
       "States the exact base URL including protocol, host, and port number before navigating (e.g., `http://localhost:8080`).",
-      "Names the specific condition-based wait API used — must be one of: `waitForResponse`, `waitForSelector`, `waitForLoadState`, `waitForURL` — and explicitly states it is NOT using `waitForTimeout` or `sleep`.",
-      "Reports console evidence as a quoted output sample or an explicit statement 'no console errors detected' — not 'I checked the console'.",
-      "Reports server lifecycle in three named steps: (1) start command run, (2) tests executed, (3) server stopped — with the exact stop command used."
+      "Names the specific condition-based wait API used \u2014 must be one of: `waitForResponse`, `waitForSelector`, `waitForLoadState`, `waitForURL` \u2014 and explicitly states it is NOT using `waitForTimeout` or `sleep`.",
+      "Reports console evidence as a quoted output sample or an explicit statement 'no console errors detected' \u2014 not 'I checked the console'.",
+      "Reports server lifecycle in three named steps: (1) start command run, (2) tests executed, (3) server stopped \u2014 with the exact stop command used."
     ]
   },
   {
     "skills": [
       "webapp-testing"
     ],
-    "query": "Check the generated documentation site for basic accessibility. Use browser tooling (Playwright or equivalent) for keyboard navigation testing — static HTML inspection alone is not sufficient.",
+    "query": "Check the generated documentation site for basic accessibility. Use browser tooling (Playwright or equivalent) for keyboard navigation testing \u2014 static HTML inspection alone is not sufficient.",
     "files": [
       "dist/docs/html/index.html",
       "docs/assets/site.css"
     ],
-    "fixture_intent": "Very difficult scenario: browser-based accessibility verification — keyboard navigation must be tested in a real browser (Tab/Shift-Tab), findings must be labeled [VERIFIED—browser-tested] or [ASSUMPTION—code-inspection], visible focus tested, accessible names verified.",
+    "fixture_intent": "Very difficult scenario: browser-based accessibility verification \u2014 keyboard navigation must be tested in a real browser (Tab/Shift-Tab), findings must be labeled [VERIFIED\u2014browser-tested] or [ASSUMPTION\u2014code-inspection], visible focus tested, accessible names verified.",
     "difficulty": "very_difficult",
-    "max_turns": 200,
-    "expected_skill_contribution": "The webapp-testing skill mandates: (1) actual Tab/Shift-Tab testing in a browser session — not HTML inspection; (2) per-finding attribution [VERIFIED—browser-tested] vs [ASSUMPTION—code-inspection]; (3) a structured accessible-names checklist covering links, images, and form inputs.",
+    "max_turns": 500,
+    "expected_skill_contribution": "The webapp-testing skill mandates: (1) actual Tab/Shift-Tab testing in a browser session \u2014 not HTML inspection; (2) per-finding attribution [VERIFIED\u2014browser-tested] vs [ASSUMPTION\u2014code-inspection]; (3) a structured accessible-names checklist covering links, images, and form inputs.",
     "baseline_gaps": [
       "Agent skips keyboard nav in browser; infers tab order from HTML source and presents it as a verified result.",
-      "Agent does not label findings as verified vs assumed — presents code-inspection results as browser-tested facts.",
+      "Agent does not label findings as verified vs assumed \u2014 presents code-inspection results as browser-tested facts.",
       "Agent omits structured accessible-names checklist for links, images, and form inputs."
     ],
     "expected_behavior": [
-      "Opens the page in a browser session and presses Tab/Shift-Tab to observe actual focus order — does NOT infer from HTML source.",
-      "Labels every finding as [VERIFIED — browser-tested] or [ASSUMPTION — code-inspection] — never presents a code-inspection finding as a browser result.",
+      "Opens the page in a browser session and presses Tab/Shift-Tab to observe actual focus order \u2014 does NOT infer from HTML source.",
+      "Labels every finding as [VERIFIED \u2014 browser-tested] or [ASSUMPTION \u2014 code-inspection] \u2014 never presents a code-inspection finding as a browser result.",
       "Reports accessible names for links (meaningful text?), images (alt attributes?), and form inputs (labels?) as distinct checklist items.",
-      "Checks visible focus indicator by observing the browser after Tab keypresses — not by grepping CSS for ':focus'."
+      "Checks visible focus indicator by observing the browser after Tab keypresses \u2014 not by grepping CSS for ':focus'."
     ]
   },
   {
@@ -58,19 +58,19 @@
       "dist/docs/html/index.html",
       "docs/00-index.md"
     ],
-    "fixture_intent": "Difficult scenario: dual-viewport test — both viewports must use exact WxH pixel notation, viewport must be explicitly set in the browser session before capture (not assumed), and any failure includes a one-line reproduction step. Baseline typically names viewports by name ('mobile') not dimensions.",
+    "fixture_intent": "Difficult scenario: dual-viewport test \u2014 both viewports must use exact WxH pixel notation, viewport must be explicitly set in the browser session before capture (not assumed), and any failure includes a one-line reproduction step. Baseline typically names viewports by name ('mobile') not dimensions.",
     "difficulty": "difficult",
-    "max_turns": 200,
-    "expected_skill_contribution": "The webapp-testing skill requires three specifics a baseline omits: (1) exact viewport dimensions as WxH in pixels for BOTH viewports (e.g., 375×812 mobile, 1280×800 desktop) — not 'mobile-sized' or 'wide screen'; (2) an explicit browser viewport set call before each screenshot; (3) layout failure reproduction steps with the exact viewport, URL, and observed symptom on a single line.",
+    "max_turns": 500,
+    "expected_skill_contribution": "The webapp-testing skill requires three specifics a baseline omits: (1) exact viewport dimensions as WxH in pixels for BOTH viewports (e.g., 375\u00d7812 mobile, 1280\u00d7800 desktop) \u2014 not 'mobile-sized' or 'wide screen'; (2) an explicit browser viewport set call before each screenshot; (3) layout failure reproduction steps with the exact viewport, URL, and observed symptom on a single line.",
     "baseline_gaps": [
       "Agent describes viewports as 'mobile' and 'desktop' without stating exact pixel dimensions.",
       "Agent captures screenshots without explicitly setting the viewport dimensions in the browser session.",
       "Agent reports issues without a single-line reproduction step containing viewport + URL + symptom."
     ],
     "expected_behavior": [
-      "Sets the mobile viewport to exact pixel dimensions ≤430px wide (e.g., 375×812) using a browser API call before capturing — states the exact call or command used.",
-      "Sets the desktop viewport to exact pixel dimensions ≥1280px wide (e.g., 1280×800) using a browser API call before capturing — states the exact call or command used.",
-      "Captures or explicitly requests a screenshot at each viewport as evidence — names the file or describes what was captured.",
+      "Sets the mobile viewport to exact pixel dimensions \u2264430px wide (e.g., 375\u00d7812) using a browser API call before capturing \u2014 states the exact call or command used.",
+      "Sets the desktop viewport to exact pixel dimensions \u22651280px wide (e.g., 1280\u00d7800) using a browser API call before capturing \u2014 states the exact call or command used.",
+      "Captures or explicitly requests a screenshot at each viewport as evidence \u2014 names the file or describes what was captured.",
       "For any layout issue: provides a reproduction step formatted as `viewport=WxHpx  url=<URL>  symptom=<observed>` on a single line."
     ]
   }

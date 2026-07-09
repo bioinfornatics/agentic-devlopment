@@ -4,9 +4,9 @@
     "files": [
       "scripts/analyze-skill-eval-results.py"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The tdd-guide should write a failing test first (RED), confirm it fails, then write minimal implementation (GREEN) — baseline writes implementation first and tests after.",
+    "expected_skill_contribution": "The tdd-guide should write a failing test first (RED), confirm it fails, then write minimal implementation (GREEN) \u2014 baseline writes implementation first and tests after.",
     "fixture_intent": "An existing analysis script without the target function provides the boundary condition: the tdd-guide must write a test that fails because the function does not exist yet, making the RED phase concrete and verifiable.",
     "baseline_gaps": [
       "Writes the `get_efficiency_summary()` implementation first and adds tests afterward, violating the RED-first invariant.",
@@ -17,7 +17,7 @@
       "Writes the failing test first and explicitly states it must fail before any implementation code is written.",
       "Uses RED / GREEN / REFACTOR labels explicitly to mark each cycle phase in the response.",
       "Includes at least 3 of the 8 mandatory edge cases: null/undefined input, empty collection, boundary values, and error paths.",
-      "Specifies the coverage gate explicitly: branch coverage ≥80% must be verified after the REFACTOR phase before declaring the cycle complete."
+      "Specifies the coverage gate explicitly: branch coverage \u226580% must be verified after the REFACTOR phase before declaring the cycle complete."
     ]
   },
   {
@@ -25,7 +25,7 @@
     "files": [
       "scripts/analyze-skill-eval-results.py"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "difficult",
     "expected_skill_contribution": "The tdd-guide should cover all threshold conditions (error_rate, explore_pct, repeated, ratio, t2w) in the RED phase before any implementation, using parameterized test cases.",
     "fixture_intent": "The existing script contains threshold constants (error_rate=0.10, explore=0.50, repeated=3, ratio=25) that the new function must evaluate, giving the tdd-guide concrete boundary values to target in the RED phase.",
@@ -35,10 +35,10 @@
       "Does not use parameterized test cases to cover the threshold matrix, resulting in sparse coverage."
     ],
     "expected_behavior": [
-      "Writes failing tests for each threshold condition — error_rate at/above 0.10, explore_pct at/above 0.50, repeated at/above 3, ratio at/above 25 — before writing any implementation.",
+      "Writes failing tests for each threshold condition \u2014 error_rate at/above 0.10, explore_pct at/above 0.50, repeated at/above 3, ratio at/above 25 \u2014 before writing any implementation.",
       "Runs the test suite and confirms each test fails (RED) before writing any implementation code.",
       "Covers at least 5 of the 8 mandatory edge cases including threshold boundary values (value == threshold and value == threshold - epsilon).",
-      "Verifies branch coverage ≥80% after the REFACTOR phase and reports the coverage figure explicitly — does not declare the cycle done if the gate fails."
+      "Verifies branch coverage \u226580% after the REFACTOR phase and reports the coverage figure explicitly \u2014 does not declare the cycle done if the gate fails."
     ]
   },
   {
@@ -46,19 +46,19 @@
     "files": [
       "scripts/analyze-skill-eval-results.py"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "The tdd-guide should drive RED→GREEN→REFACTOR for a complex multi-branch function, cover all phase map paths in tests, and verify coverage gate before declaring done.",
-    "fixture_intent": "The script contains a phase classification map (explore/beads/implement/validate/browser/delegate) that the new function must traverse, giving the tdd-guide a concrete branch tree to achieve ≥80% coverage on.",
+    "expected_skill_contribution": "The tdd-guide should drive RED\u2192GREEN\u2192REFACTOR for a complex multi-branch function, cover all phase map paths in tests, and verify coverage gate before declaring done.",
+    "fixture_intent": "The script contains a phase classification map (explore/beads/implement/validate/browser/delegate) that the new function must traverse, giving the tdd-guide a concrete branch tree to achieve \u226580% coverage on.",
     "baseline_gaps": [
       "Writes tests after the implementation is complete, making RED verification impossible to demonstrate.",
       "Covers the main phase classification path but misses branch coverage for uncommon phases (browser, delegate) and error paths.",
-      "Declares the TDD cycle done without running coverage or without reporting that the ≥80% branch gate was met."
+      "Declares the TDD cycle done without running coverage or without reporting that the \u226580% branch gate was met."
     ],
     "expected_behavior": [
       "Writes failing tests for all phase classifications (explore / beads / implement / validate / browser / delegate) before writing any implementation code.",
-      "Runs the test suite and confirms failures (RED) before writing any implementation — quotes at least one failure message as evidence.",
-      "Writes minimal implementation to pass tests (GREEN), then refactors for clarity — keeps these as distinct labelled steps.",
+      "Runs the test suite and confirms failures (RED) before writing any implementation \u2014 quotes at least one failure message as evidence.",
+      "Writes minimal implementation to pass tests (GREEN), then refactors for clarity \u2014 keeps these as distinct labelled steps.",
       "Runs coverage after REFACTOR, reports the branch coverage figure explicitly, and does not declare the cycle complete if coverage is below 80%."
     ]
   }

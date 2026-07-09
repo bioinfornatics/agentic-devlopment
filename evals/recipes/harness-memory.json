@@ -4,13 +4,13 @@
     "files": [
       ".agents/skills/goose-orchestration/SKILL.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "normal",
     "expected_skill_contribution": "The memory recipe should store a pointer in the correct format with stable key, not copy the table content, and not create task beads or MEMORY.md files.",
     "fixture_intent": "The goose-orchestration skill file as the canonical source being referenced; the agent must store a pointer memory pointing to it, not replicate its content.",
     "baseline_gaps": [
-      "stores long-form content — copies the routing table into the memory value",
-      "invents a non-pointer format — does not use the canonical pointer template",
+      "stores long-form content \u2014 copies the routing table into the memory value",
+      "invents a non-pointer format \u2014 does not use the canonical pointer template",
       "creates MEMORY.md files or task beads instead of using bd remember"
     ],
     "expected_behavior": [
@@ -25,12 +25,12 @@
     "files": [
       ".beads/"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "difficult",
     "expected_skill_contribution": "The memory recipe should use bd search/recall to find relevant memories, assess staleness against current skill/recipe state, and propose updates rather than guessing.",
     "fixture_intent": "The Beads store containing any existing memories; the agent must search the live store and cross-reference findings against current skill and recipe files rather than guessing at memory content.",
     "baseline_gaps": [
-      "guesses at memory content without searching — lists what memories 'might' exist without querying the store",
+      "guesses at memory content without searching \u2014 lists what memories 'might' exist without querying the store",
       "proposes updates without checking current state of the referenced file or section",
       "creates new task beads instead of reporting findings only"
     ],
@@ -38,7 +38,7 @@
       "uses `bd search` or `bd recall` to find routing/entry-related memories",
       "checks each found memory against the current state of the relevant file/section",
       "for stale memories, proposes exact updated `bd remember` command",
-      "does not store new tasks — reports findings only"
+      "does not store new tasks \u2014 reports findings only"
     ]
   },
   {
@@ -46,14 +46,14 @@
     "files": [
       ".beads/"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The memory recipe should enumerate all memories, classify each against the pointer format and staleness criteria, and produce a structured audit report with exact correction commands.",
     "fixture_intent": "The Beads store as the subject of the audit; the agent must enumerate all stored memories and evaluate each against the canonical pointer format and current source state.",
     "baseline_gaps": [
-      "lists memories without classification — presents a flat list with no assessment",
-      "no staleness assessment — does not verify memories against current file content",
-      "no correction commands — identifies violations without providing exact fix commands"
+      "lists memories without classification \u2014 presents a flat list with no assessment",
+      "no staleness assessment \u2014 does not verify memories against current file content",
+      "no correction commands \u2014 identifies violations without providing exact fix commands"
     ],
     "expected_behavior": [
       "retrieves all memories via `bd memories` or equivalent",

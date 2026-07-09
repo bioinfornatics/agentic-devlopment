@@ -5,9 +5,9 @@
       ".goose/recipes/",
       "AGENTS.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The plan recipe should check for duplicate Beads issues, output exact annotated bd commands in dependency order, and define acceptance criteria — not just describe the plan in prose.",
+    "expected_skill_contribution": "The plan recipe should check for duplicate Beads issues, output exact annotated bd commands in dependency order, and define acceptance criteria \u2014 not just describe the plan in prose.",
     "fixture_intent": "Validates that the plan recipe checks existing Beads state before creating issues, emits executable bd commands with comments, encodes dependency edges, and stops before implementation.",
     "baseline_gaps": [
       "Produces a prose plan without running bd list to check for pre-existing duplicate issues",
@@ -18,7 +18,7 @@
       "Runs `bd list --json` and searches results for duplicate issues before proposing any new ones",
       "Outputs exact `bd create` commands annotated with `# reason` comments explaining each issue",
       "Uses `bd dep add <child> <parent>` to encode dependencies in correct execution order",
-      "Does not edit recipe files or claim implementation beads — plan output only, no implementation started"
+      "Does not edit recipe files or claim implementation beads \u2014 plan output only, no implementation started"
     ]
   },
   {
@@ -27,10 +27,10 @@
       ".agents/agents/",
       "AGENTS.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "difficult",
     "expected_skill_contribution": "The plan recipe should produce a phased dependency graph with milestone epics, task beads, discovered-from links, and bd gate commands for milestone waits.",
-    "fixture_intent": "Validates that the plan recipe structures work into epic→task phases, encodes discovered-from links for emergent work, uses bd gate for human-review milestones, and presents a visual dependency table before commands.",
+    "fixture_intent": "Validates that the plan recipe structures work into epic\u2192task phases, encodes discovered-from links for emergent work, uses bd gate for human-review milestones, and presents a visual dependency table before commands.",
     "baseline_gaps": [
       "Produces a flat list of tasks with no phase structure or epic grouping",
       "Omits dependency edges between phases and between task and epic beads",
@@ -44,13 +44,13 @@
     ]
   },
   {
-    "query": "Plan the full SDD+TDD cycle for adding eval coverage to all 10 recipes: spec → design → implement → review → verify. Include per-phase acceptance criteria and quality gates.",
+    "query": "Plan the full SDD+TDD cycle for adding eval coverage to all 10 recipes: spec \u2192 design \u2192 implement \u2192 review \u2192 verify. Include per-phase acceptance criteria and quality gates.",
     "files": [
       "evals/",
       ".goose/recipes/",
       "docs/15-skill-evaluations.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The plan recipe should produce a multi-phase SDD+TDD Beads graph covering intent, spec, implementation, and review phases with explicit quality gate conditions per phase.",
     "fixture_intent": "Validates that the plan recipe maps all five SDD phases as distinct bead groups, attaches explicit acceptance criteria to each phase bead, enforces ordering via dep add, and gates phase transitions on explicit conditions.",
@@ -60,7 +60,7 @@
       "Omits bd gate proposals for phase transitions and does not enforce ordering via dep add"
     ],
     "expected_behavior": [
-      "Structures the Beads graph across all five SDD phases in order: intent → spec → implement → review → verify",
+      "Structures the Beads graph across all five SDD phases in order: intent \u2192 spec \u2192 implement \u2192 review \u2192 verify",
       "Each phase bead has explicit acceptance criteria supplied via `bd update --acceptance` or inline in bd create",
       "Phase transitions are enforced using `bd dep add` so downstream phases cannot begin before upstream phases close",
       "Proposes `bd gate` with explicit signal conditions (e.g. all specs approved) before implementation beads become unblocked"

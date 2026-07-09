@@ -12,7 +12,7 @@
     ],
     "fixture_intent": "Normal scenario: UX quality review using the 8-dimension evaluation stack with browser evidence.",
     "difficulty": "normal",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The UI/UX skill should apply the 8-dimension evaluation stack in sequence and produce a user-impact-ranked review with evidence for hierarchy, visual quality, and accessibility.",
     "baseline_gaps": [
       "Agent may give generic aesthetic feedback without evidence.",
@@ -20,7 +20,7 @@
     ],
     "expected_behavior": [
       "Evaluates at least 5 of the 8 dimensions in order: User Intent, Information Architecture, Interaction States, Visual Taste, Design System, Accessibility, Performance, Evidence.",
-      "Requests or captures browser evidence (screenshot, console output, or a11y snapshot) before stating findings — no evidence means no finding.",
+      "Requests or captures browser evidence (screenshot, console output, or a11y snapshot) before stating findings \u2014 no evidence means no finding.",
       "Ranks the top issues by user impact, not by ease of detection.",
       "Separates accessibility blockers from visual polish recommendations."
     ]
@@ -34,9 +34,9 @@
       "docs/assets/site.css",
       "docs/BOOK.md"
     ],
-    "fixture_intent": "Very difficult scenario: design-system evaluation — tokens, variants, accessibility states, regression risk, Beads follow-ups.",
+    "fixture_intent": "Very difficult scenario: design-system evaluation \u2014 tokens, variants, accessibility states, regression risk, Beads follow-ups.",
     "difficulty": "very_difficult",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The UI/UX skill should evaluate CSS/layout tokens as a design-system surface, separate blockers from recommendations, and propose Beads follow-ups for product/design-system work.",
     "baseline_gaps": [
       "Agent may review only visual appearance without evaluating design-system consistency.",
@@ -46,7 +46,7 @@
       "Evaluates the CSS as a design-system surface: checks token naming, variant coverage, accessibility states (focus, hover, disabled), and theming consistency.",
       "Distinguishes design-system blockers (missing required accessibility states, broken token references) from recommendations (naming conventions, docs).",
       "Proposes Beads follow-ups using `bd create` commands or issue titles for design-system improvement work.",
-      "Reports evidence from the actual CSS file (property names, values, or line references) — no unsupported assertions."
+      "Reports evidence from the actual CSS file (property names, values, or line references) \u2014 no unsupported assertions."
     ]
   }
 ]

@@ -1,17 +1,17 @@
 [
   {
-    "query": "Use SDD to plan support for a `harness-security-review` recipe. Stay in the Intent and Spec phases only — do not implement.",
+    "query": "Use SDD to plan support for a `harness-security-review` recipe. Stay in the Intent and Spec phases only \u2014 do not implement.",
     "files": [
       ".goose/recipes/",
       "AGENTS.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "normal",
     "expected_skill_contribution": "The SDD recipe should explicitly name the Intent and Spec phases, clarify non-goals, produce acceptance criteria in Given/When/Then form, and resist jumping to implementation.",
     "fixture_intent": "The recipes directory and AGENTS.md as context for the new recipe; the agent must work through Intent and Spec phases only, stopping before any implementation or bead creation for implementation work.",
     "baseline_gaps": [
-      "jumps to implementation — proposes YAML recipe content or creates implementation files",
-      "skips non-goals — writes only goals without clarifying what is out of scope",
+      "jumps to implementation \u2014 proposes YAML recipe content or creates implementation files",
+      "skips non-goals \u2014 writes only goals without clarifying what is out of scope",
       "produces vague requirements without acceptance criteria in testable form"
     ],
     "expected_behavior": [
@@ -27,20 +27,20 @@
       "scripts/install.sh",
       "scripts/install.ps1"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "difficult",
-    "expected_skill_contribution": "The SDD recipe should drive the TDD phase: RED spec first (failing test description), then minimal GREEN implementation plan, then REFACTOR step — in that named order.",
-    "fixture_intent": "The install scripts as the unit under test; the agent must write a failing test specification before any implementation detail, following explicit RED→GREEN→REFACTOR discipline without editing files.",
+    "expected_skill_contribution": "The SDD recipe should drive the TDD phase: RED spec first (failing test description), then minimal GREEN implementation plan, then REFACTOR step \u2014 in that named order.",
+    "fixture_intent": "The install scripts as the unit under test; the agent must write a failing test specification before any implementation detail, following explicit RED\u2192GREEN\u2192REFACTOR discipline without editing files.",
     "baseline_gaps": [
-      "writes implementation without a failing test first — GREEN before RED",
-      "skips RED/GREEN/REFACTOR naming — uses TDD informally without explicit phase markers",
+      "writes implementation without a failing test first \u2014 GREEN before RED",
+      "skips RED/GREEN/REFACTOR naming \u2014 uses TDD informally without explicit phase markers",
       "edits files instead of producing a plan"
     ],
     "expected_behavior": [
       "names the TDD phase and uses RED/GREEN/REFACTOR terminology explicitly",
       "specifies the failing test (RED) before any implementation step",
       "defines the minimal implementation (GREEN) as a separate step after RED",
-      "does not edit files — produces plan only"
+      "does not edit files \u2014 produces plan only"
     ]
   },
   {
@@ -51,18 +51,18 @@
       ".agents/",
       "scripts/"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The SDD recipe should produce a release-readiness matrix covering all SDD gates (tests/docs/install/rollback/observability/blockers) with explicit pass/fail/blocked/unknown per dimension.",
     "fixture_intent": "The release-readiness doc, recipes, agent files, and scripts as the surfaces to evaluate; the agent must produce a structured matrix assessment of all required gates rather than a prose narrative.",
     "baseline_gaps": [
       "produces prose readiness summary without per-dimension status",
-      "omits rollback or observability as dimensions — treats them as optional",
-      "uses discretionary gates — treats quality gates as optional polish rather than product requirements"
+      "omits rollback or observability as dimensions \u2014 treats them as optional",
+      "uses discretionary gates \u2014 treats quality gates as optional polish rather than product requirements"
     ],
     "expected_behavior": [
       "produces a matrix with at minimum: tests, docs, install-script safety, recipe validation, rollback, observability, open blockers",
-      "marks each dimension pass/fail/blocked/unknown — not prose",
+      "marks each dimension pass/fail/blocked/unknown \u2014 not prose",
       "treats quality gates as product requirements not optional polish",
       "states explicit done criteria and remaining blockers"
     ]

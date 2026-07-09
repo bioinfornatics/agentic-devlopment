@@ -6,9 +6,9 @@
       ".goose/recipes/",
       "AGENTS.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The implement recipe should claim atomically before editing, emit a Scoped plan, make a minimal change, validate, close the bead, and report the full handoff — not just make the edit.",
+    "expected_skill_contribution": "The implement recipe should claim atomically before editing, emit a Scoped plan, make a minimal change, validate, close the bead, and report the full handoff \u2014 not just make the edit.",
     "fixture_intent": "Validates the core implement protocol: atomic claim before mutation, Scoped plan declaration, minimal change, validation step, and structured handoff with bead + files + git + risks.",
     "baseline_gaps": [
       "Makes file edits without first claiming the Beads issue atomically",
@@ -23,15 +23,15 @@
     ]
   },
   {
-    "query": "Implement the bead scoped to the `code-review` skill — write a failing test for the change first, then implement, then verify coverage.",
+    "query": "Implement the bead scoped to the `code-review` skill \u2014 write a failing test for the change first, then implement, then verify coverage.",
     "files": [
       ".agents/skills/code-review/",
       ".beads/issues.jsonl"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "difficult",
     "expected_skill_contribution": "The implement recipe should enforce TDD: write failing test first (RED), then minimal implementation (GREEN), then verify, before closing the bead.",
-    "fixture_intent": "Validates that the implement recipe enforces the RED→GREEN→REFACTOR TDD cycle, confirming a test fails before implementation code is written and reporting coverage alongside the handoff.",
+    "fixture_intent": "Validates that the implement recipe enforces the RED\u2192GREEN\u2192REFACTOR TDD cycle, confirming a test fails before implementation code is written and reporting coverage alongside the handoff.",
     "baseline_gaps": [
       "Writes implementation code before or without writing a failing test first",
       "Skips confirmation that the test fails before writing implementation (no RED phase evidence)",
@@ -51,7 +51,7 @@
       ".beads/issues.jsonl",
       "AGENTS.md"
     ],
-    "max_turns": 200,
+    "max_turns": 500,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The recipe should enforce minimal blast radius: edit only the scoped file, validate the recipe, verify no other recipe broke, close bead with full handoff.",
     "fixture_intent": "Validates that the implement recipe enforces scoped blast radius by editing only the declared file, validates the changed recipe plus dependents, and produces a complete handoff with all required fields.",
@@ -61,10 +61,10 @@
       "Produces an incomplete handoff that omits the bead ID close confirmation or file change list"
     ],
     "expected_behavior": [
-      "Edits only `.goose/recipes/harness-review.yaml` — any additional file touch is explicitly justified in the Scoped plan",
+      "Edits only `.goose/recipes/harness-review.yaml` \u2014 any additional file touch is explicitly justified in the Scoped plan",
       "Runs `goose recipe validate .goose/recipes/harness-review.yaml` and reports the exact pass/fail result",
       "Optionally validates dependent or sibling recipes to confirm no blast radius breakage, reporting results",
-      "Closes the bead and reports: bead ID→closed, exact list of files changed, validation passed/failed, and git status"
+      "Closes the bead and reports: bead ID\u2192closed, exact list of files changed, validation passed/failed, and git status"
     ]
   }
 ]

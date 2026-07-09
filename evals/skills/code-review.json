@@ -12,7 +12,7 @@
     "fixture_description": "Applied a patch to scripts/install.sh and scripts/install.ps1 that adds a new slash command mapping.",
     "fixture_intent": "Normal fixture: direct missing-recipe regression; expected to be caught by a practical review checklist.",
     "difficulty": "normal",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The code-review skill should catch an explicit install-script regression, rank it correctly, and discuss idempotence, backups, path safety, tests, and rollback without over-exploring.",
     "baseline_gaps": [
       "Agent may underweight install-script idempotence, shell portability, or config overwrite risks.",
@@ -23,7 +23,7 @@
       "Flags the missing harness-security-review.yaml recipe as a blocker or HIGH severity finding with file and line reference.",
       "Produces an explicit verdict (`APPROVE`, `PASS-WITH-NITS`, or `BLOCK`) for the diff.",
       "Proposes durable follow-up using Beads `bd create` commands or issue titles instead of markdown TODO files.",
-      "Does not manufacture low-confidence findings — every finding cites an exact line and concrete failure mode."
+      "Does not manufacture low-confidence findings \u2014 every finding cites an exact line and concrete failure mode."
     ]
   },
   {
@@ -40,8 +40,8 @@
     "fixture_description": "Applied a patch to docs/15-skill-evaluations.md and evals/skills/README.md that updates guidance for tracking eval follow-up work.",
     "fixture_intent": "Difficult fixture: documentation introduces markdown TODO tracking; expected to catch the Beads hygiene violation, produce a verdict, and propose unlinked follow-up commands.",
     "difficulty": "difficult",
-    "max_turns": 200,
-    "expected_skill_contribution": "The code-review skill mandates three things a baseline omits: (1) the pre-report 4-question gate must be applied — any Beads hygiene finding must cite file+line+failure-mode; (2) the verdict must be one of the three exact strings from the skill's output format (APPROVE / PASS-WITH-NITS / BLOCK); (3) the agent must NOT flag at least one common false positive from the skill's list despite it appearing in the diff.",
+    "max_turns": 500,
+    "expected_skill_contribution": "The code-review skill mandates three things a baseline omits: (1) the pre-report 4-question gate must be applied \u2014 any Beads hygiene finding must cite file+line+failure-mode; (2) the verdict must be one of the three exact strings from the skill's output format (APPROVE / PASS-WITH-NITS / BLOCK); (3) the agent must NOT flag at least one common false positive from the skill's list despite it appearing in the diff.",
     "baseline_gaps": [
       "Agent flags the Beads hygiene issue but without citing an exact file path and line number.",
       "Agent produces a summary with a pass/fail word but not the exact three-option verdict the skill requires.",
@@ -49,7 +49,7 @@
     ],
     "expected_behavior": [
       "Flags the markdown TODO guidance as a Beads hygiene violation AND cites the exact file and section where it appears (file path + heading or line reference).",
-      "Produces the verdict as exactly one of: `APPROVE`, `PASS-WITH-NITS`, or `BLOCK` — the literal string, placed before the findings list.",
+      "Produces the verdict as exactly one of: `APPROVE`, `PASS-WITH-NITS`, or `BLOCK` \u2014 the literal string, placed before the findings list.",
       "Applies the pre-report gate for the hygiene finding: states that it passes all four gate questions (exact location known, failure mode named, context read, severity defensible).",
       "Avoids flagging at least one pattern from the false-positives list that appears in the diff (e.g., a self-describing internal helper, a well-known constant, or a test fixture hardcoded value)."
     ]
@@ -69,7 +69,7 @@
     "fixture_description": "Applied a patch that modifies harness-review.yaml, code-review/SKILL.md, and docs/15-skill-evaluations.md.",
     "fixture_intent": "Very difficult fixture: mixed recipe/skill/docs regression; expected to connect multiple harness rules and validation gaps.",
     "difficulty": "very_difficult",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The code-review skill should review a mixed multi-surface diff, produce a verdict, severity-ranked findings with exact file references, identify harness-rule violations, and propose exact validation steps and Beads follow-ups.",
     "baseline_gaps": [
       "Agent may provide a generic summary without a verdict or severity-ranked findings.",

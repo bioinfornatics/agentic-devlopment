@@ -10,7 +10,7 @@
     ],
     "fixture_intent": "Normal scenario: inspect-and-claim discipline \u2014 bd prime, bd ready, atomic claim or explicit no-work report.",
     "difficulty": "normal",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The Beads skill should inspect durable ready state, claim work only when claimable work exists, and otherwise report the no-work state without modifying files.",
     "baseline_gaps": [
       "Agent may choose work without checking durable ready state.",
@@ -33,7 +33,7 @@
     ],
     "fixture_intent": "Very difficult scenario: dependency direction, requirement language, verification \u2014 `bd dep add B A` means B needs A.",
     "difficulty": "very_difficult",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The Beads skill should encode the dependency using `bd dep add <B> <A>` (B needs A), explicitly reject 'A blocks B' framing, create both beads if they don't exist, verify with `bd blocked --json` and report the actual blocked output showing the validate-bead is not claimable \u2014 a baseline agent either reverses the direction or skips verification output.",
     "baseline_gaps": [
       "Agent may reverse the dependency direction (add edit-bead as dependent on validate-bead).",
@@ -57,7 +57,7 @@
     ],
     "fixture_intent": "Difficult scenario: pointer memory discipline \u2014 'read when' trigger phrase required (not 'read before'), short key, no content dump, no MEMORY.md. Skill gotcha now explicitly names this distinction.",
     "difficulty": "difficult",
-    "max_turns": 200,
+    "max_turns": 500,
     "expected_skill_contribution": "The Beads skill should store a short pointer memory with a stable key using the exact 'read when <trigger>' wording (not 'read before'), avoiding long content, MEMORY.md, or markdown TODO tracking. The skill now includes a verbatim template and a gotcha for the 'read when' vs 'read before' distinction.",
     "baseline_gaps": [
       "Agent may store long-form checklist content in memory instead of a pointer.",

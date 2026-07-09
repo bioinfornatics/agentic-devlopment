@@ -10,10 +10,10 @@
       "docs/03-security-review.md",
       "AGENTS.md"
     ],
-    "fixture_intent": "Difficult scenario: SDD planning mode — Intent/Spec/Graph phases, acceptance criteria, risks, proposed Beads graph without durable edits.",
+    "fixture_intent": "Difficult scenario: SDD planning mode \u2014 Intent/Spec/Graph phases, acceptance criteria, risks, proposed Beads graph without durable edits.",
     "difficulty": "difficult",
-    "max_turns": 200,
-    "expected_skill_contribution": "The SDD skill should stay in planning mode, clarify intent/constraints/non-goals, define acceptance criteria and risks, and propose — not execute — a dependency-aware Beads graph.",
+    "max_turns": 500,
+    "expected_skill_contribution": "The SDD skill should stay in planning mode, clarify intent/constraints/non-goals, define acceptance criteria and risks, and propose \u2014 not execute \u2014 a dependency-aware Beads graph.",
     "baseline_gaps": [
       "Agent may implement from vague requirements without clarifying intent.",
       "Agent may skip non-goals and acceptance criteria."
@@ -34,10 +34,10 @@
       "scripts/install.sh",
       "scripts/install.ps1"
     ],
-    "fixture_intent": "Normal scenario: SDD TDD phase — RED/GREEN/REFACTOR explicitly named as SDD phase steps, failing test spec before implementation contract, plan-only output. Skill adds the phase labelling and RED-first discipline a baseline skips.",
+    "fixture_intent": "Normal scenario: SDD TDD phase \u2014 RED/GREEN/REFACTOR explicitly named as SDD phase steps, failing test spec before implementation contract, plan-only output. Skill adds the phase labelling and RED-first discipline a baseline skips.",
     "difficulty": "normal",
-    "max_turns": 200,
-    "expected_skill_contribution": "The SDD skill should define a small reversible TDD slice naming the RED/GREEN/REFACTOR cycle steps, propose a failing test check first, and define verification steps — without editing files.",
+    "max_turns": 500,
+    "expected_skill_contribution": "The SDD skill should define a small reversible TDD slice naming the RED/GREEN/REFACTOR cycle steps, propose a failing test check first, and define verification steps \u2014 without editing files.",
     "baseline_gaps": [
       "Agent skips the RED phase and proposes implementation steps directly.",
       "Agent does not name the SDD TDD phase or use RED/GREEN/REFACTOR labels.",
@@ -45,10 +45,10 @@
     ],
     "expected_behavior": [
       "Opens with an explicit statement identifying the SDD phase as 'TDD' before any plan content.",
-      "Proposes a concrete failing test specification as the RED step — named as RED and placed first, before any implementation step.",
-      "Defines the minimal implementation contract as the GREEN step — what code must exist to make the RED test pass.",
+      "Proposes a concrete failing test specification as the RED step \u2014 named as RED and placed first, before any implementation step.",
+      "Defines the minimal implementation contract as the GREEN step \u2014 what code must exist to make the RED test pass.",
       "Adds a REFACTOR note describing what would be cleaned up after GREEN passes.",
-      "Does not edit any files — output is a plan only."
+      "Does not edit any files \u2014 output is a plan only."
     ]
   },
   {
@@ -62,17 +62,17 @@
       ".agents/skills/",
       "scripts/"
     ],
-    "fixture_intent": "Very difficult scenario: SDD release-readiness matrix — tests, docs, install safety, recipe validation, rollback, observability, blockers; each explicitly pass/fail/blocked/unknown.",
+    "fixture_intent": "Very difficult scenario: SDD release-readiness matrix \u2014 tests, docs, install safety, recipe validation, rollback, observability, blockers; each explicitly pass/fail/blocked/unknown.",
     "difficulty": "very_difficult",
-    "max_turns": 200,
-    "expected_skill_contribution": "The SDD skill should evaluate release readiness with an explicit matrix covering tests, docs, install safety, recipe validation, rollback, observability, and blockers — each marked pass/fail/blocked/unknown.",
+    "max_turns": 500,
+    "expected_skill_contribution": "The SDD skill should evaluate release readiness with an explicit matrix covering tests, docs, install safety, recipe validation, rollback, observability, and blockers \u2014 each marked pass/fail/blocked/unknown.",
     "baseline_gaps": [
       "Agent may treat release checks as optional cleanup rather than product requirements.",
       "Agent may omit rollback, observability, or explicit pass/fail/blocked status per dimension."
     ],
     "expected_behavior": [
       "Produces a release-readiness matrix with at least these dimensions: tests, docs, install-script safety, recipe validation, rollback, observability/diagnostics, open blockers.",
-      "Marks each dimension explicitly as pass / fail / blocked / unknown — not as prose paragraphs.",
+      "Marks each dimension explicitly as pass / fail / blocked / unknown \u2014 not as prose paragraphs.",
       "Treats quality gates as product requirements, not optional cleanup.",
       "Reports explicit done criteria and any remaining open blockers."
     ]
