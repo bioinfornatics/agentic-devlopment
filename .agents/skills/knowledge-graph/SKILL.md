@@ -199,4 +199,10 @@ remember_memory("product/features","AUTH-login: status=spec-done ...",["feature"
 remember_memory("sdd/phase",       "current=implement, bead=proj-abc",["sdd"],   false)
 remember_memory("sdd/gaps",        "AC AUTH-03: no test yet",          ["gap"],   false)
 ```
+## Self-validation checklist
 
+Before completing the task:
+- [ ] Findings are based on evidence, not assumptions
+- [ ] Each recommendation is actionable with a concrete next step
+- [ ] Findings reference specific file/line/component
+- [ ] Beads follow-up created for anything out of scope

@@ -87,3 +87,9 @@ Implement and review each piece before proceeding.
 bd create "UI: define design direction for <feature>" --assignee ui-designer -p 2
 bd create "UI: collect visual references before <component> implementation" --assignee ux-researcher -p 2
 ```
+## Knowledge generation — orient first
+
+Before applying this skill, generate context:
+1. Read the relevant files (use `analyze` or `read` tools)
+2. Identify the specific scope (component, feature, endpoint)
+3. Only then apply the methodology in this skill

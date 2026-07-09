@@ -354,3 +354,20 @@
 {"type": "relation", "from": "test:beads-prime-check", "to": "AC-BEADS-01", "relationType": "VALIDATES"}
 {"type": "entity", "name": "code_file:.beads/issues.jsonl", "entityType": "code_file", "observations": ["path:.beads/issues.jsonl", "scope:buildtime"]}
 {"type": "relation", "from": "test:beads-prime-check", "to": "code_file:.beads/issues.jsonl", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "test:harness-test-ts", "entityType": "test", "observations": ["scope:buildtime", "file:apps/kg/src/harness.test.ts", "status:passing", "covers:AC-SKILL-02 AC-EVAL-01 AC-EVAL-02 AC-RECIPE-02 AC-KG-01 AC-KG-02 AC-BEADS-01"]}
+{"type": "relation", "from": "test:harness-test-ts", "to": "AC-SKILL-02", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:harness-test-ts", "to": "apps/kg/src/harness.test.ts", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "test:harness-test-ts", "to": "AC-EVAL-01", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:harness-test-ts", "to": "AC-EVAL-02", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:harness-test-ts", "to": "AC-RECIPE-02", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:harness-test-ts", "to": "AC-KG-01", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:harness-test-ts", "to": "AC-KG-02", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:harness-test-ts", "to": "AC-BEADS-01", "relationType": "VALIDATES"}
+{"type": "entity", "name": "apps/kg/src/harness.test.ts", "entityType": "code_file", "observations": ["scope:buildtime", "path:apps/kg/src/harness.test.ts"]}
+{"type": "relation", "from": "skill:agentic-ux", "to": "meta:has-self-validation", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "skill:atomic-design", "to": "meta:has-self-validation", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "skill:cognitive-ux", "to": "meta:has-self-validation", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "skill:design-systems-arch", "to": "meta:has-self-validation", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "skill:frontend-blueprint", "to": "meta:has-self-validation", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "skill:knowledge-graph", "to": "meta:has-self-validation", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "skill:systematic-debugging", "to": "meta:has-self-validation", "relationType": "HAS_OBSERVATION"}

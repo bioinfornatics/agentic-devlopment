@@ -56,3 +56,16 @@ an opinion-driven craft into an evidence-based discipline.
 bd create "UX: reduce cognitive load in <flow> — Hick's Law violation" --assignee ux-researcher -p 2
 bd create "UX: redesign target size for <element> — Fitts's Law" --assignee ui-designer -p 3
 ```
+## Knowledge generation — orient first
+
+Before applying this skill, generate context:
+1. Read the relevant files (use `analyze` or `read` tools)
+2. Identify the specific scope (component, feature, endpoint)
+3. Only then apply the methodology in this skill
+## Self-validation checklist
+
+Before completing the task:
+- [ ] Findings are based on evidence, not assumptions
+- [ ] Each recommendation is actionable with a concrete next step
+- [ ] Findings reference specific file/line/component
+- [ ] Beads follow-up created for anything out of scope

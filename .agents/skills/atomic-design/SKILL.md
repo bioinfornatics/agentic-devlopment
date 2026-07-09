@@ -74,3 +74,9 @@ over deep prop-forwarding chains or class inheritance.
 bd create "Refactor: extract atom from organism <name>" --assignee ui-designer -p 3
 bd create "Design token: replace hardcoded <value> in <component>" --assignee ui-designer -p 3
 ```
+## Knowledge generation — orient first
+
+Before applying this skill, generate context:
+1. Read the relevant files (use `analyze` or `read` tools)
+2. Identify the specific scope (component, feature, endpoint)
+3. Only then apply the methodology in this skill

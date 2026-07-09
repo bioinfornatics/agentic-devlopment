@@ -84,3 +84,9 @@ Theming and multi-brand = swap the semantic layer; primitives and components unc
 bd create "Design system: migrate hardcoded values to semantic tokens in <component>" --assignee ui-designer -p 3
 bd create "Design system: define governance process for component contributions" --assignee architect -p 3
 ```
+## Knowledge generation — orient first
+
+Before applying this skill, generate context:
+1. Read the relevant files (use `analyze` or `read` tools)
+2. Identify the specific scope (component, feature, endpoint)
+3. Only then apply the methodology in this skill

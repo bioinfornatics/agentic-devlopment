@@ -307,4 +307,9 @@ File a separate bead for each distinct root cause — do not bundle unrelated fi
 - [ ] Blast radius was assessed — other call sites / code paths identified
 - [ ] Regression test is written and confirmed to catch the original failure
 - [ ] Fix addresses the root cause, not just the symptom
+## Knowledge generation — orient first
 
+Before applying this skill, generate context:
+1. Read the relevant files (use `analyze` or `read` tools)
+2. Identify the specific scope (component, feature, endpoint)
+3. Only then apply the methodology in this skill
