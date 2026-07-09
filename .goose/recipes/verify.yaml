@@ -67,3 +67,24 @@ prompt: |
   Verify: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
+
+  ## Step 1 — First visible output
+  State: target URL, evidence type (Playwright / axe-core / code-inspection), a11y standard (WCAG 2.2 AA).
+
+  ## Step 2 — Orient
+  Load skill: `webapp-testing`. Load skill: `ui-quality`.
+  Run `bd prime` then `bd ready --json`.
+
+  ## Step 3 — Navigate and observe FIRST
+  Navigate to the target URL with Playwright before inspecting any code.
+  Take a screenshot. Run browser_snapshot for accessibility tree.
+  Check console errors.
+
+  ## Step 4 — Verify via the subrecipe
+  Use sub_recipe: `verify`.
+
+  ## Step 5 — Observe result and loop
+  If all checks pass → PASS verdict, close bead.
+  If findings exist → file Beads issues with `bd create "Verify: <finding>" --assignee ui-designer -p 2`.
+  For each CRITICAL/HIGH finding: re-verify with browser after fix before closing.
+  Max 3 verification cycles before escalating.

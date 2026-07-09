@@ -76,3 +76,31 @@ prompt: |
   Implement: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
+
+  ## Step 1 — Orient (Generated Knowledge first)
+  Load skill: `beads-harness`. Load skill: `sdd`.
+  Run `bd prime`. Run `bd ready --json`. Read `.specs/features/*/spec.md` if present.
+  State the Orchestration decision (bead ID + scope + spec reference) as first visible output.
+
+  ## Step 2 — RED phase (tests before code — mandatory)
+  Load skill: `agentic-dev-harness`.
+  Delegate to `tdd-guide` to write the failing test(s) BEFORE any implementation:
+    `delegate(source: "tdd-guide", instructions: "Write RED test for bead {{ task }}. Cite [FEAT]-NN AC IDs from spec.md. Test must FAIL before any code is written.")`
+  Do NOT proceed to Step 3 until tdd-guide confirms at least one test is RED (failing).
+
+  ## Step 3 — GREEN phase
+  Claim the bead: `bd update <id> --claim --json`.
+  Run the `implement` subrecipe:
+    `use sub_recipe: implement`
+  The implementation must make the RED tests pass with minimum code.
+
+  ## Step 4 — Observe result (test output)
+  Run the test suite scoped to the changed code.
+  If tests PASS → proceed to Step 5.
+  If tests FAIL → loop back to Step 3 (fix the implementation, NOT the tests).
+  Max 3 fix iterations before escalating to user.
+
+  ## Step 5 — REFACTOR + handoff
+  Clean up the implementation without changing tests.
+  Run the full quality gate. Close the bead.
+  Report: files changed, test output, bead closed, spec AC IDs covered, next step: review.

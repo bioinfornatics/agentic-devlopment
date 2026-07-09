@@ -58,8 +58,8 @@ extensions:
     args: ["@playwright/mcp@latest", "--browser", "chromium"]
     timeout: 300
 sub_recipes:
-  - name: harness_web_test
-    path: "subrecipes/harness-web-test.yaml"
+  - name: verify
+    path: "subrecipes/verify.yaml"
     values:
       task: "{{ target }}"
       repo_path: "{{ repo_path }}"
