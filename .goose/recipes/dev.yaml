@@ -63,8 +63,8 @@ instructions: |
 
   ### In-session delegation (free-form, carries parent context)
   ```
-  load skill: <skill-name>
-  delegate(source: "<agent>", instructions: "<task · bead ID · files · output format>")
+  load skills <skill-name>
+  load agent <agent>  # with Beads: delegate task bd-xxx and into those task load agent <agent>
   ```
 
   ### Durable delegation via Beads (async, cross-session, traceable)
@@ -219,7 +219,7 @@ prompt: |
   ## Step 4 — Delegate
   • Read-only parallel work: async: true + load(source: "<task_id>") per worker.
   • Write work: one writer per file/module; never overlap write scopes.
-  • Named agent: delegate(source: "<agent>", instructions: "<task and context>").
+  • Named agent: load agent <agent>  # with Beads: delegate task bd-xxx and into those task load agent <agent>
   • Subrecipe: use the sub_recipe name defined in this recipe's sub_recipes block.
 
   ## Step 5 — Synthesize and close

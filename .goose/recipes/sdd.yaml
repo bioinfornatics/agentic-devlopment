@@ -48,7 +48,7 @@ instructions: |
   Both outputs feed into spec.md as non-functional ACs.
 
   ### In-session and durable delegation
-  In-session:  `load skill: <skill>`; `delegate(source: "<agent>", instructions: "phase:<p> task:<t>")`
+  In-session: load skills <skill> then load agent <agent>
   Durable:     `bd create "<phase>: <task>" --assignee <agent> --acceptance "<AC>" -p 2 --json`
 
   ## SDD on-ramp recipes (isolated phase entry points)
