@@ -22,22 +22,32 @@ def rel(from_, to, rtype):
     return {"type": "relation", "from": from_, "to": to, "relationType": rtype}
 
 def load_existing(path):
-    existing = set()
+    existing_entities = set()
+    existing_relations = set()
     if path.exists():
         for line in path.read_text().splitlines():
             try:
                 d = json.loads(line)
                 if d["type"] == "entity":
-                    existing.add(d["name"])
+                    existing_entities.add(d["name"])
+                elif d["type"] == "relation":
+                    existing_relations.add((d["from"], d["to"], d["relationType"]))
             except Exception:
                 pass
-    return existing
+    return existing_entities, existing_relations
 
-def append_new(path, records, existing):
+def append_new(path, records, existing_entities, existing_relations=None):
+    if existing_relations is None:
+        existing_relations = set()
     new_records = []
     for r in records:
-        if r["type"] == "entity" and r["name"] in existing:
+        if r["type"] == "entity" and r["name"] in existing_entities:
             continue
+        if r["type"] == "relation":
+            key = (r["from"], r["to"], r["relationType"])
+            if key in existing_relations:
+                continue
+            existing_relations.add(key)
         new_records.append(r)
     if new_records:
         with open(path, "a") as f:
@@ -101,7 +111,7 @@ def main():
     args = parser.parse_args()
 
     KG.parent.mkdir(exist_ok=True)
-    existing = load_existing(KG)
+    existing_entities, existing_relations = load_existing(KG)
 
     records = bootstrap_harness(ROOT)
 
@@ -119,7 +129,7 @@ def main():
         print(f"Dry-run: {len(new)} new entities would be added (skipping {len(records)-len(new)} existing)")
         return
 
-    added = append_new(KG, records, existing)
+    added = append_new(KG, records, existing_entities, existing_relations)
     total = sum(1 for l in KG.read_text().splitlines() if l.strip())
     print(f"Added {added} records. KG total: {total} lines ({KG})")
 
