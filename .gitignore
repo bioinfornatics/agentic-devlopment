@@ -14,3 +14,5 @@ dist/
 # Claude Code local integration (project uses AGENTS.md)
 CLAUDE.md
 .claude/
+.playwright-mcp/
+.idea/
