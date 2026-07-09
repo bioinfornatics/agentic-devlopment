@@ -1,26 +1,49 @@
-# Specs — Feature Specifications
+# .specs/ - Spec-Driven Development
 
-Specs formelles au format SDD. Chaque feature a son propre répertoire.
+SOTA SDD 2026. Research: sdd-sota-2026.md. Decisions: STATE.md.
 
-## Localisation
+## File naming (SOTA consensus)
 
-```
-.specs/features/<feature-name>/spec.md
-```
-
-## Features documentées
-
-| Feature | Spec | Status |
+| File | When | Contents |
 |---|---|---|
-| harness-core | [spec.md](features/harness-core/spec.md) | retro-spec |
-| eval-suite | [spec.md](features/eval-suite/spec.md) | retro-spec |
-| kg-integration | [spec.md](features/kg-integration/spec.md) | retro-spec |
-| beads-workflow | [spec.md](features/beads-workflow/spec.md) | retro-spec |
+| spec.md | Always | ACs WHEN/THEN/SHALL, [FEAT]-NN IDs |
+| design.md | Medium+ | Architecture, components, data flow, risks |
+| tasks.md | Large+ | Atomic tasks, test coverage matrix |
+| contracts/s.md | API-heavy | Interface contract, data schemas |
+| components.md | UI features | Atomic Design, ASCII art mockups |
+| context.md | Complex | Gray area decisions |
 
-## Créer une nouvelle spec
+## Project-level files
 
-```bash
+| File | Contents |
+|---|---|
+| product.md | Vision, users, metrics, principles |
+| architecture.md | System overview, component contracts |
+| STATE.md | AD-NNN Architecture Decisions + handoff |
+| sdd-sota-2026.md | SOTA research |
+
+## Auto-sizing
+
+| Scope | spec | design | tasks | contracts |
+|---|---|---|---|---|
+| Micro 1 file | inline | no | no | no |
+| Small <= 3 | spec.md | no | no | no |
+| Medium | spec.md | design.md | no | if API |
+| Large | spec.md | design.md | tasks.md | if API |
+| Complex | spec.md | design.md | tasks.md | contracts/ |
+
+## Features
+
+| Feature | spec | design | tasks | contracts |
+|---|---|---|---|---|
+| harness-core | done | done | no | kg-cli + kg-mcp |
+| kg-integration | done | no | done | no |
+| eval-suite | done | no | no | no |
+| beads-workflow | done | no | no | no |
+
+## Create a spec
+
 /spec "feature name"
-# → crée automatiquement .specs/features/<name>/spec.md
-# → enregistre le pointeur: bd remember "Spec for ...: canonical source is .specs/..."
-```
+  -> .specs/features/name/spec.md
+  -> bd remember pointer
+  -> node apps/kg/dist/cli.js pipeline
