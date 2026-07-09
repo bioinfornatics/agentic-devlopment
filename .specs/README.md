@@ -28,22 +28,24 @@ SOTA research → see `docs/sota/` (knowledge, not specification).
 
 ## Auto-sizing
 
-| Scope | spec.md | design.md | contracts/ |
-|---|---|---|---|
-| Micro (1 file) | inline AC | — | — |
-| Small (≤ 3 files) | spec.md | — | — |
-| Medium (feature) | spec.md | design.md | if API |
-| Large (multi-component) | spec.md | design.md | if API |
-| Complex (ambiguous) | spec.md | design.md | contracts/ |
+| Scope                   | spec.md   | design.md | contracts/ |
+|-------------------------|-----------|-----------|------------|
+| Micro (1 file)          | inline AC | —         | —          |
+| Small (≤ 3 files)       | spec.md   | —         | —          |
+| Medium (feature)        | spec.md   | design.md | if API     |
+| Large (multi-component) | spec.md   | design.md | if API     |
+| Complex (ambiguous)     | spec.md   | design.md | contracts/ |
 
 
 ## Features
 
-| Feature | spec | design |---|---|---|---|---|
-| harness-core | done | done | no | kg-cli + kg-mcp |
-| kg-integration | done | no | done | no |
-| eval-suite | done | no | no | no |
-| beads-workflow | done | no | no | no |
+| Feature | spec.md | design.md | contracts/ |
+|---|---|---|---|
+| [harness-core](features/harness-core/) | ✅ | ✅ | kg-cli + kg-mcp |
+| [kg-integration](features/kg-integration/) | ✅ | — | — |
+| [eval-suite](features/eval-suite/) | ✅ | — | — |
+| [beads-workflow](features/beads-workflow/) | ✅ | — | — |
+
 
 ## Create a spec
 
