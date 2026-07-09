@@ -119,37 +119,7 @@
 {"type": "entity", "name": "doc:agent-system-prompt-best-practices.md", "entityType": "harness:doc", "observations": ["file: docs/agent-system-prompt-best-practices.md", "scope: buildtime", "namespace: harness"]}
 {"type": "entity", "name": "doc:knowledge-graph.md", "entityType": "harness:doc", "observations": ["file: docs/knowledge-graph.md", "scope: buildtime", "namespace: harness"]}
 {"type": "entity", "name": "doc:sota-knowledge-base.md", "entityType": "harness:doc", "observations": ["file: docs/sota-knowledge-base.md", "scope: buildtime", "namespace: harness"]}
-{"type": "relation", "from": "recipe:dev", "to": "skill:agentic-dev-harness", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:review", "to": "skill:code-review", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:implement", "to": "skill:beads-harness", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:spec", "to": "skill:sdd", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:discover", "to": "skill:sdd", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:plan", "to": "skill:beads-harness", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:verify", "to": "skill:webapp-testing", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:design", "to": "skill:ux-quality", "relationType": "USES_SKILL"}
 {"type": "relation", "from": "recipe:sdd", "to": "skill:sdd", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:review", "to": "agent:review-critic", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:implement", "to": "agent:implementation-worker", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:discover", "to": "agent:product-owner", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:spec", "to": "agent:architect", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:plan", "to": "agent:beads-planner", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:verify", "to": "agent:qa-automation", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:design", "to": "agent:ux-researcher", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:dev", "to": "skill:agentic-dev-harness", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:review", "to": "skill:code-review", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:implement", "to": "skill:beads-harness", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:spec", "to": "skill:sdd", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:discover", "to": "skill:sdd", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:plan", "to": "skill:beads-harness", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:verify", "to": "skill:webapp-testing", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:design", "to": "skill:ux-quality", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:sdd", "to": "skill:sdd", "relationType": "USES_SKILL"}
-{"type": "relation", "from": "recipe:review", "to": "agent:review-critic", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:implement", "to": "agent:implementation-worker", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:discover", "to": "agent:product-owner", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:spec", "to": "agent:architect", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:plan", "to": "agent:beads-planner", "relationType": "DELEGATES_TO"}
-{"type": "relation", "from": "recipe:verify", "to": "agent:qa-automation", "relationType": "DELEGATES_TO"}
 {"type": "relation", "from": "recipe:design", "to": "agent:ux-researcher", "relationType": "DELEGATES_TO"}
 {"type": "entity", "name": "agentic-dev-harness-product", "entityType": "epic", "observations": ["scope: buildtime", "status: in-progress", "description: Portable Goose+Beads SDD harness for agentic software development", "file: README.md"]}
 {"type": "entity", "name": "feat-recipe-ecosystem", "entityType": "feature", "observations": ["scope: buildtime", "layer: harness", "status: in-progress", "description: 12 SDD workflow verb recipes with sub-recipe workers"]}
@@ -226,3 +196,20 @@
 {"type": "relation", "from": "feat-kg-integration", "to": "code_file:scripts/kg-bootstrap.py", "relationType": "IMPLEMENTED_BY"}
 {"type": "entity", "name": "code_file:scripts/kg-mcp-server.sh", "entityType": "code_file", "observations": ["scope: buildtime", "path: scripts/kg-mcp-server.sh"]}
 {"type": "relation", "from": "feat-kg-integration", "to": "code_file:scripts/kg-mcp-server.sh", "relationType": "IMPLEMENTED_BY"}
+{"type": "relation", "from": "recipe:discover", "to": "feat-recipe-ecosystem", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "recipe:spec", "to": "feat-recipe-ecosystem", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "recipe:plan", "to": "feat-recipe-ecosystem", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "recipe:implement", "to": "feat-recipe-ecosystem", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "recipe:review", "to": "feat-recipe-ecosystem", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "recipe:verify", "to": "feat-recipe-ecosystem", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "recipe:design", "to": "feat-recipe-ecosystem", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "recipe:sdd", "to": "feat-recipe-ecosystem", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "recipe:dev", "to": "feat-recipe-ecosystem", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "skill:sdd", "to": "feat-skill-library", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "skill:code-review", "to": "feat-skill-library", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "skill:knowledge-graph", "to": "feat-kg-integration", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "agent:review-critic", "to": "feat-agent-roster", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "agent:product-owner", "to": "feat-agent-roster", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "agent:tdd-guide", "to": "feat-agent-roster", "relationType": "IMPLEMENTS"}
+{"type": "relation", "from": "feat-kg-integration", "to": "feat-recipe-ecosystem", "relationType": "DEPENDS_ON"}
+{"type": "relation", "from": "feat-kg-integration", "to": "feat-skill-library", "relationType": "DEPENDS_ON"}
