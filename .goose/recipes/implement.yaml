@@ -10,7 +10,7 @@ instructions: |
   - Durable assignment: `bd create "<title>" --assignee implementation-worker -p 2 --json`
 
   Load skill `beads-harness` first. Claim the bead before delegating.
-  Then run the `harness_implement` subrecipe and synthesize the handoff.
+  Then run the `implement` subrecipe and synthesize the handoff.
 
 
 

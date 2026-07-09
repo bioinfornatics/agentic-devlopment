@@ -30,7 +30,7 @@ instructions: |
   3. Run Bruno collection:
      bru run --env <env> <collection-path> --reporter json
      Fallback: curl -s -w "
-%{http_code}" <endpoint> | tee /tmp/response.txt
+HTTP_CODE" <endpoint> | tee /tmp/response.txt
   4. For each failing request: show method, URL, request body, response status, response body.
   5. Cross-check against [FEAT]-NN ACs — verify each AC has a corresponding test.
   6. Report: N passed / M failed, coverage per AC ID.
