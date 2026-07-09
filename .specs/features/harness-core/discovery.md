@@ -25,15 +25,15 @@ that have no linked test (R1:ac-test-gap). These ACs define harness quality but 
 
 ## Implicit requirements sweep
 
-| Dimension | Decision |
-|---|---|
+| Dimension        | Decision                                                                       |
+|------------------|--------------------------------------------------------------------------------|
 | Input validation | AC evals take recipe/skill names as input — validate they exist before running |
-| Failure states | If eval infrastructure broken, report clearly (not silently skip) |
-| Idempotency | KG pipeline is idempotent — `node apps/kg/dist/cli.js pipeline` always safe |
-| Observability | Each AC verification reports pass/fail to KG as `add_observations` |
-| Auth/permissions | No auth required — local project only |
-| Data lifecycle | Test results are observations in KG (not persisted separately) |
-| Concurrency | Eval suite supports --max-workers 3 (already implemented) |
+| Failure states   | If eval infrastructure broken, report clearly (not silently skip)              |
+| Idempotency      | KG pipeline is idempotent — `node apps/kg/dist/cli.js pipeline` always safe    |
+| Observability    | Each AC verification reports pass/fail to KG as `add_observations`             |
+| Auth/permissions | No auth required — local project only                                          |
+| Data lifecycle   | Test results are observations in KG (not persisted separately)                 |
+| Concurrency      | Eval suite supports --max-workers 3 (already implemented)                      |
 
 ## Non-goals
 

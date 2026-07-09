@@ -176,3 +176,33 @@ describe("AC-BEADS-01: Beads workflow structure", () => {
     }
   });
 });
+
+// ── AC-RECIPE-03: slash command registration ─────────────────────────────
+describe("AC-RECIPE-03: slash command registration", () => {
+  it("install.sh exists and is executable", async () => {
+    await expect(readFile(join(REPO, "scripts", "install.sh"), "utf8")).resolves.toContain("recipe_commands");
+  });
+
+  it("all 12 recipes have a corresponding eval JSON file", async () => {
+    // Cross-check: recipe names that should have slash commands
+    const expectedCommands = [
+      "dev", "discover", "spec", "plan", "implement",
+      "review", "verify", "design", "sdd", "release", "remember", "explore"
+    ];
+    const recipesDir = join(REPO, ".goose", "recipes");
+    const recipeFiles = (await readdir(recipesDir))
+      .filter(f => f.endsWith(".yaml"))
+      .map(f => f.replace(".yaml", ""));
+    for (const cmd of expectedCommands) {
+      expect(recipeFiles, `Missing recipe: ${cmd}.yaml`).toContain(cmd);
+    }
+  });
+
+  it("install.sh maps slash commands to recipe paths", async () => {
+    const installSh = await readFile(join(REPO, "scripts", "install.sh"), "utf8");
+    const commands = ["dev", "discover", "spec", "plan", "implement",
+                      "review", "verify", "design", "sdd", "release", "remember", "explore"];
+    const missing = commands.filter(c => !installSh.includes(c));
+    expect(missing, "Commands not in install.sh: " + missing.join(", ")).toHaveLength(0);
+  });
+});

@@ -34,6 +34,14 @@ AND the skill starts with a Knowledge Generation step
 WHEN agents are loaded from .agents/agents/
 THEN all 12 agents have: Prompt Defense Baseline, Operating Process, Output Format, Remember mantra
 
+
+### AC-RECIPE-03 — Slash command registration
+WHEN `./scripts/install.sh` runs
+THEN all 12 slash commands (/dev /discover /spec /plan /implement
+     /review /verify /design /sdd /release /remember /explore)
+     are registered in `~/.config/goose/config.yaml`
+AND each maps to its corresponding recipe file in `~/.config/goose/recipes/`
+
 ## Non-goals
 
 - No performance benchmarks on recipe execution time

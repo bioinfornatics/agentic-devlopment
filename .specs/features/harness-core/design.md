@@ -18,18 +18,18 @@ KG stores harness + product entities with reasoning rules.
 
 ## Components
 
-| Component | Location |
-|---|---|
-| Recipe executor | .goose/recipes/*.yaml |
-| Skill pack | .agents/skills/NAME/SKILL.md |
-| Named agent | .agents/agents/NAME.md |
-| KG CLI | apps/kg/dist/cli.js |
-| KG MCP server | apps/kg-visualizer/dist/server.js |
+| Component       | Location                          |
+|-----------------|-----------------------------------|
+| Recipe executor | .goose/recipes/*.yaml             |
+| Skill pack      | .agents/skills/NAME/SKILL.md      |
+| Named agent     | .agents/agents/NAME.md            |
+| KG CLI          | apps/kg/dist/cli.js               |
+| KG MCP server   | apps/kg-visualizer/dist/server.js |
 
 ## Risks
 
-| Risk | Impact | Mitigation |
-|---|---|---|
-| KG drift | High | Post-commit hook + subrecipe checkpoints |
-| Grader truncation | Medium | events.jsonl transcript for grader |
-| Skill bloat | Medium | Progressive disclosure via references/ |
+| Risk              | Impact | Mitigation                               |
+|-------------------|--------|------------------------------------------|
+| KG drift          | High   | Post-commit hook + subrecipe checkpoints |
+| Grader truncation | Medium | events.jsonl transcript for grader       |
+| Skill bloat       | Medium | Progressive disclosure via references/   |

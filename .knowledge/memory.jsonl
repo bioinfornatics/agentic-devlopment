@@ -371,3 +371,8 @@
 {"type": "relation", "from": "skill:frontend-blueprint", "to": "meta:has-self-validation", "relationType": "HAS_OBSERVATION"}
 {"type": "relation", "from": "skill:knowledge-graph", "to": "meta:has-self-validation", "relationType": "HAS_OBSERVATION"}
 {"type": "relation", "from": "skill:systematic-debugging", "to": "meta:has-self-validation", "relationType": "HAS_OBSERVATION"}
+{"type": "entity", "name": "AC-RECIPE-03", "entityType": "acceptance_criterion", "observations": ["criterion: WHEN install.sh runs THEN all 12 slash commands registered in config.yaml AND each maps to recipe file", "scope:buildtime", "status:active"]}
+{"type": "entity", "name": "test:slash-command-registration", "entityType": "test", "observations": ["scope:buildtime", "file:apps/kg/src/harness.test.ts", "status:planned", "covers:AC-RECIPE-03"]}
+{"type": "relation", "from": "test:slash-command-registration", "to": "AC-RECIPE-03", "relationType": "VALIDATES"}
+{"type": "relation", "from": "feat-recipe-ecosystem", "to": "AC-RECIPE-03", "relationType": "HAS_CRITERION"}
+{"type": "relation", "from": "AC-RECIPE-03", "to": ".specs/features/harness-core/spec.md", "relationType": "LOCATED_IN"}
