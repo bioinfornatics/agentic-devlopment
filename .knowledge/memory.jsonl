@@ -289,3 +289,18 @@
 {"type": "relation", "from": "recipe:sdd", "to": "agent:harness-orchestrator", "relationType": "DELEGATES_TO"}
 {"type": "relation", "from": "recipe:release", "to": "agent:principal-engineer", "relationType": "DELEGATES_TO"}
 {"type": "relation", "from": "recipe:remember", "to": "agent:beads-planner", "relationType": "DELEGATES_TO"}
+{"type": "entity", "name": "scripts/kg-mcp-server.sh", "entityType": "code_file", "observations": ["path: scripts/kg-mcp-server.sh", "scope: buildtime", "status: canonical", "role: distinct \u2014 per-project MEMORY_FILE_PATH find-up wrapper", "note: not superseded by apps/ \u2014 unique role for KG isolation"]}
+{"type": "entity", "name": "harness:epic-level-feature", "entityType": "user_story", "observations": ["note: harness features are at epic level \u2014 user_story=the feature itself", "decomposition: managed via Beads epics/stories not KG REFINED_INTO"]}
+{"type": "relation", "from": "feat-recipe-ecosystem", "to": "harness:epic-level-feature", "relationType": "REFINED_INTO"}
+{"type": "relation", "from": "feat-skill-library", "to": "harness:epic-level-feature", "relationType": "REFINED_INTO"}
+{"type": "relation", "from": "feat-agent-roster", "to": "harness:epic-level-feature", "relationType": "REFINED_INTO"}
+{"type": "relation", "from": "feat-eval-suite", "to": "harness:epic-level-feature", "relationType": "REFINED_INTO"}
+{"type": "relation", "from": "feat-kg-integration", "to": "harness:epic-level-feature", "relationType": "REFINED_INTO"}
+{"type": "relation", "from": "feat-beads-workflow", "to": "harness:epic-level-feature", "relationType": "REFINED_INTO"}
+{"type": "entity", "name": "test:kg-pipeline-smoke", "entityType": "test", "observations": ["scope:buildtime", "file:apps/kg/dist/cli.js", "type:integration-smoke", "covers: KG-01 KG-02 KG-03 KG-04 KG-05 KG-06"]}
+{"type": "relation", "from": "test:kg-pipeline-smoke", "to": "KG-01", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:kg-pipeline-smoke", "to": "KG-02", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:kg-pipeline-smoke", "to": "KG-03", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:kg-pipeline-smoke", "to": "KG-04", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:kg-pipeline-smoke", "to": "KG-05", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:kg-pipeline-smoke", "to": "KG-06", "relationType": "VALIDATES"}

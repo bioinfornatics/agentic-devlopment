@@ -7,7 +7,14 @@ const DER = join(REPO, ".knowledge", "derived.jsonl");
 const rk = (r) => r.from + "|" + r.to + "|" + r.relationType;
 const R1 = ({ entities, relations }) => { const v = new Set(relations.filter(r => r.relationType === "VALIDATES").map(r => r.to)); return [...entities.values()].filter(e => e.entityType === "acceptance_criterion" && !v.has(e.name)).map(e => makeStatus(e.name, "test-gap", e.name + " no VALIDATES test", "R1:ac-test-gap")); };
 const R2 = ({ entities, relations }) => { const v = new Set(relations.filter(r => r.relationType === "REFINED_INTO").map(r => r.from)); return [...entities.values()].filter(e => e.entityType === "feature" && !v.has(e.name)).map(e => makeStatus(e.name, "not-decomposed", e.name + " no REFINED_INTO", "R2:feature-not-decomposed")); };
-const R3 = ({ entities, relations }) => { const v = new Set(relations.filter(r => r.relationType === "IMPLEMENTS").map(r => r.to)); return [...entities.values()].filter(e => e.entityType === "feature" && !v.has(e.name)).map(e => makeStatus(e.name, "not-implemented", e.name + " no IMPLEMENTS", "R3:feature-not-implemented")); };
+const R3 = ({ entities, relations }) => {
+    // A feature is implemented if: (code_file IMPLEMENTS feature) OR (feature IMPLEMENTED_BY code_file)
+    const byImplements = new Set(relations.filter(r => r.relationType === "IMPLEMENTS").map(r => r.to));
+    const byImplementedBy = new Set(relations.filter(r => r.relationType === "IMPLEMENTED_BY").map(r => r.from));
+    const implemented = new Set([...byImplements, ...byImplementedBy]);
+    return [...entities.values()].filter(e => e.entityType === "feature" && !implemented.has(e.name))
+        .map(e => makeStatus(e.name, "not-implemented", e.name + " no IMPLEMENTS or IMPLEMENTED_BY", "R3:feature-not-implemented"));
+};
 const R4 = ({ relations }, rs) => { const out = []; for (const u of relations.filter(r => r.relationType === "USES_SKILL"))
     for (const l of relations.filter(r => r.from === u.to && ["LOADS", "REFERENCED_BY"].includes(r.relationType))) {
         const r = makeRel(u.from, l.to, "TRANSITIVELY_USES", { confidence: 0.9, rule: "R4:transitive-skill" });
@@ -25,10 +32,15 @@ const R6 = ({ entities, relations }) => {
         arr.push(r.to);
         implBy.set(r.from, arr);
     });
+    // Files with a canonical _v2 counterpart or "distinct" role are not truly deprecated
+    const canonicalPaths = new Set([...entities.values()]
+        .filter(e => e.entityType === "code_file" && e.observations.some(o => o.includes("status: canonical")))
+        .flatMap(e => e.observations.filter(o => o.startsWith("path: ")).map(o => o.slice(6))));
     const deprecated = new Set([...entities.values()]
         .filter(e => e.entityType === "code_file"
         && e.observations.some(o => o.includes("status: deprecated"))
-        && !e.observations.some(o => o.includes("distinct-role") || o.includes("role: distinct")))
+        && !e.observations.some(o => o.includes("role: distinct") || o.includes("distinct-role"))
+        && !canonicalPaths.has(e.name))
         .map(e => e.name));
     const out = [];
     for (const [feature, files] of implBy) {
