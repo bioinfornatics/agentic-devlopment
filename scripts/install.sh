@@ -127,8 +127,10 @@ dry_run = sys.argv[4] == "1"
 stamp = sys.argv[5]
 
 managed = [
-    ("harness", "dev.yaml"),
-    ("research", "explore.yaml"),
+    ("dev", "dev.yaml"),
+    ("discover", "discover.yaml"),
+    ("spec", "spec.yaml"),
+    ("explore", "explore.yaml"),
     ("plan", "plan.yaml"),
     ("implement", "implement.yaml"),
     ("review", "review.yaml"),
