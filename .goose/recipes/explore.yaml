@@ -75,3 +75,9 @@ prompt: |
   Explore: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
+
+  Step 1 — First visible output: Scope=Read-only, Selected flow=direct inspection, Research topic={{ task }}.
+  Step 2 — Orient: load skill agentic-dev-harness. Run bd prime and bd ready --json.
+  Step 3 — Research: use analyze tools before grep. Map files, blast radius, existing tests.
+  Step 4 — Return JSON-compatible findings with summary, relevant_files, risks, recommended_next_steps.
+  Step 5 — Stop. Do not create beads or modify files.

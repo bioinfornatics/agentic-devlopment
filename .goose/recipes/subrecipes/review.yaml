@@ -32,7 +32,7 @@ instructions: |
   - [ ] All findings have file + line reference
   - [ ] Each CRITICAL/HIGH finding has a suggested fix
   - [ ] Beads hygiene verified (no orphaned TODOs)
-  - [ ] Pass/fail verdict stated explicitly
+  - [ ] Verdict stated explicitly as one of: APPROVE | PASS-WITH-NITS | BLOCK
 
   Orient: run `bd prime` at the start to load Beads state. Stop after the handoff block — do not continue exploring.
 
@@ -83,5 +83,7 @@ prompt: |
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
 
-  Do not modify files unless explicitly instructed. Return pass/fail, findings,
+  Do not modify files unless explicitly instructed.
+  Return verdict (APPROVE | PASS-WITH-NITS | BLOCK), severity-ranked findings with file:line evidence,
   missing tests, Beads hygiene issues, and recommended next commands.
+  APPROVE = zero actionable findings. BLOCK requires >= 1 CRITICAL or HIGH with proof.

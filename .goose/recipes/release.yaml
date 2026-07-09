@@ -71,6 +71,13 @@ sub_recipes:
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
-  Run `release` for: {{ task }}
+  Release: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
+
+  Step 1 — First visible output: state release target, current git status, gate plan.
+  Step 2 — Orient: load skill agentic-dev-harness. Run bd prime and bd ready --json.
+  Step 3 — Pre-release gate: verify all beads closed, tests pass, git clean, version bumped.
+  Step 4 — Execute release: use release subrecipe.
+  Step 5 — Post-release: verify deployed artifact, run smoke test, close release bead.
+  STOP on first gate FAIL — do not proceed past a failed gate.
