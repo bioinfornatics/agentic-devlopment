@@ -1,50 +1,53 @@
-# Agents — @harness/kg-visualizer
+# AGENTS.md — apps/kg-visualizer (@harness/kg-visualizer)
 
-## Tool MCP exposé
+> Overrides root AGENTS.md for this directory. Language: TypeScript + MCP SDK 1.29.
 
-### `show_kg_visualizer`
+## Setup
 
-**Description :** Affiche le Knowledge Graph comme force-directed graph interactif.
-
-**Paramètre optionnel :**
-```
-filter: string   # Filtrer par entityType
-                 # ex: "feature", "harness:recipe", "acceptance_criterion"
-```
-
-**Exemples d'invocation (dans Goose) :**
-```
-Show me the knowledge graph
-Show me the knowledge graph filtered to features
-Show the KG showing only harness:recipe nodes
-```
-
-## Quand l'utiliser
-
-| Besoin | Requête Goose |
-|---|---|
-| Vue globale du harness | "Show me the knowledge graph" |
-| Blast radius d'un skill | "Show KG filtered to harness:recipe then search for code-review" |
-| Gaps de coverage | "Show KG filtered to acceptance_criterion" (nœuds rouges = gaps) |
-| Features non implémentées | "Show KG filtered to feature" (rouge = not-implemented) |
-| Architecture produit | "Show KG filtered to feature" → suivre DECOMPOSES_INTO |
-
-## Agents qui pourraient l'invoquer
-
-| Agent | Quand | Pourquoi |
-|---|---|---|
-| `harness-orchestrator` | Début de session | Vue d'ensemble de l'état du KG |
-| `product-owner` | Gap analysis | Voir features/ACs sans test (rouge) |
-| `review-critic` | Avant review | Contexte du graphe de la feature en cours |
-| `architect` | Design phase | Vue de l'architecture existante |
-
-## Relation avec @harness/kg
-
-L'extension lit les fichiers produits par `@harness/kg` :
-- `.knowledge/memory.jsonl` — bootstrap + recipe checkpoints MCP
-- `.knowledge/derived.jsonl` — reasoning rules R1-R5
-
-Le pipeline recommandé avant d'ouvrir le visualiseur :
 ```bash
-node apps/kg/dist/cli.js pipeline   # ou: pnpm kg:pipeline depuis apps/
+pnpm install    # install @modelcontextprotocol/sdk + zod + typescript
+pnpm build      # tsc → dist/server.js
 ```
+
+## Test
+
+```bash
+timeout 3 node dist/server.js 2>&1 || echo "server started (stdio — needs MCP client)"
+# Expected: server starts and waits on stdin. 3s timeout is normal.
+```
+
+## MCP tool exposed
+
+```
+show_kg_visualizer(filter?: string)
+# Reads .knowledge/memory.jsonl + derived.jsonl
+# Returns: HTML Cytoscape.js+fcose force graph
+# filter: entityType to show only (e.g. "feature", "harness:recipe")
+```
+
+## Code style
+
+- `src/server.ts` — MCP server only. No HTML string embedding. Clean TypeScript.
+- `src/app.html` — Cytoscape.js + fcose visualization. Pure HTML/JS.
+  - Placeholders: `{{B64}}` (JSONL base64) and `{{FILTER}}` (JSON filter value)
+  - server.ts reads this file and replaces placeholders at runtime
+- Never embed JavaScript strings inside TypeScript template literals.
+
+## Goose config (to enable as Goose App)
+
+```yaml
+# ~/.config/goose/config.yaml
+extensions:
+  kg-visualizer:
+    enabled: true
+    type: stdio
+    name: KG Visualizer
+    cmd: node
+    args: [/abs/path/apps/kg-visualizer/dist/server.js]
+```
+
+## Editing the visualization
+
+- Colors/layout → edit `src/app.html` (Cytoscape style array)
+- KG data reading → edit `src/server.ts` `loadKG()`
+- Run `pnpm build` then test via Goose: "Show me the knowledge graph"

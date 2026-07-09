@@ -1,50 +1,52 @@
-# Agents — @harness/kg
+# AGENTS.md — apps/kg (@harness/kg)
 
-Description des agents Goose et recettes qui interagissent avec ce toolkit.
+> Overrides root AGENTS.md for this directory. Language: TypeScript + Node 22.
 
-## Agents qui utilisent le KG
+## Setup
 
-| Agent | Action | Quand |
-|---|---|---|
-| `implementation-worker` | `open_nodes([FEAT]-NN)` — contexte AC avant de coder | Début de chaque phase implement |
-| `review-critic` | `search_nodes('[FEAT]-')` — AC sans test → MEDIUM finding | Avant de lister les findings |
-| `product-owner` | `search_nodes(type=feature)` — gap analysis backlog | Fin de chaque revue backlog |
-
-## Recettes qui écrivent dans le KG
-
-| Recette/Subrecipe | Phase | Ce qui est écrit |
-|---|---|---|
-| `discover.yaml` | discover | `create_entities` epic + feature + `DECOMPOSES_INTO` |
-| `subrecipes/spec.yaml` | spec | `create_entities` acceptance_criterion + `HAS_CRITERION` + `LOCATED_IN` spec_file |
-| `subrecipes/implement.yaml` | implement | `create_entities` component/api_endpoint + `IMPLEMENTED_IN` code_file + `IMPLEMENTS` user_story |
-| `subrecipes/review.yaml` | review | `search_nodes` ACs → gaps = MEDIUM findings |
-
-## Extension MCP requise
-
-```yaml
-# ~/.config/goose/config.yaml
-knowledgegraphmemory:
-  enabled: true
-  cmd: npx   # wrapper per-project
-  # OU directement:
-  cmd: npx
-  args: [-y, "@modelcontextprotocol/server-memory"]
-  envs:
-    MEMORY_FILE_PATH: /path/to/.knowledge/memory.jsonl
+```bash
+pnpm install    # install devDependencies (typescript, @types/node)
+pnpm build      # tsc → dist/
 ```
 
-## Skill associé
+## Commands
 
-Charger le skill avant d'utiliser les outils KG :
+```bash
+node dist/cli.js bootstrap            # scan harness → .knowledge/memory.jsonl
+node dist/cli.js bootstrap --dry-run  # preview without writing
+node dist/cli.js reason               # forward chaining → .knowledge/derived.jsonl
+node dist/cli.js reason --rules       # list active rules
+node dist/cli.js pipeline             # bootstrap + reason
+node dist/cli.js visualize            # open dist/kg/index.html
 ```
-load skills knowledge-graph
+
+## Code style
+
+- TypeScript strict mode, NodeNext module resolution
+- All types in `src/types.ts` (Entity, Relation, KG, makeRel, makeStatus)
+- No external runtime dependencies (only devDependencies)
+- Each rule in `src/reason.ts` typed as `Rule = (kg: KG, rs: Set<string>) => Relation[]`
+
+## Adding a reasoning rule
+
+1. Add `const RN: Rule = ...` in `src/reason.ts`
+2. Append to `export const RULES` array with `{ name: "RN:description", fn: RN }`
+3. Run `pnpm build && node dist/cli.js reason --rules` to verify
+
+## File locations
+
+```
+src/types.ts      # Shared types — Entity, Relation, KG, makeRel, makeStatus
+src/bootstrap.ts  # Scan .agents/, .goose/recipes/, docs/ → memory.jsonl
+src/reason.ts     # 5 forward-chaining rules + RULES export
+src/cli.ts        # CLI entry: bootstrap|reason|pipeline|visualize|rules
+dist/cli.js       # Built binary (shebang added post-build)
 ```
 
-Le skill est dans `.agents/skills/knowledge-graph/SKILL.md`.
-Il décrit le modèle sémantique (types d'entités, relations, règles R1-R10),
-les patterns de traversal et le protocole CRUD par phase SDD.
+## Test
 
-## Lifecycle du KG
-
-Voir `docs/kg-lifecycle.md` pour le cycle complet :
-initiation → maintenance → auto-alimentation (5 mécanismes).
+```bash
+node dist/cli.js bootstrap --dry-run   # expect "Dry-run: N records"
+node dist/cli.js reason --rules        # expect 5+ rules listed
+node dist/cli.js pipeline              # expect "Bootstrap: N new (or 0), Derived: N facts"
+```
