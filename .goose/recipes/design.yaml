@@ -76,5 +76,5 @@ prompt: |
   Step 2 Phase 1 UX Research: load skills ux-quality. load skills cognitive-ux. load agent ux-researcher.
   Step 3 Phase 2 UI Design: load skills ui-quality. load skills atomic-design. load skills design-systems-arch.
     If AI interface: load skills agentic-ux. load agent ui-designer.
-    use sub_recipe: verify (target_type=ux-ui) for browser evidence.
+    use sub_recipe: verify (target_type=ui) for browser evidence.
   Step 4 Observe: PASS->file follow-up beads. FAIL->bd create issue, re-verify after fix.

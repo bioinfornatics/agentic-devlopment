@@ -22,7 +22,7 @@ flowchart LR
     P --> T(["TDD\nRED — write failing test"])
     T --> I(["/implement\nGREEN + REFACTOR"])
     I --> O{observe\ntest result}
-    O -- PASS --> V(["/verify\napi · web · cli · lib · ux-ui"])
+    O -- PASS --> V(["/verify\napi · web · cli · lib · ui"])
     O -- "FAIL (max 3×)" --> I
     V -- "✅ AC met" --> R(["/review\nAPPROVE / BLOCK"])
     R --> L(["/release\ngated + rollback"])
@@ -49,7 +49,7 @@ flowchart TD
     T(["TDD — RED\nwrite failing test first\ncite [FEAT]-NN AC ID\nconfirm FAIL"]) --> I
     I(["/implement\nGREEN: min code to pass\nREFACTOR: clean without breaking\nclaim bead before write"]) --> Ve
 
-    Ve{"/verify\nAC check\napi · web · cli · lib · ux-ui"}
+    Ve{"/verify\nAC check\napi · web · cli · lib · ui"}
     Ve -- "✅ all AC met" --> Le(["learn\nbd remember\npointer memory"])
     Le --> CL(["close bead\ngit push"])
 
@@ -74,12 +74,13 @@ flowchart TD
 ```
 
 **Branch at Verify:**
-| Result | Action |
-|---|---|
-| ✅ All AC met | → Learn → close bead → next |
-| ❌ Test failure | → loop back to Implement (max 3×) |
-| ❌ Spec gap | → loop back to Spec |
-| ⚠️ 3 iterations unresolved | → escalate to user |
+
+| Result                     | Action                            |
+|----------------------------|-----------------------------------|
+| ✅ All AC met               | → Learn → close bead → next       |
+| ❌ Test failure             | → loop back to Implement (max 3×) |
+| ❌ Spec gap                 | → loop back to Spec               |
+| ⚠️ 3 iterations unresolved | → escalate to user                |
 
 ## Repository layout
 

@@ -10,7 +10,7 @@ flowchart LR
     P --> T(["TDD\nRED — write failing test"])
     T --> I(["/implement\nGREEN + REFACTOR"])
     I --> O{observe\ntest result}
-    O -- PASS --> V(["/verify\napi · web · cli · lib · ux-ui"])
+    O -- PASS --> V(["/verify\napi · web · cli · lib · ui"])
     O -- "FAIL (max 3×)" --> I
     V -- "✅ AC met" --> R(["/review\nAPPROVE / BLOCK"])
     R --> L(["/release\ngated + rollback"])

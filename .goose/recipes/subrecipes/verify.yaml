@@ -11,12 +11,12 @@ instructions: |
   - web:     load skills webapp-testing + ui-quality
   - cli:     load skills agentic-dev-harness + systematic-debugging
   - library: load skills agentic-dev-harness
-  - ux-ui:   load skills ui-quality + ux-quality
+  - ui:   load skills ui-quality and load skills atomic-design
 
   ## First visible output
   Before any tool call:
     Verify target: [target name]
-    Type: [api | web | cli | library | ux-ui]
+    Type: [api | web | cli | library | ui]
     Protocol: [Bruno | Playwright | shell | test-suite | WCAG]
     AC IDs to verify: [[FEAT]-NN list or "no spec found"]
 
@@ -63,7 +63,9 @@ HTTP_CODE" <endpoint> | tee /tmp/response.txt
   3. Gate: >= 80% branch coverage for changed files.
   4. Report: N passed / M failed / coverage %. Full output for each failure.
 
-  ### ux-ui — Design system + WCAG
+  ### ui — Design system, WCAG 2.2 AA, Atomic Design (POST-IMPLEMENTATION UI verification)
+  NOTE: UX research (personas, journeys, usability) belongs in discover/design phase.
+        verify/ui covers only the IMPLEMENTATION LAYER: tokens, WCAG, component structure. — Design system + WCAG
   1. load skills ui-quality + ux-quality.
   2. Navigate with Playwright if browser URL available.
   3. Audit design tokens: grep CSS for hardcoded values not from design system.
@@ -92,7 +94,7 @@ parameters:
     input_type: string
     requirement: optional
     default: auto
-    description: "Verification type: api | web | cli | library | ux-ui | auto"
+    description: "Verification type: api | web | cli | library | ui | auto"
   - key: repo_path
     input_type: string
     requirement: optional
@@ -116,7 +118,7 @@ extensions:
     bundled: true
   - type: stdio
     name: Playwright
-    description: Browser automation (web + ux-ui types only)
+    description: Browser automation (web + ui types only)
     cmd: npx
     args:
       - "@playwright/mcp@latest"

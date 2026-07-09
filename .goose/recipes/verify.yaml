@@ -10,7 +10,7 @@ instructions: |
   ## First visible output (required before any tool call)
   State this block before acting:
     Verify target: [name or URL]
-    Detected type: [api | web | cli | library | ux-ui | mixed]
+    Detected type: [api | web | cli | library | ui | mixed]
     Protocol: [Bruno | Playwright | shell | test-suite | WCAG]
 
   ## Detect verification type from context
@@ -21,14 +21,14 @@ instructions: |
   | Browser URL, HTML/CSS/JS, React/Vue, frontend routes | web | Playwright + a11y |
   | Executable, argparse, main.py, bin/, shell script | cli | shell execution |
   | src/, lib/, package.json tests, pytest, cargo test | library | test suite |
-  | Figma, design tokens, .css, component specs | ux-ui | WCAG + design system |
+  | Figma, design tokens, .css, component specs | ui | WCAG + design system |
 
   ## Skill and agent routing per type
   - api:     load skills agentic-dev-harness; delegate qa-automation
   - web:     load skills webapp-testing + ui-quality; delegate qa-automation + ui-designer
   - cli:     load skills agentic-dev-harness; delegate qa-automation
   - library: load skills agentic-dev-harness; delegate qa-automation
-  - ux-ui:   load skills ui-quality + ux-quality; delegate ui-designer + ux-researcher
+  - ui:     load skills ui-quality and design-systems-arch and atomic-design; delegate ui-designer
 
   ## Orient (bd prime FIRST)
   1. Run bd prime — load known defects, test memories, quality gates.
@@ -50,7 +50,7 @@ parameters:
     input_type: select
     requirement: optional
     default: auto
-    options: [auto, api, web, cli, library, ux-ui]
+    options: [auto, api, web, cli, library, ui]
     description: Verification type. Default auto-detects from context.
   - key: repo_path
     input_type: string
@@ -84,7 +84,7 @@ extensions:
     timeout: 300
   - type: stdio
     name: Playwright
-    description: Browser automation (web + ux-ui types only)
+    description: Browser automation (web + ui types only)
     cmd: npx
     args:
       - "@playwright/mcp@latest"
