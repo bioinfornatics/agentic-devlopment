@@ -20,7 +20,9 @@ const R6: Rule = ({ entities, relations }) => {
   });
   const deprecated = new Set(
     [...entities.values()]
-      .filter(e => e.entityType === "code_file" && e.observations.some(o => o.includes("status: deprecated")))
+      .filter(e => e.entityType === "code_file"
+        && e.observations.some(o => o.includes("status: deprecated"))
+        && !e.observations.some(o => o.includes("distinct-role") || o.includes("role: distinct")))
       .map(e => e.name)
   );
   const out: Relation[] = [];

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { bootstrap } from "./bootstrap.js";
 import { reason, RULES } from "./reason.js";
 import { execSync } from "node:child_process";

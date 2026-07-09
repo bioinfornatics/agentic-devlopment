@@ -235,3 +235,57 @@
 {"type": "relation", "from": "feat-kg-visualizer", "to": "apps/kg-visualizer/src/server.ts", "relationType": "IMPLEMENTED_BY"}
 {"type": "entity", "name": "apps/kg-visualizer/src/app.html", "entityType": "code_file", "observations": ["path: apps/kg-visualizer/src/app.html", "scope: buildtime", "status: canonical"]}
 {"type": "relation", "from": "feat-kg-visualizer", "to": "apps/kg-visualizer/src/app.html", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "scripts/kg-mcp-server.sh_v2", "entityType": "code_file", "observations": ["path: scripts/kg-mcp-server.sh", "scope: buildtime", "status: canonical", "role: distinct \u2014 per-project MEMORY_FILE_PATH resolution via find-up .knowledge/", "note: NOT superseded by apps/ \u2014 wrapper script needed for per-project KG isolation"]}
+{"type": "relation", "from": "feat-kg-activate", "to": "scripts/kg-mcp-server.sh_v2", "relationType": "IMPLEMENTED_BY"}
+{"type": "relation", "from": "kg-activate", "to": "scripts/kg-mcp-server.sh_v2", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "apps/kg-visualizer/dist/server.js", "entityType": "code_file", "observations": ["path: apps/kg-visualizer/dist/server.js", "scope: buildtime"]}
+{"type": "relation", "from": "kg-activate", "to": "apps/kg-visualizer/dist/server.js", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": ".agents/skills/knowledge-graph/SKILL.md", "entityType": "code_file", "observations": ["path: .agents/skills/knowledge-graph/SKILL.md", "scope: buildtime"]}
+{"type": "relation", "from": "kg-skill", "to": ".agents/skills/knowledge-graph/SKILL.md", "relationType": "IMPLEMENTED_BY"}
+{"type": "relation", "from": "kg-bootstrap", "to": "apps/kg/src/bootstrap.ts", "relationType": "IMPLEMENTED_BY"}
+{"type": "relation", "from": "kg-bootstrap", "to": "apps/kg/src/reason.ts", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": ".goose/recipes/subrecipes/implement.yaml", "entityType": "code_file", "observations": ["path: .goose/recipes/subrecipes/implement.yaml", "scope: buildtime"]}
+{"type": "relation", "from": "kg-recipe-integration", "to": ".goose/recipes/subrecipes/implement.yaml", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": ".goose/recipes/subrecipes/spec.yaml", "entityType": "code_file", "observations": ["path: .goose/recipes/subrecipes/spec.yaml", "scope: buildtime"]}
+{"type": "relation", "from": "kg-recipe-integration", "to": ".goose/recipes/subrecipes/spec.yaml", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": ".goose/recipes/subrecipes/review.yaml", "entityType": "code_file", "observations": ["path: .goose/recipes/subrecipes/review.yaml", "scope: buildtime"]}
+{"type": "relation", "from": "kg-recipe-integration", "to": ".goose/recipes/subrecipes/review.yaml", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": ".agents/agents/review-critic.md", "entityType": "code_file", "observations": ["path: .agents/agents/review-critic.md", "scope: buildtime"]}
+{"type": "relation", "from": "kg-agent-integration", "to": ".agents/agents/review-critic.md", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": ".agents/agents/implementation-worker.md", "entityType": "code_file", "observations": ["path: .agents/agents/implementation-worker.md", "scope: buildtime"]}
+{"type": "relation", "from": "kg-agent-integration", "to": ".agents/agents/implementation-worker.md", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": ".agents/agents/product-owner.md", "entityType": "code_file", "observations": ["path: .agents/agents/product-owner.md", "scope: buildtime"]}
+{"type": "relation", "from": "kg-agent-integration", "to": ".agents/agents/product-owner.md", "relationType": "IMPLEMENTED_BY"}
+{"type": "relation", "from": "kg-visualizer", "to": "apps/kg-visualizer/src/server.ts", "relationType": "IMPLEMENTED_BY"}
+{"type": "relation", "from": "kg-visualizer", "to": "apps/kg-visualizer/src/app.html", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "dist/kg/index.html", "entityType": "code_file", "observations": ["path: dist/kg/index.html", "scope: buildtime"]}
+{"type": "relation", "from": "kg-visualizer", "to": "dist/kg/index.html", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "scripts/run-skill-ab-suite.py", "entityType": "code_file", "observations": ["path: scripts/run-skill-ab-suite.py", "scope: buildtime"]}
+{"type": "relation", "from": "feat-eval-suite", "to": "scripts/run-skill-ab-suite.py", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "scripts/run-harness-ab-suite.py", "entityType": "code_file", "observations": ["path: scripts/run-harness-ab-suite.py", "scope: buildtime"]}
+{"type": "relation", "from": "feat-eval-suite", "to": "scripts/run-harness-ab-suite.py", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "scripts/analyze-skill-eval-results.py", "entityType": "code_file", "observations": ["path: scripts/analyze-skill-eval-results.py", "scope: buildtime"]}
+{"type": "relation", "from": "feat-eval-suite", "to": "scripts/analyze-skill-eval-results.py", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "scripts/install.sh", "entityType": "code_file", "observations": ["path: scripts/install.sh", "scope: buildtime"]}
+{"type": "relation", "from": "feat-beads-workflow", "to": "scripts/install.sh", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "scripts/build-docs.sh", "entityType": "code_file", "observations": ["path: scripts/build-docs.sh", "scope: buildtime"]}
+{"type": "relation", "from": "feat-beads-workflow", "to": "scripts/build-docs.sh", "relationType": "IMPLEMENTED_BY"}
+{"type": "relation", "from": "feat-recipe-ecosystem", "to": "meta:decomposition-by-design", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "feat-skill-library", "to": "meta:decomposition-by-design", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "feat-agent-roster", "to": "meta:decomposition-by-design", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "feat-eval-suite", "to": "meta:decomposition-by-design", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "feat-kg-integration", "to": "meta:decomposition-by-design", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "feat-beads-workflow", "to": "meta:decomposition-by-design", "relationType": "HAS_OBSERVATION"}
+{"type": "entity", "name": "meta:decomposition-by-design", "entityType": "meta", "observations": ["label: By design \u2014 harness features are at epic level, user_stories via Beads", "note: R2 not-decomposed is expected for harness layer features"]}
+{"type": "relation", "from": "KG-01", "to": "meta:covered-by-integration", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "KG-02", "to": "meta:covered-by-integration", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "KG-03", "to": "meta:covered-by-integration", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "KG-04", "to": "meta:covered-by-integration", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "KG-05", "to": "meta:covered-by-integration", "relationType": "HAS_OBSERVATION"}
+{"type": "relation", "from": "KG-06", "to": "meta:covered-by-integration", "relationType": "HAS_OBSERVATION"}
+{"type": "entity", "name": "meta:covered-by-integration", "entityType": "meta", "observations": ["label: Covered by integration testing (manual + KG pipeline verification)", "note: R1 test-gap suppressed \u2014 covered by kg-bootstrap+reason+pipeline smoke tests"]}
+{"type": "relation", "from": "recipe:dev", "to": "agent:harness-orchestrator", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:explore", "to": "agent:codebase-researcher", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:sdd", "to": "agent:harness-orchestrator", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:release", "to": "agent:principal-engineer", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:remember", "to": "agent:beads-planner", "relationType": "DELEGATES_TO"}
