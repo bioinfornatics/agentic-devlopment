@@ -7,7 +7,7 @@
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The orchestrator agent should emit Orchestration decision naming the codebase-researcher route, load the routing skill, and close with a Delegation audit \u2014 baseline just inspects files directly.",
+    "expected_skill_contribution": "The orchestrator agent should emit Orchestration decision naming the codebase-researcher route, load the routing skill, and close with a Delegation audit — baseline just inspects files directly.",
     "fixture_intent": "Harness recipe layer and agent definitions are present so the orchestrator can identify the correct specialist, assign a read-only scope, and synthesize the researcher's output without touching files itself.",
     "baseline_gaps": [
       "Inspects recipe files directly without emitting a routing decision or consulting the routing table.",
@@ -16,7 +16,7 @@
     ],
     "expected_behavior": [
       "Loads the `goose-orchestration` skill and calls `load()` to discover available agents and the routing table before making any routing decision.",
-      "Emits a literal `Orchestration decision:` block \u2014 naming codebase-researcher, scope boundaries, and read-only permission \u2014 before any delegation or file inspection.",
+      "Emits a literal `Orchestration decision:` block — naming codebase-researcher, scope boundaries, and read-only permission — before any delegation or file inspection.",
       "Assigns a non-overlapping read-only scope to the research worker, explicitly stating that no mutations are permitted.",
       "Closes with a `Delegation audit:` summarising each worker used, what scope they received, and what finding they produced."
     ]
@@ -30,7 +30,7 @@
     ],
     "max_turns": 500,
     "difficulty": "difficult",
-    "expected_skill_contribution": "The orchestrator should partition scopes explicitly, state the invariant verbatim, and emit Orchestration decision + Delegation audit \u2014 baseline lets both writers touch overlapping paths.",
+    "expected_skill_contribution": "The orchestrator should partition scopes explicitly, state the invariant verbatim, and emit Orchestration decision + Delegation audit — baseline lets both writers touch overlapping paths.",
     "fixture_intent": "Two writable directories exist with distinct but adjacent content so the orchestrator must reason about boundary conditions and enforce non-overlapping write scopes between concurrent workers.",
     "baseline_gaps": [
       "Assigns overlapping write scopes to both workers without checking for path boundary collisions.",
@@ -45,16 +45,16 @@
     ]
   },
   {
-    "query": "Orchestrate the full SDD+TDD flow for adding eval coverage to `harness-plan` recipe: spec \u2192 plan \u2192 implement \u2192 review.",
+    "query": "Orchestrate the full SDD+TDD flow for adding eval coverage to `plan` recipe: spec → plan → implement → review.",
     "files": [
-      ".goose/recipes/harness-plan.yaml",
+      ".goose/recipes/plan.yaml",
       "evals/",
       "AGENTS.md",
       ".beads/issues.jsonl"
     ],
     "max_turns": 500,
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "The orchestrator should route through product-owner \u2192 beads-planner \u2192 tdd-guide \u2192 implementation-worker \u2192 review-critic in sequence, with explicit Orchestration decision before each phase and escalation protocol if review blocks.",
+    "expected_skill_contribution": "The orchestrator should route through product-owner → beads-planner → tdd-guide → implementation-worker → review-critic in sequence, with explicit Orchestration decision before each phase and escalation protocol if review blocks.",
     "fixture_intent": "A real harness recipe with no existing eval coverage and an active Beads tracker give the orchestrator enough state to derive phase inputs, route each SDD phase to the right specialist, and detect when review blocks require escalation.",
     "baseline_gaps": [
       "Skips one or more SDD phases and jumps straight to implementation without spec or plan outputs.",
@@ -63,7 +63,7 @@
     ],
     "expected_behavior": [
       "Emits a separate `Orchestration decision:` block before each phase transition (spec, plan, implement, review) naming the specialist, inputs, and expected output.",
-      "Routes phases in strict SDD order: product-owner \u2192 beads-planner \u2192 tdd-guide \u2192 implementation-worker \u2192 review-critic, and does not skip a phase.",
+      "Routes phases in strict SDD order: product-owner → beads-planner → tdd-guide → implementation-worker → review-critic, and does not skip a phase.",
       "States the escalation threshold explicitly: after 2 BLOCK verdicts from review-critic, summon principal-engineer before re-entering implementation.",
       "Closes with a `Delegation audit:` covering all phases, which beads were updated per phase, and any remaining risks identified during the flow."
     ]

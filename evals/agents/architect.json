@@ -8,7 +8,7 @@
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The architect should propose at least 2 alternatives with a trade-off table, recommend the simplest design that meets requirements, and produce a draft ADR \u2014 baseline gives one solution without alternatives.",
+    "expected_skill_contribution": "The architect should propose at least 2 alternatives with a trade-off table, recommend the simplest design that meets requirements, and produce a draft ADR — baseline gives one solution without alternatives.",
     "fixture_intent": "Beads data files and the beads-harness skill are present so the architect can ground alternatives in actual data shapes and access patterns rather than pure speculation.",
     "baseline_gaps": [
       "Proposes only one caching solution without considering alternatives or explaining why others were rejected.",
@@ -27,7 +27,7 @@
     "files": [
       ".agents/agents/",
       ".agents/skills/goose-orchestration/SKILL.md",
-      ".goose/recipes/harness-master.yaml"
+      ".goose/recipes/dev.yaml"
     ],
     "max_turns": 500,
     "difficulty": "difficult",
@@ -55,17 +55,17 @@
     ],
     "max_turns": 500,
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "The architect should produce a current-state analysis, technical debt map, scalability risk assessment, and a design proposal with trade-offs \u2014 not just a status summary.",
+    "expected_skill_contribution": "The architect should produce a current-state analysis, technical debt map, scalability risk assessment, and a design proposal with trade-offs — not just a status summary.",
     "fixture_intent": "A full harness with 11 agents, multiple skill packages, and an orchestration recipe layer exists so the architect can map real patterns, identify specific debt items with file evidence, and stress-test the design against growth scenarios.",
     "baseline_gaps": [
       "Summarises current state without identifying specific technical debt items tied to files or components.",
       "Omits scalability risk assessment and produces no roadmap for how the design holds up under growth.",
-      "Produces no design proposal with alternatives \u2014 ends at diagnosis without a recommended next iteration."
+      "Produces no design proposal with alternatives — ends at diagnosis without a recommended next iteration."
     ],
     "expected_behavior": [
       "Produces a current-state analysis identifying existing patterns (routing strategy, skill packaging, recipe hierarchy) and their conventions.",
       "Documents technical debt as a named list with specific file/component evidence for each item (not vague categories).",
-      "Identifies scalability risks and includes a scalability roadmap addressing at least three growth scenarios (e.g., 10 \u2192 100 \u2192 1000 agents).",
+      "Identifies scalability risks and includes a scalability roadmap addressing at least three growth scenarios (e.g., 10 → 100 → 1000 agents).",
       "Proposes the next architectural iteration with a trade-off table and a draft ADR capturing the Status, Context, Decision, Consequences, and Date."
     ]
   }

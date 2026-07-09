@@ -7,7 +7,7 @@
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The researcher agent should use analyze extension for structure before grep, return a structured output with all schema fields, and sample strategically \u2014 not scan every file.",
+    "expected_skill_contribution": "The researcher agent should use analyze extension for structure before grep, return a structured output with all schema fields, and sample strategically — not scan every file.",
     "fixture_intent": "A recipe layer with top-level entry points and subrecipes exists so the researcher can demonstrate strategic sampling (entry points first, then 1 level of delegation) rather than exhaustive scanning.",
     "baseline_gaps": [
       "Issues raw grep or shell commands without first using the analyze extension to get directory structure.",
@@ -16,15 +16,15 @@
     ],
     "expected_behavior": [
       "Uses the `analyze` extension (directory/file/symbol) to obtain structural context before issuing any raw shell commands.",
-      "Reads at most 10 files total \u2014 identifies entry-point recipes first, then expands exactly one delegation level into subrecipes.",
+      "Reads at most 10 files total — identifies entry-point recipes first, then expands exactly one delegation level into subrecipes.",
       "Returns output with all 6 schema fields populated: summary, relevant_files, beads_state, risks, blast_radius, recommended_next_steps.",
-      "Makes no file edits, no Beads mutations, and no `bd create` calls \u2014 any follow-up work is proposed as draft issue titles only."
+      "Makes no file edits, no Beads mutations, and no `bd create` calls — any follow-up work is proposed as draft issue titles only."
     ]
   },
   {
-    "query": "Trace the blast radius of removing the `summon` extension from `harness-implement.yaml`. Which agents, recipes, and docs would break?",
+    "query": "Trace the blast radius of removing the `summon` extension from `implement.yaml`. Which agents, recipes, and docs would break?",
     "files": [
-      ".goose/recipes/harness-implement.yaml",
+      ".goose/recipes/implement.yaml",
       ".goose/recipes/",
       ".agents/"
     ],
@@ -38,7 +38,7 @@
       "Proposes or executes changes to remove the extension instead of remaining strictly read-only."
     ],
     "expected_behavior": [
-      "Remains strictly read-only throughout \u2014 no mutations of any kind, including no Beads creates or updates.",
+      "Remains strictly read-only throughout — no mutations of any kind, including no Beads creates or updates.",
       "Traces `summon` extension usage across all recipe and agent files with exact file path references and line-level evidence.",
       "Returns `blast_radius` as a distinct list of affected files/modules each annotated with a one-line rationale for why removal would break it.",
       "Proposes `bd create` draft issue titles as non-executed follow-up suggestions, explicitly not running the commands."
@@ -61,7 +61,7 @@
       "Omits `recommended_next_steps` or leaves other required schema fields empty."
     ],
     "expected_behavior": [
-      "Runs `bd prime`, `bd blocked --json`, and `bd ready --json` read-only commands to gather Beads state \u2014 no `bd create`, `bd update`, or `bd close` calls.",
+      "Runs `bd prime`, `bd blocked --json`, and `bd ready --json` read-only commands to gather Beads state — no `bd create`, `bd update`, or `bd close` calls.",
       "Traces the dependency graph for each blocked issue, explaining the upstream blocker chain before recommending an order.",
       "Recommends an explicit unblocking order with rationale naming which bead, when unblocked, frees which downstream work.",
       "Populates all 6 JSON schema fields with content derived from actual Beads state and recipe context: summary, relevant_files, beads_state, risks, blast_radius, recommended_next_steps."

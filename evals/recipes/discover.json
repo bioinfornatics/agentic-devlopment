@@ -1,0 +1,71 @@
+[
+  {
+    "query": "Discover a new feature: 'add Bruno API test collection support to the verify recipe'. Assess scope, produce problem statement and user stories.",
+    "files": [
+      ".goose/recipes/verify.yaml",
+      "AGENTS.md",
+      "docs/00-index.md"
+    ],
+    "max_turns": 500,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The discover recipe should auto-size the feature (Micro/Small/Medium), emit the First Visible Output with scope declaration, produce a structured discovery.md or inline problem statement, and create a Beads epic.",
+    "fixture_intent": "Validates that discover correctly auto-sizes, produces a problem statement with user stories rather than jumping to implementation, and creates a Beads epic with --issue_type epic.",
+    "baseline_gaps": [
+      "jumps to implementation or recipe YAML without a problem statement first",
+      "skips auto-sizing — treats all features as the same complexity",
+      "produces no Beads epic and no user stories in the output"
+    ],
+    "expected_behavior": [
+      "emits a First Visible Output block declaring scope (Micro/Small/Medium/Large) before any tool call",
+      "produces a problem statement covering: problem, users affected, success metrics",
+      "generates at least one user story in 'As a <role>, I want <capability> so that <benefit>' format",
+      "creates a Beads epic with `bd create --issue_type epic` and reports the epic ID"
+    ]
+  },
+  {
+    "query": "Discover the requirements for a 'parallel skill eval runner' feature. Run the 9-dimension implicit-requirement sweep and produce the discovery document.",
+    "files": [
+      "scripts/run-skill-ab-suite.py",
+      "docs/15-skill-evaluations.md",
+      "docs/adr/ADR-001-eval-suite-parallelism.md"
+    ],
+    "max_turns": 500,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The discover recipe should load the sdd skill, run bd prime, perform the 9-dimension sweep for a complex (Large) feature, delegate to product-owner, and produce a spec-ready discovery document.",
+    "fixture_intent": "A complex feature with multiple implicit dimensions (concurrency, error handling, observability); the agent must identify it as Large scope and run the full 9-dimension sweep before producing the discovery artifact.",
+    "baseline_gaps": [
+      "classifies the feature as Small or Medium without justifying Large scope",
+      "skips the 9-dimension implicit-requirement sweep or marks all dimensions N/A without reasoning",
+      "produces a discovery document without bd prime orientation first"
+    ],
+    "expected_behavior": [
+      "classifies the feature as Large or Complex and justifies the classification",
+      "runs `bd prime` as the first tool call before any file reads",
+      "runs the 9-dimension sweep and resolves at least 5 dimensions with a decision or explicit N/A reason",
+      "produces a discovery document at `.specs/features/parallel-eval-runner/discovery.md` or equivalent"
+    ]
+  },
+  {
+    "query": "Discover requirements for splitting the 'verify' recipe into type-specific sub-workflows. Identify ambiguities, run the implicit-requirement sweep, and produce a Beads epic with dependency-ordered stories.",
+    "files": [
+      ".goose/recipes/verify.yaml",
+      ".goose/recipes/subrecipes/verify.yaml",
+      "evals/recipes/verify.json"
+    ],
+    "max_turns": 500,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The discover recipe must handle a complex brownfield refactoring: orient with bd prime, identify it as Large/Complex, delegate ux-researcher for UX impact, run the 9-dimension sweep, produce discovery.md, and create ordered Beads stories with dependencies.",
+    "fixture_intent": "A complex brownfield refactoring with backward-compatibility risk; the agent must identify gray areas (idempotency of split, migration risk) and represent them in the discovery document before proposing a Beads epic structure.",
+    "baseline_gaps": [
+      "treats this as Small scope without analyzing backward-compatibility risk",
+      "proposes implementation tasks instead of discovery stories at the epic level",
+      "creates no Beads epic or produces no `bd create --issue_type epic` command"
+    ],
+    "expected_behavior": [
+      "classifies as Large or Complex and identifies backward-compatibility as a gray area",
+      "runs `bd prime` first and checks for existing related issues before creating new ones",
+      "resolves at least 3 of the 9 implicit dimensions with non-N/A answers",
+      "creates a Beads epic and at least 2 ordered story beads using `--deps partOf:<epic-id>`"
+    ]
+  }
+]

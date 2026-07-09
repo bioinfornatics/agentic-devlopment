@@ -8,7 +8,7 @@
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The principal-engineer should apply the breaking change checklist (name fields unchanged, description is routing signal), assess blast radius table, and flag LoC limits \u2014 baseline gives a generic review.",
+    "expected_skill_contribution": "The principal-engineer should apply the breaking change checklist (name fields unchanged, description is routing signal), assess blast radius table, and flag LoC limits — baseline gives a generic review.",
     "fixture_intent": "Confirm that the agent uses a structured breaking-change checklist and blast-radius table rather than generic commentary, and that it quantifies change size against the defined LoC thresholds.",
     "baseline_gaps": [
       "Produces generic code review commentary without applying a structured breaking-change checklist",
@@ -17,31 +17,31 @@
     ],
     "expected_behavior": [
       "Checks at minimum: agent name fields are unchanged across the diff, description routing signals remain intact, and skill pointer references in agents resolve to existing skill files",
-      "Produces a blast-radius table with columns: Module/Consumer | Impact | Severity \u2014 not a prose paragraph",
+      "Produces a blast-radius table with columns: Module/Consumer | Impact | Severity — not a prose paragraph",
       "Assesses total change size against the 500-line caution and 800-line split thresholds and states a recommendation",
-      "States the escalation path explicitly if any breaking change is detected \u2014 identifies who or what process must be notified before merge"
+      "States the escalation path explicitly if any breaking change is detected — identifies who or what process must be notified before merge"
     ]
   },
   {
-    "query": "Review changes to `harness-master.yaml` routing instructions and `goose-orchestration/SKILL.md` for breaking changes and public API stability.",
+    "query": "Review changes to `dev.yaml` routing instructions and `goose-orchestration/SKILL.md` for breaking changes and public API stability.",
     "files": [
-      ".goose/recipes/harness-master.yaml",
+      ".goose/recipes/dev.yaml",
       ".agents/skills/goose-orchestration/SKILL.md"
     ],
     "max_turns": 500,
     "difficulty": "difficult",
     "expected_skill_contribution": "The principal-engineer should check recipe parameter schema for backward compatibility, skill name for routing stability, and flag any changes that break existing slash command mappings.",
-    "fixture_intent": "Verify that the agent treats recipe parameters and skill name frontmatter as a public API surface \u2014 not implementation details \u2014 and traces breaking changes downstream to slash command configurations in user config.",
+    "fixture_intent": "Verify that the agent treats recipe parameters and skill name frontmatter as a public API surface — not implementation details — and traces breaking changes downstream to slash command configurations in user config.",
     "baseline_gaps": [
       "Reviews content quality without inspecting the recipe `parameters` schema for backward-compatible versus breaking additions",
-      "Does not check whether the skill `name` frontmatter is unchanged across the diff \u2014 a renamed skill silently breaks routing",
+      "Does not check whether the skill `name` frontmatter is unchanged across the diff — a renamed skill silently breaks routing",
       "Misses the downstream impact on slash commands (`/harness`, `/review`) configured outside this repository in user Goose config"
     ],
     "expected_behavior": [
       "Checks recipe `parameters` schema for backward-compatible changes only (new optional params are safe; removed or renamed params are breaking) and flags any deviation",
-      "Verifies that the skill `name` frontmatter is unchanged in the diff \u2014 if name changed, flags as a HIGH breaking change affecting routing",
+      "Verifies that the skill `name` frontmatter is unchanged in the diff — if name changed, flags as a HIGH breaking change affecting routing",
       "Assesses impact on slash commands (`/harness`, `/review`, `/sdd`, etc.) that reference these artifacts in user config, noting that the install script must be re-run on name changes",
-      "Produces a breaking-change table: Item | Breaking? | Mitigation \u2014 one row per checked surface, not prose"
+      "Produces a breaking-change table: Item | Breaking? | Mitigation — one row per checked surface, not prose"
     ]
   },
   {
@@ -56,7 +56,7 @@
     "max_turns": 500,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "The principal-engineer should produce systemic risk assessment: breaking change checklist across all surfaces, splitting recommendations for large changes, and a definitive escalation decision.",
-    "fixture_intent": "Stress-test the agent's systemic risk reasoning when it receives a session-wide diff that has already generated 2+ BLOCK verdicts \u2014 the discriminant is a definitive APPROVE/APPROVE-WITH-CONDITIONS/BLOCK decision, not a reiteration of individual findings.",
+    "fixture_intent": "Stress-test the agent's systemic risk reasoning when it receives a session-wide diff that has already generated 2+ BLOCK verdicts — the discriminant is a definitive APPROVE/APPROVE-WITH-CONDITIONS/BLOCK decision, not a reiteration of individual findings.",
     "baseline_gaps": [
       "Reviews individual files without producing a systemic risk assessment that spans all changed surfaces",
       "Does not recommend splitting the changeset even when total LoC clearly exceeds 800 lines across the session",
@@ -66,7 +66,7 @@
       "Applies the breaking change checklist across all five surfaces (agents, skills, recipes, docs, evals) and states the result per surface in a single consolidated table",
       "Assesses total change size across the session and recommends splitting with specific split boundaries if total exceeds 800 lines without a mechanical justification",
       "Produces an architecture coherence verdict: does the full session's change fit the existing harness design, naming conventions, and SDD loop structure?",
-      "States a definitive APPROVE / APPROVE-WITH-CONDITIONS / BLOCK decision with exact, actionable conditions (not vague suggestions) \u2014 this is the principal-engineer's escalation ruling, not another review"
+      "States a definitive APPROVE / APPROVE-WITH-CONDITIONS / BLOCK decision with exact, actionable conditions (not vague suggestions) — this is the principal-engineer's escalation ruling, not another review"
     ]
   }
 ]

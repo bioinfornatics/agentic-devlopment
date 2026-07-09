@@ -7,7 +7,7 @@
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The ux-researcher should apply the 8-dimension stack in order, require browser evidence before any finding, and rank issues by user impact \u2014 baseline gives generic aesthetic feedback.",
+    "expected_skill_contribution": "The ux-researcher should apply the 8-dimension stack in order, require browser evidence before any finding, and rank issues by user impact — baseline gives generic aesthetic feedback.",
     "fixture_intent": "Confirm that the agent structures its audit around the 8-dimension evaluation stack rather than giving freeform aesthetic commentary, and that it refuses to state any finding without referencing browser evidence.",
     "baseline_gaps": [
       "Provides generic aesthetic feedback (font size, colour choices) without mapping findings to the 8-dimension evaluation stack",
@@ -15,13 +15,13 @@
       "Ranks issues by visual preference rather than by user-impact severity"
     ],
     "expected_behavior": [
-      "Applies at least 5 of the 8 evaluation dimensions in the defined order: User Intent \u2192 Information Architecture \u2192 Interaction States \u2192 Visual Hierarchy \u2192 Design System \u2192 Accessibility \u2192 Performance \u2192 Evidence",
-      "Requests or references browser evidence (screenshot, console output, or a11y snapshot) before stating any finding \u2014 does not assert a finding from HTML source alone",
+      "Applies at least 5 of the 8 evaluation dimensions in the defined order: User Intent → Information Architecture → Interaction States → Visual Hierarchy → Design System → Accessibility → Performance → Evidence",
+      "Requests or references browser evidence (screenshot, console output, or a11y snapshot) before stating any finding — does not assert a finding from HTML source alone",
       "Ranks top issues by user impact (task failure, confusion, inaccessibility) not by aesthetic preference or CSS specificity",
       "Separates WCAG 2.2 AA blockers (must fix before publish) from visual and content recommendations (should fix, lower priority) in the report structure"
     ],
     "skills": [
-      "ui-ux-quality"
+      "ux-quality"
     ]
   }
 ]
