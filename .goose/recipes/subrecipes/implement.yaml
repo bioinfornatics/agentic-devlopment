@@ -1,9 +1,22 @@
 # AGENT-FACING WORKER SUBRECIPE — invoked by the implement recipe.
 # Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
 version: 1.0.0
-title: Implement
+title: Implement Worker
 description: Implement a scoped Beads issue with tests, review, and handoff.
 instructions: |
+  ## Load skill first
+  Load skill: `sdd`  — SDD loop, spec-anchored outcome rule, SPEC_DEVIATION markers.
+  Load skill: `agentic-dev-harness`  — First Visible Output rule, Scoped plan format, blast radius.
+
+  ## First visible output
+  Before any tool call:
+    Orchestration decision:
+    - Bead: [id or "will create"]
+    - Scope: [exact file(s)]
+    - Selected flow: implement
+    - Spec reference: [.specs/features/[feature]/spec.md or "none"]
+
+
   You are an implementation subagent. Keep scope tight and durable state current.
 
   Implementation protocol:

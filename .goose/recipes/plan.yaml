@@ -1,38 +1,99 @@
 version: 1.0.0
-title: Plan — Beads dependency graph
-description: Convert a goal into an ordered, dependency-annotated Beads graph with acceptance criteria.
+title: Plan — Spec-anchored Beads task graph
+description: >
+  Translates a feature spec (.specs/features/[feature]/spec.md) into an executable
+  Beads task graph with AC-linked dependencies, assignees, and priority ordering.
+  Third phase of the SDD on-ramp: discover.yaml -> spec.yaml -> plan.yaml.
+  Run after spec.yaml, before implementation with dev.yaml or sdd.yaml.
 instructions: |
-  You orchestrate goal-to-Beads-graph planning.
+  You are the Beads planning orchestrator for the SDD cycle.
 
-  Explicit routing for this recipe:
-  - Load skill: `beads-harness`  (planning protocol, bd commands, dependency ordering)
-  - In-session agent: `delegate(source: "beads-planner", instructions: "...")`
-  - Durable assignment: `bd create "<title>" --assignee beads-planner -p 2 --json`
+  ## First visible output (required before any tool call)
+  State this block before acting:
+    Plan scope: [feature name or epic bead ID]
+    Spec source: [spec.md found | bead description | user description]
+    Estimated task count: [N tasks across M phases]
 
-  Load skill `beads-harness` first — it holds the planning protocol and bd command reference.
-  Then run the `harness_plan` subrecipe and synthesize the dependency graph output.
+  ## Skill and agent routing
+  - Load skill: `beads-harness`    (Beads workflow, dependency graph patterns, bd commands)
+  - Load skill: `sdd`              (SDD phases, requirement traceability, auto-sizing)
+  - Delegate architecture decomposition to `architect`:
+      "Break spec ACs into implementation tasks for [feature]. Read .specs/features/[feature]/spec.md."
+  - Delegate graph validation to `beads-planner`:
+      "Validate dependency graph for [feature] — check for cycles and unreachable nodes."
 
+  ## Planning workflow
 
+  ### Step 1 — Orient (bd prime FIRST)
+  1. Run `bd prime` — load existing memories and epics.
+  2. Run `bd ready --json` — identify claimed/open work to avoid duplicates.
+  3. Read `.specs/features/[feature]/spec.md` — extract [FEAT]-NN AC IDs and user stories.
+  4. If an epic bead ID is provided: run `bd show <epic-id>` for full context.
 
-  Loop cycle: run `bd prime` to orient before any work, `bd ready --json` to triage,
-  claim beads before writes, close on completion, store memories at handoff.
-  Stop after validation and handoff — do not keep exploring.
+  ### Step 2 — Decompose by SDD phase and AC ID
+  Map each P1 story (MVP) to 1-4 implementation tasks linked to their [FEAT]-NN ID:
+  | Phase         | Description                           | Assignee              |
+  |---------------|---------------------------------------|-----------------------|
+  | Research      | Spike for unknown patterns/APIs       | codebase-researcher   |
+  | Architecture  | Interfaces, schemas, data models      | architect             |
+  | Implementation| Code + unit tests (TDD RED-GREEN)     | implementation-worker |
+  | Review        | Code review and spec coverage check   | review-critic         |
+  | Verification  | Integration/E2E test pipeline         | qa-automation         |
 
-  Memory checkpoint:
-  - At the end, decide whether a durable project fact was learned.
-  - If yes, store or propose: `bd remember "<fact>" --key <stable-key>`.
-  - If it is work to do, create/propose a Beads issue instead of memory.
-  - If it is long-form knowledge, update docs and remember only a short pointer.
-  - Prefer pointer memories over content memories to reduce token use.
-  - Never store secrets, tokens, credentials, or transient observations.
+  Use dependency needs-language:
+  - Implementation needs Architecture
+  - Review needs Implementation
+  - Verification needs Review
+
+  ### Step 3 — Beads task creation (one command per task)
+  ```bash
+  bd create "<phase>: <title>" \
+    --assignee <agent> \
+    --issue_type task \
+    -p <priority> \
+    --deps "partOf:<epic-id>,needs:<predecessor-id>" \
+    --acceptance "<AC ID from spec>: <precise outcome>" \
+    --json
+  ```
+  Priority scale: 1=critical, 2=high, 3=medium, 4=low.
+  Record each created bead ID immediately for use in subsequent --deps flags.
+
+  ### Step 4 — Dependency validation
+  After all tasks created:
+  1. `bd graph --json`  — verify no cycles.
+  2. `bd ready --json`  — verify at least one task is immediately available (no blockers).
+  Delegate to `beads-planner` if the graph has >10 nodes or any cycles are found:
+    `delegate(source: "beads-planner", instructions: "Validate and optimise Beads graph for [feature].")`
+
+  ### Step 5 — Gate (Large/Complex scope only)
+  For Large/Complex scope, create a human-review gate before implementation begins:
+  ```bash
+  bd gate create "Plan approved: [feature]" --blocks <first-implementation-task-id>
+  ```
+
+  ## Output format (required before handoff)
+  Print a plan table after all beads are created:
+  | Bead ID | Phase | Title | AC ID | Assignee | Priority | Depends on |
+  |---------|-------|-------|-------|----------|----------|------------|
+
+  Then: state which bead to claim first (lowest priority number, no blockers).
+
+  ## Memory checkpoint
+  `bd remember "Plan for [feature]: [N] tasks created [YYYY-MM-DD]; epic <id>; first available: <bead-id>." --key plan-[feature]-snapshot`
+
+  ## Common false positives
+  - Do NOT create tasks without --acceptance flags (spec traceability is mandatory).
+  - Do NOT skip the bd graph validation step.
+  - Do NOT mix write scopes — one assignee per file/module at implementation time.
+  - Do NOT create more than one bead for the same AC ID.
 settings:
-  temperature: 0.15
+  temperature: 0.1
   max_turns: 30
 parameters:
-  - key: task
+  - key: feature
     input_type: string
     requirement: required
-    description: Task, topic, or bead ID.
+    description: Feature name or epic bead ID to plan. Used to locate spec.md.
   - key: repo_path
     input_type: string
     requirement: optional
@@ -42,7 +103,7 @@ parameters:
     input_type: string
     requirement: optional
     default: ""
-    description: Constraints.
+    description: Team constraints, deadlines, or tech limitations.
 extensions:
   - type: platform
     name: developer
@@ -65,14 +126,43 @@ extensions:
       - beads-mcp
     timeout: 300
 sub_recipes:
-  - name: plan
+  - name: plan-worker
     path: "subrecipes/plan.yaml"
+    description: Delegate graph-building work to the isolated plan worker subrecipe.
     values:
-      task: "{{ task }}"
-      topic: "{{ task }}"
+      task: "{{ feature }}"
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
-  Plan: {{ task }}
+  Feature to plan: {{ feature }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
+
+  ## Step 1 — First visible output
+  State: Plan scope, spec source (spec.md found / bead / user description), estimated task count.
+
+  ## Step 2 — Orient
+  Load skill: `beads-harness`. Load skill: `sdd`.
+  Run `bd prime`. Run `bd ready --json`.
+  Read `.specs/features/{{ feature }}/spec.md` if present — extract all [FEAT]-NN IDs.
+  Optionally delegate deep graph building to the plan-worker subrecipe:
+    `use sub_recipe: plan-worker`
+
+  ## Step 3 — Delegate architecture decomposition
+  Delegate to `architect`:
+    `delegate(source: "architect", instructions: "Break spec into implementation tasks for: {{ feature }}. Read .specs/features/{{ feature }}/spec.md. Return: task list with phase, AC ID, assignee, and dependencies.")`
+
+  ## Step 4 — Create Beads task graph
+  For each task from the architect output:
+  - Run `bd create` with `--assignee`, `--deps "partOf:<epic-id>,needs:<pred-id>"`, and `--acceptance "<AC ID>: <outcome>"`.
+  - Record each bead ID before creating the next one.
+
+  ## Step 5 — Validate graph
+  Run `bd graph --json`. Confirm no cycles.
+  Run `bd ready --json`. Confirm at least one task has no blockers.
+  If >10 nodes or cycles found: delegate to `beads-planner`.
+
+  ## Step 6 — Handoff
+  Print the plan table. Store memory snapshot.
+  Report: epic ID, task count, first available bead to claim, recommended next command:
+    `goose run --recipe ./.goose/recipes/dev.yaml --params task="<first-bead-id>" --params mode=implement`

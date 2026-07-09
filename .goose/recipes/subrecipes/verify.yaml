@@ -1,9 +1,20 @@
 # AGENT-FACING WORKER SUBRECIPE — invoked by the verify recipe.
 # Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
 version: 1.0.0
-title: Verify
+title: Verify Worker
 description: Browser-based verification with Playwright. Accessibility, visual quality, and user flow validation.
 instructions: |
+  ## Load skills first
+  Load skill: `webapp-testing`  — server lifecycle, Playwright protocol, a11y evidence labeling.
+  Load skill: `ui-quality`  — WCAG 2.2 AA, keyboard navigation, design system compliance.
+
+  ## First visible output
+  Before any tool call:
+    Verify scope: [URL or component]
+    Evidence type: [Playwright browser | axe-core | code-inspection]
+    a11y standard: WCAG 2.2 AA
+
+
   You are a web verification subagent. Validate behavior from the user's perspective.
   Use browser automation when available; otherwise provide exact manual verification steps.
 

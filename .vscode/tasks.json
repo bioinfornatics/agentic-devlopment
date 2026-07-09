@@ -12,6 +12,12 @@
       "type": "promptString",
       "description": "Skill to open review for, e.g. code-review or sdd.",
       "default": "code-review"
+    },
+    {
+      "id": "featureName",
+      "type": "promptString",
+      "description": "Feature name (e.g. user-auth, checkout-flow)",
+      "default": "my-feature"
     }
   ],
   "tasks": [
@@ -45,6 +51,28 @@
       "type": "shell",
       "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 1 --skills ${input:skillEvalSubset} --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
       "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "SDD: Discover feature",
+      "detail": "Discovery phase — user stories, personas, problem statement → .specs/ + Beads epic",
+      "type": "shell",
+      "command": "python3 -c \"import subprocess; subprocess.run(['goose', 'run', '--recipe', '.goose/recipes/discover.yaml', '--params', 'feature=${input:featureName}', '--params', 'repo_path=.'])\"",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "SDD: Write spec",
+      "detail": "Formal spec — WHEN/THEN/SHALL ACs with [FEAT]-NN IDs → .specs/features/[feature]/spec.md",
+      "type": "shell",
+      "command": "python3 -c \"import subprocess; subprocess.run(['goose', 'run', '--recipe', '.goose/recipes/spec.yaml', '--params', 'feature=${input:featureName}', '--params', 'repo_path=.'])\"",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",

@@ -1,0 +1,129 @@
+version: 1.0.0
+title: Discover — Feature discovery and user story definition
+description: >
+  Entry point for new features: captures user stories, personas, success metrics,
+  and problem statement. Produces a discovery document and a Beads epic.
+  Run before spec.yaml or sdd.yaml.
+instructions: |
+  You orchestrate the discovery phase for a new feature or initiative.
+
+  ## First visible output (required before any tool call)
+  State this block before acting:
+    Discovery scope: [feature or initiative name]
+    Complexity: [Micro | Small | Medium | Large | Complex]
+    Approach: [direct-to-spec (Micro/Small) | full-discovery (Medium+)]
+
+  ## Auto-sizing — discovery depth
+  | Scope       | Signal                              | What to produce                                                          |
+  |-------------|-------------------------------------|--------------------------------------------------------------------------|
+  | Micro/Small | 1-3 files, obvious change           | 1-paragraph problem statement → go directly to spec                      |
+  | Medium      | clear feature, <10 tasks            | user stories + AC + success metrics → Beads epic                         |
+  | Large/Complex | ambiguous, new domain             | full discovery with personas + journey map + 9-dimension sweep           |
+
+  ## Skill and agent routing
+  - Load skill: `sdd`               (auto-sizing, requirement traceability, implicit-req dimensions)
+  - Load skill: `agentic-dev-harness`  (orientation, Beads workflow)
+  - Delegate to `product-owner`: write user stories + PRD quality gate (>=85/100)
+  - For UI features: delegate to `ux-researcher`: personas + user journeys (BEFORE product-owner)
+  - Beads: `bd create "<feature>" --issue_type epic -p 2 --json`
+
+  ## 9 implicit-requirement dimensions sweep (for Medium+ scope)
+  Before confirming scope, check each dimension — resolve or write explicit N/A:
+  - Input validation & bounds
+  - Failure / partial-failure states (timeouts, rollbacks)
+  - Idempotency / retry / duplicate handling
+  - Auth boundaries & rate limits
+  - Concurrency / ordering guarantees
+  - Data lifecycle / expiry (TTL, archival, deletion)
+  - Observability (logging, metrics, tracing hooks)
+  - External-dependency failure handling
+  - State-transition integrity
+
+  ## Knowledge generation (bd prime FIRST)
+  1. Run `bd prime` — load existing epics and memories.
+  2. Run `bd ready --json` — check for related work already in flight.
+  3. Read existing product docs or AGENTS.md for context.
+  Only then: name the scope and proceed.
+
+  ## Output format
+  For Medium+, produce a discovery document at `.specs/features/[feature]/discovery.md`:
+    # Discovery: [Feature Name]
+    **Problem:** [2-3 sentences]
+    **Users:** [who is affected]
+    **Success metrics:** [measurable outcomes]
+    ## User Stories
+    ### P1: [Title] (MVP)
+    As a [role], I want [capability] so that [benefit].
+    ### Implicit requirements resolved
+    | Dimension | Decision | N/A? |
+  Then: `bd create "[feature]" --issue_type epic --description "..." -p 2 --json`
+
+  ## Memory checkpoint
+  - Store durable facts with `bd remember "<fact>" --key <stable-key>`.
+  - For long-form knowledge, update docs and remember a short pointer.
+settings:
+  temperature: 0.2
+  max_turns: 40
+parameters:
+  - key: feature
+    input_type: string
+    requirement: required
+    description: Feature, initiative, or problem to discover.
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository path.
+  - key: context
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Additional context, constraints, or known requirements.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: summon
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args:
+      - beads-mcp
+    timeout: 300
+prompt: |
+  Feature to discover: {{ feature }}
+  Repo: {{ repo_path }}
+  Context: {{ context }}
+
+  ## Step 1 — First visible output
+  State your scope declaration (Micro/Small/Medium/Large/Complex) before any tool call.
+
+  ## Step 2 — Orient
+  Load skill: `sdd`. Load skill: `agentic-dev-harness`.
+  Run `bd prime` then `bd ready --json`.
+
+  ## Step 3 — Auto-size
+  Assess complexity. For Micro/Small: produce a 1-paragraph problem statement and stop.
+  For Medium+: run the full discovery workflow.
+
+  ## Step 4 — Discovery workflow (Medium+)
+  - Delegate to `ux-researcher` if this feature has user-facing UI:
+    `delegate(source: "ux-researcher", instructions: "Define personas and user journey for: {{ feature }}")`
+  - Delegate to `product-owner`:
+    `delegate(source: "product-owner", instructions: "Write PRD (>=85/100) for: {{ feature }}")`
+  - Run the 9-dimension implicit-requirement sweep.
+  - Write `.specs/features/{{ feature }}/discovery.md`.
+  - Create Beads epic: `bd create "{{ feature }}" --issue_type epic -p 2 --json`.
+
+  ## Step 5 — Handoff
+  Report: discovery.md path, Beads epic ID, recommended next step (spec.yaml or sdd.yaml).

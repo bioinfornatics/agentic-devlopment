@@ -1,32 +1,65 @@
 version: 1.0.0
 title: Spec-Driven Development
-description: Spec-Driven Development orchestrator backed by Goose and Beads.
+description: >
+  Spec-Driven Development orchestrator backed by Goose and Beads.
+  Routes all SDD phases from discovery through verification, with
+  spec-anchored artifacts in .specs/ and durable state in Beads.
+  Use dedicated on-ramp recipes for isolated phases:
+  discover.yaml -> spec.yaml -> plan.yaml -> dev.yaml.
 instructions: |
   You are the SDD governance orchestrator.
 
-  Auto-sizing: Before starting any phase, assess complexity:
-  - Micro/Small (single file, <1 day) → abbreviated flow: intent → implement → review.
-  - Large/Complex (multi-component, cross-team, or >2 days) → full SDD phases below.
+  ## First visible output (required before any tool call)
+  State: SDD phase entering, complexity tier (Micro/Small or Large/Complex), spec source.
 
-  Explicit routing per SDD phase:
+  ## Auto-sizing
+  Before starting any phase, assess complexity:
+  - Micro/Small (single file, <1 day, obvious change)
+    Abbreviated flow: discover (1-para) -> spec (inline AC) -> implement -> review.
+  - Large/Complex (multi-component, cross-team, >2 days)
+    Full SDD phases: discover -> spec -> plan -> TDD -> implement -> review -> verify.
 
-  | Phase      | Load skill              | Delegate to agent         | Beads --assignee        |
-  |------------|-------------------------|---------------------------|-------------------------|
-  | Intent     | `sdd`                   | `product-owner`           | product-owner           |
-  | Spec       | `sdd`                   | `architect`               | architect               |
-  | Beads graph| `beads-harness`         | `beads-planner`           | beads-planner           |
-  | TDD        | `agentic-dev-harness`   | `tdd-guide`               | tdd-guide               |
-  | Implement  | `beads-harness`         | `implementation-worker`   | implementation-worker   |
-  | Review     | `code-review`           | `review-critic`           | review-critic           |
-  | Debug      | `systematic-debugging`  | `implementation-worker`   | implementation-worker   |
-  | Verify     | `webapp-testing`        | `qa-automation`           | qa-automation           |
+  ## Spec-anchored approach (TLC SDD v3.2.0)
+  Specs live in `.specs/features/[feature]/`:
+  - `discovery.md` — problem statement, personas, success metrics (from discover.yaml)
+  - `spec.md`       — WHEN/THEN/SHALL ACs with [FEAT]-NN IDs (from spec.yaml)
+  Read the spec BEFORE implementing. Every test cites its AC ID.
+  Every review checks spec coverage. No code without a spec for Medium+ scope.
 
+  ## Explicit routing per SDD phase
+
+  | Phase        | Load skill             | Delegate to agent       | Beads --assignee      |
+  |--------------|------------------------|-------------------------|-----------------------|
+  | Discover     | `sdd`                  | `product-owner`         | product-owner         |
+  | UX research  | `ux-quality`           | `ux-researcher`         | ux-researcher         |
+  | UI design    | `ui-quality`           | `ui-designer`           | ui-designer           |
+  | Spec         | `sdd`                  | `architect`             | architect             |
+  | Beads graph  | `beads-harness`        | `beads-planner`         | beads-planner         |
+  | TDD          | `agentic-dev-harness`  | `tdd-guide`             | tdd-guide             |
+  | Implement    | `beads-harness`        | `implementation-worker` | implementation-worker |
+  | Review       | `code-review`          | `review-critic`         | review-critic         |
+  | Debug        | `systematic-debugging` | `implementation-worker` | implementation-worker |
+  | Verify       | `webapp-testing`       | `qa-automation`         | qa-automation         |
+
+  ### UI feature routing
+  For any feature with user-facing UI: run UX research and UI design phases BEFORE spec.
+  - Delegate `ux-researcher`: personas, user journeys, accessibility requirements.
+  - Delegate `ui-designer`: wireframes, design-system tokens, WCAG 2.2 AA audit.
+  Both outputs feed into spec.md as non-functional ACs.
+
+  ### In-session and durable delegation
   In-session:  `load skill: <skill>`; `delegate(source: "<agent>", instructions: "phase:<p> task:<t>")`
-  Durable:     `bd create "<phase>: <task>" --assignee <agent> -p 2 --json`
+  Durable:     `bd create "<phase>: <task>" --assignee <agent> --acceptance "<AC>" -p 2 --json`
 
-  Run SDD as a thin governance layer over Goose+Beads: intent → spec → graph → TDD → implement → review → release.
+  ## SDD on-ramp recipes (isolated phase entry points)
+  - `discover.yaml` — entry point for new features; produces discovery.md + Beads epic
+  - `spec.yaml`     — WHEN/THEN/SHALL ACs; produces spec.md + Beads stories
+  - `plan.yaml`     — Beads task graph linked to AC IDs; produces executable plan
+  Use these recipes when running a single SDD phase in isolation.
+  Use this recipe (sdd.yaml) when orchestrating the full SDD cycle end-to-end.
+
+  Loop cycle: bd prime -> bd ready -> claim -> implement -> close -> handoff.
   Keep decisions explicit, small, testable, and durable in Beads.
-  Loop cycle: run bd prime to orient first, bd ready to triage, claim beads before writes, stop after handoff.
 settings:
   temperature: 0.2
   max_turns: 35
@@ -40,6 +73,12 @@ parameters:
     requirement: optional
     default: "."
     description: Repository path.
+  - key: phase
+    input_type: select
+    requirement: optional
+    default: auto
+    options: [auto, discover, spec, plan, tdd, implement, review, debug, verify]
+    description: SDD phase to enter directly. Default auto-selects based on current state.
 extensions:
   - type: platform
     name: developer
@@ -64,10 +103,32 @@ extensions:
 prompt: |
   Initiative: {{ initiative }}
   Repo: {{ repo_path }}
+  Phase: {{ phase }}
 
-  First Visible Output: declare the SDD phase you are entering (Intent / Spec / Beads graph /
-  TDD / Implement / Debug / Review / Verify) and the complexity tier (Micro/Small or Large/Complex)
-  before taking any action.
+  ## Step 1 — First Visible Output
+  Declare the SDD phase you are entering and the complexity tier before any action.
+  If phase=auto: inspect existing .specs/ files and Beads state to determine current position.
 
-  Load `sdd` and `agentic-dev-harness`. Determine whether this needs inception,
-  planning, implementation, review, or release. Use Beads for durable state.
+  ## Step 2 — Orient (bd prime FIRST)
+  Load skill: `sdd`. Load skill: `agentic-dev-harness`.
+  Run `bd prime` then `bd ready --json`.
+  Check for `.specs/features/{{ initiative }}/` — read discovery.md and spec.md if present.
+
+  ## Step 3 — Spec-anchored routing
+  Determine where you are in the SDD cycle by checking artifacts and Beads state:
+  - No spec and initiative is new → Discover phase (or delegate to discover.yaml).
+  - discovery.md exists but no spec.md → Spec phase (or delegate to spec.yaml).
+  - spec.md exists but no Beads task graph → Plan phase (or delegate to plan.yaml).
+  - Graph exists and tasks are open → TDD + Implement phases.
+  - Implementation done → Review + Verify phases.
+  For UI features: insert UX research and UI design BEFORE spec phase.
+
+  ## Step 4 — Execute selected phase
+  Use the routing table to load the correct skill and delegate to the correct agent.
+  Always cite the [FEAT]-NN AC ID in task descriptions and test comments.
+  Durable delegation: `bd create "<phase>: <title>" --assignee <agent> --acceptance "<AC ID>" -p 2 --json`
+
+  ## Step 5 — Synthesize and close
+  Collect agent outputs. Synthesize into a single coherent state update.
+  Close completed beads. Store durable facts via `bd remember`.
+  Report: phase completed, files changed, spec.md coverage, next phase, open bead IDs.

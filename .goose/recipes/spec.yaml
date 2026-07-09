@@ -1,0 +1,145 @@
+version: 1.0.0
+title: Spec — Formal feature specification (WHEN/THEN/SHALL)
+description: >
+  Writes formal acceptance criteria (WHEN/THEN/SHALL format) with traceable requirement IDs.
+  Creates a spec-anchored file at .specs/features/[feature]/spec.md.
+  Run after discover.yaml. The spec survives implementation and guides maintenance.
+instructions: |
+  You write a formal, testable specification. Your output IS the spec-anchored artifact
+  that future agents (tdd-guide, implementation-worker, review-critic) will reference.
+
+  ## First visible output (required before any tool call)
+  State this block before acting:
+    Spec scope: [feature name]
+    Spec level: [Micro (inline AC) | Full (spec.md file)]
+    Input source: [discovery.md exists | user description | bead ID]
+
+  ## Skill and agent routing
+  - Load skill: `sdd`          (requirement traceability, spec-anchored approach, Spec-Anchored Outcome Rule)
+  - Load skill: `beads-harness`  (Beads epic/story creation)
+  - Delegate feasibility check to `architect`:
+      "Can these ACs be implemented as described?"
+  - Delegate testability check to `tdd-guide`:
+      "Can each AC be turned into a failing test?"
+  - Beads: `bd create "Story: <title>" --deps "partOf:<epic-id>" --acceptance "<AC summary>" --json`
+
+  ## Spec-Anchored Outcome Rule (from TLC SDD v3.2.0)
+  Every acceptance criterion MUST:
+  1. State a precise expected outcome (not "handle errors correctly" but
+     "return 401 with {error: 'invalid_credentials'}")
+  2. Be checkable as a failing test by tdd-guide BEFORE implementation
+  3. Use WHEN/THEN/SHALL format: WHEN [event] THEN system SHALL [exact outcome]
+  Mark any AC without a precise outcome as spec-precision gap — do not proceed until resolved.
+
+  ## Requirement traceability
+  Assign [FEAT]-01, [FEAT]-02 IDs. Every story maps to Beads tasks.
+  Every test cites the ID.
+
+  ## Knowledge generation (bd prime FIRST)
+  1. Run `bd prime` — load memories and existing specs.
+  2. Read `.specs/features/[feature]/discovery.md` if it exists.
+  3. Read the nearest existing spec for style/format reference.
+
+  ## Spec closure gate (before confirming)
+  1. Unambiguity: every AC has a single interpretation and a precise expected outcome.
+  2. Open questions: all unresolved items are either resolved or recorded as assumptions.
+  3. Implicit dimensions: all 9 dimensions resolved or marked N/A.
+  If any item fails: fix inline. Do not present spec until gate passes.
+
+  ## Output: `.specs/features/[feature]/spec.md`
+    # [Feature Name] Specification
+    **Status:** Draft | Approved
+    **Epic:** [bead-id]
+    ## Problem Statement
+    ## Out of Scope
+    ## Assumptions & Open Questions
+    ## User Stories
+    ### P1: [Title] (MVP)
+    **Acceptance Criteria:**
+    | ID | WHEN | THEN system SHALL | Precise outcome |
+    |---|---|---|---|
+    | [FEAT]-01 | ... | ... | [exact value] |
+    ## Requirement Traceability
+    | ID | Story | Status |
+
+  ## Memory checkpoint
+  `bd remember "Spec for [feature]: canonical source is .specs/features/[feature]/spec.md" --key spec-[feature]-pointer`
+settings:
+  temperature: 0.1
+  max_turns: 40
+parameters:
+  - key: feature
+    input_type: string
+    requirement: required
+    description: Feature name or epic bead ID.
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository path.
+  - key: constraints
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Known constraints or acceptance criteria hints.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: summon
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args:
+      - beads-mcp
+    timeout: 300
+sub_recipes:
+  - name: spec-worker
+    path: "subrecipes/spec.yaml"
+    description: Delegate detailed spec writing to the isolated worker subrecipe.
+    values:
+      feature: "{{ feature }}"
+      repo_path: "{{ repo_path }}"
+      constraints: "{{ constraints }}"
+prompt: |
+  Feature to specify: {{ feature }}
+  Repo: {{ repo_path }}
+  Constraints: {{ constraints }}
+
+  ## Step 1 — First visible output
+  State: Spec scope, level (Micro/Full), input source.
+
+  ## Step 2 — Orient
+  Load skill: `sdd`. Load skill: `beads-harness`.
+  Run `bd prime`. Read `.specs/features/{{ feature }}/discovery.md` if present.
+
+  ## Step 3 — Write spec
+  Produce acceptance criteria in WHEN/THEN/SHALL format with precise outcomes.
+  Assign [FEAT]-NN IDs. Run the spec closure gate (3 checks) before finalising.
+  Optionally delegate to the spec-worker subrecipe for isolated writing:
+    `use sub_recipe: spec-worker`
+
+  ## Step 4 — Validate feasibility and testability
+  Delegate to `architect`:
+    `delegate(source: "architect", instructions: "Feasibility check: can these ACs be implemented? Feature: {{ feature }}")`
+  Delegate to `tdd-guide`:
+    `delegate(source: "tdd-guide", instructions: "Testability check: can each AC become a failing test? Feature: {{ feature }}")`
+
+  ## Step 5 — Write spec file and create Beads stories
+  Write `.specs/features/{{ feature }}/spec.md`.
+  For each P1 story: `bd create "Story: <title>" --deps "partOf:<epic-id>" --acceptance "<AC>" --json`
+  Store pointer memory:
+    `bd remember "Spec for {{ feature }}: canonical source is .specs/features/{{ feature }}/spec.md" --key spec-{{ feature }}-pointer`
+
+  ## Step 6 — Handoff
+  Report: spec.md path, Beads story IDs, recommended next step (plan.yaml or sdd.yaml).

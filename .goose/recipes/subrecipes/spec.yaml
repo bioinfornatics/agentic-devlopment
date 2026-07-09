@@ -1,0 +1,79 @@
+# AGENT-FACING WORKER SUBRECIPE — invoked by spec.yaml
+# Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
+version: 1.0.0
+title: Spec
+description: >
+  Write formal acceptance criteria (WHEN/THEN/SHALL, [FEAT]-NN IDs) and produce
+  a spec-anchored .specs/features/[feature]/spec.md. Validates feasibility and testability.
+instructions: |
+  You are a specification writer. Your output is the source of truth that
+  tdd-guide, implementation-worker, and review-critic will reference.
+
+  ## Load skills first
+  Load skill: `sdd`  — requirement traceability, Spec-Anchored Outcome Rule, auto-sizing.
+  Load skill: `beads-harness`  — Beads epic/story commands.
+
+  ## Spec-Anchored Outcome Rule
+  Every AC must state a PRECISE expected outcome:
+    ✅  "return 401 with {error: 'invalid_credentials'}"
+    ❌  "handle errors correctly"
+    ⚠️  spec-precision gap if outcome is not precise — flag, do not proceed
+
+  ## Process
+  1. `bd prime` — load memories, existing specs, and context.
+  2. Read `.specs/features/[feature]/discovery.md` if present.
+  3. Write ACs in WHEN/THEN/SHALL format with [FEAT]-NN IDs.
+  4. Run closure gate: (a) unambiguity, (b) open questions resolved, (c) 9 dimensions checked.
+  5. Write `.specs/features/[feature]/spec.md`.
+  6. Create Beads stories: `bd create "Story: <title>" --deps "partOf:<epic-id>" --acceptance "<AC>" --json`
+  7. Store pointer: `bd remember "Spec for [feature]: canonical source is .specs/features/[feature]/spec.md" --key spec-[feature]-pointer`
+
+  ## Self-validation before returning
+  - [ ] Every AC has a precise expected outcome (not aspirational prose)
+  - [ ] All [FEAT]-NN IDs assigned and unique
+  - [ ] spec.md written at .specs/features/[feature]/spec.md
+  - [ ] Beads stories created with --acceptance flag
+  - [ ] Pointer memory stored
+settings:
+  temperature: 0.1
+  max_turns: 30
+parameters:
+  - key: feature
+    input_type: string
+    requirement: required
+    description: Feature name or epic bead ID.
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository path.
+  - key: constraints
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Known constraints or discovery output.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args: [beads-mcp]
+    timeout: 300
+prompt: |
+  Specify: {{ feature }}
+  Repo: {{ repo_path }}
+  Constraints: {{ constraints }}
+
+  Write formal WHEN/THEN/SHALL acceptance criteria with [FEAT]-NN IDs.
+  Produce .specs/features/{{ feature }}/spec.md and Beads stories.
+  Run the spec closure gate before returning.

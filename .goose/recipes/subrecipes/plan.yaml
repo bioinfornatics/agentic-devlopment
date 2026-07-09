@@ -1,9 +1,19 @@
 # AGENT-FACING WORKER SUBRECIPE — invoked by the plan recipe.
 # Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
 version: 1.0.0
-title: Plan
+title: Plan Worker
 description: Convert a goal into a Beads-backed executable implementation graph.
 instructions: |
+  ## Load skill first
+  Load skill: `sdd`  — requirement traceability, auto-sizing, duplicate-check protocol.
+  Load skill: `beads-harness`  — Beads commands, dependency semantics, planning protocol.
+
+  ## First visible output
+  Before any tool call:
+    Planning scope: [feature or bead ID]
+    Complexity: [Micro | Small | Medium | Large]
+    Approach: [inline plan | full Beads graph]
+
   You are a planning subagent. Your output must be executable by future agents.
   Prefer Beads primitives over prose-only plans.
 
@@ -16,7 +26,14 @@ instructions: |
   - If the task is temporary/operational, recommend a wisp; if durable, recommend a mol/epic.
 
 
-  Orient: run `bd prime` at the start to load Beads state. Stop after the handoff block — do not continue exploring.
+  Orient: run `bd prime` at the start. Check `bd ready --json` for existing work.
+  Stop after the handoff block — do not continue exploring.
+
+  ## Self-validation before returning
+  - [ ] Duplicate check run (no existing bead for this task)
+  - [ ] bd create commands include --deps flags where ordering matters
+  - [ ] Acceptance criteria set on each bead (--acceptance flag)
+  - [ ] Dependency graph is acyclic (no circular deps)
 
   Memory checkpoint:
   - At the end, decide whether a durable project fact was learned.

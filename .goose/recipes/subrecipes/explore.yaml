@@ -1,9 +1,19 @@
 # AGENT-FACING WORKER SUBRECIPE — invoked by the explore recipe.
 # Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
 version: 1.0.0
-title: Explore
+title: Explore Worker
 description: Read-only codebase investigation — code structure, docs, Beads state, risks, blast radius.
 instructions: |
+  ## Load skill first
+  Load skill: `agentic-dev-harness`  — orientation, read-only research protocol, blast radius.
+
+  ## First visible output
+  Before any tool call:
+    Scope: Read-only. No files modified, no Beads mutations.
+    Selected flow: direct inspection
+    Research topic: [topic]
+
+
   You are a read-only research subagent. Do not modify files. Do not claim or close beads.
   Build a concise map of the relevant system and return facts with file paths,
   symbols, commands inspected, and open questions.

@@ -12,6 +12,14 @@ instructions: |
   - Beads is the durable control plane: every durable task, discovery, dependency, gate,
     memory, and handoff belongs in bd, not in volatile chat or markdown TODOs.
 
+  ## SDD on-ramp (use these recipes first for new features)
+  - `discover.yaml` — problem statement, personas, success metrics → Beads epic
+  - `spec.yaml`     — WHEN/THEN/SHALL ACs with [FEAT]-NN IDs → spec.md + Beads stories
+  - `plan.yaml`     — Beads task graph linked to AC IDs → executable plan
+  Running `discover.yaml -> spec.yaml -> plan.yaml` before implementation ensures every
+  bead carries an acceptance criterion, every test cites an AC ID, and every review can
+  check spec coverage. Skip this on-ramp only for Micro/Small scope.
+
   Non-negotiable workflow:
   1. Prime context: run `bd prime` when entering a Beads-enabled repo. Use `bd context`,
      `bd doctor quick`, and `bd ready --json` to orient.
@@ -32,6 +40,10 @@ instructions: |
 
   | Task type              | Load skill              | Agent                   | Beads --assignee        |
   |------------------------|-------------------------|-------------------------|-------------------------|
+  | Feature discovery      | `sdd`                   | `product-owner`         | product-owner           |
+  | UX research / personas | `ux-quality`            | `ux-researcher`         | ux-researcher           |
+  | Formal spec (ACs)      | `sdd`                   | `architect`             | architect               |
+  | Dependency graph       | `beads-harness`         | `beads-planner`         | beads-planner           |
   | Code / PR review       | `code-review`           | `review-critic`         | review-critic           |
   | Architecture / ADR     | `agentic-dev-harness`   | `architect`             | architect               |
   | Feature spec / PRD     | `sdd`                   | `product-owner`         | product-owner           |
@@ -93,7 +105,7 @@ parameters:
     input_type: select
     requirement: optional
     default: auto
-    options: [auto, explore, plan, implement, review, verify, release, design, sdd, remember]
+    options: [auto, discover, spec, plan, explore, implement, review, verify, release, design, sdd, remember]
     description: Harness mode to emphasize.
   - key: constraints
     input_type: string
@@ -187,6 +199,12 @@ prompt: |
   - Micro/Small (1-3 files, obvious change) → inline execute, skip orchestration overhead
   - Medium (<10 tasks, clear intent) → single subrecipe or agent
   - Large/Complex (multi-component, ambiguous) → full orchestration with dependency graph
+
+  ## Step 1c — SDD on-ramp check (mode=discover|spec|plan or new feature)
+  If mode=discover: delegate to discover.yaml (`goose run --recipe ./.goose/recipes/discover.yaml --params feature="{{ task }}"`)
+  If mode=spec:     delegate to spec.yaml    (`goose run --recipe ./.goose/recipes/spec.yaml --params feature="{{ task }}"`)
+  If mode=plan:     delegate to plan.yaml    (`goose run --recipe ./.goose/recipes/plan.yaml --params feature="{{ task }}"`)
+  For any new feature (Medium+) with no spec.md: recommend the on-ramp before implementing.
 
   ## Step 2 — Discover available agents
   Call `load()` with no arguments. This returns every named agent and subrecipe
