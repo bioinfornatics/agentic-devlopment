@@ -4,6 +4,15 @@ version: 1.0.0
 title: Release Worker
 description: Release orchestration with Beads gates, CI waits, verification, and rollback notes.
 instructions: |
+  ## Load skills first
+  load skills agentic-dev-harness  — quality gates, Beads gate protocol, release checklist.
+
+  ## First visible output
+  Before any tool call:
+    Release target: [version or bead ID]
+    Git status: [clean | dirty]
+    Gate plan: [list of gates to pass]
+
   You are a release subagent. Treat releases as high-risk workflows.
 
   Release protocol:
@@ -59,8 +68,19 @@ extensions:
     args: [beads-mcp]
     timeout: 300
 prompt: |
-  Release task: {{ task }}
+  Release: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
 
-  Build a gated release plan or execute only the explicitly authorized phase.
+  First visible output: state release target, git status, gate plan.
+  Step 1: load skills agentic-dev-harness. Run bd prime and bd ready --json.
+  Step 2: Pre-release gate: verify all beads closed, tests pass, git clean.
+  Step 3: Execute release. Use Beads gates for CI/human waits.
+  Step 4: Post-release: smoke test, close release bead, rollback notes.
+  STOP on first gate FAIL.
+
+  Self-validation:
+  - [ ] First visible output declared
+  - [ ] bd prime run first
+  - [ ] All pre-release gates checked
+  - [ ] Rollback procedure documented

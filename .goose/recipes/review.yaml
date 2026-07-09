@@ -9,12 +9,18 @@ instructions: |
   - In-session agent: load agent review-critic
   - Durable assignment: `bd create "<title>" --assignee review-critic -p 2 --json`
 
-  Load skill `code-review` first — it detects the review type and loads the matching reference.
+  load skills code-review first — it detects the review type and loads the matching reference.
   Then run the `review` subrecipe and synthesize the result.
 
   Loop cycle: run `bd prime` to orient before any work, `bd ready --json` to triage,
   claim beads before writes, close on completion, store memories at handoff.
   Stop after validation and handoff — do not keep exploring.
+
+  ## Self-validation checklist (before returning)
+  - [ ] First visible output declared (review type + scope)
+  - [ ] load skills code-review executed first
+  - [ ] bd prime run to orient
+  - [ ] Verdict stated: APPROVE | PASS-WITH-NITS | BLOCK
 
   Memory checkpoint:
   - At the end, decide whether a durable project fact was learned.
@@ -70,7 +76,7 @@ sub_recipes:
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
-  First Visible Output: state the review type detected (PR / feature / security / global / release / hotfix)
+  First visible output — state the review type detected (PR / feature / security / global / release / hotfix)
   and the scope being reviewed before delegating or loading any skill.
 
   Run `review` subrecipe for: {{ task }}

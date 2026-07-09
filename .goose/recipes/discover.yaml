@@ -58,6 +58,12 @@ instructions: |
     | Dimension | Decision | N/A? |
   Then: `bd create "[feature]" --issue_type epic --description "..." -p 2 --json`
 
+  ## Self-validation (before handoff)
+  - [ ] First visible output declared (scope + complexity + approach)
+  - [ ] bd prime run before any action
+  - [ ] Auto-sizing applied (Micro/Small/Medium/Large/Complex)
+  - [ ] 9-dimension sweep done for Medium+ scope
+
   ## Memory checkpoint
   - Store durable facts with `bd remember "<fact>" --key <stable-key>`.
   - For long-form knowledge, update docs and remember a short pointer.

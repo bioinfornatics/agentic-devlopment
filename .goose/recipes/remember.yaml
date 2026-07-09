@@ -65,6 +65,19 @@ prompt: |
   Beads memory action: {{ action }}
   Repo: {{ repo_path }}
 
+  First visible output before acting:
+    Memory operation: [remember | search | recall | forget | advise]
+    Key: [stable-key or "none"]
+    Guardrail check: [fact | task (use bd create) | secret (reject)]
+
+  Run bd prime if needed to check existing memories first.
+  Apply guardrails. Execute the appropriate bd remember/recall/forget command.
+
+  Self-validation:
+  - [ ] Operation is one of: remember | search | recall | forget | advise
+  - [ ] No secrets, credentials, or transient observations stored
+  - [ ] Memory uses pointer format if content is long
+
   Memory pointer format:
   <topic>: canonical source is <path>#<section>; read when <trigger>; invariant: <one-line rule>.
 

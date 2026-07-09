@@ -28,6 +28,12 @@ instructions: |
   6. Create Beads stories: `bd create "Story: <title>" --deps "partOf:<epic-id>" --acceptance "<AC>" --json`
   7. Store pointer: `bd remember "Spec for [feature]: canonical source is .specs/features/[feature]/spec.md" --key spec-[feature]-pointer`
 
+  ## First visible output
+  Before any tool call:
+    Spec scope: [feature name]
+    Spec level: [Micro inline | Full spec.md]
+    Input: [discovery.md | user description | bead ID]
+
   ## Self-validation before returning
   - [ ] Every AC has a precise expected outcome (not aspirational prose)
   - [ ] All [FEAT]-NN IDs assigned and unique
