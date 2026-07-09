@@ -338,7 +338,7 @@
       "label": "KG: Bootstrap harness KG",
       "detail": "Repopulate .knowledge/memory.jsonl from current agents/skills/recipes state",
       "type": "shell",
-      "command": "python3 scripts/kg-bootstrap.py",
+      "command": "node apps/kg/dist/cli.js bootstrap",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -359,7 +359,7 @@
       "label": "KG: Reason (forward chaining → derived.jsonl)",
       "detail": "Apply semantic rules on memory.jsonl → produces .knowledge/derived.jsonl with inferred facts",
       "type": "shell",
-      "command": "python3 scripts/kg-reason.py",
+      "command": "node apps/kg/dist/cli.js reason",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -370,7 +370,7 @@
       "label": "KG: Bootstrap + Reason + Visualize",
       "detail": "Full KG pipeline: bootstrap → reason → open visualizer",
       "type": "shell",
-      "command": "python3 scripts/kg-bootstrap.py && python3 scripts/kg-reason.py && xdg-open dist/kg/index.html",
+      "command": "node apps/kg/dist/cli.js bootstrap && node apps/kg/dist/cli.js reason && xdg-open dist/kg/index.html",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -381,7 +381,7 @@
       "label": "KG: Full Pipeline (bootstrap → reason → visualize)",
       "detail": "Refresh harness KG + infer derived facts + open visualizer",
       "type": "shell",
-      "command": "python3 scripts/kg-bootstrap.py && python3 scripts/kg-reason.py && xdg-open dist/kg/index.html",
+      "command": "node apps/kg/dist/cli.js bootstrap && node apps/kg/dist/cli.js reason && xdg-open dist/kg/index.html",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",

@@ -100,8 +100,8 @@ echo "wrote dist/kg/index.html"
 
 # KG pipeline — refresh + reason
 if [ -f "scripts/kg-bootstrap.py" ] && [ -d ".knowledge" ]; then
-  python3 scripts/kg-bootstrap.py > /dev/null 2>&1 && echo "KG bootstrapped"
-  python3 scripts/kg-reason.py > /dev/null 2>&1 && echo "KG reasoned"
+  node apps/kg/dist/cli.js bootstrap > /dev/null 2>&1 && echo "KG bootstrapped"
+  node apps/kg/dist/cli.js reason > /dev/null 2>&1 && echo "KG reasoned"
 fi
 echo "wrote $HTML_INDEX"
 
