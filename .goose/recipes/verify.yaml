@@ -1,29 +1,57 @@
 version: 1.0.0
-title: Verify — Browser, accessibility & UI quality
-description: Browser-based verification: Playwright flows, WCAG 2.2 AA accessibility, UI quality, and visual regression.
+title: Verify — Adaptive verification dispatcher
+description: >
+  Adaptive verification: detects what is being tested (API, web, CLI, library, UX/UI)
+  and applies the appropriate protocol. API -> Bruno/curl; web -> Playwright/a11y;
+  CLI -> shell; library -> test suite; UX/UI -> WCAG + design system.
 instructions: |
-  You orchestrate browser and accessibility verification.
+  You orchestrate verification adapted to the target type.
 
-  Explicit routing for this recipe:
-  - Load skill: `webapp-testing`  (server lifecycle, condition-based waiting, a11y checklist)
-  - Load skill: `ui-quality`        (WCAG 2.2 AA, keyboard nav, design system compliance)
-  - Load skill: `ux-quality`        (user intent, IA, interaction states) — for UX flows
-  - In-session (UX flows):     `delegate(source: "ux-researcher", instructions: "...")`
-  - In-session (UI/a11y):      `delegate(source: "ui-designer",   instructions: "...")`
-  - In-session (test pipeline):`delegate(source: "qa-automation",  instructions: "...")`
-  - Durable: `bd create "<title>" --assignee ui-designer -p 2 --json`
+  ## First visible output (required before any tool call)
+  State this block before acting:
+    Verify target: [name or URL]
+    Detected type: [api | web | cli | library | ux-ui | mixed]
+    Protocol: [Bruno | Playwright | shell | test-suite | WCAG]
 
-  Load skill `webapp-testing` first. Navigate to the target URL with Playwright before inspecting code.
-  Browser evidence required for a11y findings — static analysis alone is [ASSUMPTION].
-  Loop cycle: bd prime → bd ready → browser navigation → evidence-based findings → handoff.
+  ## Detect verification type from context
+
+  | Signal | Type | Protocol |
+  |---|---|---|
+  | .bru files, OpenAPI spec, REST/gRPC endpoints, /api/ routes | api | Bruno + curl |
+  | Browser URL, HTML/CSS/JS, React/Vue, frontend routes | web | Playwright + a11y |
+  | Executable, argparse, main.py, bin/, shell script | cli | shell execution |
+  | src/, lib/, package.json tests, pytest, cargo test | library | test suite |
+  | Figma, design tokens, .css, component specs | ux-ui | WCAG + design system |
+
+  ## Skill and agent routing per type
+  - api:     load agentic-dev-harness; delegate qa-automation
+  - web:     load webapp-testing + ui-quality; delegate qa-automation + ui-designer
+  - cli:     load agentic-dev-harness; delegate qa-automation
+  - library: load agentic-dev-harness; delegate qa-automation
+  - ux-ui:   load ui-quality + ux-quality; delegate ui-designer + ux-researcher
+
+  ## Orient (bd prime FIRST)
+  1. Run bd prime — load known defects, test memories, quality gates.
+  2. Run bd ready --json — check for open verification beads.
+  3. Read spec.md if present to extract [FEAT]-NN AC IDs to verify.
+
+  ## Loop on failure (observe -> retry)
+  For each failing check: bd create "Verify fail: <description>" --assignee <agent> -p 2
+  After fix: re-verify that specific check. Max 3 cycles before escalating.
 settings:
-  temperature: 0.15
-  max_turns: 30
+  temperature: 0.1
+  max_turns: 40
 parameters:
   - key: task
     input_type: string
     requirement: required
-    description: Task, topic, or bead ID.
+    description: What to verify — URL, bead ID, API endpoint, CLI command, or test suite path.
+  - key: target_type
+    input_type: select
+    requirement: optional
+    default: auto
+    options: [auto, api, web, cli, library, ux-ui]
+    description: Verification type. Default auto-detects from context.
   - key: repo_path
     input_type: string
     requirement: optional
@@ -33,7 +61,7 @@ parameters:
     input_type: string
     requirement: optional
     default: ""
-    description: Constraints.
+    description: Test constraints, environment name, or specific flows to verify.
 extensions:
   - type: platform
     name: developer
@@ -52,39 +80,36 @@ extensions:
     name: Beads
     description: Git-backed issue tracker and durable agentic task graph
     cmd: uvx
+    args: [beads-mcp]
+    timeout: 300
+  - type: stdio
+    name: Playwright
+    description: Browser automation (web + ux-ui types only)
+    cmd: npx
     args:
-      - beads-mcp
+      - "@playwright/mcp@latest"
+      - "--browser"
+      - chromium
+      - "--executable-path"
+      - /usr/bin/chromium-browser
     timeout: 300
 sub_recipes:
   - name: verify
     path: "subrecipes/verify.yaml"
+    description: Isolated adaptive verification worker.
     values:
       task: "{{ task }}"
-      topic: "{{ task }}"
+      target_type: "{{ target_type }}"
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
   Verify: {{ task }}
+  Type: {{ target_type }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
 
-  ## Step 1 — First visible output
-  State: target URL, evidence type (Playwright / axe-core / code-inspection), a11y standard (WCAG 2.2 AA).
-
-  ## Step 2 — Orient
-  Load skill: `webapp-testing`. Load skill: `ui-quality`.
-  Run `bd prime` then `bd ready --json`.
-
-  ## Step 3 — Navigate and observe FIRST
-  Navigate to the target URL with Playwright before inspecting any code.
-  Take a screenshot. Run browser_snapshot for accessibility tree.
-  Check console errors.
-
-  ## Step 4 — Verify via the subrecipe
-  Use sub_recipe: `verify`.
-
-  ## Step 5 — Observe result and loop
-  If all checks pass → PASS verdict, close bead.
-  If findings exist → file Beads issues with `bd create "Verify: <finding>" --assignee ui-designer -p 2`.
-  For each CRITICAL/HIGH finding: re-verify with browser after fix before closing.
-  Max 3 verification cycles before escalating.
+  Step 1 — First visible output: state target, detected type, protocol before any tool call.
+  Step 2 — Orient: bd prime, bd ready --json, read spec.md for [FEAT]-NN AC IDs.
+  Step 3 — Detect type if auto: inspect file extensions, repo structure, task description.
+  Step 4 — Load skills for detected type and use sub_recipe: verify.
+  Step 5 — Observe result: PASS -> close bead. FAIL -> file Beads issue -> re-verify (max 3).

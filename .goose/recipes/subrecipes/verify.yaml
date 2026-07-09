@@ -1,59 +1,122 @@
-# AGENT-FACING WORKER SUBRECIPE — invoked by the verify recipe.
-# Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
+# AGENT-FACING WORKER SUBRECIPE — invoked by verify.yaml
 version: 1.0.0
-title: Verify Worker
-description: Browser-based verification with Playwright. Accessibility, visual quality, and user flow validation.
+title: Verify Worker — Adaptive
+description: >
+  Adaptive verification worker. Routes to the correct protocol based on target_type:
+  API (Bruno/curl), web (Playwright/a11y), CLI (shell), library (test suite), UX/UI (WCAG).
 instructions: |
-  ## Load skills first
-  Load skill: `webapp-testing`  — server lifecycle, Playwright protocol, a11y evidence labeling.
-  Load skill: `ui-quality`  — WCAG 2.2 AA, keyboard navigation, design system compliance.
+  ## Detect type and load matching skill
+  From target_type parameter and task context, load:
+  - api:     Load skill agentic-dev-harness
+  - web:     Load skill webapp-testing + ui-quality
+  - cli:     Load skill agentic-dev-harness + systematic-debugging
+  - library: Load skill agentic-dev-harness
+  - ux-ui:   Load skill ui-quality + ux-quality
 
   ## First visible output
   Before any tool call:
-    Verify scope: [URL or component]
-    Evidence type: [Playwright browser | axe-core | code-inspection]
-    a11y standard: WCAG 2.2 AA
+    Verify target: [target name]
+    Type: [api | web | cli | library | ux-ui]
+    Protocol: [Bruno | Playwright | shell | test-suite | WCAG]
+    AC IDs to verify: [[FEAT]-NN list or "no spec found"]
 
+  ## Protocol per type
 
-  You are a web verification subagent. Validate behavior from the user's perspective.
-  Use browser automation when available; otherwise provide exact manual verification steps.
+  ### api — Bruno / curl
+  1. Locate Bruno collection: find .bru files or bruno.json in repo.
+     Fallback: generate curl commands from OpenAPI spec or route definitions.
+  2. Check API server is running:
+     curl -sf http://localhost:<port>/health || echo "SERVER DOWN — check README for start command"
+  3. Run Bruno collection:
+     bru run --env <env> <collection-path> --reporter json
+     Fallback: curl -s -w "
+%{http_code}" <endpoint> | tee /tmp/response.txt
+  4. For each failing request: show method, URL, request body, response status, response body.
+  5. Cross-check against [FEAT]-NN ACs — verify each AC has a corresponding test.
+  6. Report: N passed / M failed, coverage per AC ID.
 
-  Testing protocol:
-  - Identify how to run the app and whether a server is already running.
-  - Check critical flows, responsive states, console errors, loading/error/empty states.
-  - Include accessibility basics: keyboard navigation, labels, contrast, focus order.
-  - Capture screenshots only when useful.
-  - Report reproduction steps and evidence.
-  Loop cycle: run bd prime to orient first, bd ready to triage, claim beads before writes, stop after handoff.
+  ### web — Playwright + accessibility
+  1. Navigate with Playwright — screenshot + browser_snapshot (accessibility tree).
+  2. Check console errors: browser_console_messages.
+  3. Test critical flows: form submission, navigation, error/empty/loading states.
+  4. Run WCAG 2.2 AA checklist from ui-quality skill:
+     - Keyboard navigation (Tab/Shift-Tab in browser — NOT code inspection)
+     - Focus indicator visible after each Tab keypress
+     - Contrast >= 4.5:1 (measure via DevTools, not hex calculation)
+     - All images have alt / aria-label
+     - All form inputs have labels
+  5. Label each finding [VERIFIED — browser-tested] or [ASSUMPTION — code-inspection].
+
+  ### cli — Shell execution
+  1. Build CLI if needed (detect from Makefile/Cargo.toml/setup.py/pyproject.toml).
+  2. For each AC: run command and assert exit code + output:
+     actual=$(./cli <args> 2>&1); echo "exit=$?"; echo "$actual"
+  3. Test error paths: invalid args, missing files, permission errors.
+  4. Test edge cases: empty input, unicode, very long strings.
+  5. Report: command run, expected vs actual exit code + output.
+
+  ### library — Test suite
+  1. Detect test runner from repo (pytest / jest / cargo test / go test / mvn test / bun test).
+  2. Run scoped tests for changed module:
+     pytest tests/test_<feature>.py -v --cov=<module> --cov-report=term-missing
+     (or equivalent for detected runner)
+  3. Gate: >= 80% branch coverage for changed files.
+  4. Report: N passed / M failed / coverage %. Full output for each failure.
+
+  ### ux-ui — Design system + WCAG
+  1. Load skill ui-quality + ux-quality.
+  2. Navigate with Playwright if browser URL available.
+  3. Audit design tokens: grep CSS for hardcoded values not from design system.
+  4. Check Atomic Design hierarchy (Atom/Molecule/Organism/Template — from atomic-design skill).
+  5. Run WCAG 2.2 AA full checklist (same as web protocol steps 4-5).
+
+  ## Self-validation before returning
+  - [ ] Verification type correctly identified and stated
+  - [ ] AC IDs from spec.md checked (or explicitly noted as absent)
+  - [ ] All findings labeled VERIFIED or ASSUMPTION
+  - [ ] PASS / FAIL verdict stated explicitly with evidence
+  - [ ] Beads issues filed for each FAIL finding
+
+  ## Result reporting
+  Return to caller (verify.yaml) — do NOT loop internally.
+  Caller owns the retry loop (max 3 cycles).
 settings:
   temperature: 0.1
-  max_turns: 30
+  max_turns: 35
 parameters:
+  - key: task
+    input_type: string
+    requirement: required
+    description: What to verify.
+  - key: target_type
+    input_type: string
+    requirement: optional
+    default: auto
+    description: "Verification type: api | web | cli | library | ux-ui | auto"
   - key: repo_path
     input_type: string
     requirement: optional
     default: "."
     description: Repository path.
-  - key: task
-    input_type: string
-    requirement: required
-    description: UI or web behavior to verify.
   - key: constraints
     input_type: string
     requirement: optional
     default: ""
-    description: Test constraints.
+    description: Test constraints or environment name.
 extensions:
   - type: platform
     name: developer
     bundled: true
     timeout: 300
   - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
     name: skills
     bundled: true
   - type: stdio
     name: Playwright
-    description: Browser automation through Playwright MCP
+    description: Browser automation (web + ux-ui types only)
     cmd: npx
     args:
       - "@playwright/mcp@latest"
@@ -63,9 +126,11 @@ extensions:
       - /usr/bin/chromium-browser
     timeout: 300
 prompt: |
-  Web verification target: {{ task }}
+  Verify: {{ task }}
+  Type: {{ target_type }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
 
-  Use the webapp-testing/accessibility skills if relevant. Return evidence,
-  defects, and suggested Beads follow-ups.
+  State type and protocol as first visible output.
+  Apply the protocol for the detected type.
+  Return PASS/FAIL verdict, AC IDs checked, findings with evidence labels, Beads issues filed.
