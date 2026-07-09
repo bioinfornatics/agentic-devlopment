@@ -533,3 +533,54 @@ product-owner sur le backlog :
   search_nodes(type=acceptance_criterion, filter: ANCHORS=∅) → ACs sans test
   search_nodes(type=feature, filter: REFINED_INTO=∅) → features non spécifiées
 ```
+---
+
+## Addendum — Correction : memory builtin vs knowledgegraphmemory (2026-07-09)
+
+### Deux extensions distinctes
+
+| Extension | Type | Outils | Stockage | Usage correct |
+|---|---|---|---|---|
+| **`memory`** | builtin Goose | `remember_memory`, `retrieve_memories`, `remove_memory_category` | `.goose/memory/<category>.txt` (local) ou `~/.config/goose/memory/` (global) | ✅ À utiliser — natif, chargé au démarrage de session |
+| **`knowledgegraphmemory`** | stdio externe (npm) | `create_entities`, `search_nodes`, `open_nodes`… | JSONL local | ❌ Externe, non natif à Goose |
+
+### Ce que fait réellement `memory` (builtin Goose)
+
+Stockage **catégorisé** en fichiers texte :
+```
+remember_memory(
+  category: "harness/agents",
+  data: "review-critic: charge code-review skill, retourne APPROVE|BLOCK",
+  tags: ["agent", "review"],
+  is_global: false   # local = .goose/memory/harness/agents.txt
+)
+
+retrieve_memories(category: "harness/agents", is_global: false)
+retrieve_memories(category: "*", is_global: false)  # tous
+```
+
+**Ce n'est PAS un graphe** — pas d'entités/relations/traversal. C'est un store texte catégorisé, proche de `bd remember` mais avec catégories hiérarchiques et chargement automatique en session.
+
+### Réconciliation avec le modèle KG
+
+| Besoin | Outil |
+|---|---|
+| Mémoire de session (préférences, patterns, contraintes) | `memory` builtin → `.goose/memory/` |
+| Mémoire durable inter-sessions (faits projet) | `bd remember --key` → Dolt |
+| Graphe de connaissance (entités, relations, traversal) | `.knowledge/memory.jsonl` + memviz (standalone, non Goose-natif) |
+| Graphe dans session Goose | `knowledgegraphmemory` (si activé, externe) |
+
+### Sémantique `memory` pour SDD
+
+Utiliser des catégories hiérarchiques pour simuler un graphe léger :
+
+```
+category: "harness/agents"     → liste des agents + leur rôle
+category: "harness/recipes"    → recettes + slash commands
+category: "harness/skills"     → skills + quand les charger
+category: "product/features"   → features en cours avec status
+category: "product/decisions"  → ADRs résumés
+category: "sdd/phase"          → phase courante + AC IDs ouverts
+category: "sdd/gaps"           → ACs sans test, features sans story
+```
+

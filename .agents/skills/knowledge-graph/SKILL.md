@@ -168,3 +168,35 @@ add_observations([{entityName:"test_FEAT_01_desc",observations:["status:passing"
 
 ## Beads loop
 For Beads workflow commands, load skill: `beads-harness`.
+
+---
+
+## Correction — Goose `memory` builtin vs KG externe
+
+Le **memory builtin Goose** (`enabled: true` dans config) expose :
+```
+remember_memory(category, data, tags, is_global)  # écrire
+retrieve_memories(category, is_global)             # lire  
+remove_memory_category(category, is_global)        # supprimer catégorie
+remove_specific_memory(category, memory_content, is_global)
+```
+
+Stockage : `.goose/memory/<category>.txt` (local) — chargé automatiquement en session.
+
+**Ce n'est PAS un graphe** — aucune relation, aucun traversal. Utiliser pour:
+- Mémoire de session SDD (phase courante, AC IDs, decisions)
+- Préférences projet (runners de tests, conventions de nommage)
+- Résumés des entités clés (agents → rôle, recipes → slash)
+
+**Le graphe propre** (`.knowledge/memory.jsonl` + `create_entities` / `search_nodes`) reste disponible via `knowledgegraphmemory` si activé, mais n'est PAS natif Goose.
+
+### Catégories recommandées pour SDD
+
+```
+remember_memory("harness/agents",  "review-critic: ...",  ["agent"],   false)
+remember_memory("harness/recipes", "review: /review ...", ["recipe"],  false)
+remember_memory("product/features","AUTH-login: status=spec-done ...",["feature"],false)
+remember_memory("sdd/phase",       "current=implement, bead=proj-abc",["sdd"],   false)
+remember_memory("sdd/gaps",        "AC AUTH-03: no test yet",          ["gap"],   false)
+```
+
