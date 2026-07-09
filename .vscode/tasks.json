@@ -376,6 +376,17 @@
         "reveal": "always",
         "panel": "shared"
       }
+    },
+    {
+      "label": "KG: Full Pipeline (bootstrap → reason → visualize)",
+      "detail": "Refresh harness KG + infer derived facts + open visualizer",
+      "type": "shell",
+      "command": "python3 scripts/kg-bootstrap.py && python3 scripts/kg-reason.py && xdg-open dist/kg/index.html",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
     }
   ]
 }

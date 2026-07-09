@@ -97,6 +97,12 @@ echo "wrote $HTML_OUT"
 mkdir -p dist/kg
 cp scripts/kg-visualizer.html dist/kg/index.html
 echo "wrote dist/kg/index.html"
+
+# KG pipeline — refresh + reason
+if [ -f "scripts/kg-bootstrap.py" ] && [ -d ".knowledge" ]; then
+  python3 scripts/kg-bootstrap.py > /dev/null 2>&1 && echo "KG bootstrapped"
+  python3 scripts/kg-reason.py > /dev/null 2>&1 && echo "KG reasoned"
+fi
 echo "wrote $HTML_INDEX"
 
 # Build eval trend dashboard (reads evals/history/runs.json — no API calls)
