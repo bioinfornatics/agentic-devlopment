@@ -3,6 +3,16 @@
 Serveur MCP qui expose le Knowledge Graph comme application Goose native.
 Utilise Cytoscape.js + fcose pour un force-directed graph interactif.
 
+## Statut — extension MCP custom (non builtin)
+
+Ce package est une **extension MCP personnalisée** du harness.
+**Pas** une app builtin Goose — c'est un serveur MCP stdio qu'on déclare dans la config.
+
+| Extension | Type | Source |
+|---|---|---|
+| `apps` | builtin upstream (AAIF/goose) | Génère des apps HTML via LLM (`create_app(prd)`) |
+| `kg-visualizer` | **custom MCP** (ce package) | Expose `show_kg_visualizer` tool → Cytoscape.js HTML |
+
 ## Fonctionnement
 
 Ce serveur MCP expose le tool `show_kg_visualizer` :

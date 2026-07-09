@@ -33,10 +33,11 @@ show_kg_visualizer(filter?: string)
   - server.ts reads this file and replaces placeholders at runtime
 - Never embed JavaScript strings inside TypeScript template literals.
 
-## Goose config (to enable as Goose App)
+## Goose config (extension MCP custom — non builtin)
 
 ```yaml
 # ~/.config/goose/config.yaml
+# Extension MCP custom dans ~/.config/goose/config.yaml
 extensions:
   kg-visualizer:
     enabled: true
