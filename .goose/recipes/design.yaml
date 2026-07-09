@@ -1,24 +1,30 @@
 version: 1.0.0
-title: UI/UX Quality Harness
+title: "Design Quality — UX Research · UI Audit · Accessibility"
 description: Unified UX research, design taste, design system, frontend implementation, accessibility, and web testing.
 instructions: |
-  Explicit routing — TWO specialist agents, run in sequence:
+  Explicit routing — TWO specialist phases, run in sequence:
 
   Phase 1 — UX Research (validate user needs before visual evaluation):
-  - Load skill: `ux-quality`
+  - Load skill: `ux-quality`  (user research, personas, journey maps, usability heuristics)
+  - Load skill: `cognitive-ux`  (Laws of UX for evaluating design decisions)
   - In-session: `delegate(source: "ux-researcher", instructions: "...")`
   - Beads: `bd create "<title>" --assignee ux-researcher -p 2 --json`
 
   Phase 2 — UI Design & Accessibility (after UX research validates direction):
+  - Load skill: `ui-quality`  (visual design, WCAG 2.2 AA compliance, browser-evidence a11y)
+  - Load skill: `atomic-design`  (component hierarchy: Atoms / Molecules / Organisms / Templates)
+  - Load skill: `design-systems-arch`  (token W3C architecture, component library governance)
   - Load skill: `webapp-testing`  (browser automation + viewport testing)
   - In-session: `delegate(source: "ui-designer", instructions: "...")`
   - Beads: `bd create "<title>" --assignee ui-designer -p 2 --json`
 
+  For AI interface design patterns, also load: `agentic-ux`
+  (trust calibration, progressive disclosure of AI uncertainty, safety UX patterns)
+
   Run Phase 1 first; use its findings to scope Phase 2.
   Do NOT run both phases simultaneously — UI design depends on UX research output.
-  Load ux-quality and webapp-testing when relevant. Evaluate product UI across:
-  user intent, visual taste, information architecture, design tokens/components,
-  frontend states/performance, accessibility, and browser evidence.
+  Evaluate product UI across: user intent, visual taste, information architecture,
+  design tokens/components, frontend states/performance, accessibility, and browser evidence.
 settings:
   temperature: 0.2
   max_turns: 35
@@ -58,7 +64,11 @@ sub_recipes:
       task: "{{ target }}"
       repo_path: "{{ repo_path }}"
 prompt: |
-  Target: {{ target }}
+  Scope declaration: before loading any skill or delegating, state:
+  1. The target being evaluated: {{ target }}
+  2. Whether an AI interface pattern is involved (yes → also load `agentic-ux`)
+  3. Which phase to start with (Phase 1 UX Research is always first)
+
   Repo: {{ repo_path }}
 
-  Apply the UI/UX quality harness. If a running UI is available, verify with browser evidence.
+  Apply the Design Quality harness. If a running UI is available, verify with browser evidence.

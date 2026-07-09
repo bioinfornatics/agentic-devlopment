@@ -1,5 +1,5 @@
 version: 1.0.0
-title: Agentic Harness Release
+title: Gated Release
 description: Gated release workflow.
 instructions: |
   You orchestrate gated release with CI waits and rollback documentation.
@@ -9,10 +9,8 @@ instructions: |
   - In-session agent: `delegate(source: "principal-engineer", instructions: "release gate for ...")`
   - Durable assignment: `bd create "Release gate: <version>" --assignee principal-engineer -p 1 --json`
 
-  Load skill `agentic-dev-harness` first, then run the `harness_release` subrecipe.
+  Load skill `agentic-dev-harness` first, then run the `release` subrecipe.
   Stop on first gate FAIL — do not proceed past a failed gate.
-
-
 
   Loop cycle: run `bd prime` to orient before any work, `bd ready --json` to triage,
   claim beads before writes, close on completion, store memories at handoff.
@@ -65,14 +63,14 @@ extensions:
       - beads-mcp
     timeout: 300
 sub_recipes:
-  - name: harness_release
-    path: "subrecipes/harness-release.yaml"
+  - name: release
+    path: "subrecipes/release.yaml"
     values:
       task: "{{ task }}"
       topic: "{{ task }}"
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
-  Run `harness_release` for: {{ task }}
+  Run `release` for: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}

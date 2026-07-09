@@ -1,16 +1,15 @@
 version: 1.0.0
-title: Agentic Harness Implement
-description: Implement a scoped Beads issue safely.
+title: Explore — Read-only codebase investigation
+description: Read-only investigation of code, docs, Beads state, and architecture risks. Safe to parallelize.
 instructions: |
-  You orchestrate scoped Beads-backed implementation with TDD.
+  You orchestrate read-only codebase and Beads state research.
 
   Explicit routing for this recipe:
-  - Load skill: `beads-harness`  (claim protocol, blast radius, discovered-from)
-  - In-session agent: `delegate(source: "implementation-worker", instructions: "bead:<id> ...")`
-  - Durable assignment: `bd create "<title>" --assignee implementation-worker -p 2 --json`
+  - Load skill: `agentic-dev-harness`  (orientation, delegation rules, Beads state)
+  - In-session agent: `delegate(source: "codebase-researcher", async: true, instructions: "...")`
+  - Durable assignment: `bd create "<title>" --assignee codebase-researcher -p 3 --json`
 
-  Load skill `beads-harness` first. Claim the bead before delegating.
-  Then run the `harness_implement` subrecipe and synthesize the handoff.
+  Load skill `agentic-dev-harness` first, then run the `harness_research` subrecipe.
 
 
 
@@ -65,14 +64,14 @@ extensions:
       - beads-mcp
     timeout: 300
 sub_recipes:
-  - name: harness_implement
-    path: "subrecipes/harness-implement.yaml"
+  - name: explore
+    path: "subrecipes/explore.yaml"
     values:
       task: "{{ task }}"
       topic: "{{ task }}"
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
-  Run `harness_implement` for: {{ task }}
+  Explore: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}

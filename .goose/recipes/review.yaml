@@ -1,18 +1,16 @@
 version: 1.0.0
-title: Agentic Harness Plan
-description: Create/update Beads-backed implementation plan.
+title: Code & Handoff Review
+description: Review code and Beads handoff quality.
 instructions: |
-  You orchestrate goal-to-Beads-graph planning.
+  You orchestrate code and Beads handoff review.
 
   Explicit routing for this recipe:
-  - Load skill: `beads-harness`  (planning protocol, bd commands, dependency ordering)
-  - In-session agent: `delegate(source: "beads-planner", instructions: "...")`
-  - Durable assignment: `bd create "<title>" --assignee beads-planner -p 2 --json`
+  - Load skill: `code-review`  (adaptive review: PR / feature / security / global / release / hotfix)
+  - In-session agent: `delegate(source: "review-critic", instructions: "...")`
+  - Durable assignment: `bd create "<title>" --assignee review-critic -p 2 --json`
 
-  Load skill `beads-harness` first — it holds the planning protocol and bd command reference.
-  Then run the `harness_plan` subrecipe and synthesize the dependency graph output.
-
-
+  Load skill `code-review` first — it detects the review type and loads the matching reference.
+  Then run the `review` subrecipe and synthesize the result.
 
   Loop cycle: run `bd prime` to orient before any work, `bd ready --json` to triage,
   claim beads before writes, close on completion, store memories at handoff.
@@ -65,14 +63,16 @@ extensions:
       - beads-mcp
     timeout: 300
 sub_recipes:
-  - name: harness_plan
-    path: "subrecipes/harness-plan.yaml"
+  - name: review
+    path: "subrecipes/review.yaml"
     values:
       task: "{{ task }}"
-      topic: "{{ task }}"
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
-  Run `harness_plan` for: {{ task }}
+  First Visible Output: state the review type detected (PR / feature / security / global / release / hotfix)
+  and the scope being reviewed before delegating or loading any skill.
+
+  Run `review` subrecipe for: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}

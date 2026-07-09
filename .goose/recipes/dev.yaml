@@ -1,9 +1,8 @@
 version: 1.0.0
-title: Agentic Dev Harness — Goose + Beads
+title: Dev — Agentic Development Orchestrator
 description: >
-  Master orchestrator for agentic development. Combines Goose as runtime
-  (extensions, skills, subagents, recipes) with Beads as durable task graph
-  (issues, dependencies, molecules, gates, memory).
+  Entry point for any development task. Routes to the right specialist (research, plan,
+  implement, review, release, design) using SDD auto-sizing and the Beads task graph.
 instructions: |
   You are the lead agent operating an agentic development harness.
 
@@ -41,8 +40,12 @@ instructions: |
   | Implementation (TDD)   | `beads-harness`         | `implementation-worker` | implementation-worker   |
   | Test-first cycle       | `agentic-dev-harness`   | `tdd-guide`             | tdd-guide               |
   | Full test pipeline / CI| `webapp-testing`        | `qa-automation`         | qa-automation           |
-  | UX research + personas | `ux-quality`         | `ux-researcher`         | ux-researcher           |
-  | UI design + a11y audit | `webapp-testing`        | `ui-designer`           | ui-designer             |
+  | UX research + personas | `ux-quality`            | `ux-researcher`         | ux-researcher           |
+  | UI design + a11y audit | `ui-quality`            | `ui-designer`           | ui-designer             |
+  | Cognitive UX analysis  | `cognitive-ux`          | `ux-researcher`         | ux-researcher           |
+  | Component structure    | `atomic-design`         | `ui-designer`           | ui-designer             |
+  | Design system audit    | `design-systems-arch`   | `ui-designer`           | ui-designer             |
+  | Agentic AI UX          | `agentic-ux`            | `ux-researcher`         | ux-researcher           |
   | Breaking-change review | `code-review`           | `principal-engineer`    | principal-engineer      |
   | Multi-step orchestration| `goose-orchestration`  | `harness-orchestrator`  | harness-orchestrator    |
 
@@ -90,7 +93,7 @@ parameters:
     input_type: select
     requirement: optional
     default: auto
-    options: [auto, research, plan, implement, review, web-test, release]
+    options: [auto, explore, plan, implement, review, verify, release, design, sdd, remember]
     description: Harness mode to emphasize.
   - key: constraints
     input_type: string
@@ -126,43 +129,43 @@ extensions:
       - beads-mcp
     timeout: 300
 sub_recipes:
-  - name: harness_research
-    path: "subrecipes/harness-research.yaml"
+  - name: explore
+    path: "subrecipes/explore.yaml"
     description: Read-only codebase and documentation research.
     values:
       repo_path: "{{ repo_path }}"
       topic: "{{ task }}"
       constraints: "{{ constraints }}"
-  - name: harness_plan
-    path: "subrecipes/harness-plan.yaml"
+  - name: plan
+    path: "subrecipes/plan.yaml"
     description: Turn a goal into a Beads-backed executable plan.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
-  - name: harness_implement
-    path: "subrecipes/harness-implement.yaml"
+  - name: implement
+    path: "subrecipes/implement.yaml"
     description: Implement a scoped bead with tests and handoff.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
-  - name: harness_review
-    path: "subrecipes/harness-review.yaml"
+  - name: review
+    path: "subrecipes/review.yaml"
     description: Review code, tests, Beads state, and handoff quality.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
-  - name: harness_web_test
-    path: "subrecipes/harness-web-test.yaml"
+  - name: verify
+    path: "subrecipes/verify.yaml"
     description: Browser/UI verification using Playwright when available.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
-  - name: harness_release
-    path: "subrecipes/harness-release.yaml"
+  - name: release
+    path: "subrecipes/release.yaml"
     description: Release, CI, gates, and verification flow.
     values:
       repo_path: "{{ repo_path }}"
@@ -174,9 +177,16 @@ prompt: |
   Mode: {{ mode }}
   Constraints: {{ constraints }}
 
-  ## Step 1 — Orient
-  Load the `agentic-dev-harness` skill.
-  If the repo contains `.beads`, run `bd prime` then `bd ready --json`.
+  ## Step 1 — Orient (Generated Knowledge — do this first, before any other step)
+  Load skill: `agentic-dev-harness`.
+  Run `bd prime` then `bd ready --json` if repo contains `.beads`.
+  Read one existing file relevant to the task (patterns, conventions).
+
+  ## Step 1b — Auto-size the task
+  Assess complexity before routing:
+  - Micro/Small (1-3 files, obvious change) → inline execute, skip orchestration overhead
+  - Medium (<10 tasks, clear intent) → single subrecipe or agent
+  - Large/Complex (multi-component, ambiguous) → full orchestration with dependency graph
 
   ## Step 2 — Discover available agents
   Call `load()` with no arguments. This returns every named agent and subrecipe

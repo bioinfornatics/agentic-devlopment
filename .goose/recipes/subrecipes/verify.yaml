@@ -1,8 +1,8 @@
-# AGENT-FACING WORKER SUBRECIPE — invoked by the parent recipe of the same name.
+# AGENT-FACING WORKER SUBRECIPE — invoked by the verify recipe.
 # Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
 version: 1.0.0
-title: Harness Web Test
-description: Verify local web apps with Playwright, accessibility, and visual quality checks.
+title: Verify
+description: Browser-based verification with Playwright. Accessibility, visual quality, and user flow validation.
 instructions: |
   You are a web verification subagent. Validate behavior from the user's perspective.
   Use browser automation when available; otherwise provide exact manual verification steps.
@@ -48,6 +48,8 @@ extensions:
       - "@playwright/mcp@latest"
       - "--browser"
       - chromium
+      - "--executable-path"
+      - /usr/bin/chromium-browser
     timeout: 300
 prompt: |
   Web verification target: {{ task }}

@@ -1,5 +1,5 @@
 version: 1.0.0
-title: Agentic Harness Memory
+title: Beads Memory Steward
 description: >
   Manage Beads persistent memory with guardrails: remember durable facts,
   search/recall existing memories, and forget stale entries.

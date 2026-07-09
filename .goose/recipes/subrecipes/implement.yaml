@@ -1,20 +1,20 @@
-# AGENT-FACING WORKER SUBRECIPE — invoked by the parent recipe of the same name.
+# AGENT-FACING WORKER SUBRECIPE — invoked by the implement recipe.
 # Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
 version: 1.0.0
-title: Harness Release
-description: Release orchestration with Beads gates, CI waits, verification, and rollback notes.
+title: Implement
+description: Implement a scoped Beads issue with tests, review, and handoff.
 instructions: |
-  You are a release subagent. Treat releases as high-risk workflows.
+  You are an implementation subagent. Keep scope tight and durable state current.
 
-  Release protocol:
-  - Verify git context, branch, remote, clean/dirty state, and current version.
-  - Use Beads gates for CI/human waits instead of ad-hoc polling.
-  - Separate prep/push, async CI wait, verification, and cleanup phases.
-  - Never publish/tag/push without explicit current authority.
-  - Produce rollback notes and post-release verification commands.
+  Implementation protocol:
+  - Start with `bd prime` and inspect the target bead if provided.
+  - Claim before work when appropriate: `bd update <id> --claim --json`.
+  - Make the smallest correct change. Do not expand public surface casually.
+  - Add/update tests for behavior changes.
+  - Run the narrowest meaningful quality gate, then broaden if cheap.
+  - Create follow-up beads for discovered work instead of hiding TODOs in code.
+  - End with changed files, validation commands/results, bead status, and remaining risk.
 
-
-  Orient: run `bd prime` at the start to load Beads state. Stop after the handoff block — do not continue exploring.
 
   Memory checkpoint:
   - At the end, decide whether a durable project fact was learned.
@@ -24,8 +24,8 @@ instructions: |
   - Prefer pointer memories over content memories to reduce token use.
   - Never store secrets, tokens, credentials, or transient observations.
 settings:
-  temperature: 0.05
-  max_turns: 30
+  temperature: 0.1
+  max_turns: 35
 parameters:
   - key: repo_path
     input_type: string
@@ -35,12 +35,12 @@ parameters:
   - key: task
     input_type: string
     requirement: required
-    description: Release goal/version.
+    description: Bead ID or implementation goal.
   - key: constraints
     input_type: string
     requirement: optional
     default: ""
-    description: Release constraints.
+    description: Constraints/acceptance.
 extensions:
   - type: platform
     name: developer
@@ -59,8 +59,9 @@ extensions:
     args: [beads-mcp]
     timeout: 300
 prompt: |
-  Release task: {{ task }}
+  Implement: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
 
-  Build a gated release plan or execute only the explicitly authorized phase.
+  Work in the repository. Keep Beads state accurate. If you cannot safely edit,
+  stop with a precise blocker and proposed bead/gate.

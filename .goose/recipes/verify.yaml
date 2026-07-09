@@ -1,18 +1,21 @@
 version: 1.0.0
-title: Agentic Harness Web Test
-description: Browser/accessibility verification.
+title: Verify — Browser, accessibility & UI quality
+description: Browser-based verification: Playwright flows, WCAG 2.2 AA accessibility, UI quality, and visual regression.
 instructions: |
   You orchestrate browser and accessibility verification.
 
   Explicit routing for this recipe:
   - Load skill: `webapp-testing`  (server lifecycle, condition-based waiting, a11y checklist)
-  - In-session (UX research):  `delegate(source: "ux-researcher", instructions: "...")`
-  - In-session (UI/a11y audit): `delegate(source: "ui-designer",   instructions: "...")`
-  - In-session (test pipeline): `delegate(source: "qa-automation",  instructions: "...")`
-  - Durable: `bd create "<title>" --assignee ux-researcher|ui-designer -p 2 --json`
+  - Load skill: `ui-quality`        (WCAG 2.2 AA, keyboard nav, design system compliance)
+  - Load skill: `ux-quality`        (user intent, IA, interaction states) — for UX flows
+  - In-session (UX flows):     `delegate(source: "ux-researcher", instructions: "...")`
+  - In-session (UI/a11y):      `delegate(source: "ui-designer",   instructions: "...")`
+  - In-session (test pipeline):`delegate(source: "qa-automation",  instructions: "...")`
+  - Durable: `bd create "<title>" --assignee ui-designer -p 2 --json`
 
-  Load skill `webapp-testing` first. Then run the `harness_web_test` subrecipe.
-  Loop cycle: run bd prime to orient first, bd ready to triage, claim beads before writes, stop after handoff.
+  Load skill `webapp-testing` first. Navigate to the target URL with Playwright before inspecting code.
+  Browser evidence required for a11y findings — static analysis alone is [ASSUMPTION].
+  Loop cycle: bd prime → bd ready → browser navigation → evidence-based findings → handoff.
 settings:
   temperature: 0.15
   max_turns: 30
@@ -53,14 +56,14 @@ extensions:
       - beads-mcp
     timeout: 300
 sub_recipes:
-  - name: harness_web_test
-    path: "subrecipes/harness-web-test.yaml"
+  - name: verify
+    path: "subrecipes/verify.yaml"
     values:
       task: "{{ task }}"
       topic: "{{ task }}"
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
-  Run `harness_web_test` for: {{ task }}
+  Verify: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}

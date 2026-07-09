@@ -1,8 +1,8 @@
 [
   {
-    "query": "Research the current state of Beads issues and which recipe files are most at risk of breaking if `.goose/recipes/harness-master.yaml` is changed.",
+    "query": "Research the current state of Beads issues and which recipe files are most at risk of breaking if `.goose/recipes/dev.yaml` is changed.",
     "files": [
-      ".goose/recipes/harness-master.yaml",
+      ".goose/recipes/dev.yaml",
       ".goose/recipes/subrecipes/",
       ".beads/issues.jsonl"
     ],
@@ -23,9 +23,9 @@
     ]
   },
   {
-    "query": "Map the blast radius of removing the `skills` extension block from `harness-implement.yaml`. Which other recipes, agents, and docs would be affected?",
+    "query": "Map the blast radius of removing the `skills` extension block from `implement.yaml`. Which other recipes, agents, and docs would be affected?",
     "files": [
-      ".goose/recipes/harness-implement.yaml",
+      ".goose/recipes/implement.yaml",
       ".goose/recipes/",
       ".agents/",
       "docs/"

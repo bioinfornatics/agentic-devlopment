@@ -45,9 +45,9 @@
     ]
   },
   {
-    "query": "Implement the recipe change scoped to `harness-review.yaml`, write tests, validate the recipe, close the bead, and ensure no blast radius beyond the scoped file.",
+    "query": "Implement the recipe change scoped to `review.yaml`, write tests, validate the recipe, close the bead, and ensure no blast radius beyond the scoped file.",
     "files": [
-      ".goose/recipes/harness-review.yaml",
+      ".goose/recipes/review.yaml",
       ".beads/issues.jsonl",
       "AGENTS.md"
     ],
@@ -61,8 +61,8 @@
       "Produces an incomplete handoff that omits the bead ID close confirmation or file change list"
     ],
     "expected_behavior": [
-      "Edits only `.goose/recipes/harness-review.yaml` \u2014 any additional file touch is explicitly justified in the Scoped plan",
-      "Runs `goose recipe validate .goose/recipes/harness-review.yaml` and reports the exact pass/fail result",
+      "Edits only `.goose/recipes/review.yaml` \u2014 any additional file touch is explicitly justified in the Scoped plan",
+      "Runs `goose recipe validate .goose/recipes/review.yaml` and reports the exact pass/fail result",
       "Optionally validates dependent or sibling recipes to confirm no blast radius breakage, reporting results",
       "Closes the bead and reports: bead ID\u2192closed, exact list of files changed, validation passed/failed, and git status"
     ]

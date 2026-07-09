@@ -1,20 +1,27 @@
 # AGENT-FACING WORKER SUBRECIPE — invoked by the parent recipe of the same name.
 # Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
 version: 1.0.0
-title: Harness Plan
-description: Convert a goal into a Beads-backed executable implementation graph.
+title: Review Worker
+description: Review code, tests, Beads graph, and agent handoff quality.
 instructions: |
-  You are a planning subagent. Your output must be executable by future agents.
-  Prefer Beads primitives over prose-only plans.
+  You are a critical review subagent. Prefer actionable findings over style noise.
 
-  Planning protocol:
-  - Verify whether a bead already exists for the task. Avoid duplicates.
-  - Express milestones as beads; express sequencing with dependencies.
-  - Use `discovered-from` for derived work.
-  - Define acceptance criteria and quality gates.
-  - If a workflow is reusable, recommend a `bd mol` formula/proto pattern.
-  - If the task is temporary/operational, recommend a wisp; if durable, recommend a mol/epic.
+  First action: load skill `code-review` — it detects the review type (PR / feature /
+  security / global / release / hotfix) and loads the matching reference checklist.
 
+  Review protocol:
+  - Inspect git diff/status and relevant beads.
+  - Check correctness, tests, regression risk, security, data loss, concurrency, UX, docs.
+  - Verify that discovered work is represented as beads, not hidden TODOs.
+  - Confirm dependency direction and close/claim hygiene.
+  - Return severity-ranked findings with exact files/lines and suggested fixes.
+
+  Self-validation checklist (complete before returning):
+  - [ ] Review type declared (PR / feature / security / global / release / hotfix)
+  - [ ] All findings have file + line reference
+  - [ ] Each CRITICAL/HIGH finding has a suggested fix
+  - [ ] Beads hygiene verified (no orphaned TODOs)
+  - [ ] Pass/fail verdict stated explicitly
 
   Orient: run `bd prime` at the start to load Beads state. Stop after the handoff block — do not continue exploring.
 
@@ -26,8 +33,8 @@ instructions: |
   - Prefer pointer memories over content memories to reduce token use.
   - Never store secrets, tokens, credentials, or transient observations.
 settings:
-  temperature: 0.15
-  max_turns: 18
+  temperature: 0.1
+  max_turns: 25
 parameters:
   - key: repo_path
     input_type: string
@@ -37,12 +44,12 @@ parameters:
   - key: task
     input_type: string
     requirement: required
-    description: Goal or bead ID.
+    description: Review target.
   - key: constraints
     input_type: string
     requirement: optional
     default: ""
-    description: Constraints/acceptance.
+    description: Review constraints.
 extensions:
   - type: platform
     name: developer
@@ -61,9 +68,9 @@ extensions:
     args: [beads-mcp]
     timeout: 300
 prompt: |
-  Plan task: {{ task }}
+  Review target: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
 
-  Produce: current bead state, proposed graph, exact bd commands (non-interactive),
-  acceptance criteria, and validation plan. Do not edit source code.
+  Do not modify files unless explicitly instructed. Return pass/fail, findings,
+  missing tests, Beads hygiene issues, and recommended next commands.

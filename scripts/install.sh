@@ -127,16 +127,16 @@ dry_run = sys.argv[4] == "1"
 stamp = sys.argv[5]
 
 managed = [
-    ("harness", "harness-master.yaml"),
-    ("research", "harness-research.yaml"),
-    ("plan", "harness-plan.yaml"),
-    ("implement", "harness-implement.yaml"),
-    ("review", "harness-review.yaml"),
-    ("webtest", "harness-web-test.yaml"),
-    ("release", "harness-release.yaml"),
-    ("memory", "harness-memory.yaml"),
-    ("sdd", "sdd-master.yaml"),
-    ("uiux", "ui-ux-suite.yaml"),
+    ("harness", "dev.yaml"),
+    ("research", "explore.yaml"),
+    ("plan", "plan.yaml"),
+    ("implement", "implement.yaml"),
+    ("review", "review.yaml"),
+    ("webtest", "verify.yaml"),
+    ("release", "release.yaml"),
+    ("memory", "remember.yaml"),
+    ("sdd", "sdd.yaml"),
+    ("uiux", "design.yaml"),
 ]
 managed_names = {name.lower() for name, _ in managed}
 

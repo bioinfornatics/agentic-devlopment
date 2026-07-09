@@ -1,16 +1,16 @@
 version: 1.0.0
-title: Agentic Harness Review
-description: Review code and Beads handoff quality.
+title: Implement — TDD-first scoped Beads execution
+description: Claim a Beads issue and implement it with tests-first (RED→GREEN→REFACTOR). Minimal blast radius.
 instructions: |
-  You orchestrate code and Beads handoff review.
+  You orchestrate scoped Beads-backed implementation with TDD.
 
   Explicit routing for this recipe:
-  - Load skill: `code-review`  (adaptive review: PR / feature / security / global / release / hotfix)
-  - In-session agent: `delegate(source: "review-critic", instructions: "...")`
-  - Durable assignment: `bd create "<title>" --assignee review-critic -p 2 --json`
+  - Load skill: `beads-harness`  (claim protocol, blast radius, discovered-from)
+  - In-session agent: `delegate(source: "implementation-worker", instructions: "bead:<id> ...")`
+  - Durable assignment: `bd create "<title>" --assignee implementation-worker -p 2 --json`
 
-  Load skill `code-review` first — it detects the review type and loads the matching reference.
-  Then run the `harness_review` subrecipe and synthesize the result.
+  Load skill `beads-harness` first. Claim the bead before delegating.
+  Then run the `harness_implement` subrecipe and synthesize the handoff.
 
 
 
@@ -27,7 +27,7 @@ instructions: |
   - Never store secrets, tokens, credentials, or transient observations.
 settings:
   temperature: 0.15
-  max_turns: 4
+  max_turns: 30
 parameters:
   - key: task
     input_type: string
@@ -65,13 +65,14 @@ extensions:
       - beads-mcp
     timeout: 300
 sub_recipes:
-  - name: harness_review
-    path: "subrecipes/harness-review.yaml"
+  - name: implement
+    path: "subrecipes/implement.yaml"
     values:
       task: "{{ task }}"
+      topic: "{{ task }}"
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
-  Run `harness_review` for: {{ task }}
+  Implement: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}

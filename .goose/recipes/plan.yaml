@@ -1,15 +1,16 @@
 version: 1.0.0
-title: Agentic Harness Research
-description: Read-only parallel-ready codebase research.
+title: Plan — Beads dependency graph
+description: Convert a goal into an ordered, dependency-annotated Beads graph with acceptance criteria.
 instructions: |
-  You orchestrate read-only codebase and Beads state research.
+  You orchestrate goal-to-Beads-graph planning.
 
   Explicit routing for this recipe:
-  - Load skill: `agentic-dev-harness`  (orientation, delegation rules, Beads state)
-  - In-session agent: `delegate(source: "codebase-researcher", async: true, instructions: "...")`
-  - Durable assignment: `bd create "<title>" --assignee codebase-researcher -p 3 --json`
+  - Load skill: `beads-harness`  (planning protocol, bd commands, dependency ordering)
+  - In-session agent: `delegate(source: "beads-planner", instructions: "...")`
+  - Durable assignment: `bd create "<title>" --assignee beads-planner -p 2 --json`
 
-  Load skill `agentic-dev-harness` first, then run the `harness_research` subrecipe.
+  Load skill `beads-harness` first — it holds the planning protocol and bd command reference.
+  Then run the `harness_plan` subrecipe and synthesize the dependency graph output.
 
 
 
@@ -64,14 +65,14 @@ extensions:
       - beads-mcp
     timeout: 300
 sub_recipes:
-  - name: harness_research
-    path: "subrecipes/harness-research.yaml"
+  - name: plan
+    path: "subrecipes/plan.yaml"
     values:
       task: "{{ task }}"
       topic: "{{ task }}"
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
-  Run `harness_research` for: {{ task }}
+  Plan: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}

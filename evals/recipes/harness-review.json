@@ -8,7 +8,7 @@
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The harness-review recipe should follow review workflow: read diff, apply confidence gate, rank findings by severity, produce a verdict, and propose Beads follow-ups \u2014 not just list observations.",
+    "expected_skill_contribution": "The review recipe should follow review workflow: read diff, apply confidence gate, rank findings by severity, produce a verdict, and propose Beads follow-ups \u2014 not just list observations.",
     "fixture_intent": "An install-script patch that introduces a broken slash command mapping pointing to a missing recipe; the agent must surface the missing recipe as a CRITICAL finding and not approve the diff.",
     "fixture_patch": "evals/fixtures/code-review/install-missing-recipe.patch",
     "fixture_description": "Applied a patch adding a slash command mapping that points to a missing recipe.",
@@ -49,7 +49,7 @@
   {
     "query": "Review a multi-surface diff touching recipes, skills, and docs simultaneously. Produce a severity-ranked report with validation steps.",
     "files": [
-      ".goose/recipes/harness-review.yaml",
+      ".goose/recipes/review.yaml",
       ".agents/skills/code-review/SKILL.md",
       "docs/15-skill-evaluations.md"
     ],

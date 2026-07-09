@@ -8,7 +8,7 @@
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The ui-ux-suite recipe should apply the 8-dimension evaluation stack in order, require browser evidence before findings, and rank issues by user impact \u2014 not just aesthetic preference.",
+    "expected_skill_contribution": "The design recipe should apply the 8-dimension evaluation stack in order, require browser evidence before findings, and rank issues by user impact \u2014 not just aesthetic preference.",
     "fixture_intent": "A built documentation site with its source docs and stylesheet; the agent must evaluate the rendered site through the 8-dimension stack and rank findings by user impact rather than by ease of detection.",
     "baseline_gaps": [
       "gives generic aesthetic feedback without the 8-dimension structure",

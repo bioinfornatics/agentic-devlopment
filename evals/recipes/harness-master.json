@@ -1,14 +1,14 @@
 [
   {
-    "query": "Find the highest-risk parts of `.goose/recipes/harness-master.yaml` and the subrecipes it delegates to. Read only.",
+    "query": "Find the highest-risk parts of `.goose/recipes/dev.yaml` and the subrecipes it delegates to. Read only.",
     "files": [
-      ".goose/recipes/harness-master.yaml",
+      ".goose/recipes/dev.yaml",
       ".goose/recipes/subrecipes/"
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The master recipe should load agentic-dev-harness skill, orient via bd prime, emit an Orchestration decision naming harness-research flow, and synthesize results \u2014 not just inspect files.",
-    "fixture_intent": "Validates that the harness-master recipe loads its skill, primes Beads, emits a visible Orchestration decision block, and synthesizes findings rather than raw-dumping file contents.",
+    "expected_skill_contribution": "The master recipe should load agentic-dev-harness skill, orient via bd prime, emit an Orchestration decision naming explore flow, and synthesize results \u2014 not just inspect files.",
+    "fixture_intent": "Validates that the dev recipe loads its skill, primes Beads, emits a visible Orchestration decision block, and synthesizes findings rather than raw-dumping file contents.",
     "baseline_gaps": [
       "Agent inspects files without orienting via bd prime or loading the skill first",
       "Skips emitting an Orchestration decision block naming the routing choice",
@@ -30,7 +30,7 @@
     ],
     "max_turns": 500,
     "difficulty": "difficult",
-    "expected_skill_contribution": "The recipe should route to harness-plan behaviour: load skill, prime Beads, emit Orchestration decision for plan flow, check duplicates, output bd commands.",
+    "expected_skill_contribution": "The recipe should route to plan behaviour: load skill, prime Beads, emit Orchestration decision for plan flow, check duplicates, output bd commands.",
     "fixture_intent": "Validates that the orchestrator correctly routes a planning request through the plan flow, checks for existing Beads issues before proposing new ones, and outputs executable bd commands rather than prose only.",
     "baseline_gaps": [
       "Plans without checking existing Beads state for duplicates",
@@ -45,15 +45,15 @@
     ]
   },
   {
-    "query": "Implement the fix described in the active Beads issue scoped to `.goose/recipes/harness-review.yaml`, validate it, and hand off.",
+    "query": "Implement the fix described in the active Beads issue scoped to `.goose/recipes/review.yaml`, validate it, and hand off.",
     "files": [
-      ".goose/recipes/harness-review.yaml",
+      ".goose/recipes/review.yaml",
       ".beads/issues.jsonl",
       "AGENTS.md"
     ],
     "max_turns": 500,
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "The recipe should route through harness-implement behaviour: skill load, Beads prime + claim, Scoped plan before edits, recipe validation, Beads close, handoff with git status.",
+    "expected_skill_contribution": "The recipe should route through implement behaviour: skill load, Beads prime + claim, Scoped plan before edits, recipe validation, Beads close, handoff with git status.",
     "fixture_intent": "Validates the full implement routing: the orchestrator routes to implement flow, claims atomically before editing, states a Scoped plan, validates the recipe, closes the bead, and produces a structured handoff.",
     "baseline_gaps": [
       "Edits the recipe file without first claiming the Beads issue",
@@ -63,7 +63,7 @@
     "expected_behavior": [
       "Claims a Beads issue with `bd update <id> --claim` before any file edit",
       "States a `Scoped plan:` section listing the target file and intended change before the first mutating command",
-      "Runs `goose recipe validate .goose/recipes/harness-review.yaml` and reports pass or fail",
+      "Runs `goose recipe validate .goose/recipes/review.yaml` and reports pass or fail",
       "Closes or updates the Beads issue and reports bead status, files changed, validation result, git status, and remaining risks"
     ]
   }
