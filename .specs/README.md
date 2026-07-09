@@ -47,11 +47,11 @@ SOTA research → see `docs/sota/` (knowledge, not specification).
   -> .specs/features/name/spec.md
   -> bd remember pointer
   -> node apps/kg/dist/cli.js pipeline
-## Beads remplace tasks.md et plan.md
+## Beads replaces tasks.md et plan.md
 
 | Besoin | Outil |
 |---|---|
-| Tâches, planning, suivi | Beads (`bd create --issue_type task`) |
-| Spec, design, contrats, décisions | .specs/ |
+| Tasks, planning, tracking | Beads (`bd create --issue_type task`) |
+| Spec, design, contracts, decisions | .specs/ |
 
 Never create `tasks.md` or `plan.md` in `.specs/` — use `bd create` instead.
