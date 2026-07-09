@@ -252,3 +252,9 @@ mv ~/.config/goose/recipes.backup-YYYYMMDD-HHMMSS ~/.config/goose/recipes
 mv ~/.agents/skills.backup-YYYYMMDD-HHMMSS ~/.agents/skills
 mv ~/.agents/agents.backup-YYYYMMDD-HHMMSS ~/.agents/agents
 ```
+
+---
+
+## Next step
+
+See [docs/getting-started.md](docs/getting-started.md) to learn which slash commands to use and when.
