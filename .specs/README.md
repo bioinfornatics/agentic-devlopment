@@ -12,6 +12,12 @@ SOTA SDD 2026. Research: sdd-sota-2026.md. Decisions: STATE.md.
 | components.md | UI features | Atomic Design, ASCII art mockups |
 | context.md | Complex | Gray area decisions |
 
+## Note on STATE.md
+
+STATE.md is an **ADR log** (Architecture Decision Records) — not a feature spec.
+It makes SDD spec-anchored: every AD-NNN constrains future specs.
+SOTA research → see `docs/sota/` (knowledge, not specification).
+
 ## Project-level files
 
 | File | Contents |
@@ -19,7 +25,6 @@ SOTA SDD 2026. Research: sdd-sota-2026.md. Decisions: STATE.md.
 | product.md | Vision, users, metrics, principles |
 | architecture.md | System overview, component contracts |
 | STATE.md | AD-NNN Architecture Decisions + handoff |
-| sdd-sota-2026.md | SOTA research |
 
 ## Auto-sizing
 

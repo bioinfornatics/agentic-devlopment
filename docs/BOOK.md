@@ -25,3 +25,8 @@ This file defines the canonical order used to build the HTML/PDF documentation b
 21. [`AGENTS.md`](../AGENTS.md)
 22. [`knowledge-graph.md`](knowledge-graph.md)
 23. [`kg-lifecycle.md`](kg-lifecycle.md)
+
+## References (docs/sota/)
+- [`sota/sdd-sota-2026.md`](sota/sdd-sota-2026.md)
+- [`sota/sota-knowledge-base.md`](sota/sota-knowledge-base.md)
+- [`sota/kg-visualization-framework-research.md`](sota/kg-visualization-framework-research.md)
