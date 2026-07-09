@@ -135,3 +135,94 @@
 {"type": "relation", "from": "recipe:plan", "to": "agent:beads-planner", "relationType": "DELEGATES_TO"}
 {"type": "relation", "from": "recipe:verify", "to": "agent:qa-automation", "relationType": "DELEGATES_TO"}
 {"type": "relation", "from": "recipe:design", "to": "agent:ux-researcher", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:dev", "to": "skill:agentic-dev-harness", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:review", "to": "skill:code-review", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:implement", "to": "skill:beads-harness", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:spec", "to": "skill:sdd", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:discover", "to": "skill:sdd", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:plan", "to": "skill:beads-harness", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:verify", "to": "skill:webapp-testing", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:design", "to": "skill:ux-quality", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:sdd", "to": "skill:sdd", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:review", "to": "agent:review-critic", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:implement", "to": "agent:implementation-worker", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:discover", "to": "agent:product-owner", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:spec", "to": "agent:architect", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:plan", "to": "agent:beads-planner", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:verify", "to": "agent:qa-automation", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:design", "to": "agent:ux-researcher", "relationType": "DELEGATES_TO"}
+{"type": "entity", "name": "agentic-dev-harness-product", "entityType": "epic", "observations": ["scope: buildtime", "status: in-progress", "description: Portable Goose+Beads SDD harness for agentic software development", "file: README.md"]}
+{"type": "entity", "name": "feat-recipe-ecosystem", "entityType": "feature", "observations": ["scope: buildtime", "layer: harness", "status: in-progress", "description: 12 SDD workflow verb recipes with sub-recipe workers"]}
+{"type": "relation", "from": "feat-recipe-ecosystem", "to": "agentic-dev-harness-product", "relationType": "DECOMPOSES_INTO"}
+{"type": "entity", "name": "feat-skill-library", "entityType": "feature", "observations": ["scope: buildtime", "layer: harness", "status: in-progress", "description: 14 skills covering SDD/UX/UI/KG methodologies"]}
+{"type": "relation", "from": "feat-skill-library", "to": "agentic-dev-harness-product", "relationType": "DECOMPOSES_INTO"}
+{"type": "entity", "name": "feat-agent-roster", "entityType": "feature", "observations": ["scope: buildtime", "layer: harness", "status: in-progress", "description: 12 specialist agents with Prompt Defense Baseline"]}
+{"type": "relation", "from": "feat-agent-roster", "to": "agentic-dev-harness-product", "relationType": "DECOMPOSES_INTO"}
+{"type": "entity", "name": "feat-eval-suite", "entityType": "feature", "observations": ["scope: buildtime", "layer: harness", "status: in-progress", "description: A/B evaluation suite for skills/recipes/agents"]}
+{"type": "relation", "from": "feat-eval-suite", "to": "agentic-dev-harness-product", "relationType": "DECOMPOSES_INTO"}
+{"type": "entity", "name": "feat-kg-integration", "entityType": "feature", "observations": ["scope: buildtime", "layer: harness", "status: in-progress", "description: Knowledge Graph MCP integration for SDD traceability"]}
+{"type": "relation", "from": "feat-kg-integration", "to": "agentic-dev-harness-product", "relationType": "DECOMPOSES_INTO"}
+{"type": "entity", "name": "feat-beads-workflow", "entityType": "feature", "observations": ["scope: buildtime", "layer: harness", "status: in-progress", "description: Durable Beads task graph with Dolt git sync"]}
+{"type": "relation", "from": "feat-beads-workflow", "to": "agentic-dev-harness-product", "relationType": "DECOMPOSES_INTO"}
+{"type": "entity", "name": "AC-RECIPE-01", "entityType": "acceptance_criterion", "observations": ["scope: buildtime", "criterion: All 12 recipes validate (goose recipe validate) and follow workflow verbs", "status: pending"]}
+{"type": "relation", "from": "feat-recipe-ecosystem", "to": "AC-RECIPE-01", "relationType": "HAS_CRITERION"}
+{"type": "entity", "name": "AC-RECIPE-02", "entityType": "acceptance_criterion", "observations": ["scope: buildtime", "criterion: Each recipe has First Visible Output + auto-sizing + skill/agent routing", "status: pending"]}
+{"type": "relation", "from": "feat-recipe-ecosystem", "to": "AC-RECIPE-02", "relationType": "HAS_CRITERION"}
+{"type": "entity", "name": "AC-SKILL-01", "entityType": "acceptance_criterion", "observations": ["scope: buildtime", "criterion: All 14 skills visible in goose skills list", "status: pending"]}
+{"type": "relation", "from": "feat-skill-library", "to": "AC-SKILL-01", "relationType": "HAS_CRITERION"}
+{"type": "entity", "name": "AC-SKILL-02", "entityType": "acceptance_criterion", "observations": ["scope: buildtime", "criterion: Each skill has self-validation checklist and load skills orientation", "status: pending"]}
+{"type": "relation", "from": "feat-skill-library", "to": "AC-SKILL-02", "relationType": "HAS_CRITERION"}
+{"type": "entity", "name": "AC-AGENT-01", "entityType": "acceptance_criterion", "observations": ["scope: buildtime", "criterion: All 12 agents have PDB + Operating Process + Output Format + Remember", "status: pending"]}
+{"type": "relation", "from": "feat-agent-roster", "to": "AC-AGENT-01", "relationType": "HAS_CRITERION"}
+{"type": "entity", "name": "AC-EVAL-01", "entityType": "acceptance_criterion", "observations": ["scope: buildtime", "criterion: A/B eval suite runs all skills with positive delta (no negatives)", "status: pending"]}
+{"type": "relation", "from": "feat-eval-suite", "to": "AC-EVAL-01", "relationType": "HAS_CRITERION"}
+{"type": "entity", "name": "AC-EVAL-02", "entityType": "acceptance_criterion", "observations": ["scope: buildtime", "criterion: Recipe evals cover all 12 recipes with 3 scenarios each", "status: pending"]}
+{"type": "relation", "from": "feat-eval-suite", "to": "AC-EVAL-02", "relationType": "HAS_CRITERION"}
+{"type": "entity", "name": "AC-KG-01", "entityType": "acceptance_criterion", "observations": ["scope: buildtime", "criterion: KG MCP enabled, memory.jsonl populated, search_nodes returns harness entities", "status: pending"]}
+{"type": "relation", "from": "feat-kg-integration", "to": "AC-KG-01", "relationType": "HAS_CRITERION"}
+{"type": "entity", "name": "AC-KG-02", "entityType": "acceptance_criterion", "observations": ["scope: buildtime", "criterion: Subrecipes emit KG entities on completion (implement/spec/review/discover)", "status: pending"]}
+{"type": "relation", "from": "feat-kg-integration", "to": "AC-KG-02", "relationType": "HAS_CRITERION"}
+{"type": "entity", "name": "AC-BEADS-01", "entityType": "acceptance_criterion", "observations": ["scope: buildtime", "criterion: bd prime populates memories, bd ready shows claimable work", "status: pending"]}
+{"type": "relation", "from": "feat-beads-workflow", "to": "AC-BEADS-01", "relationType": "HAS_CRITERION"}
+{"type": "entity", "name": "test-skill-agentic-dev-harness", "entityType": "test", "observations": ["scope: buildtime", "file: evals/skills/agentic-dev-harness.json", "status: passing"]}
+{"type": "relation", "from": "test-skill-agentic-dev-harness", "to": "AC-SKILL-01", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test-skill-agentic-dev-harness", "to": "code_file:evals/skills/agentic-dev-harness.json", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "code_file:evals/skills/agentic-dev-harness.json", "entityType": "code_file", "observations": ["scope: buildtime", "path: evals/skills/agentic-dev-harness.json"]}
+{"type": "entity", "name": "test-skill-code-review", "entityType": "test", "observations": ["scope: buildtime", "file: evals/skills/code-review.json", "status: passing"]}
+{"type": "relation", "from": "test-skill-code-review", "to": "AC-SKILL-01", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test-skill-code-review", "to": "code_file:evals/skills/code-review.json", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "code_file:evals/skills/code-review.json", "entityType": "code_file", "observations": ["scope: buildtime", "path: evals/skills/code-review.json"]}
+{"type": "entity", "name": "test-recipe-review", "entityType": "test", "observations": ["scope: buildtime", "file: evals/recipes/review.json", "status: passing"]}
+{"type": "relation", "from": "test-recipe-review", "to": "AC-RECIPE-01", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test-recipe-review", "to": "code_file:evals/recipes/review.json", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "code_file:evals/recipes/review.json", "entityType": "code_file", "observations": ["scope: buildtime", "path: evals/recipes/review.json"]}
+{"type": "entity", "name": "test-recipe-implement", "entityType": "test", "observations": ["scope: buildtime", "file: evals/recipes/implement.json", "status: passing"]}
+{"type": "relation", "from": "test-recipe-implement", "to": "AC-RECIPE-01", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test-recipe-implement", "to": "code_file:evals/recipes/implement.json", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "code_file:evals/recipes/implement.json", "entityType": "code_file", "observations": ["scope: buildtime", "path: evals/recipes/implement.json"]}
+{"type": "entity", "name": "test-recipe-discover", "entityType": "test", "observations": ["scope: buildtime", "file: evals/recipes/discover.json", "status: passing"]}
+{"type": "relation", "from": "test-recipe-discover", "to": "AC-RECIPE-01", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test-recipe-discover", "to": "code_file:evals/recipes/discover.json", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "code_file:evals/recipes/discover.json", "entityType": "code_file", "observations": ["scope: buildtime", "path: evals/recipes/discover.json"]}
+{"type": "entity", "name": "test-agent-review-critic", "entityType": "test", "observations": ["scope: buildtime", "file: evals/agents/review-critic.json", "status: passing"]}
+{"type": "relation", "from": "test-agent-review-critic", "to": "AC-AGENT-01", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test-agent-review-critic", "to": "code_file:evals/agents/review-critic.json", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "code_file:evals/agents/review-critic.json", "entityType": "code_file", "observations": ["scope: buildtime", "path: evals/agents/review-critic.json"]}
+{"type": "entity", "name": "code_file:.goose/recipes/dev.yaml", "entityType": "code_file", "observations": ["scope: buildtime", "path: .goose/recipes/dev.yaml"]}
+{"type": "relation", "from": "recipe:dev", "to": "code_file:.goose/recipes/dev.yaml", "relationType": "IMPLEMENTED_IN"}
+{"type": "entity", "name": "code_file:.goose/recipes/review.yaml", "entityType": "code_file", "observations": ["scope: buildtime", "path: .goose/recipes/review.yaml"]}
+{"type": "relation", "from": "recipe:review", "to": "code_file:.goose/recipes/review.yaml", "relationType": "IMPLEMENTED_IN"}
+{"type": "entity", "name": "code_file:.goose/recipes/implement.yaml", "entityType": "code_file", "observations": ["scope: buildtime", "path: .goose/recipes/implement.yaml"]}
+{"type": "relation", "from": "recipe:implement", "to": "code_file:.goose/recipes/implement.yaml", "relationType": "IMPLEMENTED_IN"}
+{"type": "entity", "name": "code_file:.goose/recipes/discover.yaml", "entityType": "code_file", "observations": ["scope: buildtime", "path: .goose/recipes/discover.yaml"]}
+{"type": "relation", "from": "recipe:discover", "to": "code_file:.goose/recipes/discover.yaml", "relationType": "IMPLEMENTED_IN"}
+{"type": "entity", "name": "code_file:.goose/recipes/spec.yaml", "entityType": "code_file", "observations": ["scope: buildtime", "path: .goose/recipes/spec.yaml"]}
+{"type": "relation", "from": "recipe:spec", "to": "code_file:.goose/recipes/spec.yaml", "relationType": "IMPLEMENTED_IN"}
+{"type": "entity", "name": "code_file:.agents/skills/sdd/SKILL.md", "entityType": "code_file", "observations": ["scope: buildtime", "path: .agents/skills/sdd/SKILL.md"]}
+{"type": "relation", "from": "skill:sdd", "to": "code_file:.agents/skills/sdd/SKILL.md", "relationType": "IMPLEMENTED_IN"}
+{"type": "entity", "name": "code_file:.agents/skills/knowledge-graph/SKILL.md", "entityType": "code_file", "observations": ["scope: buildtime", "path: .agents/skills/knowledge-graph/SKILL.md"]}
+{"type": "relation", "from": "skill:knowledge-graph", "to": "code_file:.agents/skills/knowledge-graph/SKILL.md", "relationType": "IMPLEMENTED_IN"}
+{"type": "entity", "name": "code_file:scripts/kg-bootstrap.py", "entityType": "code_file", "observations": ["scope: buildtime", "path: scripts/kg-bootstrap.py"]}
+{"type": "relation", "from": "feat-kg-integration", "to": "code_file:scripts/kg-bootstrap.py", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "code_file:scripts/kg-mcp-server.sh", "entityType": "code_file", "observations": ["scope: buildtime", "path: scripts/kg-mcp-server.sh"]}
+{"type": "relation", "from": "feat-kg-integration", "to": "code_file:scripts/kg-mcp-server.sh", "relationType": "IMPLEMENTED_BY"}
