@@ -10,8 +10,8 @@ instructions: |
   tdd-guide, implementation-worker, and review-critic will reference.
 
   ## Load skills first
-  Load skill: `sdd`  — requirement traceability, Spec-Anchored Outcome Rule, auto-sizing.
-  Load skill: `beads-harness`  — Beads epic/story commands.
+  load skills sdd  — requirement traceability, Spec-Anchored Outcome Rule, auto-sizing.
+  load skills beads-harness  — Beads epic/story commands.
 
   ## Spec-Anchored Outcome Rule
   Every AC must state a PRECISE expected outcome:

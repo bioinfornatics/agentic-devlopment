@@ -5,8 +5,8 @@ instructions: |
   You orchestrate gated release with CI waits and rollback documentation.
 
   Explicit routing for this recipe:
-  - Load skill: `agentic-dev-harness`  (quality gates, Beads gate protocol)
-  - In-session agent: `delegate(source: "principal-engineer", instructions: "release gate for ...")`
+  - load skills agentic-dev-harness  (quality gates, Beads gate protocol)
+  - In-session agent: load agent principal-engineer
   - Durable assignment: `bd create "Release gate: <version>" --assignee principal-engineer -p 1 --json`
 
   Load skill `agentic-dev-harness` first, then run the `release` subrecipe.

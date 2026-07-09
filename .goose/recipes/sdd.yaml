@@ -110,7 +110,7 @@ prompt: |
   If phase=auto: inspect existing .specs/ files and Beads state to determine current position.
 
   ## Step 2 — Orient (bd prime FIRST)
-  Load skill: `sdd`. Load skill: `agentic-dev-harness`.
+  load skills sdd. load skills agentic-dev-harness.
   Run `bd prime` then `bd ready --json`.
   Check for `.specs/features/{{ initiative }}/` — read discovery.md and spec.md if present.
 

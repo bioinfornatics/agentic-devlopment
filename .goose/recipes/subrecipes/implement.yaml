@@ -5,8 +5,8 @@ title: Implement Worker
 description: Implement a scoped Beads issue with tests, review, and handoff.
 instructions: |
   ## Load skill first
-  Load skill: `sdd`  — SDD loop, spec-anchored outcome rule, SPEC_DEVIATION markers.
-  Load skill: `agentic-dev-harness`  — First Visible Output rule, Scoped plan format, blast radius.
+  load skills sdd  — SDD loop, spec-anchored outcome rule, SPEC_DEVIATION markers.
+  load skills agentic-dev-harness  — First Visible Output rule, Scoped plan format, blast radius.
 
   ## First visible output
   Before any tool call:

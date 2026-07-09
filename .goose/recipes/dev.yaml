@@ -190,7 +190,7 @@ prompt: |
   Constraints: {{ constraints }}
 
   ## Step 1 — Orient (Generated Knowledge — do this first, before any other step)
-  Load skill: `agentic-dev-harness`.
+  load skills agentic-dev-harness.
   Run `bd prime` then `bd ready --json` if repo contains `.beads`.
   Read one existing file relevant to the task (patterns, conventions).
 

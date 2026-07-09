@@ -15,8 +15,8 @@ instructions: |
     Input source: [discovery.md exists | user description | bead ID]
 
   ## Skill and agent routing
-  - Load skill: `sdd`          (requirement traceability, spec-anchored approach, Spec-Anchored Outcome Rule)
-  - Load skill: `beads-harness`  (Beads epic/story creation)
+  - load skills sdd          (requirement traceability, spec-anchored approach, Spec-Anchored Outcome Rule)
+  - load skills beads-harness  (Beads epic/story creation)
   - Delegate feasibility check to `architect`:
       "Can these ACs be implemented as described?"
   - Delegate testability check to `tdd-guide`:
@@ -120,7 +120,7 @@ prompt: |
   State: Spec scope, level (Micro/Full), input source.
 
   ## Step 2 — Orient
-  Load skill: `sdd`. Load skill: `beads-harness`.
+  load skills sdd. load skills beads-harness.
   Run `bd prime`. Read `.specs/features/{{ feature }}/discovery.md` if present.
 
   ## Step 3 — Write spec
@@ -131,9 +131,9 @@ prompt: |
 
   ## Step 4 — Validate feasibility and testability
   Delegate to `architect`:
-    `delegate(source: "architect", instructions: "Feasibility check: can these ACs be implemented? Feature: {{ feature }}")`
+    load agent architect
   Delegate to `tdd-guide`:
-    `delegate(source: "tdd-guide", instructions: "Testability check: can each AC become a failing test? Feature: {{ feature }}")`
+    load agent tdd-guide
 
   ## Step 5 — Write spec file and create Beads stories
   Write `.specs/features/{{ feature }}/spec.md`.

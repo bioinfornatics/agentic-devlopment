@@ -21,8 +21,8 @@ instructions: |
   | Large/Complex | ambiguous, new domain             | full discovery with personas + journey map + 9-dimension sweep           |
 
   ## Skill and agent routing
-  - Load skill: `sdd`               (auto-sizing, requirement traceability, implicit-req dimensions)
-  - Load skill: `agentic-dev-harness`  (orientation, Beads workflow)
+  - load skills sdd               (auto-sizing, requirement traceability, implicit-req dimensions)
+  - load skills agentic-dev-harness  (orientation, Beads workflow)
   - Delegate to `product-owner`: write user stories + PRD quality gate (>=85/100)
   - For UI features: delegate to `ux-researcher`: personas + user journeys (BEFORE product-owner)
   - Beads: `bd create "<feature>" --issue_type epic -p 2 --json`
@@ -109,7 +109,7 @@ prompt: |
   State your scope declaration (Micro/Small/Medium/Large/Complex) before any tool call.
 
   ## Step 2 — Orient
-  Load skill: `sdd`. Load skill: `agentic-dev-harness`.
+  load skills sdd. load skills agentic-dev-harness.
   Run `bd prime` then `bd ready --json`.
 
   ## Step 3 — Auto-size
@@ -118,9 +118,9 @@ prompt: |
 
   ## Step 4 — Discovery workflow (Medium+)
   - Delegate to `ux-researcher` if this feature has user-facing UI:
-    `delegate(source: "ux-researcher", instructions: "Define personas and user journey for: {{ feature }}")`
+    load agent ux-researcher
   - Delegate to `product-owner`:
-    `delegate(source: "product-owner", instructions: "Write PRD (>=85/100) for: {{ feature }}")`
+    load agent product-owner
   - Run the 9-dimension implicit-requirement sweep.
   - Write `.specs/features/{{ feature }}/discovery.md`.
   - Create Beads epic: `bd create "{{ feature }}" --issue_type epic -p 2 --json`.

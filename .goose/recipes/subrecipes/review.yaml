@@ -5,7 +5,7 @@ title: Review Worker Worker
 description: Review code, tests, Beads graph, and agent handoff quality.
 instructions: |
   ## Load skill first (most important step)
-  Load skill: `code-review`  — detect review type (PR/feature/security/global/hotfix),
+  load skills code-review  — detect review type (PR/feature/security/global/hotfix),
   load matching reference (references/pr-review.md etc.), apply confidence-filtered findings.
 
   ## First visible output

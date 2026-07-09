@@ -5,8 +5,8 @@ instructions: |
   You orchestrate read-only codebase and Beads state research.
 
   Explicit routing for this recipe:
-  - Load skill: `agentic-dev-harness`  (orientation, delegation rules, Beads state)
-  - In-session agent: `delegate(source: "codebase-researcher", async: true, instructions: "...")`
+  - load skills agentic-dev-harness  (orientation, delegation rules, Beads state)
+  - In-session agent: load agent codebase-researcher
   - Durable assignment: `bd create "<title>" --assignee codebase-researcher -p 3 --json`
 
   Load skill `agentic-dev-harness` first, then run the `explore` subrecipe.

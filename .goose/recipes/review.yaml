@@ -5,8 +5,8 @@ instructions: |
   You orchestrate code and Beads handoff review.
 
   Explicit routing for this recipe:
-  - Load skill: `code-review`  (adaptive review: PR / feature / security / global / release / hotfix)
-  - In-session agent: `delegate(source: "review-critic", instructions: "...")`
+  - load skills code-review  (adaptive review: PR / feature / security / global / release / hotfix)
+  - In-session agent: load agent review-critic
   - Durable assignment: `bd create "<title>" --assignee review-critic -p 2 --json`
 
   Load skill `code-review` first — it detects the review type and loads the matching reference.

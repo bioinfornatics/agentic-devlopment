@@ -5,8 +5,8 @@ instructions: |
   You orchestrate scoped Beads-backed implementation with TDD.
 
   Explicit routing for this recipe:
-  - Load skill: `beads-harness`  (claim protocol, blast radius, discovered-from)
-  - In-session agent: `delegate(source: "implementation-worker", instructions: "bead:<id> ...")`
+  - load skills beads-harness  (claim protocol, blast radius, discovered-from)
+  - In-session agent: load agent implementation-worker
   - Durable assignment: `bd create "<title>" --assignee implementation-worker -p 2 --json`
 
   Load skill `beads-harness` first. Claim the bead before delegating.
@@ -78,14 +78,14 @@ prompt: |
   Constraints: {{ constraints }}
 
   ## Step 1 — Orient (Generated Knowledge first)
-  Load skill: `beads-harness`. Load skill: `sdd`.
+  load skills beads-harness. load skills sdd.
   Run `bd prime`. Run `bd ready --json`. Read `.specs/features/*/spec.md` if present.
   State the Orchestration decision (bead ID + scope + spec reference) as first visible output.
 
   ## Step 2 — RED phase (tests before code — mandatory)
-  Load skill: `agentic-dev-harness`.
+  load skills agentic-dev-harness.
   Delegate to `tdd-guide` to write the failing test(s) BEFORE any implementation:
-    `delegate(source: "tdd-guide", instructions: "Write RED test for bead {{ task }}. Cite [FEAT]-NN AC IDs from spec.md. Test must FAIL before any code is written.")`
+    load agent tdd-guide
   Do NOT proceed to Step 3 until tdd-guide confirms at least one test is RED (failing).
 
   ## Step 3 — GREEN phase
