@@ -4,7 +4,7 @@ version: 1.0.0
 title: Explore Worker
 description: Read-only codebase investigation — code structure, docs, Beads state, risks, blast radius.
 instructions: |
-  ## Load skill first
+  ## Load skills first
   load skills agentic-dev-harness  — orientation, read-only research protocol, blast radius.
 
   ## First visible output

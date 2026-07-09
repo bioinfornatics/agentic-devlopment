@@ -4,7 +4,7 @@ version: 1.0.0
 title: Review Worker
 description: Review code, tests, Beads graph, and agent handoff quality.
 instructions: |
-  ## Load skill first (most important step)
+  ## Load skills first (most important step)
   load skills code-review  — detect review type (PR/feature/security/global/hotfix),
   load matching reference (references/pr-review.md etc.), apply confidence-filtered findings.
 
