@@ -330,3 +330,27 @@
 {"type": "entity", "name": ".specs/features/beads-workflow/spec.md", "entityType": "spec_file", "observations": ["scope:buildtime", "path: .specs/features/beads-workflow/spec.md", "status:retro-spec"]}
 {"type": "relation", "from": "feat-beads-workflow", "to": ".specs/features/beads-workflow/spec.md", "relationType": "LOCATED_IN"}
 {"type": "relation", "from": "AC-BEADS-01", "to": ".specs/features/beads-workflow/spec.md", "relationType": "LOCATED_IN"}
+{"type":"entity","name":"doc:AGENTS.md","entityType":"harness:doc","observations":["file:docs/AGENTS.md","scope:buildtime","namespace:harness"]}
+{"type": "relation", "from": "AC-KG-01", "to": ".specs/features/kg-integration/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "AC-KG-02", "to": ".specs/features/kg-integration/spec.md", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": ".specs/features/harness-core/discovery.md", "entityType": "spec_file", "observations": ["path:.specs/features/harness-core/discovery.md", "scope:buildtime", "status:active"]}
+{"type": "relation", "from": "feat-recipe-ecosystem", "to": ".specs/features/harness-core/discovery.md", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "test:recipe-fvo-eval", "entityType": "test", "observations": ["scope:buildtime", "file:evals/recipes/dev.json", "status:planned"]}
+{"type": "relation", "from": "test:recipe-fvo-eval", "to": "AC-RECIPE-02", "relationType": "VALIDATES"}
+{"type": "entity", "name": "code_file:evals/recipes/dev.json", "entityType": "code_file", "observations": ["path:evals/recipes/dev.json", "scope:buildtime"]}
+{"type": "relation", "from": "test:recipe-fvo-eval", "to": "code_file:evals/recipes/dev.json", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "test:skill-checklist-eval", "entityType": "test", "observations": ["scope:buildtime", "file:apps/kg/src/reason.test.ts", "status:planned"]}
+{"type": "relation", "from": "test:skill-checklist-eval", "to": "AC-SKILL-02", "relationType": "VALIDATES"}
+{"type": "entity", "name": "code_file:apps/kg/src/reason.test.ts", "entityType": "code_file", "observations": ["path:apps/kg/src/reason.test.ts", "scope:buildtime"]}
+{"type": "relation", "from": "test:skill-checklist-eval", "to": "code_file:apps/kg/src/reason.test.ts", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "test:eval-coverage-check", "entityType": "test", "observations": ["scope:buildtime", "file:evals/", "status:planned"]}
+{"type": "relation", "from": "test:eval-coverage-check", "to": "AC-EVAL-01", "relationType": "VALIDATES"}
+{"type": "entity", "name": "code_file:evals/", "entityType": "code_file", "observations": ["path:evals/", "scope:buildtime"]}
+{"type": "relation", "from": "test:eval-coverage-check", "to": "code_file:evals/", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "test:kg-pipeline-e2e", "entityType": "test", "observations": ["scope:buildtime", "file:apps/kg/src/reason.test.ts", "status:planned"]}
+{"type": "relation", "from": "test:kg-pipeline-e2e", "to": "AC-KG-01", "relationType": "VALIDATES"}
+{"type": "relation", "from": "test:kg-pipeline-e2e", "to": "code_file:apps/kg/src/reason.test.ts", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": "test:beads-prime-check", "entityType": "test", "observations": ["scope:buildtime", "file:.beads/issues.jsonl", "status:planned"]}
+{"type": "relation", "from": "test:beads-prime-check", "to": "AC-BEADS-01", "relationType": "VALIDATES"}
+{"type": "entity", "name": "code_file:.beads/issues.jsonl", "entityType": "code_file", "observations": ["path:.beads/issues.jsonl", "scope:buildtime"]}
+{"type": "relation", "from": "test:beads-prime-check", "to": "code_file:.beads/issues.jsonl", "relationType": "LOCATED_IN"}

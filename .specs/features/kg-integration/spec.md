@@ -41,3 +41,12 @@ THEN dist/kg/index.html opens with entity+relation graph
 
 - No OWL/SPARQL full reasoning (forward chaining rules R1-R6 only)
 - No multi-user KG synchronization
+### AC-KG-01 — Extension activation (corrected location)
+WHEN goose starts in a project with .knowledge/
+AND knowledgegraphmemory is enabled in config.yaml
+THEN create_entities, search_nodes, open_nodes tools are available in the session
+
+### AC-KG-02 — Subrecipe KG checkpoint
+WHEN implement/spec/review/discover subrecipes complete a phase
+THEN KG entities are created via MCP create_entities
+AND relations (IMPLEMENTED_BY, HAS_CRITERION, etc.) are stored in memory.jsonl
