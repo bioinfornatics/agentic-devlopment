@@ -115,6 +115,12 @@ migration           buildtime   script de migration
 test                buildtime   code de test (unit/integration/e2e)
 test_result         build+run   résultat capturé (artefact de CI)
 
+── Fichiers physiques (ancre dans la base de code) ──
+code_file           buildtime   fichier source (src/…, tests/…, scripts/…)
+spec_file           buildtime   .specs/features/*/spec.md
+config_file         buildtime   fichier de configuration (docker-compose.yml…)
+doc_file            buildtime   fichier de documentation (docs/…, README.md)
+
 ── Documentation produit ──
 doc_product         buildtime   README feature, guide utilisateur
 ```
@@ -177,6 +183,26 @@ doc_product       DOCUMENTS           api_endpoint
 test              COVERS              acceptance_criterion ← avec [FEAT]-NN ID
 ```
 
+### Relations Fichiers physiques — fermeture de chaîne
+```
+component         IMPLEMENTED_IN      code_file           ← src/components/auth/LoginButton.tsx
+api_endpoint      IMPLEMENTED_IN      code_file           ← src/api/routes/auth.py
+domain_service    IMPLEMENTED_IN      code_file           ← src/services/oauth_service.py
+repository        IMPLEMENTED_IN      code_file           ← src/repositories/user_repo.py
+data_model        DEFINED_IN          code_file           ← src/models/user.py
+schema            DEFINED_IN          config_file         ← db/migrations/001_users.sql
+test              LOCATED_IN          code_file           ← tests/auth/test_auth_01.py
+spec              LOCATED_IN          spec_file           ← .specs/features/auth/spec.md
+user_story        TRACED_IN           spec_file           ← même spec.md que la feature
+decision          LOCATED_IN          doc_file            ← docs/adr/ADR-001-auth.md
+doc_product       LOCATED_IN          doc_file            ← docs/features/auth.md
+```
+
+**Règle de fermeture de chaîne :**
+Tout entity buildtime avec du code ou un fichier DOIT avoir une relation `IMPLEMENTED_IN` /
+`LOCATED_IN` / `DEFINED_IN` vers un `code_file` ou `doc_file`.
+Une entité sans cette relation est incomplète — l'agent ne peut pas l'ouvrir/modifier.
+
 ### Relations Buildtime/Runtime boundary
 ```
 test              EXERCISES           api_endpoint        ← test d'intégration
@@ -211,11 +237,13 @@ epic → DECOMPOSES_INTO → feature
 
 ### Pattern 2 : Du code à la valeur (bottom-up)
 ```
-component → IMPLEMENTS → user_story
-  → REFINED_INTO → feature (parent)
-    → DECOMPOSES_INTO → epic (intent)
+code_file:src/components/auth/LoginButton.tsx
+  ← IMPLEMENTED_IN ← component:LoginButton        ← fichier → entité
+    → IMPLEMENTS → user_story:login-oauth-flow
+      → REFINED_INTO → feature:login-oauth
+        → DECOMPOSES_INTO → epic:authentification
 ```
-**Usage :** "Quel besoin métier ce composant sert-il ?"
+**Usage :** "Quel besoin métier ce fichier sert-il ?" — actionnable depuis un git blame ou un PR.
 
 ### Pattern 3 : Gap analysis (coverage)
 ```
@@ -229,15 +257,22 @@ search(type=component, subtype=Atom)
   → filter: EXTENDS = ∅  # atoms non réutilisés
 ```
 
-### Pattern 4 : Impact d'un changement
+### Pattern 4 : Impact d'un changement (avec résolution fichiers)
 ```
-# "Qui est impacté si data_model:User change ?"
+# "Quels fichiers dois-je modifier si data_model:User change ?"
 open_nodes(["User"]) → toutes les relations sortantes
   → repository:UserRepository (MAPS_TO)
+      → IMPLEMENTED_IN → code_file:src/repositories/user_repo.py  ← éditer
   → api_endpoint:GET/users (RETURNS)
+      → IMPLEMENTED_IN → code_file:src/api/routes/users.py        ← éditer
   → component:UserCard (USES)
+      → IMPLEMENTED_IN → code_file:src/components/UserCard.tsx     ← éditer
   → test:test_user_schema (VALIDATES)
+      → LOCATED_IN → code_file:tests/models/test_user.py           ← mettre à jour
+  → schema:users_table (DEFINED_IN)
+      → config_file:db/migrations/001_users.sql                    ← nouvelle migration
 ```
+**Résultat :** liste de fichiers concrets à modifier — pas seulement les concepts.
 
 ### Pattern 5 : Traçabilité buildtime → runtime
 ```
@@ -281,6 +316,9 @@ R5. component MUST specify: atomic_level=Atom|Molecule|Organism|Template|Page
 R6. decision MUST have observations: context, decision, consequences, status
 R7. spec entity name MUST match path .specs/features/*/spec.md
 R8. runtime entities (log, session, HTTP response) MUST NOT be in product KG
+R9. Every buildtime entity with code/file MUST have IMPLEMENTED_IN | LOCATED_IN | DEFINED_IN
+    pointing to a code_file, spec_file, config_file, or doc_file
+R10. code_file.name MUST be the relative path from repo root (src/…, tests/…, docs/…)
 ```
 
 ### Règles de naming
@@ -453,7 +491,9 @@ Visualisé   memory-visualizer       ← https://memviz.herich.tech
 
 ## Phase implement → KG
 - [ ] create_entity(component|api_endpoint|domain_service...)
+- [ ] create_entity(code_file, "src/path/to/file.ext")           ← NOUVEAU
 - [ ] create_relation(component IMPLEMENTS user_story)
+- [ ] create_relation(component IMPLEMENTED_IN code_file)         ← FERMETURE DE CHAÎNE
 - [ ] add_observation(component, "atomic_level: Atom|Molecule...")
 - [ ] add_observation(component, "scope: buildtime, layer: frontend")
 
@@ -471,6 +511,14 @@ Visualisé   memory-visualizer       ← https://memviz.herich.tech
 ```
 implementation-worker avant de coder :
   search_nodes("[FEAT]-NN") → voir le contexte complet (story, spec, test RED)
+  → ouvrir les code_file liés pour patterns existants (IMPLEMENTED_IN)
+
+review-critic sur un diff :
+  open_nodes(["code_file:src/components/LoginButton.tsx"])
+  → component:LoginButton (via IMPLEMENTED_IN)
+    → IMPLEMENTS user_story
+      → HAS_CRITERION [FEAT]-NN
+        → ANCHORS test → vérifier que le test COVERS cet AC
 
 review-critic avant de reviewer :
   search_nodes("feature:login-oauth") → voir tous les ACs + tests attendus
