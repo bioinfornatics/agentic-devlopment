@@ -25,7 +25,7 @@ Description des agents Goose et recettes qui interagissent avec ce toolkit.
 # ~/.config/goose/config.yaml
 knowledgegraphmemory:
   enabled: true
-  cmd: /path/to/scripts/kg-mcp-server.sh   # wrapper per-project
+  cmd: npx   # wrapper per-project
   # OU directement:
   cmd: npx
   args: [-y, "@modelcontextprotocol/server-memory"]

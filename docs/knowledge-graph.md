@@ -669,4 +669,4 @@ Avantage: fenêtre Goose native, pas de browser externe, possible accès aux too
 
 ### MEMORY_FILE_PATH — optionnel mais obligatoire en pratique
 Sans MEMORY_FILE_PATH → fallback vers ~/.npm/_npx/.../server-memory/dist/memory.jsonl (partagé).
-Notre wrapper scripts/kg-mcp-server.sh détecte automatiquement le .knowledge/ du projet courant.
+Notre wrapper ~/.config/goose/config.yaml (knowledgegraphmemory) détecte automatiquement le .knowledge/ du projet courant.
