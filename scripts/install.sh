@@ -134,11 +134,11 @@ managed = [
     ("plan", "plan.yaml"),
     ("implement", "implement.yaml"),
     ("review", "review.yaml"),
-    ("webtest", "verify.yaml"),
+    ("verify", "verify.yaml"),
     ("release", "release.yaml"),
-    ("memory", "remember.yaml"),
+    ("remember", "remember.yaml"),
     ("sdd", "sdd.yaml"),
-    ("uiux", "design.yaml"),
+    ("design", "design.yaml"),
 ]
 managed_names = {name.lower() for name, _ in managed}
 
