@@ -324,10 +324,10 @@
       }
     },
     {
-      "label": "KG: Open Memory Visualizer (memviz.herich.tech)",
-      "detail": "Copy .knowledge/memory.jsonl to clipboard then open memviz in browser",
+      "label": "KG: Open Local Visualizer (D3.js)",
+      "detail": "Open standalone KG visualizer (D3.js force graph, no server needed). Drag .knowledge/memory.jsonl to explore.",
       "type": "shell",
-      "command": "xclip -sel clip < .knowledge/memory.jsonl 2>/dev/null || xsel --clipboard --input < .knowledge/memory.jsonl 2>/dev/null || cat .knowledge/memory.jsonl | pbcopy 2>/dev/null; xdg-open https://memviz.herich.tech",
+      "command": "xdg-open dist/kg/index.html || open dist/kg/index.html",
       "problemMatcher": [],
       "presentation": {
         "reveal": "silent",
@@ -343,6 +343,16 @@
       "presentation": {
         "reveal": "always",
         "panel": "shared"
+      }
+    },
+    {
+      "label": "KG: Open Online Visualizer (memviz.herich.tech)",
+      "detail": "Copy .knowledge/memory.jsonl path, then open memviz.herich.tech and drag the file",
+      "type": "shell",
+      "command": "xdg-open https://memviz.herich.tech",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "never"
       }
     }
   ]
