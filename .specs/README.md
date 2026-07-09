@@ -54,4 +54,4 @@ SOTA research → see `docs/sota/` (knowledge, not specification).
 | Tâches, planning, suivi | Beads (`bd create --issue_type task`) |
 | Spec, design, contrats, décisions | .specs/ |
 
-Jamais de `tasks.md` ou `plan.md` dans `.specs/` — utiliser `bd create`.
+Never create `tasks.md` or `plan.md` in `.specs/` — use `bd create` instead.

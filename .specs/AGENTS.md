@@ -4,38 +4,38 @@
 
 ## Beads vs .specs/
 
-Beads (bd) gère: épics, user stories, tasks, bugs, incidents, dépendances, priorités, AC.
-.specs/ gère: specification (QUOI), design (COMMENT), contrats, décisions, vision.
+Beads (bd) handles: epics, user stories, tasks, bugs, incidents, dependencies, priorities, ACs.
+.specs/ handles: specification (WHAT), design (HOW), contracts, decisions, vision.
 
-**Ne jamais créer tasks.md dans .specs/ — utiliser bd create à la place.**
+**Never create tasks.md in .specs/ — use `bd create` instead.**
 
 ## Spec format
 
-Every spec file lives at `.specs/features/[feature-slug]/spec.md`.
+Every spec lives at `.specs/features/[feature-slug]/spec.md`.
 
 ```markdown
 # Spec: [Feature Name]
 
 > Status: Active | Retro-spec (brownfield) | Deprecated
 > Created: YYYY-MM-DD
-> Scope: feat-[name], feat-[name2]
+> Scope: feat-[name]
 
 ## Context
-[2-3 sentences explaining the feature and why it exists]
+[2-3 sentences: what this feature is and why it exists]
 
 ## Acceptance Criteria
 
 ### [AC-ID] — [Short title]
 WHEN [trigger condition]
 THEN [expected outcome]
-AND [additional constraint]   # optional
+AND  [additional constraint]   # optional
 ```
 
 ## ID format
 
-- Use `[FEAT]-NN` where FEAT is a 2-6 char uppercase abbreviation: `KG-01`, `AC-RECIPE-02`, `EVAL-01`
+- Format: `[FEAT]-NN` — e.g. `KG-01`, `AC-RECIPE-02`, `EVAL-01`
 - IDs must be unique across all specs in this project
-- Reference IDs in tests, Beads acceptance criteria, and KG entities
+- Reference IDs in tests, Beads ACs, and KG entities
 
 ## After writing or updating a spec
 
@@ -43,8 +43,7 @@ AND [additional constraint]   # optional
 # 1. Update KG with new spec_file and AC entities
 node apps/kg/dist/cli.js pipeline
 
-# 2. Check that ACs are now LOCATED_IN this spec_file in the KG
-# 3. Store Beads pointer memory
+# 2. Store Beads pointer memory
 bd remember "Spec for [feature]: canonical source is .specs/features/[feature]/spec.md; read when implementing [feature]; invariant: ACs define done, not task descriptions" --key spec-[feature]-pointer
 ```
 
@@ -52,11 +51,12 @@ bd remember "Spec for [feature]: canonical source is .specs/features/[feature]/s
 
 When documenting existing code without a prior spec:
 1. Mark `Status: Retro-spec (brownfield)`
-2. Extract ACs from the current behavior (not intended behavior)
-3. Create evals that verify each AC (close R1 gaps in KG)
+2. Extract ACs from current behaviour (not intended behaviour)
+3. Create evals that verify each AC (closes R1 gaps in KG)
 
 ## What to avoid
 
 - Aspirational ACs ("the system should be fast") — must be measurable
 - ACs without IDs — every criterion needs a `[FEAT]-NN` identifier
-- Implementation details in ACs — spec behavior, not mechanism
+- Implementation details in ACs — spec behaviour, not mechanism
+- tasks.md or plan.md files — use Beads instead
