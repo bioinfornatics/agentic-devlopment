@@ -48,3 +48,23 @@ Ouvrir `dist/kg/index.html` directement (D3.js standalone) :
 xdg-open dist/kg/index.html
 # Glisser .knowledge/memory.jsonl dans la page
 ```
+## Activer via l'extension apps builtin
+
+En plus du MCP server, l'extension `apps` builtin (Goose 1.37) est activée :
+
+```yaml
+# ~/.config/goose/config.yaml
+extensions:
+  apps:
+    enabled: true   # ← Goose builtin app creator + renderer
+  kg-visualizer:
+    enabled: true   # ← Notre MCP server
+    cmd: node
+    args: [/abs/path/apps/kg-visualizer/dist/server.js]
+```
+
+Dans une session Goose :
+```
+Show me the knowledge graph    # → invoque show_kg_visualizer (MCP)
+Create an app from apps/kg-visualizer-app/app.html   # → apps builtin
+```

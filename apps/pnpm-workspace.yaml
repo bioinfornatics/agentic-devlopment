@@ -1,3 +1,4 @@
 packages:
   - "kg"
   - "kg-visualizer"
+  - "kg-visualizer-app"
