@@ -88,14 +88,14 @@ Loop Engineering = replacing yourself as the prompter
 ```
 
 ### The Six Primitives
-| # | Primitive | Our harness equivalent |
-|---|---|---|
-| 1 | Scheduling / Automations | bd gate, GitHub Actions pages.yml |
-| 2 | Worktrees | eval worktrees (dist/evals/skills/*/worktree/) |
-| 3 | Skills | .agents/skills/*/SKILL.md |
-| 4 | Plugins / MCP | uvx beads-mcp, Playwright MCP, developer extension |
-| 5 | Sub-agents (Maker/Checker) | delegate() → implementation-worker → review-critic |
-| 6 | Memory / State | evaluation.db, evals/history/runs.json, .beads/issues.jsonl |
+| # | Primitive                  | Our harness equivalent                                      |
+|---|----------------------------|-------------------------------------------------------------|
+| 1 | Scheduling / Automations   | bd gate, GitHub Actions pages.yml                           |
+| 2 | Worktrees                  | eval worktrees (dist/evals/skills/*/worktree/)              |
+| 3 | Skills                     | .agents/skills/*/SKILL.md                                   |
+| 4 | Plugins / MCP              | uvx beads-mcp, Playwright MCP, developer extension          |
+| 5 | Sub-agents (Maker/Checker) | delegate() → implementation-worker → review-critic          |
+| 6 | Memory / State             | evaluation.db, evals/history/runs.json, .beads/issues.jsonl |
 
 ### Maker/Checker Split — most important pattern
 **Rule:** The agent that implemented cannot grade its own work.
@@ -108,33 +108,33 @@ Loop Engineering = replacing yourself as the prompter
 **Anti-pattern:** Our eval grader failing (invalid JSON) caused the implementer's work to be auto-scored as 0. Fix: heuristic fallback grader — separate simple checker when LLM grader fails.
 
 ### Readiness Levels
-| Level | Description | Our eval equivalent |
-|---|---|---|
-| L0 | Intent only | Scenario definition exists |
-| L1 | Report-only | Grader outputs findings, no skill change |
-| L2 | Assisted | Skill updated based on findings, re-run verifies |
-| L3 | Unattended | Full suite runs CI, auto-fixes skill issues |
+| Level | Description | Our eval equivalent                              |
+|-------|-------------|--------------------------------------------------|
+| L0    | Intent only | Scenario definition exists                       |
+| L1    | Report-only | Grader outputs findings, no skill change         |
+| L2    | Assisted    | Skill updated based on findings, re-run verifies |
+| L3    | Unattended  | Full suite runs CI, auto-fixes skill issues      |
 
 **We operate at L2.** L3 would require: CI running evals → auto-patching skills → human review gate.
 
 ### Anti-Patterns Mapped to Harness
-| Loop anti-pattern | Harness manifestation | Fix applied |
-|---|---|---|
-| Same agent implements + verifies | Agent writes AND grades its own output | Separate grader LLM + heuristic fallback |
-| No attempt cap | 200-turn run loops on truncated output | max_turns reduced to 40/60 |
-| Vague triage output | Skill instructions prose-only → agent improvises format | Verbatim templates added |
-| L3 before L1 quality | Auto-running evals before skill gotchas existed | Always add L1 gotchas before re-running |
-| Shared state without schema | eval_analysis DB without scenario_hash | scenario_hash column added |
-| No kill switch | Max_turns=200 with no early-exit rule | Compact turn budget + self-validation checkpoints |
+| Loop anti-pattern                | Harness manifestation                                   | Fix applied                                       |
+|----------------------------------|---------------------------------------------------------|---------------------------------------------------|
+| Same agent implements + verifies | Agent writes AND grades its own output                  | Separate grader LLM + heuristic fallback          |
+| No attempt cap                   | 200-turn run loops on truncated output                  | max_turns reduced to 40/60                        |
+| Vague triage output              | Skill instructions prose-only → agent improvises format | Verbatim templates added                          |
+| L3 before L1 quality             | Auto-running evals before skill gotchas existed         | Always add L1 gotchas before re-running           |
+| Shared state without schema      | eval_analysis DB without scenario_hash                  | scenario_hash column added                        |
+| No kill switch                   | Max_turns=200 with no early-exit rule                   | Compact turn budget + self-validation checkpoints |
 
 ### Failure Modes Applied
-| Failure mode | Severity | Our occurrence | Mitigation applied |
-|---|---|---|---|
-| Verifier Theater | S2 | Grader returned invalid JSON → 0% score | Heuristic fallback grader |
-| State Rot | S1→S2 | Old efficiency data in DB from 150-turn runs | scenario_hash + run date filtering |
-| Infinite Fix Loop | S2 | 200-turn with skill agent thrashing | max_turns 200→40/60 |
-| Escalation Failure | S2 | Negative delta not surfaced in time | quality gate --negative-delta-gate |
-| Comprehension Debt | S2 | "read before" vs "read when" went unnoticed | Reflexion: gotcha added after failure |
+| Failure mode       | Severity | Our occurrence                               | Mitigation applied                    |
+|--------------------|----------|----------------------------------------------|---------------------------------------|
+| Verifier Theater   | S2       | Grader returned invalid JSON → 0% score      | Heuristic fallback grader             |
+| State Rot          | S1→S2    | Old efficiency data in DB from 150-turn runs | scenario_hash + run date filtering    |
+| Infinite Fix Loop  | S2       | 200-turn with skill agent thrashing          | max_turns 200→40/60                   |
+| Escalation Failure | S2       | Negative delta not surfaced in time          | quality gate --negative-delta-gate    |
+| Comprehension Debt | S2       | "read before" vs "read when" went unnoticed  | Reflexion: gotcha added after failure |
 
 ### Loop Design Checklist — Applied to Our Eval Loop
 - [x] Single clear goal: measure skill vs baseline delta per scenario
@@ -238,50 +238,50 @@ Orchestration decision:
 
 ### Skills Inventory (8 skills, 2273 lines total)
 
-| Skill | Lines | Progressive Disclosure | Gotchas | Validation Loop | Templates |
-|---|---|---|---|---|---|
-| `agentic-dev-harness` | 97 | ❌ no refs | ✅ added Jul 2026 | ✅ added Jul 2026 | ⚠️ partial |
-| `beads-harness` | 195 | ⚠️ ## Planning | ✅ added Jul 2026 | ✅ added Jul 2026 | ✅ verbatim example |
-| `code-review` | 129 SKILL + 6 refs | ✅ type-dispatch refs | ✅ false-positives | ✅ finding loop | ✅ output template |
-| `goose-orchestration` | 336 | ❌ no refs | ✅ added Jul 2026 | ✅ added Jul 2026 | ✅ verbatim blocks |
-| `sdd` | 49 | ❌ no refs | ❌ | ❌ | ❌ |
-| `systematic-debugging` | 296 + refs | ✅ 5 ref files | ❌ | ❌ | ❌ |
-| `ux-quality` | 28 | ❌ | ❌ | ❌ | ❌ |
-| `webapp-testing` | 69 | ❌ | ✅ (no sudo) | ✅ server lifecycle | ✅ evidence labeling |
+| Skill                  | Lines              | Progressive Disclosure | Gotchas           | Validation Loop    | Templates           |
+|------------------------|--------------------|------------------------|-------------------|--------------------|---------------------|
+| `agentic-dev-harness`  | 97                 | ❌ no refs              | ✅ added Jul 2026  | ✅ added Jul 2026   | ⚠️ partial          |
+| `beads-harness`        | 195                | ⚠️ ## Planning         | ✅ added Jul 2026  | ✅ added Jul 2026   | ✅ verbatim example  |
+| `code-review`          | 129 SKILL + 6 refs | ✅ type-dispatch refs   | ✅ false-positives | ✅ finding loop     | ✅ output template   |
+| `goose-orchestration`  | 336                | ❌ no refs              | ✅ added Jul 2026  | ✅ added Jul 2026   | ✅ verbatim blocks   |
+| `sdd`                  | 49                 | ❌ no refs              | ❌                 | ❌                  | ❌                   |
+| `systematic-debugging` | 296 + refs         | ✅ 5 ref files          | ❌                 | ❌                  | ❌                   |
+| `ux-quality`           | 28                 | ❌                      | ❌                 | ❌                  | ❌                   |
+| `webapp-testing`       | 69                 | ❌                      | ✅ (no sudo)       | ✅ server lifecycle | ✅ evidence labeling |
 
 **Gaps:** sdd, ux-quality need gotchas + validation loops.
 
 ### Agent Inventory (11 agents)
 
-| Agent | Model | Operating Process (CoT) | Checklist use | Output template |
-|---|---|---|---|---|
-| `harness-orchestrator` | opus-4-5 | ✅ 4 phases | ✅ pre-delegation | ✅ decision block |
-| `implementation-worker` | sonnet-4-5 | ✅ TDD cycle | ✅ 5-item handoff | ✅ handoff format |
-| `review-critic` | sonnet-4-5 | ✅ 7-step checklist | ✅ pre-report gate | ✅ verdict format |
-| `architect` | opus-4-5 | ✅ 4-phase | ❌ | ✅ ADR + trade-off |
-| `product-owner` | opus-4-5 | ✅ PRD rubric | ✅ 100pt gate | ✅ PRD template |
-| `beads-planner` | sonnet-4-5 | ✅ bd commands | ❌ | ⚠️ |
-| `codebase-researcher` | sonnet-4-5 | ✅ 4-phase | ❌ | ✅ JSON schema |
-| `principal-engineer` | opus-4-5 | ✅ blast radius | ❌ | ✅ breaking-change |
-| `tdd-guide` | sonnet-4-5 | ✅ RED→GREEN | ✅ edge cases | ⚠️ |
-| `qa-automation` | sonnet-4-5 | ✅ pyramid | ❌ | ⚠️ |
-| `ux-researcher` | sonnet-4-5 | ✅ research process | ❌ | ⚠️ |
-| `ui-designer`   | sonnet-4-5 | ✅ 8-dimension a11y | ❌ | ⚠️ |
+| Agent                   | Model      | Operating Process (CoT) | Checklist use     | Output template   |
+|-------------------------|------------|-------------------------|-------------------|-------------------|
+| `harness-orchestrator`  | opus-4-5   | ✅ 4 phases              | ✅ pre-delegation  | ✅ decision block  |
+| `implementation-worker` | sonnet-4-5 | ✅ TDD cycle             | ✅ 5-item handoff  | ✅ handoff format  |
+| `review-critic`         | sonnet-4-5 | ✅ 7-step checklist      | ✅ pre-report gate | ✅ verdict format  |
+| `architect`             | opus-4-5   | ✅ 4-phase               | ❌                 | ✅ ADR + trade-off |
+| `product-owner`         | opus-4-5   | ✅ PRD rubric            | ✅ 100pt gate      | ✅ PRD template    |
+| `beads-planner`         | sonnet-4-5 | ✅ bd commands           | ❌                 | ⚠️                |
+| `codebase-researcher`   | sonnet-4-5 | ✅ 4-phase               | ❌                 | ✅ JSON schema     |
+| `principal-engineer`    | opus-4-5   | ✅ blast radius          | ❌                 | ✅ breaking-change |
+| `tdd-guide`             | sonnet-4-5 | ✅ RED→GREEN             | ✅ edge cases      | ⚠️                |
+| `qa-automation`         | sonnet-4-5 | ✅ pyramid               | ❌                 | ⚠️                |
+| `ux-researcher`         | sonnet-4-5 | ✅ research process      | ❌                 | ⚠️                |
+| `ui-designer`           | sonnet-4-5 | ✅ 8-dimension a11y      | ❌                 | ⚠️                |
 
 ### Recipe Inventory (16 recipes = 10 top-level + 6 subrecipes)
 
-| Recipe | Explicit skill load | Agent delegation | Beads assignee | Subrecipe |
-|---|---|---|---|---|
-| harness-master | ✅ routing table | ✅ 11 agents | ✅ all agents | ✅ via sub_recipes |
-| harness-review | ✅ code-review | ✅ review-critic | ✅ | ✅ harness_review |
-| harness-implement | ✅ beads-harness | ✅ implementation-worker | ✅ | ✅ harness_implement |
-| harness-plan | ✅ beads-harness | ✅ beads-planner | ✅ | ✅ harness_plan |
-| harness-research | ✅ agentic-dev-harness | ✅ codebase-researcher | ✅ | ✅ harness_research |
-| sdd-master | ✅ 7-phase table | ✅ per phase | ✅ per phase | ❌ no subrecipe |
-| harness-memory | ✅ beads-harness | ❌ direct ops | ❌ | ✅ |
-| harness-release | ✅ agentic-dev-harness | ✅ principal-engineer | ✅ | ✅ |
-| harness-web-test | ✅ webapp-testing | ✅ ux-researcher + ui-designer | ✅ | ✅ |
-| ui-ux-suite      | ✅ ux-quality | ✅ ux-researcher → ui-designer  | ✅ | ❌ no subrecipe |
+| Recipe            | Explicit skill load   | Agent delegation              | Beads assignee | Subrecipe           |
+|-------------------|-----------------------|-------------------------------|----------------|---------------------|
+| harness-master    | ✅ routing table       | ✅ 11 agents                   | ✅ all agents   | ✅ via sub_recipes   |
+| harness-review    | ✅ code-review         | ✅ review-critic               | ✅              | ✅ harness_review    |
+| harness-implement | ✅ beads-harness       | ✅ implementation-worker       | ✅              | ✅ harness_implement |
+| harness-plan      | ✅ beads-harness       | ✅ beads-planner               | ✅              | ✅ harness_plan      |
+| harness-research  | ✅ agentic-dev-harness | ✅ codebase-researcher         | ✅              | ✅ harness_research  |
+| sdd-master        | ✅ 7-phase table       | ✅ per phase                   | ✅ per phase    | ❌ no subrecipe      |
+| harness-memory    | ✅ beads-harness       | ❌ direct ops                  | ❌              | ✅                   |
+| harness-release   | ✅ agentic-dev-harness | ✅ principal-engineer          | ✅              | ✅                   |
+| harness-web-test  | ✅ webapp-testing      | ✅ ux-researcher + ui-designer | ✅              | ✅                   |
+| ui-ux-suite       | ✅ ux-quality          | ✅ ux-researcher → ui-designer | ✅              | ❌ no subrecipe      |
 
 ---
 
@@ -305,22 +305,22 @@ Orchestration decision:
 
 ## 7. Techniques Applied in Our Harness (Summary)
 
-| Technique | Source | Where applied |
-|---|---|---|
-| Chain-of-Thought | Wei 2022 | Numbered Operating Process in every agent |
-| Zero-shot CoT | Kojima 2022 | "Think step by step" implicit in phase headers |
-| ReAct | Yao 2022 | Self-validation loops (Thought→Action→Observe) |
-| Reflexion | Shinn 2023 | Gotchas section = crystallized self-reflection memory |
-| Prompt Chaining | — | recipe → subrecipe → agent delegation chain |
-| Context Engineering | n8n/pg | Required explicit completion statements, compact turns |
-| Progressive Disclosure | AgentSkills | references/ per review type in code-review skill |
-| Templates > Prose | AgentSkills | Verbatim Orchestration decision: + Delegation audit: |
-| Gotchas | AgentSkills | "read when" not "read before", lowercase d colon |
-| Validation Loops | AgentSkills | Pre-write + post-handoff checklists |
-| Maker/Checker Split | Loop Eng | implementation-worker ≠ review-critic ≠ grader |
-| State/Memory | Loop Eng | evaluation.db + runs.json + .beads/issues.jsonl |
-| Attempt Cap | Loop Eng | max_turns 40/60 per scenario |
-| Denylist | Loop Eng | adversary.md blocks sudo/escalation |
+| Technique              | Source      | Where applied                                          |
+|------------------------|-------------|--------------------------------------------------------|
+| Chain-of-Thought       | Wei 2022    | Numbered Operating Process in every agent              |
+| Zero-shot CoT          | Kojima 2022 | "Think step by step" implicit in phase headers         |
+| ReAct                  | Yao 2022    | Self-validation loops (Thought→Action→Observe)         |
+| Reflexion              | Shinn 2023  | Gotchas section = crystallized self-reflection memory  |
+| Prompt Chaining        | —           | recipe → subrecipe → agent delegation chain            |
+| Context Engineering    | n8n/pg      | Required explicit completion statements, compact turns |
+| Progressive Disclosure | AgentSkills | references/ per review type in code-review skill       |
+| Templates > Prose      | AgentSkills | Verbatim Orchestration decision: + Delegation audit:   |
+| Gotchas                | AgentSkills | "read when" not "read before", lowercase d colon       |
+| Validation Loops       | AgentSkills | Pre-write + post-handoff checklists                    |
+| Maker/Checker Split    | Loop Eng    | implementation-worker ≠ review-critic ≠ grader         |
+| State/Memory           | Loop Eng    | evaluation.db + runs.json + .beads/issues.jsonl        |
+| Attempt Cap            | Loop Eng    | max_turns 40/60 per scenario                           |
+| Denylist               | Loop Eng    | adversary.md blocks sudo/escalation                    |
 
 ---
 
@@ -389,16 +389,16 @@ Only after this knowledge is generated: emit a Scoped plan and act.
 
 ### Eight Patterns — Quick Reference
 
-| Pattern | Trigger | Cadence | Level |
-|---|---|---|---|
-| CI Sweeper | CI red on main/PR | 15m (not 5m) | L2 — classify then fix |
-| PR Babysitter | PRs stalling | 10m | L1 watch to L2 |
-| Daily Triage | Morning chaos | 1d | Start here — L1 week 1 |
-| Issue Triage | Noisy issue queue | 2h | L1 report to L2 label |
-| Dependency Sweeper | CVE alerts | 6h | L2 patch-only |
-| Post-Merge Cleanup | TODOs after merges | 1d off-peak | L1 to L2 |
-| Changelog Drafter | Release notes stale | 1d | Lowest risk — good first loop |
-| PR Babysitter + goal mode | Single PR needs green | one-shot | /goal pattern |
+| Pattern                   | Trigger               | Cadence      | Level                         |
+|---------------------------|-----------------------|--------------|-------------------------------|
+| CI Sweeper                | CI red on main/PR     | 15m (not 5m) | L2 — classify then fix        |
+| PR Babysitter             | PRs stalling          | 10m          | L1 watch to L2                |
+| Daily Triage              | Morning chaos         | 1d           | Start here — L1 week 1        |
+| Issue Triage              | Noisy issue queue     | 2h           | L1 report to L2 label         |
+| Dependency Sweeper        | CVE alerts            | 6h           | L2 patch-only                 |
+| Post-Merge Cleanup        | TODOs after merges    | 1d off-peak  | L1 to L2                      |
+| Changelog Drafter         | Release notes stale   | 1d           | Lowest risk — good first loop |
+| PR Babysitter + goal mode | Single PR needs green | one-shot     | /goal pattern                 |
 
 **First loop recommendation: Daily Triage at L1. Teaches state discipline without auto-merge risk.**
 
@@ -471,54 +471,54 @@ Agent queries patterns, skills, state on demand instead of loading everything up
 
 ### Harness Loop Gaps (July 2026)
 
-| Gap | Loop Engineering term | Priority |
-|---|---|---|
-| No CI auto-trigger for eval runs | Scheduling primitive missing | P2 |
-| No token budget monitoring | No kill switch | P2 |
-| No collision detection for parallel workers | Multi-loop coordination | P2 |
-| Grader = same model as eval agent (was) | Maker/Checker violation | Fixed |
-| max_turns=200 infinite-fix (was) | No attempt cap | Fixed |
-| No audit score for harness loop | loop-audit equivalent missing | P3 |
+| Gap                                         | Loop Engineering term         | Priority |
+|---------------------------------------------|-------------------------------|----------|
+| No CI auto-trigger for eval runs            | Scheduling primitive missing  | P2       |
+| No token budget monitoring                  | No kill switch                | P2       |
+| No collision detection for parallel workers | Multi-loop coordination       | P2       |
+| Grader = same model as eval agent (was)     | Maker/Checker violation       | Fixed    |
+| max_turns=200 infinite-fix (was)            | No attempt cap                | Fixed    |
+| No audit score for harness loop             | loop-audit equivalent missing | P3       |
 ---
 
 ## References
 
 ### Academic Papers
-| # | Citation | Technique | Year |
-|---|---|---|---|
-| [1] | Wei, J. et al. *Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.* NeurIPS 2022. | Chain-of-Thought | 2022 |
-| [2] | Kojima, T. et al. *Large Language Models are Zero-Shot Reasoners.* NeurIPS 2022. | Zero-shot CoT | 2022 |
-| [3] | Wang, X. et al. *Self-Consistency Improves Chain of Thought Reasoning in Language Models.* ICLR 2023. | Self-Consistency | 2022 |
-| [4] | Yao, S. et al. *ReAct: Synergizing Reasoning and Acting in Language Models.* ICLR 2023. | ReAct | 2022 |
-| [5] | Shinn, N. et al. *Reflexion: Language Agents with Verbal Reinforcement Learning.* NeurIPS 2023. | Reflexion | 2023 |
-| [6] | Liu, J. et al. *Generated Knowledge Prompting for Commonsense Reasoning.* ACL 2022. | Generated Knowledge | 2022 |
-| [7] | Yao, S. et al. *Tree of Thoughts: Deliberate Problem Solving with Large Language Models.* NeurIPS 2023. | Tree of Thoughts | 2023 |
-| [8] | Long, X. *Large Language Model Guided Tree-of-Thought.* arXiv 2023. | Tree of Thoughts | 2023 |
+| #   | Citation                                                                                                | Technique           | Year |
+|-----|---------------------------------------------------------------------------------------------------------|---------------------|------|
+| [1] | Wei, J. et al. *Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.* NeurIPS 2022.   | Chain-of-Thought    | 2022 |
+| [2] | Kojima, T. et al. *Large Language Models are Zero-Shot Reasoners.* NeurIPS 2022.                        | Zero-shot CoT       | 2022 |
+| [3] | Wang, X. et al. *Self-Consistency Improves Chain of Thought Reasoning in Language Models.* ICLR 2023.   | Self-Consistency    | 2022 |
+| [4] | Yao, S. et al. *ReAct: Synergizing Reasoning and Acting in Language Models.* ICLR 2023.                 | ReAct               | 2022 |
+| [5] | Shinn, N. et al. *Reflexion: Language Agents with Verbal Reinforcement Learning.* NeurIPS 2023.         | Reflexion           | 2023 |
+| [6] | Liu, J. et al. *Generated Knowledge Prompting for Commonsense Reasoning.* ACL 2022.                     | Generated Knowledge | 2022 |
+| [7] | Yao, S. et al. *Tree of Thoughts: Deliberate Problem Solving with Large Language Models.* NeurIPS 2023. | Tree of Thoughts    | 2023 |
+| [8] | Long, X. *Large Language Model Guided Tree-of-Thought.* arXiv 2023.                                     | Tree of Thoughts    | 2023 |
 
 ### Canonical Online Sources
-| Source | URL | What it covers |
-|---|---|---|
-| PromptingGuide.ai | https://www.promptingguide.ai/techniques | Full prompting technique catalog |
-| PromptingGuide — Context Engineering | https://www.promptingguide.ai/agents/context-engineering | Context engineering for agents |
-| Loop Engineering project | /home/jmercier/Codes/third-parties/loop-engineering | Loop patterns, primitives, anti-patterns |
-| Loop Engineering docs | https://cobusgreyling.github.io/loop-engineering/ | Showcase, interactive pattern picker |
-| Claude Agent Skills platform | https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview | Official Anthropic skills API |
-| AgentSkills.io specification | https://agentskills.io/specification | SKILL.md format, progressive disclosure |
-| AgentSkills.io best practices | https://agentskills.io/skill-creation/best-practices | Gotchas, templates, validation loops |
-| Anthropic Engineering blog | https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills | Skills anatomy and design |
-| loop-audit CLI | https://github.com/cobusgreyling/loop-engineering/tree/main/tools/loop-audit | Loop readiness scoring |
+| Source                               | URL                                                                                         | What it covers                           |
+|--------------------------------------|---------------------------------------------------------------------------------------------|------------------------------------------|
+| PromptingGuide.ai                    | https://www.promptingguide.ai/techniques                                                    | Full prompting technique catalog         |
+| PromptingGuide — Context Engineering | https://www.promptingguide.ai/agents/context-engineering                                    | Context engineering for agents           |
+| Loop Engineering project             | /home/jmercier/Codes/third-parties/loop-engineering                                         | Loop patterns, primitives, anti-patterns |
+| Loop Engineering docs                | https://cobusgreyling.github.io/loop-engineering/                                           | Showcase, interactive pattern picker     |
+| Claude Agent Skills platform         | https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview                  | Official Anthropic skills API            |
+| AgentSkills.io specification         | https://agentskills.io/specification                                                        | SKILL.md format, progressive disclosure  |
+| AgentSkills.io best practices        | https://agentskills.io/skill-creation/best-practices                                        | Gotchas, templates, validation loops     |
+| Anthropic Engineering blog           | https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills | Skills anatomy and design                |
+| loop-audit CLI                       | https://github.com/cobusgreyling/loop-engineering/tree/main/tools/loop-audit                | Loop readiness scoring                   |
 
 ### Harness-Specific Sources (this repo)
-| File | What it contains |
-|---|---|
-| `.agents/skills/*/SKILL.md` | All 8 current skill definitions |
-| `.agents/agents/*.md` | All 11 agent definitions |
-| `.goose/recipes/*.yaml` | All 16 recipe definitions |
-| `evals/skills/*.json` | 7 skill eval scenario files (21 scenarios) |
-| `docs/15-skill-evaluations.md` | Eval-driven development workflow |
-| `docs/14-memory.md` | Beads memory pointer pattern |
-| `dist/evals/evaluation.db` | SQLite — all eval runs, results, feedback |
-| `evals/history/runs.json` | Committed eval history for Pages trend report |
+| File                           | What it contains                              |
+|--------------------------------|-----------------------------------------------|
+| `.agents/skills/*/SKILL.md`    | All 8 current skill definitions               |
+| `.agents/agents/*.md`          | All 11 agent definitions                      |
+| `.goose/recipes/*.yaml`        | All 16 recipe definitions                     |
+| `evals/skills/*.json`          | 7 skill eval scenario files (21 scenarios)    |
+| `docs/15-skill-evaluations.md` | Eval-driven development workflow              |
+| `docs/14-memory.md`            | Beads memory pointer pattern                  |
+| `dist/evals/evaluation.db`     | SQLite — all eval runs, results, feedback     |
+| `evals/history/runs.json`      | Committed eval history for Pages trend report |
 
 ---
 
@@ -529,31 +529,31 @@ Loop Engineering defines STATE.md + triage + memory as the state primitive.
 
 ### Mapping: Loop Engineering → Beads
 
-| Loop Engineering concept | Loop Engineering tool | Beads (bd) equivalent |
-|---|---|---|
-| **STATE.md** — current priorities, watch list | Markdown file | `bd list --json`, `bd ready --json` |
-| **Triage** — classify and prioritize work | loop-triage skill | `bd prime` (injects priorities into context) |
-| **Task progress** — attempt count, status | STATE.md rows | `bd update --claim`, `bd update --status`, `bd close` |
-| **Human inbox** — ambiguous / needs decision | STATE.md section | `bd blocked --json` |
-| **Memory / facts** — cross-session knowledge | STATE.md + notes | `bd remember --key`, `bd recall`, `bd memories` |
-| **Attempt cap** — max retries before escalate | counter in STATE.md | bead claim → comment on failure → escalate if count > N |
-| **Dependency graph** — what blocks what | manual notes | `bd dep add B A` (hard), `bd dep add --type related` |
-| **Gates / async waits** — CI, human, timer | sleep + poll | `bd gate <id> --signal "CI green"` |
-| **Resolved items** — prune from watch list | cross out in STATE.md | `bd close <id> --reason "..."` |
-| **Run log** — append-only history | loop-run-log.md | eval_analysis DB + feedback rows |
-| **Circuit breaker** — trip on N failures | loop-ledger.json | claim count on bead + comment trail |
+| Loop Engineering concept                      | Loop Engineering tool | Beads (bd) equivalent                                   |
+|-----------------------------------------------|-----------------------|---------------------------------------------------------|
+| **STATE.md** — current priorities, watch list | Markdown file         | `bd list --json`, `bd ready --json`                     |
+| **Triage** — classify and prioritize work     | loop-triage skill     | `bd prime` (injects priorities into context)            |
+| **Task progress** — attempt count, status     | STATE.md rows         | `bd update --claim`, `bd update --status`, `bd close`   |
+| **Human inbox** — ambiguous / needs decision  | STATE.md section      | `bd blocked --json`                                     |
+| **Memory / facts** — cross-session knowledge  | STATE.md + notes      | `bd remember --key`, `bd recall`, `bd memories`         |
+| **Attempt cap** — max retries before escalate | counter in STATE.md   | bead claim → comment on failure → escalate if count > N |
+| **Dependency graph** — what blocks what       | manual notes          | `bd dep add B A` (hard), `bd dep add --type related`    |
+| **Gates / async waits** — CI, human, timer    | sleep + poll          | `bd gate <id> --signal "CI green"`                      |
+| **Resolved items** — prune from watch list    | cross out in STATE.md | `bd close <id> --reason "..."`                          |
+| **Run log** — append-only history             | loop-run-log.md       | eval_analysis DB + feedback rows                        |
+| **Circuit breaker** — trip on N failures      | loop-ledger.json      | claim count on bead + comment trail                     |
 
 ### What Beads adds that Loop Engineering STATE.md cannot
 
-| Capability | Beads | Plain STATE.md |
-|---|---|---|
-| Dependency graph with hard/soft/discovered-from types | ✅ native | ❌ manual prose |
-| Atomic claim (race-condition-safe) | ✅ CAS-style claim | ❌ text collision |
-| Molecule / wisp workflows | ✅ bd formula | ❌ none |
-| Durable memory with Dolt sync | ✅ bd remember | ❌ commit manually |
-| Per-issue acceptance criteria | ✅ bd update --acceptance | ❌ inline text |
-| Structured JSON output for agents | ✅ --json flag on every command | ❌ parse markdown |
-| Assignee routing | ✅ bd create --assignee <agent> | ❌ manual section |
+| Capability                                            | Beads                          | Plain STATE.md    |
+|-------------------------------------------------------|--------------------------------|-------------------|
+| Dependency graph with hard/soft/discovered-from types | ✅ native                       | ❌ manual prose    |
+| Atomic claim (race-condition-safe)                    | ✅ CAS-style claim              | ❌ text collision  |
+| Molecule / wisp workflows                             | ✅ bd formula                   | ❌ none            |
+| Durable memory with Dolt sync                         | ✅ bd remember                  | ❌ commit manually |
+| Per-issue acceptance criteria                         | ✅ bd update --acceptance       | ❌ inline text     |
+| Structured JSON output for agents                     | ✅ --json flag on every command | ❌ parse markdown  |
+| Assignee routing                                      | ✅ bd create --assignee <agent> | ❌ manual section  |
 
 ### How the full loop runs with Beads
 
@@ -573,15 +573,15 @@ ESCALATE      bd update <id> --status blocked --note "N attempts, needs human"
 
 ### Loop patterns we can run natively on Beads
 
-| Loop pattern | bd command chain |
-|---|---|
-| **Daily Triage** | `bd prime && bd list --json` → classify priorities → update bead priorities |
-| **Issue Triage** | `bd search "bug" && bd list --status open` → create/update beads with classification |
-| **PR Babysitter** | `bd list --status in_progress` → check CI → comment on stalled beads |
-| **Attempt Cap** | `bd show <id>` → count comments with "failed attempt" → escalate at N |
-| **Human Gate** | `bd gate <id> --signal "human-approved"` → block until signal |
-| **Dependency Sweeper** | `bd blocked --json` → fix blockers → unlock dependents |
-| **Post-Merge Cleanup** | `bd list --status closed` → find follow-ups → `bd create --deps discovered-from` |
+| Loop pattern           | bd command chain                                                                     |
+|------------------------|--------------------------------------------------------------------------------------|
+| **Daily Triage**       | `bd prime && bd list --json` → classify priorities → update bead priorities          |
+| **Issue Triage**       | `bd search "bug" && bd list --status open` → create/update beads with classification |
+| **PR Babysitter**      | `bd list --status in_progress` → check CI → comment on stalled beads                 |
+| **Attempt Cap**        | `bd show <id>` → count comments with "failed attempt" → escalate at N                |
+| **Human Gate**         | `bd gate <id> --signal "human-approved"` → block until signal                        |
+| **Dependency Sweeper** | `bd blocked --json` → fix blockers → unlock dependents                               |
+| **Post-Merge Cleanup** | `bd list --status closed` → find follow-ups → `bd create --deps discovered-from`     |
 
 ### The key difference: Beads is durable and git-synced via Dolt
 
@@ -596,10 +596,10 @@ Beads uses Dolt (git-native SQLite) — every change is a commit, fully auditabl
 
 Beads handles state/triage/memory. What we are missing from Loop Engineering:
 
-| Gap | What it needs | Priority |
-|---|---|---|
-| **Scheduling** — run triage automatically on cadence | cron / bd gate with timer | P2 |
-| **Circuit breaker** — pause loop after N failures | bd comment count + escalation skill | P2 |
+| Gap                                                            | What it needs                        | Priority |
+|----------------------------------------------------------------|--------------------------------------|----------|
+| **Scheduling** — run triage automatically on cadence           | cron / bd gate with timer            | P2       |
+| **Circuit breaker** — pause loop after N failures              | bd comment count + escalation skill  | P2       |
 | **Multi-loop coordination** — two agents don't claim same bead | bd claim is atomic — already solved! | ✅ solved |
-| **Observability / run log** | evaluation.db + analysis-index.html | ✅ solved |
-| **L3 unattended** — full loop without human watching | needs scheduling + kill switch | P2 |
+| **Observability / run log**                                    | evaluation.db + analysis-index.html  | ✅ solved |
+| **L3 unattended** — full loop without human watching           | needs scheduling + kill switch       | P2       |

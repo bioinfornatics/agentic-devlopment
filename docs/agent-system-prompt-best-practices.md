@@ -10,13 +10,13 @@
 
 An agent definition is the totality of instructions, constraints, tool declarations, and behavioral contracts that shape how an LLM-based agent operates. It manifests in several forms across the ecosystem:
 
-| Form | Used by | Scope |
-|------|---------|-------|
-| System prompt (natural language) | All LLM agents | Per-call behavioral spec |
-| `AGENTS.md` / `CLAUDE.md` | Codex, Cursor, Goose | Repo-level coding conventions |
-| Code-side agent struct | OpenAI SDK, Google ADK | Typed definition: name + instructions + tools + guardrails |
-| Recipe YAML | Goose | Workflow-level agent configuration |
-| `.cursorrules` / `SYSTEM.md` | Cursor, IDE tools | Persona + code style rules |
+| Form                             | Used by                | Scope                                                      |
+|----------------------------------|------------------------|------------------------------------------------------------|
+| System prompt (natural language) | All LLM agents         | Per-call behavioral spec                                   |
+| `AGENTS.md` / `CLAUDE.md`        | Codex, Cursor, Goose   | Repo-level coding conventions                              |
+| Code-side agent struct           | OpenAI SDK, Google ADK | Typed definition: name + instructions + tools + guardrails |
+| Recipe YAML                      | Goose                  | Workflow-level agent configuration                         |
+| `.cursorrules` / `SYSTEM.md`     | Cursor, IDE tools      | Persona + code style rules                                 |
 
 ---
 

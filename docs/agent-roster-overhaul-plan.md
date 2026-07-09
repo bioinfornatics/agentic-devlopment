@@ -42,18 +42,18 @@ description: "[Job] + domain. Use when: X, Y, Z."   ← routing signal for Summo
 
 ## 2. Gap Matrix: Current vs. Target
 
-| Dimension | Current | Target |
-|---|---|---|
-| Lines per agent | 7–9 | 80–150 |
-| Prompt Defense Baseline | ❌ | ✅ universal |
-| Rich identity | ❌ noun phrase | ✅ paragraph + role scope |
-| Operating process | ❌ none | ✅ numbered phases |
-| Domain protocol/checklist | ❌ none | ✅ explicit |
-| Output format template | ❌ none | ✅ named sections |
-| False positives / anti-patterns | ❌ none | ✅ explicit list |
-| When to invoke (proactive trigger) | ❌ none | ✅ explicit |
-| Skill pointer | ⚠️ orchestrator only | ✅ every agent |
-| Closing mantra | ❌ none | ✅ bold one-liner |
+| Dimension                          | Current              | Target                   |
+|------------------------------------|----------------------|--------------------------|
+| Lines per agent                    | 7–9                  | 80–150                   |
+| Prompt Defense Baseline            | ❌                    | ✅ universal              |
+| Rich identity                      | ❌ noun phrase        | ✅ paragraph + role scope |
+| Operating process                  | ❌ none               | ✅ numbered phases        |
+| Domain protocol/checklist          | ❌ none               | ✅ explicit               |
+| Output format template             | ❌ none               | ✅ named sections         |
+| False positives / anti-patterns    | ❌ none               | ✅ explicit list          |
+| When to invoke (proactive trigger) | ❌ none               | ✅ explicit               |
+| Skill pointer                      | ⚠️ orchestrator only | ✅ every agent            |
+| Closing mantra                     | ❌ none               | ✅ bold one-liner         |
 
 ---
 
@@ -61,24 +61,24 @@ description: "[Job] + domain. Use when: X, Y, Z."   ← routing signal for Summo
 
 ### Keep & Rewrite (6 existing)
 
-| Agent | Current lines | Target lines | Key additions |
-|---|---|---|---|
-| `beads-planner` | 7 | 100 | Plan format template, Beads command sequence, dependency graph output, risk table |
-| `codebase-researcher` | 7 | 80 | Investigation protocol, output JSON schema, tool sequence, read-only enforcement |
-| `harness-orchestrator` | 9 | 100 | Decision tree, delegation audit, routing table, escalation protocol (3-iter limit) |
-| `implementation-worker` | 7 | 120 | TDD protocol (RED→GREEN→REFACTOR), claim procedure, blast radius rules, completion checklist |
-| `review-critic` | 7 | 150 | Confidence-based filtering, pre-report gate, false positive list, severity taxonomy, proof requirement |
-| `ui-ux-auditor` | 7 | 90 | Evaluation stack (8 dimensions), accessibility checklist, tool usage protocol, output format |
+| Agent                   | Current lines | Target lines | Key additions                                                                                          |
+|-------------------------|---------------|--------------|--------------------------------------------------------------------------------------------------------|
+| `beads-planner`         | 7             | 100          | Plan format template, Beads command sequence, dependency graph output, risk table                      |
+| `codebase-researcher`   | 7             | 80           | Investigation protocol, output JSON schema, tool sequence, read-only enforcement                       |
+| `harness-orchestrator`  | 9             | 100          | Decision tree, delegation audit, routing table, escalation protocol (3-iter limit)                     |
+| `implementation-worker` | 7             | 120          | TDD protocol (RED→GREEN→REFACTOR), claim procedure, blast radius rules, completion checklist           |
+| `review-critic`         | 7             | 150          | Confidence-based filtering, pre-report gate, false positive list, severity taxonomy, proof requirement |
+| `ui-ux-auditor`         | 7             | 90           | Evaluation stack (8 dimensions), accessibility checklist, tool usage protocol, output format           |
 
 ### Add New (5 roles)
 
-| Agent | Lines | Role | Model hint | Tools |
-|---|---|---|---|---|
-| `architect` | 130 | System design, ADRs, trade-off analysis | high-reasoning | read-only |
-| `product-owner` | 110 | Intent→spec→acceptance criteria, PRD quality gate | high-reasoning | read-only |
-| `principal-engineer` | 120 | Tech lead review: blast radius, breaking changes, architecture coherence | balanced | read-only |
-| `tdd-guide` | 100 | RED→GREEN→REFACTOR cycle, coverage gates, edge case catalog | balanced | write |
-| `qa-automation` | 110 | Test pipeline, flaky test quarantine, CI integration, coverage report | balanced | write |
+| Agent                | Lines | Role                                                                     | Model hint     | Tools     |
+|----------------------|-------|--------------------------------------------------------------------------|----------------|-----------|
+| `architect`          | 130   | System design, ADRs, trade-off analysis                                  | high-reasoning | read-only |
+| `product-owner`      | 110   | Intent→spec→acceptance criteria, PRD quality gate                        | high-reasoning | read-only |
+| `principal-engineer` | 120   | Tech lead review: blast radius, breaking changes, architecture coherence | balanced       | read-only |
+| `tdd-guide`          | 100   | RED→GREEN→REFACTOR cycle, coverage gates, edge case catalog              | balanced       | write     |
+| `qa-automation`      | 110   | Test pipeline, flaky test quarantine, CI integration, coverage report    | balanced       | write     |
 
 ---
 
@@ -267,32 +267,32 @@ description: "[Job] + domain. Use when: X, Y, Z."   ← routing signal for Summo
 
 ### Phase 1 — Rewrite existing 6 agents (parallel, no dependencies between files)
 
-| Priority | File | Change |
-|---|---|---|
-| 1 | `.agents/agents/review-critic.md` | Full rewrite — highest impact, most used |
-| 2 | `.agents/agents/implementation-worker.md` | Add TDD protocol + completion checklist |
-| 3 | `.agents/agents/harness-orchestrator.md` | Add routing table + escalation + delegation audit |
-| 4 | `.agents/agents/codebase-researcher.md` | Add process + output schema |
-| 5 | `.agents/agents/beads-planner.md` | Add plan format + bd command sequence |
-| 6 | `.agents/agents/ui-ux-auditor.md` | Add evaluation stack + tool protocol |
+| Priority | File                                      | Change                                            |
+|----------|-------------------------------------------|---------------------------------------------------|
+| 1        | `.agents/agents/review-critic.md`         | Full rewrite — highest impact, most used          |
+| 2        | `.agents/agents/implementation-worker.md` | Add TDD protocol + completion checklist           |
+| 3        | `.agents/agents/harness-orchestrator.md`  | Add routing table + escalation + delegation audit |
+| 4        | `.agents/agents/codebase-researcher.md`   | Add process + output schema                       |
+| 5        | `.agents/agents/beads-planner.md`         | Add plan format + bd command sequence             |
+| 6        | `.agents/agents/ui-ux-auditor.md`         | Add evaluation stack + tool protocol              |
 
 ### Phase 2 — Add 5 new agents (parallel)
 
-| Priority | File | Rationale |
-|---|---|---|
-| 1 | `.agents/agents/architect.md` | Directly serves SDD architecture phase |
-| 2 | `.agents/agents/product-owner.md` | Directly serves SDD intent/spec phase |
-| 3 | `.agents/agents/tdd-guide.md` | Directly serves TDD loop |
-| 4 | `.agents/agents/principal-engineer.md` | Escalation path for complex reviews |
-| 5 | `.agents/agents/qa-automation.md` | Completes test pipeline |
+| Priority | File                                   | Rationale                              |
+|----------|----------------------------------------|----------------------------------------|
+| 1        | `.agents/agents/architect.md`          | Directly serves SDD architecture phase |
+| 2        | `.agents/agents/product-owner.md`      | Directly serves SDD intent/spec phase  |
+| 3        | `.agents/agents/tdd-guide.md`          | Directly serves TDD loop               |
+| 4        | `.agents/agents/principal-engineer.md` | Escalation path for complex reviews    |
+| 5        | `.agents/agents/qa-automation.md`      | Completes test pipeline                |
 
 ### Phase 3 — Update documentation
 
-| File | Change |
-|---|---|
-| `AGENTS.md` | Update roster table, add format spec section |
-| `README.md` | Update named agents section |
-| `.agents/skills/README.md` | Note relationship between agents and skills |
+| File                       | Change                                       |
+|----------------------------|----------------------------------------------|
+| `AGENTS.md`                | Update roster table, add format spec section |
+| `README.md`                | Update named agents section                  |
+| `.agents/skills/README.md` | Note relationship between agents and skills  |
 
 ### Phase 4 — Validate
 

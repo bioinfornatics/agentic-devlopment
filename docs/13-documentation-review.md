@@ -41,14 +41,14 @@ goose run --recipe review   --params task="documentation review"   --params repo
 
 ## Documentation score
 
-| Score | Meaning |
-|---|---|
-| 0 | Missing or misleading |
-| 1 | Exists but not usable |
-| 2 | Basic but incomplete |
-| 3 | Usable with some gaps |
-| 4 | Good and mostly tested |
-| 5 | Excellent, task-oriented, validated |
+| Score | Meaning                             |
+|-------|-------------------------------------|
+| 0     | Missing or misleading               |
+| 1     | Exists but not usable               |
+| 2     | Basic but incomplete                |
+| 3     | Usable with some gaps               |
+| 4     | Good and mostly tested              |
+| 5     | Excellent, task-oriented, validated |
 
 ## Output format
 

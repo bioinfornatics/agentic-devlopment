@@ -165,16 +165,16 @@ If no, do not store it.
 
 ## Relationship with Goose memory systems
 
-| System | Use |
-|---|---|
-| `bd remember` | canonical durable project/repo facts |
-| Beads issues | work, bugs, decisions, follow-ups |
-| Beads gates | async waits and human decisions |
-| Goose Memory MCP | general user preferences |
-| Top Of Mind | critical every-turn guardrails |
-| Chat Recall | searching prior session history |
-| Skills | reusable methods and procedures |
-| Docs/ADR | long-form canonical knowledge |
+| System           | Use                                  |
+|------------------|--------------------------------------|
+| `bd remember`    | canonical durable project/repo facts |
+| Beads issues     | work, bugs, decisions, follow-ups    |
+| Beads gates      | async waits and human decisions      |
+| Goose Memory MCP | general user preferences             |
+| Top Of Mind      | critical every-turn guardrails       |
+| Chat Recall      | searching prior session history      |
+| Skills           | reusable methods and procedures      |
+| Docs/ADR         | long-form canonical knowledge        |
 
 ## Done criteria
 

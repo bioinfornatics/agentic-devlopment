@@ -83,11 +83,11 @@ Use `scripts/run-skill-ab-eval.py` for behavioral review. It creates isolated co
 
 The runner supports three comparison modes:
 
-| Mode | Configs generated | Purpose |
-|---|---|---|
-| `with-without` (default) | `with_skill`, `without_skill` | Core skill-vs-baseline delta |
+| Mode                     | Configs generated                                | Purpose                                                    |
+|--------------------------|--------------------------------------------------|------------------------------------------------------------|
+| `with-without` (default) | `with_skill`, `without_skill`                    | Core skill-vs-baseline delta                               |
 | `with-without-available` | `with_skill`, `available_skill`, `without_skill` | Separates skill content quality from skill discoverability |
-| `old-new` | `new_skill`, `old_skill` | Compare two skill versions |
+| `old-new`                | `new_skill`, `old_skill`                         | Compare two skill versions                                 |
 
 **`available_skill`** installs the skill directory under the isolated Goose home (so `goose skills list` can find it) but does **not** inject the SKILL.md content into the prompt. This tests whether the agent can discover and apply the skill on its own — separate from whether the skill content is high-quality when directly provided.
 

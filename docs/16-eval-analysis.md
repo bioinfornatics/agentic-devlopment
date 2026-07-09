@@ -71,21 +71,21 @@ git push
 
 ## Consequences and trade-offs
 
-| Decision | Consequence |
-|---|---|
-| History in JSON (not SQLite) | Git-tracked, survives fresh checkouts, readable by CI |
-| No eval runs in CI | Pages deploy is free and fast (< 2 min); no API secrets needed |
-| Manual export step | Trends only update when developer commits after a run |
-| `dist/` gitignored | Docs and report are regenerated in CI from source; no artifact bloat |
-| Standalone HTML (no JS framework) | Works offline, no CDN dependency, no build step |
+| Decision                          | Consequence                                                          |
+|-----------------------------------|----------------------------------------------------------------------|
+| History in JSON (not SQLite)      | Git-tracked, survives fresh checkouts, readable by CI                |
+| No eval runs in CI                | Pages deploy is free and fast (< 2 min); no API secrets needed       |
+| Manual export step                | Trends only update when developer commits after a run                |
+| `dist/` gitignored                | Docs and report are regenerated in CI from source; no artifact bloat |
+| Standalone HTML (no JS framework) | Works offline, no CDN dependency, no build step                      |
 
 ## Trend signal interpretation
 
-| Badge | Meaning |
-|---|---|
-| `+X%` green | Skill helps — with > without by X% |
-| `~0%` amber | Neutral — skill not discriminating this scenario |
-| `−X%` red | Skill hurts — investigate expected_behavior or confidence gate |
+| Badge         | Meaning                                                        |
+|---------------|----------------------------------------------------------------|
+| `+X%` green   | Skill helps — with > without by X%                             |
+| `~0%` amber   | Neutral — skill not discriminating this scenario               |
+| `−X%` red     | Skill hurts — investigate expected_behavior or confidence gate |
 | `⚡X% sat` red | Max-turn saturation — scenario too broad or max_turns too high |
 
 A negative delta is always a P0 — investigate before next suite run.

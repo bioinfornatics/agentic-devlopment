@@ -63,14 +63,14 @@ If the repo is not initialized for Beads, use the project policy for `bd init` /
 
 ## Files to consider
 
-| File | Purpose |
-|---|---|
-| `AGENTS.md` | Agent instructions and session policy |
-| `.agents/skills/` | Project-local reusable skills |
-| `.agents/agents/` | Project-local named subagents |
-| `.goose/recipes/` or `.agents/recipes/` | Project-local recipes |
-| `.beads/` | Beads database/config/formulas |
-| `.gooseignore` | Paths agents should not inspect or modify |
+| File                                    | Purpose                                   |
+|-----------------------------------------|-------------------------------------------|
+| `AGENTS.md`                             | Agent instructions and session policy     |
+| `.agents/skills/`                       | Project-local reusable skills             |
+| `.agents/agents/`                       | Project-local named subagents             |
+| `.goose/recipes/` or `.agents/recipes/` | Project-local recipes                     |
+| `.beads/`                               | Beads database/config/formulas            |
+| `.gooseignore`                          | Paths agents should not inspect or modify |
 
 ## Initial Beads graph
 

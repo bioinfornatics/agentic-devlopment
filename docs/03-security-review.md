@@ -41,16 +41,16 @@ goose run --recipe review   --params task="security review current diff and desi
 
 ## Threat model checklist
 
-| Area | Questions |
-|---|---|
-| Assets | What data/secrets/capabilities are exposed? |
-| Entry points | Which inputs cross trust boundaries? |
-| Authn/authz | Who can do what? Are checks centralized and tested? |
-| Injection | SQL, shell, path traversal, template, command, prompt injection? |
-| Secrets | Are tokens logged, committed, echoed, or passed to subagents? |
-| Dependencies | New packages? Install scripts? MCP server trust? |
-| Data integrity | Can data be corrupted, lost, replayed, or raced? |
-| Observability | Are failures detectable without leaking secrets? |
+| Area           | Questions                                                        |
+|----------------|------------------------------------------------------------------|
+| Assets         | What data/secrets/capabilities are exposed?                      |
+| Entry points   | Which inputs cross trust boundaries?                             |
+| Authn/authz    | Who can do what? Are checks centralized and tested?              |
+| Injection      | SQL, shell, path traversal, template, command, prompt injection? |
+| Secrets        | Are tokens logged, committed, echoed, or passed to subagents?    |
+| Dependencies   | New packages? Install scripts? MCP server trust?                 |
+| Data integrity | Can data be corrupted, lost, replayed, or raced?                 |
+| Observability  | Are failures detectable without leaking secrets?                 |
 
 ## Beads outputs
 

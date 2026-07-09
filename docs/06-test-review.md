@@ -42,14 +42,14 @@ goose run --recipe review   --params task="test quality review for current diff"
 
 ## Test review rubric
 
-| Score | Meaning |
-|---|---|
-| 0 | No relevant tests |
-| 1 | Smoke coverage only |
-| 2 | Main happy path covered |
-| 3 | Happy + important failure paths |
-| 4 | Edge cases and regressions covered |
-| 5 | Excellent, fast, maintainable, spec-linked coverage |
+| Score | Meaning                                             |
+|-------|-----------------------------------------------------|
+| 0     | No relevant tests                                   |
+| 1     | Smoke coverage only                                 |
+| 2     | Main happy path covered                             |
+| 3     | Happy + important failure paths                     |
+| 4     | Edge cases and regressions covered                  |
+| 5     | Excellent, fast, maintainable, spec-linked coverage |
 
 ## Output format
 
