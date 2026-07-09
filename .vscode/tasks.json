@@ -322,6 +322,28 @@
         "reveal": "always",
         "panel": "shared"
       }
+    },
+    {
+      "label": "KG: Open Memory Visualizer (memviz.herich.tech)",
+      "detail": "Copy .knowledge/memory.jsonl to clipboard then open memviz in browser",
+      "type": "shell",
+      "command": "xclip -sel clip < .knowledge/memory.jsonl 2>/dev/null || xsel --clipboard --input < .knowledge/memory.jsonl 2>/dev/null || cat .knowledge/memory.jsonl | pbcopy 2>/dev/null; xdg-open https://memviz.herich.tech",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "KG: Bootstrap harness KG",
+      "detail": "Repopulate .knowledge/memory.jsonl from current agents/skills/recipes state",
+      "type": "shell",
+      "command": "python3 scripts/kg-bootstrap.py",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
     }
   ]
 }

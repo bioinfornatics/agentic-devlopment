@@ -96,3 +96,42 @@
 {"type":"relation","from":"doc:docs/02-code-review.md","to":"recipe:review","relationType":"DESCRIBES"}
 {"type":"relation","from":"doc:docs/09-implementation-loop.md","to":"recipe:implement","relationType":"DESCRIBES"}
 {"type":"relation","from":"doc:docs/knowledge-graph.md","to":"skill:knowledge-graph","relationType":"DESCRIBES"}
+{"type": "entity", "name": "skill:knowledge-graph", "entityType": "harness:skill", "observations": ["file: .agents/skills/knowledge-graph/SKILL.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:00-index.md", "entityType": "harness:doc", "observations": ["file: docs/00-index.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:01-init-project.md", "entityType": "harness:doc", "observations": ["file: docs/01-init-project.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:02-code-review.md", "entityType": "harness:doc", "observations": ["file: docs/02-code-review.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:03-security-review.md", "entityType": "harness:doc", "observations": ["file: docs/03-security-review.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:04-uxr-simulation.md", "entityType": "harness:doc", "observations": ["file: docs/04-uxr-simulation.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:05-ui-review.md", "entityType": "harness:doc", "observations": ["file: docs/05-ui-review.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:06-test-review.md", "entityType": "harness:doc", "observations": ["file: docs/06-test-review.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:07-spec-review.md", "entityType": "harness:doc", "observations": ["file: docs/07-spec-review.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:08-project-judge-score.md", "entityType": "harness:doc", "observations": ["file: docs/08-project-judge-score.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:09-implementation-loop.md", "entityType": "harness:doc", "observations": ["file: docs/09-implementation-loop.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:10-release-readiness.md", "entityType": "harness:doc", "observations": ["file: docs/10-release-readiness.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:11-incident-sre.md", "entityType": "harness:doc", "observations": ["file: docs/11-incident-sre.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:12-multi-agent-research.md", "entityType": "harness:doc", "observations": ["file: docs/12-multi-agent-research.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:13-documentation-review.md", "entityType": "harness:doc", "observations": ["file: docs/13-documentation-review.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:14-memory.md", "entityType": "harness:doc", "observations": ["file: docs/14-memory.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:15-skill-evaluations.md", "entityType": "harness:doc", "observations": ["file: docs/15-skill-evaluations.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:16-eval-analysis.md", "entityType": "harness:doc", "observations": ["file: docs/16-eval-analysis.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:BOOK.md", "entityType": "harness:doc", "observations": ["file: docs/BOOK.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:agent-roster-overhaul-plan.md", "entityType": "harness:doc", "observations": ["file: docs/agent-roster-overhaul-plan.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:agent-system-prompt-best-practices.md", "entityType": "harness:doc", "observations": ["file: docs/agent-system-prompt-best-practices.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:knowledge-graph.md", "entityType": "harness:doc", "observations": ["file: docs/knowledge-graph.md", "scope: buildtime", "namespace: harness"]}
+{"type": "entity", "name": "doc:sota-knowledge-base.md", "entityType": "harness:doc", "observations": ["file: docs/sota-knowledge-base.md", "scope: buildtime", "namespace: harness"]}
+{"type": "relation", "from": "recipe:dev", "to": "skill:agentic-dev-harness", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:review", "to": "skill:code-review", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:implement", "to": "skill:beads-harness", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:spec", "to": "skill:sdd", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:discover", "to": "skill:sdd", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:plan", "to": "skill:beads-harness", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:verify", "to": "skill:webapp-testing", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:design", "to": "skill:ux-quality", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:sdd", "to": "skill:sdd", "relationType": "USES_SKILL"}
+{"type": "relation", "from": "recipe:review", "to": "agent:review-critic", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:implement", "to": "agent:implementation-worker", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:discover", "to": "agent:product-owner", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:spec", "to": "agent:architect", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:plan", "to": "agent:beads-planner", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:verify", "to": "agent:qa-automation", "relationType": "DELEGATES_TO"}
+{"type": "relation", "from": "recipe:design", "to": "agent:ux-researcher", "relationType": "DELEGATES_TO"}
