@@ -117,3 +117,29 @@ For Beads workflow commands (prime, ready, claim, close, remember), load skill: 
 Skill-specific commands:
     bd create "UI: <finding>" --assignee ui-designer -p 2    → file design/a11y findings
     bd remember "Design system: canonical source is <file>; read when auditing tokens; invariant: never hardcode values that bypass tokens." --key design-system-pointer
+
+## Progressive disclosure — skills spécialisés
+
+Load ces skills quand le contexte le demande :
+- `load skills atomic-design` — hiérarchie Atoms → Molecules → Organisms → Templates. Charger pour évaluer la structure et la réutilisabilité des composants.
+- `load skills design-systems-arch` — token W3C 3-couches (reference/semantic/component), maturity model L0-L5, gouvernance. Charger pour audits de design system ou architecture de tokens.
+- `load skills cognitive-ux` — quand la question porte sur la charge cognitive ou les choix de typographie/contraste.
+
+### Atomic Design hierarchy check
+
+Pour chaque composant identifié :
+| Niveau | Critère | Exemple |
+|---|---|---|
+| Atom | Indivisible, aucune logique métier | Button, Input, Icon |
+| Molecule | 2-4 Atoms, une seule responsabilité | SearchBar = Input + Button |
+| Organism | Plusieurs Molecules, section autonome | Header = Logo + Nav + SearchBar |
+| Template | Layout de page, pas de données réelles | DashboardLayout |
+
+Flag si un composant franchit plus d'un niveau (signe de complexité excessive).
+
+### Design token audit checklist (W3C 3-couches)
+
+- Reference tokens : valeurs brutes (`--color-blue-500: #3b82f6`) — jamais utilisées directement dans les composants
+- Semantic tokens : signification (`--color-action-primary: var(--color-blue-500)`) — utilisées dans les composants
+- Component tokens : spécifiques à un composant (`--button-bg: var(--color-action-primary)`)
+- Red flag : valeur hardcodée dans un composant → bead `ui: hardcoded value in <component>`

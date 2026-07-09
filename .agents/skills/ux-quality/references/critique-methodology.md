@@ -75,3 +75,33 @@ Stage: 30% | 60% | 90%
 ## Next steps
 [Concrete, prioritised actions]
 ```
+
+---
+
+## Structured Discovery (frontend-blueprint pattern)
+
+Avant tout audit UX ou design review, collecter ces artefacts :
+
+| Étape | Question | Livrable |
+|---|---|---|
+| Briefing | Qui sont les utilisateurs ? Quel problème ? | 1 paragraph |
+| Références | Quels produits l'utilisateur aime-t-il ? | 3-5 screenshots annotés |
+| Direction | Quels tokens visuels émergent des références ? | Liste couleur/typo/espacement |
+| Friction | Qu'est-ce qui est flou ou contradictoire ? | Questions ouvertes |
+
+**Règle fondamentale (Paul Bakaus / TLC) :** Never evaluate a design without references. "References are non-negotiable."
+
+## WCAG 2.2 AA — checklist de vérification rapide
+
+| Critère | Test | Outil |
+|---|---|---|
+| 1.1.1 Alt text | Toutes images ont alt ou aria-label | Browser dev tools |
+| 1.3.1 Info & Relations | Structure sémantique (headings, lists) | axe-core |
+| 1.4.3 Contrast | ≥ 4.5:1 texte normal, ≥ 3:1 grand texte | WebAIM contrast checker |
+| 1.4.11 Non-text contrast | ≥ 3:1 pour UI components | DevTools |
+| 2.1.1 Keyboard | Tous les workflows via Tab/Shift-Tab | Test manuel |
+| 2.4.3 Focus order | Focus logique et visible | `:focus-visible` CSS |
+| 2.4.6 Headings | Hiérarchie h1→h2→h3 cohérente | HeadingsMap extension |
+| 2.5.3 Label in Name | Label visible inclus dans accessible name | axe-core |
+| 3.2.2 On Input | Pas de changement de contexte inattendu | Test manuel |
+| 4.1.2 Name, Role, Value | ARIA correct sur éléments custom | axe-core |

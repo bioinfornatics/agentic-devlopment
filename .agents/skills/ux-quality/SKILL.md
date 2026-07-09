@@ -95,3 +95,18 @@ Skill-specific commands:
 ## Progressive disclosure
 Load critique methodology when running a structured design review:
   Load `references/critique-methodology.md` — Liz Lerman, 30/60/90, Gestalt, Nielsen heuristics
+
+## Progressive disclosure — skills spécialisés
+
+Load ces skills quand le contexte le demande :
+- `load skills cognitive-ux` — Laws of UX (Fitts, Hick, Gestalt), biais cognitifs, neurodesign. Charger quand on évalue des décisions de design ou la charge cognitive.
+- `load skills agentic-ux` — patterns UX pour interfaces AI (trust calibration, progressive disclosure d'incertitude, safety UX). Charger pour tout produit avec des agents ou IA génératif.
+- `load skills frontend-blueprint` — workflow de consultation design (BRIEFING → REFERENCES → DESIGN DIRECTION → BUILD). Charger pour accompagner la création d'une nouvelle interface.
+
+### Structured discovery workflow (from frontend-blueprint)
+
+Avant toute évaluation UX, collecter le contexte :
+1. **BRIEFING** — comprendre le produit, utilisateurs, business goals
+2. **REFERENCES** — collecter 3-5 exemples visuels d'interfaces que l'utilisateur apprécie (non négociable avant de juger)
+3. **DESIGN DIRECTION** — identifier les tokens visuels implicites (couleur, typographie, espacement) des références
+4. **Challenge proactif** — si les choix contredisent les bonnes pratiques UX, le dire explicitement

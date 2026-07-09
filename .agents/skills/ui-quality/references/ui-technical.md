@@ -71,3 +71,42 @@ Designing for permanent disability creates solutions that help everyone.
 ### Touch
 - `touch-action: manipulation` (prevents double-tap zoom delay)
 - `overscroll-behavior: contain` in modals/drawers
+
+---
+
+## Web Design Guidelines — Rules (TLC/Vercel)
+
+### Forms
+- Every `<input>` needs a `<label>` (not just placeholder)
+- Use `type="email"`, `type="tel"`, `type="url"` — not `type="text"` for everything
+- `autocomplete` attribute mandatory on login/signup forms
+- Inline validation: show errors next to the field, not in a summary at top
+- Never disable the submit button to prevent submission — explain errors instead
+
+### Animation
+- All animations MUST respect `prefers-reduced-motion`
+- Use `transform` and `opacity` only — avoid animating `width`, `height`, `top`, `left`
+- Never use `transition: all` — enumerate properties explicitly
+- Animations must be interruptible by user interaction
+
+### Typography
+- Use `font-variant-numeric: tabular-nums` for numbers in tables
+- Use `text-wrap: balance` on headings
+- Curly quotes (`"` `"`) not straight quotes (`"`)
+- Ellipsis character `…` not three dots `...`
+
+### Content handling
+- Every list, table, feed must handle the empty state explicitly
+- Truncate long text with `truncate` / `line-clamp` — never let it overflow
+- `min-w-0` on flex children that contain text (prevent overflow)
+
+### Performance
+- Images below the fold: `loading="lazy"`
+- Images above the fold: `fetchpriority="high"` + explicit `width`/`height` (prevents CLS)
+- Lists > 50 items: virtualize
+- Never read layout properties (getBoundingClientRect) in a render loop
+
+### Touch & Mobile
+- `touch-action: manipulation` on interactive elements (prevents 300ms delay)
+- `overscroll-behavior: contain` inside modals/drawers
+- Minimum touch target: 44×44px (WCAG 2.5.5)
