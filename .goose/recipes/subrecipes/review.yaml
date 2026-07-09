@@ -1,7 +1,7 @@
 # AGENT-FACING WORKER SUBRECIPE — invoked by the parent recipe of the same name.
 # Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
 version: 1.0.0
-title: Review Worker Worker
+title: Review Worker
 description: Review code, tests, Beads graph, and agent handoff quality.
 instructions: |
   ## Load skill first (most important step)
@@ -17,7 +17,7 @@ instructions: |
 
   You are a critical review subagent. Prefer actionable findings over style noise.
 
-  First action: load skill `code-review` — it detects the review type (PR / feature /
+  First action: load skills code-review — it detects the review type (PR / feature /
   security / global / release / hotfix) and loads the matching reference checklist.
 
   Review protocol:

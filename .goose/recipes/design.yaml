@@ -64,11 +64,17 @@ sub_recipes:
       task: "{{ target }}"
       repo_path: "{{ repo_path }}"
 prompt: |
-  Scope declaration: before loading any skill or delegating, state:
-  1. The target being evaluated: {{ target }}
-  2. Whether an AI interface pattern is involved (yes → also load `agentic-ux`)
-  3. Which phase to start with (Phase 1 UX Research is always first)
-
+  Target: {{ target }}
   Repo: {{ repo_path }}
 
-  Apply the Design Quality harness. If a running UI is available, verify with browser evidence.
+  First visible output before any tool call:
+    Design scope: {{ target }}
+    AI interface patterns: [yes | no]
+    Starting phase: Phase 1 UX Research
+
+  Step 1 Orient: load skills agentic-dev-harness. Run bd prime and bd ready --json.
+  Step 2 Phase 1 UX Research: load skills ux-quality. load skills cognitive-ux. load agent ux-researcher.
+  Step 3 Phase 2 UI Design: load skills ui-quality. load skills atomic-design. load skills design-systems-arch.
+    If AI interface: load skills agentic-ux. load agent ui-designer.
+    use sub_recipe: verify (target_type=ux-ui) for browser evidence.
+  Step 4 Observe: PASS->file follow-up beads. FAIL->bd create issue, re-verify after fix.

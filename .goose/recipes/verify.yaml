@@ -24,11 +24,11 @@ instructions: |
   | Figma, design tokens, .css, component specs | ux-ui | WCAG + design system |
 
   ## Skill and agent routing per type
-  - api:     load agentic-dev-harness; delegate qa-automation
-  - web:     load webapp-testing + ui-quality; delegate qa-automation + ui-designer
-  - cli:     load agentic-dev-harness; delegate qa-automation
-  - library: load agentic-dev-harness; delegate qa-automation
-  - ux-ui:   load ui-quality + ux-quality; delegate ui-designer + ux-researcher
+  - api:     load skills agentic-dev-harness; delegate qa-automation
+  - web:     load skills webapp-testing + ui-quality; delegate qa-automation + ui-designer
+  - cli:     load skills agentic-dev-harness; delegate qa-automation
+  - library: load skills agentic-dev-harness; delegate qa-automation
+  - ux-ui:   load skills ui-quality + ux-quality; delegate ui-designer + ux-researcher
 
   ## Orient (bd prime FIRST)
   1. Run bd prime — load known defects, test memories, quality gates.

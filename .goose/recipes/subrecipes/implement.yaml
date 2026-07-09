@@ -98,5 +98,17 @@ prompt: |
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
 
-  Work in the repository. Keep Beads state accurate. If you cannot safely edit,
-  stop with a precise blocker and proposed bead/gate.
+  First visible output before any tool call:
+    Orchestration decision:
+    - Bead: [id or will create]
+    - Scope: [exact files]
+    - Spec: [.specs/features/*/spec.md or none]
+
+  Step 1: load skills sdd. load skills agentic-dev-harness.
+    Run bd prime. Read spec.md for [FEAT]-NN IDs.
+  Step 2 RED: write failing test (name: test_FEAT_NN_desc). Confirm FAIL. No code yet.
+  Step 3: Write on its own line: "Scoped plan:"
+    then: files, AC IDs, bead ID claimed.
+  Step 4 GREEN: bd update <id> --claim. Write minimum code to pass RED test.
+  Step 5 OBSERVE: run tests. PASS->step 6. FAIL->fix code (not tests), max 3x.
+  Step 6: REFACTOR. Run full gate. Close bead. Report files/tests/ACs.

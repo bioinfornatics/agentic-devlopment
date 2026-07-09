@@ -9,7 +9,7 @@ instructions: |
   - In-session agent: load agent principal-engineer
   - Durable assignment: `bd create "Release gate: <version>" --assignee principal-engineer -p 1 --json`
 
-  Load skill `agentic-dev-harness` first, then run the `release` subrecipe.
+  load skills agentic-dev-harness first, then run the `release` subrecipe.
   Stop on first gate FAIL — do not proceed past a failed gate.
 
   Loop cycle: run `bd prime` to orient before any work, `bd ready --json` to triage,

@@ -9,7 +9,7 @@ instructions: |
   - In-session agent: load agent codebase-researcher
   - Durable assignment: `bd create "<title>" --assignee codebase-researcher -p 3 --json`
 
-  Load skill `agentic-dev-harness` first, then run the `explore` subrecipe.
+  load skills agentic-dev-harness first, then run the `explore` subrecipe.
 
 
 

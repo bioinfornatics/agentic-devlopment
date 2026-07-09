@@ -7,11 +7,11 @@ description: >
 instructions: |
   ## Detect type and load matching skill
   From target_type parameter and task context, load:
-  - api:     Load skill agentic-dev-harness
-  - web:     Load skill webapp-testing + ui-quality
-  - cli:     Load skill agentic-dev-harness + systematic-debugging
-  - library: Load skill agentic-dev-harness
-  - ux-ui:   Load skill ui-quality + ux-quality
+  - api:     load skills agentic-dev-harness
+  - web:     load skills webapp-testing + ui-quality
+  - cli:     load skills agentic-dev-harness + systematic-debugging
+  - library: load skills agentic-dev-harness
+  - ux-ui:   load skills ui-quality + ux-quality
 
   ## First visible output
   Before any tool call:
@@ -64,7 +64,7 @@ HTTP_CODE" <endpoint> | tee /tmp/response.txt
   4. Report: N passed / M failed / coverage %. Full output for each failure.
 
   ### ux-ui — Design system + WCAG
-  1. Load skill ui-quality + ux-quality.
+  1. load skills ui-quality + ux-quality.
   2. Navigate with Playwright if browser URL available.
   3. Audit design tokens: grep CSS for hardcoded values not from design system.
   4. Check Atomic Design hierarchy (Atom/Molecule/Organism/Template — from atomic-design skill).

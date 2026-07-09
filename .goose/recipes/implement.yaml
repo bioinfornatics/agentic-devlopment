@@ -9,7 +9,7 @@ instructions: |
   - In-session agent: load agent implementation-worker
   - Durable assignment: `bd create "<title>" --assignee implementation-worker -p 2 --json`
 
-  Load skill `beads-harness` first. Claim the bead before delegating.
+  load skills beads-harness first. Claim the bead before delegating.
   Then run the `implement` subrecipe and synthesize the handoff.
 
 
