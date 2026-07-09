@@ -1,0 +1,1 @@
+{"name":"@harness/apps","version":"1.0.0","private":true,"scripts":{"build":"pnpm -r build","kg:bootstrap":"pnpm --filter @harness/kg run bootstrap","kg:reason":"pnpm --filter @harness/kg run reason","kg:pipeline":"pnpm run kg:bootstrap && pnpm run kg:reason","dev":"pnpm --filter @harness/kg-visualizer dev"}}
