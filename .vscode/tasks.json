@@ -354,6 +354,28 @@
       "presentation": {
         "reveal": "never"
       }
+    },
+    {
+      "label": "KG: Reason (forward chaining → derived.jsonl)",
+      "detail": "Apply semantic rules on memory.jsonl → produces .knowledge/derived.jsonl with inferred facts",
+      "type": "shell",
+      "command": "python3 scripts/kg-reason.py",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "KG: Bootstrap + Reason + Visualize",
+      "detail": "Full KG pipeline: bootstrap → reason → open visualizer",
+      "type": "shell",
+      "command": "python3 scripts/kg-bootstrap.py && python3 scripts/kg-reason.py && xdg-open dist/kg/index.html",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
     }
   ]
 }

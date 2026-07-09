@@ -23,6 +23,7 @@
     .node circle:hover { stroke: #fff; stroke-width: 2px; }
     .node text { font-size: 9px; fill: #a0aec0; pointer-events: none; }
     .link { stroke: #4a5568; stroke-opacity: 0.5; stroke-width: 1px; marker-end: url(#arrow); }
+    .link.derived { stroke: #f6ad55; stroke-opacity: 0.6; stroke-dasharray: 4,3; stroke-width: 1.5px; }
     .link:hover { stroke: #90cdf4; stroke-opacity: 0.9; }
     .link-label { font-size: 8px; fill: #4a5568; pointer-events: none; }
     #upload-zone { border: 2px dashed #4a5568; border-radius: 8px; padding: 40px; text-align: center; margin: 40px; color: #718096; cursor: pointer; }
@@ -78,7 +79,9 @@ const COLORS = {
   'harness:recipe': '#4299e1','harness:skill': '#9f7aea','harness:agent': '#48bb78',
   'harness:doc': '#718096','epic': '#f6ad55','feature': '#fc8181',
   'user_story': '#f687b3','acceptance_criterion': '#68d391','test': '#4fd1c5',
-  'code_file': '#b794f4','spec_file': '#faf089','bead': '#ed8936','default': '#a0aec0'
+  'code_file': '#b794f4','spec_file': '#faf089','bead': '#ed8936',
+  'derived_status': '#e53e3e',  // red = problem status
+  'default': '#a0aec0'
 };
 const RADII = {
   'harness:recipe':9,'harness:skill':9,'harness:agent':9,'epic':12,
@@ -93,11 +96,13 @@ function radiusOf(type) { return RADII[type] || RADII.default; }
 function parseJSONL(text) {
   const lines = text.split('\n').filter(l=>l.trim());
   const entities=[], relations=[];
+  const seen = new Set();
   for(const l of lines) {
     try {
       const d=JSON.parse(l);
-      if(d.type==='entity') entities.push(d);
-      else if(d.type==='relation') relations.push(d);
+      if(d.type==='entity') {
+        if(!seen.has(d.name)){seen.add(d.name); entities.push(d);}
+      } else if(d.type==='relation') relations.push(d);
     } catch(e){}
   }
   return {entities, relations};
@@ -146,7 +151,7 @@ function buildGraph(nodes, links) {
     .force('collision',d3.forceCollide(20));
 
   const link = g.append('g').selectAll('.link')
-    .data(links).join('line').attr('class','link');
+    .data(links).join('line').attr('class', d => 'link' + (d.derived ? ' derived' : ''));
 
   const showLabels = ()=>document.getElementById('show-labels').checked;
 
@@ -165,7 +170,9 @@ function buildGraph(nodes, links) {
   node.append('circle')
     .attr('r',d=>radiusOf(d.entityType))
     .attr('fill',d=>colorOf(d.entityType))
-    .attr('stroke',d=>d3.color(colorOf(d.entityType)).darker());
+    .attr('stroke',d=>d3.color(colorOf(d.entityType)).darker())
+    .attr('stroke-dasharray',d=>d.derived?'4,2':null)
+    .attr('stroke-width',d=>d.derived?2:1.5);
 
   const labels = node.append('text')
     .attr('dy',d=>radiusOf(d.entityType)+10)
@@ -235,18 +242,26 @@ document.addEventListener('drop',e=>{
   r.readAsText(f);
 });
 
-// Auto-load memory.jsonl if available via fetch (works when served, not file://)
+// Auto-load both memory.jsonl (asserted) and derived.jsonl (inferred)
 async function autoLoad() {
   try {
-    const r=await fetch('../../../.knowledge/memory.jsonl');
-    if(r.ok){ const t=await r.text(); const {entities,relations}=parseJSONL(t); render(entities,relations); return; }
-  } catch(e){}
-  // Show upload zone
+    const [r1, r2] = await Promise.all([
+      fetch('../../../.knowledge/memory.jsonl'),
+      fetch('../../../.knowledge/derived.jsonl').catch(()=>null),
+    ]);
+    if (!r1.ok) throw new Error('memory.jsonl not found');
+    const t1 = await r1.text();
+    const t2 = r2 && r2.ok ? await r2.text() : '';
+    const {entities, relations} = parseJSONL(t1 + '\n' + t2);
+    render(entities, relations);
+    if (t2) document.getElementById('stats').title = 'Solid = asserted, Dashed = inferred';
+    return;
+  } catch(e) {}
   document.getElementById('svg-container').innerHTML = `
     <div id="upload-zone" onclick="document.getElementById('file-input').click()">
       <div style="font-size:32px;margin-bottom:12px">🕸</div>
       <div style="font-size:16px;margin-bottom:8px">Drop memory.jsonl here</div>
-      <div style="font-size:12px">Or click to browse — or drag from .knowledge/memory.jsonl</div>
+      <div style="font-size:12px">Also drop derived.jsonl to see inferred facts</div>
     </div>`;
 }
 autoLoad();
