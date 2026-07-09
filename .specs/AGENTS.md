@@ -7,7 +7,6 @@
 Beads (bd) handles: epics, user stories, tasks, bugs, incidents, dependencies, priorities, ACs.
 .specs/ handles: specification (WHAT), design (HOW), contracts, decisions, vision.
 
-**Never create tasks.md in .specs/ — use `bd create` instead.**
 
 ## Spec format
 

@@ -192,7 +192,7 @@ Quand le code précède la spec (brownfield ou harnais existant) :
 
 ## Beads remplace tasks.md et plan.md
 
-**Jamais de tasks.md dans .specs/**.  Beads est le canonical task tracker:
+Beads is the canonical task tracker:
 
 ```bash
 bd create "Task: [description]" --issue_type task    # task
