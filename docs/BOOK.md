@@ -23,3 +23,4 @@ This file defines the canonical order used to build the HTML/PDF documentation b
 19. [`15-skill-evaluations.md`](15-skill-evaluations.md)
 20. [`16-eval-analysis.md`](16-eval-analysis.md)
 21. [`AGENTS.md`](../AGENTS.md)
+22. [`knowledge-graph.md`](knowledge-graph.md)
