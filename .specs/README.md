@@ -4,13 +4,13 @@ SOTA SDD 2026. Research: sdd-sota-2026.md. Decisions: STATE.md.
 
 ## File naming (SOTA consensus)
 
-| File | When | Contents |
-|---|---|---|
-| spec.md | Always | ACs WHEN/THEN/SHALL, [FEAT]-NN IDs |
-| design.md | Medium+ | Architecture, components, data flow, risks |
-| contracts/s.md | API-heavy | Interface contract, data schemas |
-| components.md | UI features | Atomic Design, ASCII art mockups |
-| context.md | Complex | Gray area decisions |
+| File           | When        | Contents                                   |
+|----------------|-------------|--------------------------------------------|
+| spec.md        | Always      | ACs WHEN/THEN/SHALL, [FEAT]-NN IDs         |
+| design.md      | Medium+     | Architecture, components, data flow, risks |
+| contracts/s.md | API-heavy   | Interface contract, data schemas           |
+| components.md  | UI features | Atomic Design, ASCII art mockups           |
+| context.md     | Complex     | Gray area decisions                        |
 
 ## Note on STATE.md
 
@@ -20,19 +20,23 @@ SOTA research → see `docs/sota/` (knowledge, not specification).
 
 ## Project-level files
 
-| File | Contents |
-|---|---|
-| product.md | Vision, users, metrics, principles |
-| architecture.md | System overview, component contracts |
-| STATE.md | AD-NNN Architecture Decisions + handoff |
+| File            | Contents                                |
+|-----------------|-----------------------------------------|
+| product.md      | Vision, users, metrics, principles      |
+| architecture.md | System overview, component contracts    |
+| STATE.md        | AD-NNN Architecture Decisions + handoff |
 
 ## Auto-sizing
 
-| Scope | spec | design |---|---|---|---|---|
-| Micro 1 file | inline | no | no | no |
-| Small <= 3 | spec.md | no | no | no |
-| Medium | spec.md | design.md | no | if API |
-| Large | spec.md | design.md | Complex | spec.md | design.md 
+| Scope | spec.md | design.md | contracts/ |
+|---|---|---|---|
+| Micro (1 file) | inline AC | — | — |
+| Small (≤ 3 files) | spec.md | — | — |
+| Medium (feature) | spec.md | design.md | if API |
+| Large (multi-component) | spec.md | design.md | if API |
+| Complex (ambiguous) | spec.md | design.md | contracts/ |
+
+
 ## Features
 
 | Feature | spec | design |---|---|---|---|---|
