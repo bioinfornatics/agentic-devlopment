@@ -46,7 +46,8 @@ dist/cli.js       # Built binary (shebang added post-build)
 ## Test
 
 ```bash
-node dist/cli.js bootstrap --dry-run   # expect "Dry-run: N records"
-node dist/cli.js reason --rules        # expect 5+ rules listed
-node dist/cli.js pipeline              # expect "Bootstrap: N new (or 0), Derived: N facts"
+pnpm test                              # vitest run — all unit tests
+pnpm test:watch                        # vitest watch mode during development
+node dist/cli.js bootstrap --dry-run   # smoke test: Dry-run: N records
+node dist/cli.js pipeline              # integration: Bootstrap + Derived facts
 ```

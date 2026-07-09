@@ -1,79 +1,149 @@
-import { test, describe } from "node:test";
-import assert from "node:assert/strict";
-import { bootstrap } from "./bootstrap.js";
-import { reason, RULES } from "./reason.js";
-import { parseJSONL } from "./types.js";
+import { describe, it, expect } from "vitest";
+import { bootstrap } from "../src/bootstrap.js";
+import { reason, RULES } from "../src/reason.js";
+import { parseJSONL } from "../src/types.js";
+
+const j = (o: object) => JSON.stringify(o);
+const e = (name: string, entityType: string, obs: string[] = []) =>
+  j({ type: "entity", name, entityType, observations: obs });
+const r = (from: string, to: string, relationType: string, extra: object = {}) =>
+  j({ type: "relation", from, to, relationType, ...extra });
 
 describe("parseJSONL", () => {
-  test("handles malformed lines gracefully", () => {
+  it("parses valid entity + skips malformed lines", () => {
     const { entities, relations } = parseJSONL(
-      '{"type":"entity","name":"ok","entityType":"test","observations":[]}\nnot-json\n'
+      e("ok", "test") + "\nnot-json\n"
     );
-    assert.equal(entities.size, 1);
-    assert.equal(relations.length, 0);
+    expect(entities.size).toBe(1);
+    expect(relations.length).toBe(0);
   });
-  test("deduplicates entities by name", () => {
+
+  it("deduplicates entities by name — last write wins", () => {
     const { entities } = parseJSONL(
-      JSON.stringify({ type:"entity",name:"dup",entityType:"feature",observations:["v1"] })+"\n"+
-      JSON.stringify({ type:"entity",name:"dup",entityType:"feature",observations:["v2"] })
+      e("dup", "feature", ["v1"]) + "\n" + e("dup", "feature", ["v2"])
     );
-    assert.equal(entities.size, 1);
-    assert.deepEqual(entities.get("dup")!.observations, ["v2"]);
+    expect(entities.size).toBe(1);
+    expect(entities.get("dup")!.observations).toEqual(["v2"]);
+  });
+
+  it("parses relations correctly", () => {
+    const { relations } = parseJSONL(
+      e("a", "feature") + "\n" + r("a", "b", "IMPLEMENTS")
+    );
+    expect(relations.length).toBe(1);
+    expect(relations[0].relationType).toBe("IMPLEMENTS");
   });
 });
 
 describe("RULES", () => {
-  test("KG-01: 5+ named rules present", () => {
-    assert.ok(RULES.length >= 5);
+  it("KG-01: exports 5+ named rules", () => {
+    expect(RULES.length).toBeGreaterThanOrEqual(5);
     const names = RULES.map(r => r.name);
-    for (const n of ["R1:ac-test-gap","R2:feature-not-decomposed","R3:feature-not-implemented","R4:transitive-skill","R5:epic-blocked"])
-      assert.ok(names.includes(n), "Missing: "+n);
+    expect(names).toContain("R1:ac-test-gap");
+    expect(names).toContain("R2:feature-not-decomposed");
+    expect(names).toContain("R3:feature-not-implemented");
+    expect(names).toContain("R4:transitive-skill");
+    expect(names).toContain("R5:epic-blocked");
   });
-  test("R1: AC without VALIDATES test → test-gap", () => {
-    const kg = parseJSONL(JSON.stringify({type:"entity",name:"AC-01",entityType:"acceptance_criterion",observations:[]}));
+
+  it("R1: AC without VALIDATES test → HAS_STATUS test-gap", () => {
+    const kg = parseJSONL(e("AC-01", "acceptance_criterion"));
     const r1 = RULES.find(r => r.name === "R1:ac-test-gap")!;
-    const d = r1.fn(kg, new Set());
-    assert.equal(d.length, 1);
-    assert.equal(d[0].status_value, "test-gap");
+    const derived = r1.fn(kg, new Set());
+    expect(derived).toHaveLength(1);
+    expect(derived[0].status_value).toBe("test-gap");
+    expect(derived[0].relationType).toBe("HAS_STATUS");
   });
-  test("R1: AC with VALIDATES test → no gap", () => {
-    const lines = [
-      JSON.stringify({type:"entity",name:"AC-02",entityType:"acceptance_criterion",observations:[]}),
-      JSON.stringify({type:"entity",name:"t1",entityType:"test",observations:[]}),
-      JSON.stringify({type:"relation",from:"t1",to:"AC-02",relationType:"VALIDATES"}),
-    ].join("\n");
-    const kg = parseJSONL(lines);
-    const rs = new Set(kg.relations.map(r => r.from+"|"+r.to+"|"+r.relationType));
-    assert.equal(RULES.find(r=>r.name==="R1:ac-test-gap")!.fn(kg, rs).length, 0);
-  });
-  test("R3: IMPLEMENTED_BY closes the gap", () => {
-    const lines = [
-      JSON.stringify({type:"entity",name:"feat-x",entityType:"feature",observations:[]}),
-      JSON.stringify({type:"entity",name:"f.ts",entityType:"code_file",observations:[]}),
-      JSON.stringify({type:"relation",from:"feat-x",to:"f.ts",relationType:"IMPLEMENTED_BY"}),
-    ].join("\n");
-    const kg = parseJSONL(lines);
-    const rs = new Set(kg.relations.map(r => r.from+"|"+r.to+"|"+r.relationType));
-    assert.equal(RULES.find(r=>r.name==="R3:feature-not-implemented")!.fn(kg, rs).length, 0);
-  });
-  test("R3: bare feature → not-implemented", () => {
-    const kg = parseJSONL(JSON.stringify({type:"entity",name:"feat-bare",entityType:"feature",observations:[]}));
-    const d = RULES.find(r=>r.name==="R3:feature-not-implemented")!.fn(kg, new Set());
-    assert.equal(d.length, 1); assert.equal(d[0].status_value, "not-implemented");
-  });
-  test("R5: epic all-not-implemented → blocked", () => {
+
+  it("R1: AC with VALIDATES test → no gap", () => {
     const kg = parseJSONL([
-      JSON.stringify({type:"entity",name:"epic-e",entityType:"epic",observations:[]}),
-      JSON.stringify({type:"entity",name:"feat-f",entityType:"feature",observations:[]}),
-      JSON.stringify({type:"relation",from:"feat-f",to:"epic-e",relationType:"DECOMPOSES_INTO"}),
+      e("AC-02", "acceptance_criterion"),
+      e("t1", "test"),
+      r("t1", "AC-02", "VALIDATES"),
     ].join("\n"));
-    (kg.relations as any[]).push({type:"relation",from:"feat-f",to:"status:not-implemented",relationType:"HAS_STATUS",status_value:"not-implemented"});
-    const rs = new Set(kg.relations.map(r => r.from+"|"+r.to+"|"+r.relationType));
-    const d = RULES.find(r=>r.name==="R5:epic-blocked")!.fn(kg, rs);
-    assert.equal(d.length, 1); assert.equal(d[0].status_value, "blocked");
+    const rs = new Set(kg.relations.map(rel => rel.from+"|"+rel.to+"|"+rel.relationType));
+    const derived = RULES.find(r => r.name === "R1:ac-test-gap")!.fn(kg, rs);
+    expect(derived).toHaveLength(0);
   });
-  test("bootstrap + reason are functions", () => {
-    assert.ok(typeof bootstrap === "function");
-    assert.ok(typeof reason === "function");
+
+  it("R2: feature without REFINED_INTO → not-decomposed", () => {
+    const kg = parseJSONL(e("feat-bare", "feature"));
+    const d = RULES.find(r => r.name === "R2:feature-not-decomposed")!.fn(kg, new Set());
+    expect(d).toHaveLength(1);
+    expect(d[0].status_value).toBe("not-decomposed");
   });
+
+  it("R2: feature with REFINED_INTO user_story → no gap", () => {
+    const kg = parseJSONL([
+      e("feat-ok", "feature"),
+      e("story-1", "user_story"),
+      r("feat-ok", "story-1", "REFINED_INTO"),
+    ].join("\n"));
+    const rs = new Set(kg.relations.map(rel => rel.from+"|"+rel.to+"|"+rel.relationType));
+    expect(RULES.find(r => r.name === "R2:feature-not-decomposed")!.fn(kg, rs)).toHaveLength(0);
+  });
+
+  it("R3: feature IMPLEMENTED_BY code_file → gap closed", () => {
+    const kg = parseJSONL([
+      e("feat-x", "feature"),
+      e("f.ts", "code_file"),
+      r("feat-x", "f.ts", "IMPLEMENTED_BY"),
+    ].join("\n"));
+    const rs = new Set(kg.relations.map(rel => rel.from+"|"+rel.to+"|"+rel.relationType));
+    expect(RULES.find(r => r.name === "R3:feature-not-implemented")!.fn(kg, rs)).toHaveLength(0);
+  });
+
+  it("R3: feature IMPLEMENTS code_file → gap closed (bidirectional)", () => {
+    const kg = parseJSONL([
+      e("feat-y", "feature"),
+      e("g.ts", "code_file"),
+      r("g.ts", "feat-y", "IMPLEMENTS"),
+    ].join("\n"));
+    const rs = new Set(kg.relations.map(rel => rel.from+"|"+rel.to+"|"+rel.relationType));
+    expect(RULES.find(r => r.name === "R3:feature-not-implemented")!.fn(kg, rs)).toHaveLength(0);
+  });
+
+  it("R3: bare feature → not-implemented", () => {
+    const kg = parseJSONL(e("feat-none", "feature"));
+    const d = RULES.find(r => r.name === "R3:feature-not-implemented")!.fn(kg, new Set());
+    expect(d).toHaveLength(1);
+    expect(d[0].status_value).toBe("not-implemented");
+  });
+
+  it("R5: epic where all features are not-implemented → blocked", () => {
+    const kg = parseJSONL([
+      e("epic-e", "epic"),
+      e("feat-f", "feature"),
+      r("feat-f", "epic-e", "DECOMPOSES_INTO"),
+    ].join("\n"));
+    (kg.relations as any[]).push({
+      type: "relation", from: "feat-f", to: "status:not-implemented",
+      relationType: "HAS_STATUS", status_value: "not-implemented"
+    });
+    const rs = new Set(kg.relations.map(rel => rel.from+"|"+rel.to+"|"+rel.relationType));
+    const d = RULES.find(r => r.name === "R5:epic-blocked")!.fn(kg, rs);
+    expect(d).toHaveLength(1);
+    expect(d[0].status_value).toBe("blocked");
+  });
+
+  it("R5: epic with some implemented features → not blocked", () => {
+    const kg = parseJSONL([
+      e("epic-2", "epic"),
+      e("feat-done", "feature"),
+      e("code.ts", "code_file"),
+      r("feat-done", "epic-2", "DECOMPOSES_INTO"),
+      r("feat-done", "code.ts", "IMPLEMENTED_BY"),
+    ].join("\n"));
+    const rs = new Set(kg.relations.map(rel => rel.from+"|"+rel.to+"|"+rel.relationType));
+    // feat-done IS implemented (IMPLEMENTED_BY) so R3 won't fire → R5 won't fire either
+    const r5 = RULES.find(r => r.name === "R5:epic-blocked")!;
+    const d = r5.fn(kg, rs);
+    // no HAS_STATUS not-implemented in relations, so epic is not blocked
+    expect(d).toHaveLength(0);
+  });
+});
+
+describe("bootstrap + reason exports", () => {
+  it("bootstrap is a function", () => { expect(typeof bootstrap).toBe("function"); });
+  it("reason is a function",    () => { expect(typeof reason).toBe("function"); });
 });

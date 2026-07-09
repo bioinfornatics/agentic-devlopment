@@ -11,11 +11,13 @@
     "reason": "node dist/cli.js reason",
     "pipeline": "node dist/cli.js pipeline",
     "dev": "tsc --watch",
-    "test": "node --test dist/*.test.js",
-    "test:src": "node --test --import tsx src/*.test.ts"
+    "test": "vitest run",
+    "test:src": "node --test --import tsx src/*.test.ts",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "typescript": "^5.5.0",
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "vitest": "^2.0.0"
   }
 }
