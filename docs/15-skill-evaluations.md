@@ -236,7 +236,7 @@ The skill runner remains the main path for `evals/skills/`, but the generic harn
 ```bash
 python scripts/run-harness-ab-eval.py   --kind agents   --subject beads-planner
 
-python scripts/run-harness-ab-eval.py   --kind recipes   --subject harness-review
+python scripts/run-harness-ab-eval.py   --kind recipes   --subject review
 ```
 
 Suite form:

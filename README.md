@@ -27,101 +27,63 @@ intent → spec → Beads graph → TDD/implementation → review → validation
     templates/            # Small helper scripts/templates
 ```
 
-## Main recipes
+## Recipes — SDD workflow verbs
 
-| Recipe              | Purpose                                                               |
-|---------------------|-----------------------------------------------------------------------|
-| `dev`    | Default orchestrator for most Goose + Beads development work          |
-| `explore`  | Read-only codebase / docs / Beads research                            |
-| `plan`      | Convert a goal into a Beads-backed executable plan                    |
-| `implement` | Implement a scoped bead with tests and handoff                        |
-| `review`    | Review code, tests, risks, and Beads hygiene                          |
-| `verify`  | Browser/UI/accessibility verification                                 |
-| `release`   | Gated release / CI / verification workflow                            |
-| `remember`    | Beads memory stewardship: remember/search/recall/forget durable facts |
-| `sdd`        | Spec-Driven Development governance over the harness                   |
-| `design`       | UI/UX, accessibility, design-system, and web quality workflow         |
+| Recipe | `/slash` | Purpose |
+|---|---|---|
+| `dev` | `/dev` | Master entry — routes any task to the right specialist |
+| `discover` | `/discover` | Discovery: user stories, personas, 9-dimension sweep → Beads epic |
+| `spec` | `/spec` | Formal spec: WHEN/THEN/SHALL `[FEAT]-NN` IDs → `.specs/` + Beads stories |
+| `explore` | `/explore` | Read-only codebase research, blast-radius mapping |
+| `plan` | `/plan` | Spec-anchored Beads task graph, AC-linked dependencies |
+| `implement` | `/implement` | TDD-first: RED → GREEN → REFACTOR, minimal blast radius |
+| `review` | `/review` | Adaptive code review: PR / feature / security / global / hotfix |
+| `verify` | `/verify` | Adaptive verification: API (Bruno) / web (Playwright) / CLI / library / UX-UI |
+| `design` | `/design` | UX research → UI design → WCAG 2.2 AA → browser evidence |
+| `sdd` | `/sdd` | SDD governance: full discover → spec → plan → TDD → implement → verify |
+| `release` | `/release` | Gated release with CI waits and rollback plan |
+| `remember` | `/remember` | Beads memory stewardship: remember / search / recall / forget |
 
-## Main skills
+**SDD on-ramp:** `/discover` → `/spec` → `/plan` → `/implement` → `/review` → `/verify` → `/release`
 
-| Skill                 | Purpose                                                          |
-|-----------------------|------------------------------------------------------------------|
-| `agentic-dev-harness` | The combined Goose + Beads operating model                       |
-| `beads-harness`       | Beads commands and durable workflow semantics                    |
-| `goose-orchestration` | Goose recipes, skills, subagents, Summon, and extension rules    |
-| `sdd`                 | Spec-Driven Development loop                                     |
-| `code-review`         | Code review method for correctness, tests, security, and handoff |
-| `ux-quality`          | Unified UI/UX quality framework                                  |
-| `webapp-testing`      | Browser automation and local web-app verification method         |
+## Skills (14)
 
+| Skill | Purpose |
+|---|---|
+| `agentic-dev-harness` | Goose + Beads unified operating model |
+| `beads-harness` | Beads commands, dependency graph, memory, gates |
+| `sdd` | Spec-Driven Development loop, auto-sizing, spec-anchored |
+| `code-review` | Adaptive review: PR / feature / security / global / hotfix |
+| `goose-orchestration` | Recipes, subagents, Summon, routing, guardrails |
+| `systematic-debugging` | 4-phase root-cause investigation |
+| `ux-quality` | User intent, IA, interaction states, design coherence |
+| `ui-quality` | WCAG 2.2 AA, keyboard nav, design system, Core Web Vitals |
+| `webapp-testing` | Browser automation, server lifecycle, a11y evidence |
+| `cognitive-ux` | Laws of UX (Fitts, Hick, Gestalt), cognitive biases |
+| `agentic-ux` | Agentic AI interface patterns, trust calibration |
+| `atomic-design` | Brad Frost Atoms → Molecules → Organisms → Templates |
+| `design-systems-arch` | W3C token architecture, governance, maturity model |
+| `frontend-blueprint` | Design consultation: discovery → direction → build |
 
-Skill evaluations live outside the skill packages in `evals/skills/`; see `docs/15-skill-evaluations.md` for the evaluation-driven workflow, visual definition review, and real A/B runner. Quick definition review: `python scripts/render-skill-eval-review.py`, then open `dist/skill-eval-review/index.html`. Real A/B example: `python scripts/run-skill-ab-eval.py --skill code-review`; old/new from git: `python scripts/run-skill-ab-eval.py --skill code-review --mode old-new --baseline-git-ref HEAD~1`. Full suite: `python scripts/run-skill-ab-suite.py --continue-on-failure`, then open `dist/evals/skills/index.html`. To test with a specific Goose binary, pass `--goose-cli ../third-parties/goose/target/debug/goose` or set `GOOSE_EVAL_CLI`. A/B runners use isolated Goose homes by default so `without_skill` hides installed project skills, agents, and recipes. Generic agent/recipe evals use `scripts/run-harness-ab-eval.py --kind agents|recipes`. SQLite history, including provider, model, turn usage, and feedback recommendations, is written to `dist/evals/evaluation.db`.
+## Named agents (12)
 
-Editor shortcuts are available as VS Code tasks in `.vscode/tasks.json` and JetBrains shared run configurations in `.run/`, including run-and-open-review entries for complete or partial skill eval suites.
+Named agents in `.agents/agents/` — invoke with Goose Summon natural language:
+`load agent <name>` (in-session) or `delegate task bd-xxx and into those task load agent <name>` (isolated).
 
-## Named agents
-
-Named agents live in `.agents/agents/` and can be invoked through Goose Summon. All 11 agents follow the same format contract: Prompt Defense Baseline, rich identity, operating process with numbered phases, domain protocol, false positives list, output format template, skill pointer, and a closing prime directive.
-
-### Orchestration + Research
-
-| Agent                  | Role                                   | Invoke when                                              |
-|------------------------|----------------------------------------|----------------------------------------------------------|
-| `harness-orchestrator` | Lead orchestrator for the SDD+TDD loop | Multi-step, multi-agent, or multi-phase work             |
-| `codebase-researcher`  | Read-only architecture mapper          | Mapping blast radius, gathering evidence before planning |
-| `beads-planner`        | Beads dependency graph builder         | Converting a goal into executable Beads issues           |
-
-### SDD Roles (Spec-Driven Development)
-
-| Agent           | Role                                               | Invoke when                                      |
-|-----------------|----------------------------------------------------|--------------------------------------------------|
-| `product-owner` | PRD + acceptance criteria with 100-pt quality gate | Start of any new feature or initiative           |
-| `architect`     | System design, ADRs, trade-off analysis            | Touching system boundaries, technology decisions |
-
-### TDD Roles (Test-Driven Development)
-
-| Agent                   | Role                                          | Invoke when                                      |
-|-------------------------|-----------------------------------------------|--------------------------------------------------|
-| `tdd-guide`             | RED→GREEN→REFACTOR cycle + 80% coverage gate  | Before any new feature implementation or bug fix |
-| `implementation-worker` | Scoped bead implementation with TDD           | Bead is claimed and ready for coding             |
-| `qa-automation`         | Full test pipeline: unit/integration/E2E + CI | After implementation is complete                 |
-
-### Review + Quality
-
-| Agent                 | Role                                                   | Invoke when                                                    |
-|-----------------------|--------------------------------------------------------|----------------------------------------------------------------|
-| `review-critic`       | Confidence-filtered code review with proof requirement | After any implementation, before closing a bead                |
-| `principal-engineer`  | Blast radius, breaking changes, architecture coherence | Change touches shared infra, public APIs, or 2+ BLOCK verdicts |
-| `ux-researcher`       | User research, personas, journey maps                  | New feature, user validation                                   |
-| `ui-designer`         | Design system, WCAG 2.2 AA, a11y audit                 | Any UI change                                                  |
-| `atomic-design`       | Component hierarchy (Atoms→Templates)                  | Building component libraries                                   |
-| `cognitive-ux`        | Laws of UX, Gestalt, cognitive biases                  | Evaluating/justifying design decisions                         |
-| `agentic-ux`          | Agentic AI UX, trust calibration                       | Designing AI agent interfaces                                  |
-| `design-systems-arch` | Token architecture, governance, maturity               | Design system strategy                                         |
-| `frontend-blueprint`  | Discovery → design direction → atomic build            | Creating new interfaces                                        |
-
-### SDD+TDD Orchestration Flow
-
-```
-product-owner → architect → beads-planner → tdd-guide
-  → implementation-worker → review-critic
-       ↑                        │  (BLOCK → up to 2 retries)
-       └── principal-engineer ◄─┘  (escalation on 2+ BLOCK)
-  → qa-automation
-
-codebase-researcher   (read-only, parallel, any phase)
-harness-orchestrator  (coordinates the full loop)
-ux-researcher + ui-designer  (parallel for UI-bearing changes)
-```
-
-Example invocations:
-
-```text
-delegate(source: "review-critic", instructions: "Review the current diff. Do not modify files.")
-delegate(source: "architect", instructions: "Design the caching layer for the sync service.")
-delegate(source: "tdd-guide", instructions: "Write failing tests for bd create duplicate detection.")
-delegate(source: "product-owner", instructions: "Spec out the memory stewardship feature.")
-```
+| Agent | Role | Invoke when |
+|---|---|---|
+| `harness-orchestrator` | SDD+TDD loop orchestrator | Multi-step, multi-agent work |
+| `codebase-researcher` | Read-only architecture mapper | Blast radius, pre-planning evidence |
+| `beads-planner` | Beads dependency graph | >5 interdependent issues |
+| `product-owner` | PRD + backlog, 100-pt quality gate | Start of any new feature |
+| `architect` | System design, ADRs, trade-offs | Technology decisions, system boundaries |
+| `tdd-guide` | RED→GREEN→REFACTOR, 80% coverage | Before any implementation |
+| `implementation-worker` | Scoped TDD implementation | Bead claimed and ready |
+| `qa-automation` | Test pipeline, flaky quarantine, CI | After implementation |
+| `review-critic` | Confidence-filtered review, APPROVE/BLOCK | After implementation |
+| `principal-engineer` | Blast radius, breaking changes | Shared infra, public API, 2+ BLOCKs |
+| `ux-researcher` | Personas, journeys, usability | New feature, user validation |
+| `ui-designer` | Design system, WCAG 2.2 AA, a11y | Any UI change |
 
 ## Quick start
 
