@@ -39,12 +39,12 @@ SOTA research → see `docs/sota/` (knowledge, not specification).
 
 ## Features
 
-| Feature | spec.md | design.md | contracts/ |
-|---|---|---|---|
-| [harness-core](features/harness-core/) | ✅ | ✅ | kg-cli + kg-mcp |
-| [kg-integration](features/kg-integration/) | ✅ | — | — |
-| [eval-suite](features/eval-suite/) | ✅ | — | — |
-| [beads-workflow](features/beads-workflow/) | ✅ | — | — |
+| Feature                                    | spec.md | design.md | contracts/      |
+|--------------------------------------------|---------|-----------|-----------------|
+| [harness-core](features/harness-core/)     | ✅       | ✅         | kg-cli + kg-mcp |
+| [kg-integration](features/kg-integration/) | ✅       | —         | —               |
+| [eval-suite](features/eval-suite/)         | ✅       | —         | —               |
+| [beads-workflow](features/beads-workflow/) | ✅       | —         | —               |
 
 
 ## Create a spec
@@ -55,9 +55,9 @@ SOTA research → see `docs/sota/` (knowledge, not specification).
   -> node apps/kg/dist/cli.js pipeline
 ## Beads replaces tasks.md et plan.md
 
-| Besoin | Outil |
-|---|---|
-| Tasks, planning, tracking | Beads (`bd create --issue_type task`) |
-| Spec, design, contracts, decisions | .specs/ |
+| Besoin                             | Outil                                 |
+|------------------------------------|---------------------------------------|
+| Tasks, planning, tracking          | Beads (`bd create --issue_type task`) |
+| Spec, design, contracts, decisions | .specs/                               |
 
 Use `bd create` for tasks, planning, and tracking.

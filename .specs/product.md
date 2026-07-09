@@ -125,6 +125,33 @@ and generate irrelevant output. The harness reduces token waste through:
 | **Subrecipes (isolated sessions)** | Each subagent gets only the context it needs; orchestrator stays at < 10% context |
 | **First Visible Output rule** | Agent commits scope before any tool call — no "explore then decide" drift |
 
+
+### Environment labels — DORA measurement
+
+To measure DORA metrics, every task, bug, and incident must be labeled
+with the environment where it has been deployed or observed:
+
+```bash
+bd update <id> --add-label env:dev      # implemented locally, tests pass
+bd update <id> --add-label env:staging  # deployed to staging, verified
+bd update <id> --add-label env:prod     # deployed to production
+
+# Incident: also label with severity
+bd create "Incident: checkout flow broken" --issue_type bug \
+  --labels env:prod,severity:critical
+```
+
+| Label | Meaning | DORA impact |
+|---|---|---|
+| `env:dev` | Implemented locally, tests pass | Start of lead time measurement |
+| `env:staging` | Deployed to staging | Intermediate checkpoint |
+| `env:prod` | Deployed to production | End of lead time; start of failure rate window |
+| `severity:low/medium/high/critical` | Incident severity | MTTR priority |
+
+**Lead time** = bead `created_at` (intent) → `env:prod` label timestamp
+**Change failure rate** = bugs/incidents with `env:prod` / total deployments with `env:prod`
+**MTTR** = incident `created_at` → `bd close` timestamp
+
 ### Measurable efficiency targets
 
 | Metric | Target | Measured by |

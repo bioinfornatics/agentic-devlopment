@@ -29,3 +29,30 @@ AND `bd recall <key>` retrieves it
 
 - No real-time multi-agent conflict detection
 - No automatic bead creation from code analysis
+## DORA Labeling Convention
+
+### AC-BEADS-04 — Environment labels on deployable issues
+WHEN a task, bug, or incident transitions to a new environment
+THEN it receives the corresponding env label via `bd update --add-label env:<environment>`
+AND the label timestamp serves as the DORA measurement point
+
+### AC-BEADS-05 — Incident severity labeling
+WHEN a production incident is created
+THEN it receives both `env:prod` and a `severity:<level>` label
+AND the issue type is `bug` (not `task`)
+AND MTTR is measured from issue `created_at` to `bd close` timestamp
+
+### Labeling workflow
+
+```bash
+# Feature implementation
+bd create "Feature: user auth" --issue_type task --labels env:dev
+bd update <id> --add-label env:staging   # after staging deploy
+bd update <id> --add-label env:prod      # after production deploy
+
+# Production incident
+bd create "Incident: auth broken" --issue_type bug --labels env:prod,severity:high
+
+# Bug found in staging
+bd create "Bug: form validation" --issue_type bug --labels env:staging,severity:medium
+```
