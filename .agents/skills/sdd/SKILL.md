@@ -172,3 +172,19 @@ Each SDD phase has a designated checker — never advance a phase using the same
 | TDD               | tdd-guide             | implementation-worker (can RED be reproduced?)   |
 | Implement         | implementation-worker | review-critic (diff review)                      |
 | Release readiness | review-critic         | principal-engineer (blast radius check)          |
+---
+
+## Brownfield / retro-spec pattern
+
+Quand le code précède la spec (brownfield ou harnais existant) :
+
+- **Micro/Small** : les descriptions Beads + acceptance criteria SONT la spec légère.
+  Pas besoin de `.specs/features/*/spec.md` pour des changements < 3 fichiers.
+
+- **Medium/Large** : créer le fichier spec `.specs/features/[feature]/spec.md`
+  avec les ACs WHEN/THEN/SHALL et les `[FEAT]-NN` IDs.
+  Stocker le pointeur : `bd remember "Spec for [feature]: canonical source is .specs/features/[feature]/spec.md" --key spec-[feature]-pointer`
+
+- **Retro-spec** : si implémentation existante sans spec, créer la spec depuis le code.
+  Marquer `Status: Retro-spec (brownfield)` en tête du fichier.
+  C'est la dette SDD révélée par R1 (ACs sans test) et R3 (features sans implémentation KG).

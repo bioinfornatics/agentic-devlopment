@@ -16,3 +16,8 @@ CLAUDE.md
 .claude/
 .playwright-mcp/
 .idea/
+
+# Auto-added
+*.pyc
+apps/*/node_modules/
+apps/node_modules/

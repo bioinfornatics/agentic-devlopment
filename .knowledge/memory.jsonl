@@ -306,3 +306,27 @@
 {"type": "relation", "from": "test:kg-pipeline-smoke", "to": "KG-06", "relationType": "VALIDATES"}
 {"type": "entity", "name": "goose-config:knowledgegraphmemory", "entityType": "config_file", "observations": ["path: ~/.config/goose/config.yaml", "scope: buildtime", "role: MCP extension declaration for KG memory server", "cmd: npx -y @modelcontextprotocol/server-memory", "MEMORY_FILE_PATH: .knowledge/memory.jsonl (per-project, absolute in config)", "status: canonical"]}
 {"type": "relation", "from": "feat-kg-activate", "to": "goose-config:knowledgegraphmemory", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": ".specs/features/harness-core/spec.md", "entityType": "spec_file", "observations": ["scope:buildtime", "path: .specs/features/harness-core/spec.md", "status:retro-spec"]}
+{"type": "relation", "from": "feat-recipe-ecosystem", "to": ".specs/features/harness-core/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "feat-skill-library", "to": ".specs/features/harness-core/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "feat-agent-roster", "to": ".specs/features/harness-core/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "AC-RECIPE-01", "to": ".specs/features/harness-core/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "AC-RECIPE-02", "to": ".specs/features/harness-core/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "AC-SKILL-01", "to": ".specs/features/harness-core/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "AC-SKILL-02", "to": ".specs/features/harness-core/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "AC-AGENT-01", "to": ".specs/features/harness-core/spec.md", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": ".specs/features/eval-suite/spec.md", "entityType": "spec_file", "observations": ["scope:buildtime", "path: .specs/features/eval-suite/spec.md", "status:retro-spec"]}
+{"type": "relation", "from": "feat-eval-suite", "to": ".specs/features/eval-suite/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "AC-EVAL-01", "to": ".specs/features/eval-suite/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "AC-EVAL-02", "to": ".specs/features/eval-suite/spec.md", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": ".specs/features/kg-integration/spec.md", "entityType": "spec_file", "observations": ["scope:buildtime", "path: .specs/features/kg-integration/spec.md", "status:retro-spec"]}
+{"type": "relation", "from": "feat-kg-integration", "to": ".specs/features/kg-integration/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "KG-01", "to": ".specs/features/kg-integration/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "KG-02", "to": ".specs/features/kg-integration/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "KG-03", "to": ".specs/features/kg-integration/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "KG-04", "to": ".specs/features/kg-integration/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "KG-05", "to": ".specs/features/kg-integration/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "KG-06", "to": ".specs/features/kg-integration/spec.md", "relationType": "LOCATED_IN"}
+{"type": "entity", "name": ".specs/features/beads-workflow/spec.md", "entityType": "spec_file", "observations": ["scope:buildtime", "path: .specs/features/beads-workflow/spec.md", "status:retro-spec"]}
+{"type": "relation", "from": "feat-beads-workflow", "to": ".specs/features/beads-workflow/spec.md", "relationType": "LOCATED_IN"}
+{"type": "relation", "from": "AC-BEADS-01", "to": ".specs/features/beads-workflow/spec.md", "relationType": "LOCATED_IN"}

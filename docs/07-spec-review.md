@@ -78,3 +78,10 @@ Human decisions/gates:
 - Implementation can begin without guessing.
 - Test strategy follows directly from acceptance criteria.
 - Open questions are gated or assigned.
+## Où vivent les specs
+
+Les specs formelles vivent dans `.specs/features/[feature]/spec.md`.
+La recette `/spec` crée ce fichier et stocke automatiquement le pointeur Beads.
+
+Pour les changements Micro/Small, les descriptions Beads font office de spec légère.
+Pour Medium/Large/Brownfield, un fichier `.specs/` est obligatoire.
