@@ -88,6 +88,52 @@ specs before code, review before merge, verified before ship.
 | Adding a new skill measurably improves agent output quality | A/B eval suite shows positive skill delta (with_skill pass rate > without_skill) |
 | Agent decisions survive session boundaries | `bd prime` injects past decisions and memories into every new session |
 
+
+---
+
+## Value Proposition — DORA Metrics & Efficiency
+
+The harness is built around the insight that **agentic development compounds
+the four DORA metrics** when disciplined by SDD:
+
+| DORA Metric | Without harness | With harness |
+|---|---|---|
+| **Deployment frequency** | Limited by human review cycles | Agents iterate 24/7; review is gated not bottlenecked |
+| **Lead time for changes** | Days (spec → design → code → review → deploy) | Hours (spec in /discover, implement in one session, review immediate) |
+| **Change failure rate** | High when agents "vibe-code" without spec | Low: spec-anchored implementation, TDD gate, review-critic block |
+| **Time to recovery (MTTR)** | Hours finding root cause | Minutes: KG traces incident → AC → code → test; systematic-debugging skill |
+
+### Team size & time to market
+
+A single developer with the harness can carry the velocity of a small team:
+
+- Agents handle **routine implementation** (boilerplate, tests, review) at machine speed
+- The developer focuses on **intent, spec quality, and architectural decisions**
+- **Fewer people** are needed to ship and maintain a feature at the same quality level
+- **Time to market** compresses: discovery-to-spec in one session; spec-to-verified in the next
+
+### Token efficiency — lower LLM cost
+
+Unguided agents over-explore: they read entire codebases, retry failed commands,
+and generate irrelevant output. The harness reduces token waste through:
+
+| Mechanism | Token saving |
+|---|---|
+| **Skills with scoped protocols** | Agent reads only what the skill prescribes (e.g. PR review: diff + 3 files, not full repo) |
+| **Beads claim before write** | Agent does not re-explore context already known from the bead description |
+| **Knowledge Graph orientation** | `open_nodes([FEAT]-NN)` returns exactly the AC, spec, and existing tests — no scanning |
+| **Subrecipes (isolated sessions)** | Each subagent gets only the context it needs; orchestrator stays at < 10% context |
+| **First Visible Output rule** | Agent commits scope before any tool call — no "explore then decide" drift |
+
+### Measurable efficiency targets
+
+| Metric | Target | Measured by |
+|---|---|---|
+| Feature lead time | < 4 hours from /discover to verified PR | Bead created_at → bd close timestamp |
+| Change failure rate | < 10% of implemented beads require rework | review-critic BLOCK rate / total beads closed |
+| Context budget per session | < 30% used for orchestrator sessions | events.jsonl token count |
+| Skill delta | Positive on all A/B evals | run-skill-ab-suite.py --check |
+
 ---
 
 ## Non-Goals
