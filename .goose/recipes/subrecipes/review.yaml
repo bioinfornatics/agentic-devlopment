@@ -36,6 +36,19 @@ instructions: |
 
   Orient: run `bd prime` at the start to load Beads state. Stop after the handoff block — do not continue exploring.
 
+## KG checkpoint — Phase review (load skills knowledge-graph first)
+  Before listing findings:
+  1. load skills knowledge-graph
+  2. Search for ACs related to this diff:
+     search_nodes with query=<feature-name or FEAT prefix>
+  3. For each acceptance_criterion found: check if a test entity ANCHORS it.
+     If acceptance_criterion has no ANCHORS relation to a test entity:
+     → Add to findings as MEDIUM finding: "AC <ID> has no linked test in KG"
+     → This is a Beads hygiene issue: bd create "Test gap: <AC ID>" --assignee tdd-guide
+  4. Add observation to reviewed entities:
+     add_observations entityName=<component>, observations=[reviewed:2026-07-09]
+  Skip if knowledgegraphmemory extension is not available.
+
   Memory checkpoint:
   - At the end, decide whether a durable project fact was learned.
   - If yes, store or propose: `bd remember "<fact>" --key <stable-key>`.

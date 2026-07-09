@@ -51,6 +51,21 @@ instructions: |
   - End with changed files, test output (pass count), bead status, spec AC IDs covered.
 
 
+## KG checkpoint — Phase implement (load skills knowledge-graph first)
+  After GREEN phase and before handoff:
+  1. load skills knowledge-graph
+  2. Create entity for what was built:
+     create_entities with name=<component|api_endpoint|domain_service>,
+     entityType=component|api_endpoint|domain_service,
+     observations=[scope:buildtime, layer:frontend|api|backend, file:src/...]
+  3. Create code_file entity for each file written:
+     create_entities with name=<src/path/file.ext>, entityType=code_file,
+     observations=[scope:buildtime, path:<relative-path>]
+  4. Link entity to file and to user story (if known from bead):
+     create_relations IMPLEMENTED_IN code_file
+     create_relations IMPLEMENTS user_story (if [FEAT]-NN referenced in bead)
+  Skip if knowledgegraphmemory extension is not available in this session.
+
   Memory checkpoint:
   - At the end, decide whether a durable project fact was learned.
   - If yes, store or propose: `bd remember "<fact>" --key <stable-key>`.

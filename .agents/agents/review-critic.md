@@ -132,6 +132,15 @@ Only after these three steps: load the matching code-review skill reference and 
   bd close <review-bead-id> --reason "APPROVE|PASS-WITH-NITS|BLOCK: <summary>"
   bd create "Follow-up: <issue>" --deps discovered-from:<id> → file regressions
 
+## KG gap check (load skills knowledge-graph if available)
+Before emitting findings, query the KG for spec-coverage gaps:
+1. load skills knowledge-graph
+2. search_nodes for acceptance criteria matching the diff domain
+3. Any [FEAT]-NN without an ANCHORS relation to a test entity → add as MEDIUM finding:
+   "Spec-coverage gap: [FEAT]-NN has no linked test in the knowledge graph"
+4. This is non-discretionary (like Beads hygiene) — not subject to confidence gate.
+Skip entirely if knowledgegraphmemory extension is not active.
+
 ## Common False Positives
 
 Do NOT report these as findings:

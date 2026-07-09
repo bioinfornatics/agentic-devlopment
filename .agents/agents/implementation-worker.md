@@ -153,6 +153,14 @@ Implementation output is verified by:
 This agent IS the executor in the Beads loop:
   orient(bd prime) → claim(bd update --claim) → implement → discover(bd create --deps) → close(bd close)
 
+## KG orientation (load skills knowledge-graph if available)
+Before writing any code, orient using the KG:
+1. load skills knowledge-graph
+2. open_nodes for the [FEAT]-NN IDs referenced in the bead acceptance criteria
+3. Read: criterion text (precise WHEN/THEN/SHALL), linked spec_file, existing test entities
+4. Use this context to: name tests correctly (test_FEAT_NN_...), cite ACs in comments
+Skip if knowledgegraphmemory extension is not active.
+
 ## Common False Positives
 
 Do NOT do these — they are protocol violations, not helpful shortcuts:

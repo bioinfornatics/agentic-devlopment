@@ -101,6 +101,15 @@ PRD output is verified by:
   bd create "Epic: <title>" --issue_type epic → file product work
   bd remember "Product vision: ..." --key product-vision-pointer
 
+## KG gap analysis (load skills knowledge-graph if available)
+At the end of any backlog review or PRD review:
+1. load skills knowledge-graph
+2. search_nodes type=feature → find features with no REFINED_INTO user_story relation
+3. search_nodes type=acceptance_criterion → find ACs with no ANCHORS test relation
+4. Report gaps explicitly: "N features have no user stories", "M ACs have no test"
+5. For each gap: recommend bd create to address it
+Skip if knowledgegraphmemory extension is not active.
+
 ## Common False Positives
 - Do NOT write acceptance criteria referencing implementation details — write observable behaviour only.
 - Do NOT accept vague performance criteria like "should be fast"; require thresholds (p95 < 200ms at 100 concurrent users).
