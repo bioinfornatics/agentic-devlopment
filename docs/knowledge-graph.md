@@ -584,3 +584,63 @@ category: "sdd/phase"          → phase courante + AC IDs ouverts
 category: "sdd/gaps"           → ACs sans test, features sans story
 ```
 
+
+
+---
+
+## Addendum 2 — Architecture 3 couches validée (2026-07-09)
+
+### Q1 : Remplacer bd remember par Goose memory ?
+
+**Non — ils sont complémentaires, pas substituables.**
+
+| Dimension | `memory` builtin | `bd remember` (Beads) |
+|---|---|---|
+| **Persistance** | Fichiers .txt locaux | Dolt (git-synced, distribuable) |
+| **Cross-session** | Oui (fichiers persistent) | Oui (Dolt persist) |
+| **Auto-injection** | ✅ Chargé dans le prompt à chaque session | ❌ Requires `bd prime` / `bd recall` |
+| **Queryable** | retrieve_memories(category) | bd search, bd recall, bd memories |
+| **Format** | Texte libre catégorisé | Pointer format ≤250 chars |
+| **Collab** | ❌ Local seulement | ✅ Dolt push → partageable |
+| **Intégration Beads** | ❌ | ✅ Natif au workflow SDD |
+
+**Usage recommandé :**
+- `memory` builtin → **contexte de session** (phase SDD courante, patterns projet, AC IDs ouverts)
+- `bd remember` → **faits durables projet** (routing table pointer, spec anchors, ADRs résumés)
+
+### Q2 : Valider @modelcontextprotocol/server-memory ?
+
+**Oui — puisque memory builtin N'EST PAS un KG**, l'extension externe MCP est légitime.
+
+| Extension | Capacités KG | Usage |
+|---|---|---|
+| `memory` builtin | ❌ Texte catégorisé, pas de graphe | Session context |
+| `knowledgegraphmemory` (MCP) | ✅ Entités, relations, traversal | KG produit/harness |
+
+Commande validée : `npx -y @modelcontextprotocol/server-memory`
+(ou `pnpm dlx @modelcontextprotocol/server-memory` si npx indisponible)
+
+### Architecture finale — 3 couches distinctes
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ LAYER 3 — KG graphe (entities + relations + observations)   │
+│   knowledgegraphmemory: enabled=true                       │
+│   npx -y @modelcontextprotocol/server-memory               │
+│   → .knowledge/memory.jsonl (56 entités, 42 relations)     │
+│   Outils: create_entities / search_nodes / open_nodes      │
+│   Usage: blast radius, coverage gaps, architecture trace   │
+├─────────────────────────────────────────────────────────────┤
+│ LAYER 2 — Mémoire catégorisée auto-injectée (session)      │
+│   memory: enabled=true (builtin Goose)                     │
+│   → .goose/memory/<category>.txt                           │
+│   Outils: remember_memory / retrieve_memories              │
+│   Usage: phase SDD, patterns projet, AC IDs, préférences   │
+├─────────────────────────────────────────────────────────────┤
+│ LAYER 1 — Faits durables Dolt-synced (cross-session)       │
+│   bd remember --key <stable-key> (Beads/Dolt)             │
+│   → Dolt git-synced, bd search, bd recall                  │
+│   Usage: routing pointers, spec anchors, ADRs résumés      │
+└─────────────────────────────────────────────────────────────┘
+```
+
