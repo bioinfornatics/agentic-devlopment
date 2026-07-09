@@ -64,19 +64,7 @@ pandoc "${DOCS[@]}" \
   -o "$HTML_OUT"
 
 # WCAG: wrap body content in <main> landmark + fix lang attr
-python3 - << 'PYEOF'
-import pathlib, re
-p = pathlib.Path("$HTML_OUT")
-t = p.read_text()
-# Fix lang="" -> lang="fr"
-t = re.sub(r'<html[^>]*lang=""[^>]*>', lambda m: m.group(0).replace('lang=""', 'lang="fr"'), t)
-# Wrap main content in <main>
-if '<main' not in t:
-    t = t.replace('<body>', '<body>\n<main id="main-content" role="main">', 1)
-    t = t.replace('</body>', '</main>\n</body>', 1)
-p.write_text(t)
-print("WCAG post-process done")
-PYEOF
+python3 scripts/wcag-postprocess.py "$HTML_OUT"
 
 cp "$HTML_OUT" "$HTML_INDEX"
 
