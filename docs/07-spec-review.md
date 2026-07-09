@@ -85,3 +85,12 @@ La recette `/spec` crée ce fichier et stocke automatiquement le pointeur Beads.
 
 Pour les changements Micro/Small, les descriptions Beads font office de spec légère.
 Pour Medium/Large/Brownfield, un fichier `.specs/` est obligatoire.
+## Beads remplace tasks.md et plan.md
+
+`tasks.md` et `plan.md` dans `.specs/` sont **non nécessaires** car Beads (Dolt git-synced) gère déjà:
+- Épics, user stories, tasks, bugs, incidents
+- Dépendances entre tâches (`bd dep add`)
+- Priorités, assignees, AC
+- Suivi durable cross-sessions
+
+**.specs/ reste centré sur les artefacts de connaissance** (spec.md, design.md, contracts/, STATE.md).

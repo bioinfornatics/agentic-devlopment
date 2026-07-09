@@ -8,7 +8,6 @@ SOTA SDD 2026. Research: sdd-sota-2026.md. Decisions: STATE.md.
 |---|---|---|
 | spec.md | Always | ACs WHEN/THEN/SHALL, [FEAT]-NN IDs |
 | design.md | Medium+ | Architecture, components, data flow, risks |
-| tasks.md | Large+ | Atomic tasks, test coverage matrix |
 | contracts/s.md | API-heavy | Interface contract, data schemas |
 | components.md | UI features | Atomic Design, ASCII art mockups |
 | context.md | Complex | Gray area decisions |
@@ -24,18 +23,14 @@ SOTA SDD 2026. Research: sdd-sota-2026.md. Decisions: STATE.md.
 
 ## Auto-sizing
 
-| Scope | spec | design | tasks | contracts |
-|---|---|---|---|---|
+| Scope | spec | design |---|---|---|---|---|
 | Micro 1 file | inline | no | no | no |
 | Small <= 3 | spec.md | no | no | no |
 | Medium | spec.md | design.md | no | if API |
-| Large | spec.md | design.md | tasks.md | if API |
-| Complex | spec.md | design.md | tasks.md | contracts/ |
-
+| Large | spec.md | design.md | Complex | spec.md | design.md 
 ## Features
 
-| Feature | spec | design | tasks | contracts |
-|---|---|---|---|---|
+| Feature | spec | design |---|---|---|---|---|
 | harness-core | done | done | no | kg-cli + kg-mcp |
 | kg-integration | done | no | done | no |
 | eval-suite | done | no | no | no |
@@ -47,3 +42,11 @@ SOTA SDD 2026. Research: sdd-sota-2026.md. Decisions: STATE.md.
   -> .specs/features/name/spec.md
   -> bd remember pointer
   -> node apps/kg/dist/cli.js pipeline
+## Beads remplace tasks.md et plan.md
+
+| Besoin | Outil |
+|---|---|
+| Tâches, planning, suivi | Beads (`bd create --issue_type task`) |
+| Spec, design, contrats, décisions | .specs/ |
+
+Jamais de `tasks.md` ou `plan.md` dans `.specs/` — utiliser `bd create`.

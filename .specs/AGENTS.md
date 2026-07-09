@@ -2,6 +2,13 @@
 
 > Overrides root AGENTS.md when working in the .specs/ directory.
 
+## Beads vs .specs/
+
+Beads (bd) gère: épics, user stories, tasks, bugs, incidents, dépendances, priorités, AC.
+.specs/ gère: specification (QUOI), design (COMMENT), contrats, décisions, vision.
+
+**Ne jamais créer tasks.md dans .specs/ — utiliser bd create à la place.**
+
 ## Spec format
 
 Every spec file lives at `.specs/features/[feature-slug]/spec.md`.

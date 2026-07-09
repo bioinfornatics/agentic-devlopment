@@ -188,3 +188,18 @@ Quand le code précède la spec (brownfield ou harnais existant) :
 - **Retro-spec** : si implémentation existante sans spec, créer la spec depuis le code.
   Marquer `Status: Retro-spec (brownfield)` en tête du fichier.
   C'est la dette SDD révélée par R1 (ACs sans test) et R3 (features sans implémentation KG).
+---
+
+## Beads remplace tasks.md et plan.md
+
+**Jamais de tasks.md dans .specs/**.  Beads est le canonical task tracker:
+
+```bash
+bd create "Task: [description]" --issue_type task    # task
+bd create "US: [description]"   --issue_type story   # user story
+bd create "Epic: [description]" --issue_type epic    # epic
+bd dep add <child> <parent>                          # dépendances
+```
+
+.specs/ = artefacts de connaissance (QUOI/POURQUOI/COMMENT)
+Beads  = artefacts d'exécution (QUI/QUAND/SUIVI)

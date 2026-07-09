@@ -18,7 +18,7 @@ Our harness targets: spec-anchored.
 |---|---|---|---|---|
 | Requirements | spec.md | requirements.md | spec.md | spec.md |
 | Architecture | plan.md | design.md | design.md | design.md |
-| Tasks | tasks.md | tasks.md | tasks.md | tasks.md |
+| Tasks | tasks.md (Beads replaces) | tasks.md | tasks.md | **Beads** |
 | API contracts | contracts/s.md | inline | inline | contracts/s.md |
 | ADR log | constitution.md | product.md | STATE.md | STATE.md |
 | UI components | none | none | none | components.md UI only |
@@ -42,3 +42,13 @@ For features with UI screens, add components.md with:
 - Interaction states (hover, focus, error, loading)
 
 Our harness has no UI screens: use contracts/ + design.md instead.
+## Notre harness: Beads remplace tasks.md et plan.md
+
+Beads (Dolt git-synced) gère épics, user stories, tasks, bugs, incidents avec dépendances, priorités et AC. Le `.specs/` reste centré sur les artefacts de connaissance:
+
+| Artifact | Outil |
+|---|---|
+| Tâches, planning, suivi | **Beads** (bd create, bd dep, bd close) |
+| Spécification, design, contrats | **.specs/** (spec.md, design.md, contracts/) |
+| Décisions architecturales | **.specs/STATE.md** |
+| Vision produit | **.specs/product.md** |
