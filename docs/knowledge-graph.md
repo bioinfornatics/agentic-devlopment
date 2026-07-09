@@ -644,3 +644,29 @@ Commande validée : `npx -y @modelcontextprotocol/server-memory`
 └─────────────────────────────────────────────────────────────┘
 ```
 
+
+---
+
+## Addendum 3 — KG Visualiseur : options disponibles (2026-07-09)
+
+### Option 1 — dist/kg/index.html (opérationnel)
+Standalone D3.js, drag & drop de .knowledge/memory.jsonl.
+`xdg-open dist/kg/index.html` ou VS Code task "KG: Open Local Visualizer".
+
+### Option 2 — memory-visualizer local (third-parties)
+React + D3.js plus riche (navigation historique, clipboard paste).
+`cd /home/jmercier/Codes/third-parties/memory-visualizer && npm run dev`
+
+### Option 3 — memviz.herich.tech (online)
+https://memviz.herich.tech — même format JSONL, drag & drop.
+
+### Option 4 — Goose Apps extension (KG-08, backlog P4)
+Extension builtin `apps` (enabled:false dans config Goose 1.37).
+Source: crates/goose/src/agents/platform_extensions/apps.rs
+Outils: `create_app(prd)` génère une HTML app dans une fenêtre Goose native.
+Plan: activer l'extension, demander à Goose de créer kg-visualizer depuis scripts/kg-visualizer.html.
+Avantage: fenêtre Goose native, pas de browser externe, possible accès aux tools MCP.
+
+### MEMORY_FILE_PATH — optionnel mais obligatoire en pratique
+Sans MEMORY_FILE_PATH → fallback vers ~/.npm/_npx/.../server-memory/dist/memory.jsonl (partagé).
+Notre wrapper scripts/kg-mcp-server.sh détecte automatiquement le .knowledge/ du projet courant.
