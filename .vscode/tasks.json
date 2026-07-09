@@ -18,6 +18,24 @@
       "type": "promptString",
       "description": "Feature name (e.g. user-auth, checkout-flow)",
       "default": "my-feature"
+    },
+    {
+      "id": "recipeEvalSubject",
+      "type": "promptString",
+      "description": "Recipe to eval (review, implement, discover, spec, plan, verify…)",
+      "default": "review"
+    },
+    {
+      "id": "recipeEvalSubset",
+      "type": "promptString",
+      "description": "Space-separated recipes (e.g. review implement discover)",
+      "default": "review implement"
+    },
+    {
+      "id": "agentEvalSubject",
+      "type": "promptString",
+      "description": "Agent to eval (review-critic, tdd-guide, architect…)",
+      "default": "review-critic"
     }
   ],
   "tasks": [
@@ -186,6 +204,78 @@
       "presentation": {
         "reveal": "silent",
         "panel": "shared"
+      }
+    },
+    {
+      "label": "Eval: Recipes — Full Suite",
+      "detail": "Run all 12 recipe A/B evals. --ambient-goose required for keychain providers.",
+      "type": "shell",
+      "command": "python3 scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval: Recipes — Single recipe",
+      "detail": "A/B eval for one recipe. Prompts for name (e.g. review, implement, discover).",
+      "type": "shell",
+      "command": "python3 scripts/run-harness-ab-eval.py --kind recipes --subject ${input:recipeEvalSubject} --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval: Recipes — Subset",
+      "detail": "A/B eval for selected recipes (space-separated). Prompts for list.",
+      "type": "shell",
+      "command": "python3 scripts/run-harness-ab-suite.py --kind recipes --subjects ${input:recipeEvalSubset} --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval: Agents — Full Suite",
+      "detail": "Run all 12 agent A/B evals. --ambient-goose required.",
+      "type": "shell",
+      "command": "python3 scripts/run-harness-ab-suite.py --kind agents --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval: Agents — Single agent",
+      "detail": "A/B eval for one agent. Prompts for name (e.g. review-critic, tdd-guide).",
+      "type": "shell",
+      "command": "python3 scripts/run-harness-ab-eval.py --kind agents --subject ${input:agentEvalSubject} --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval: All Kinds — Full Suite (skills + recipes + agents)",
+      "detail": "Complete evaluation: skills (parallel 3), then recipes, then agents.",
+      "type": "shell",
+      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 3 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python3 scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python3 scripts/run-harness-ab-suite.py --kind agents --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
       }
     },
     {
