@@ -95,11 +95,11 @@ echo "wrote $HTML_OUT"
 
 # KG visualizer
 mkdir -p dist/kg
-cp scripts/kg-visualizer.html dist/kg/index.html
+cp apps/kg-visualizer/src/app.html dist/kg/index.html
 echo "wrote dist/kg/index.html"
 
 # KG pipeline — refresh + reason
-if [ -f "scripts/kg-bootstrap.py" ] && [ -d ".knowledge" ]; then
+if [ -f "apps/kg/dist/cli.js" ] && [ -d ".knowledge" ]; then
   node apps/kg/dist/cli.js bootstrap > /dev/null 2>&1 && echo "KG bootstrapped"
   node apps/kg/dist/cli.js reason > /dev/null 2>&1 && echo "KG reasoned"
 fi
