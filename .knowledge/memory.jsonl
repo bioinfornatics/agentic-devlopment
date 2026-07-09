@@ -213,3 +213,25 @@
 {"type": "relation", "from": "agent:tdd-guide", "to": "feat-agent-roster", "relationType": "IMPLEMENTS"}
 {"type": "relation", "from": "feat-kg-integration", "to": "feat-recipe-ecosystem", "relationType": "DEPENDS_ON"}
 {"type": "relation", "from": "feat-kg-integration", "to": "feat-skill-library", "relationType": "DEPENDS_ON"}
+{"type":"entity","name":"doc:kg-lifecycle.md","entityType":"harness:doc","observations":["file:docs/kg-lifecycle.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:kg-visualization-framework-research.md","entityType":"harness:doc","observations":["file:docs/kg-visualization-framework-research.md","scope:buildtime","namespace:harness"]}
+{"type": "entity", "name": "scripts/kg-bootstrap.py", "entityType": "code_file", "observations": ["path: scripts/kg-bootstrap.py", "scope: buildtime", "status: deprecated", "superseded_by: apps/"]}
+{"type": "relation", "from": "feat-kg-bootstrap", "to": "scripts/kg-bootstrap.py", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "scripts/kg-reason.py", "entityType": "code_file", "observations": ["path: scripts/kg-reason.py", "scope: buildtime", "status: deprecated", "superseded_by: apps/"]}
+{"type": "relation", "from": "feat-kg-bootstrap", "to": "scripts/kg-reason.py", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "scripts/kg-visualizer.html", "entityType": "code_file", "observations": ["path: scripts/kg-visualizer.html", "scope: buildtime", "status: deprecated", "superseded_by: apps/"]}
+{"type": "relation", "from": "feat-kg-visualizer", "to": "scripts/kg-visualizer.html", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "scripts/kg-mcp-server.sh", "entityType": "code_file", "observations": ["path: scripts/kg-mcp-server.sh", "scope: buildtime", "status: deprecated", "superseded_by: apps/"]}
+{"type": "relation", "from": "feat-kg-activate", "to": "scripts/kg-mcp-server.sh", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "apps/kg/src/bootstrap.ts", "entityType": "code_file", "observations": ["path: apps/kg/src/bootstrap.ts", "scope: buildtime", "status: canonical"]}
+{"type": "relation", "from": "feat-kg-bootstrap", "to": "apps/kg/src/bootstrap.ts", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "apps/kg/src/reason.ts", "entityType": "code_file", "observations": ["path: apps/kg/src/reason.ts", "scope: buildtime", "status: canonical"]}
+{"type": "relation", "from": "feat-kg-bootstrap", "to": "apps/kg/src/reason.ts", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "apps/kg/src/types.ts", "entityType": "code_file", "observations": ["path: apps/kg/src/types.ts", "scope: buildtime", "status: canonical"]}
+{"type": "relation", "from": "feat-kg-bootstrap", "to": "apps/kg/src/types.ts", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "apps/kg/src/cli.ts", "entityType": "code_file", "observations": ["path: apps/kg/src/cli.ts", "scope: buildtime", "status: canonical"]}
+{"type": "relation", "from": "feat-kg-bootstrap", "to": "apps/kg/src/cli.ts", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "apps/kg-visualizer/src/server.ts", "entityType": "code_file", "observations": ["path: apps/kg-visualizer/src/server.ts", "scope: buildtime", "status: canonical"]}
+{"type": "relation", "from": "feat-kg-visualizer", "to": "apps/kg-visualizer/src/server.ts", "relationType": "IMPLEMENTED_BY"}
+{"type": "entity", "name": "apps/kg-visualizer/src/app.html", "entityType": "code_file", "observations": ["path: apps/kg-visualizer/src/app.html", "scope: buildtime", "status: canonical"]}
+{"type": "relation", "from": "feat-kg-visualizer", "to": "apps/kg-visualizer/src/app.html", "relationType": "IMPLEMENTED_BY"}

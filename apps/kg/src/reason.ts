@@ -11,12 +11,41 @@ const R2: Rule = ({ entities, relations }) => { const v = new Set(relations.filt
 const R3: Rule = ({ entities, relations }) => { const v = new Set(relations.filter(r => r.relationType === "IMPLEMENTS").map(r => r.to)); return [...entities.values()].filter(e => e.entityType === "feature" && !v.has(e.name)).map(e => makeStatus(e.name, "not-implemented", e.name + " no IMPLEMENTS", "R3:feature-not-implemented")); };
 const R4: Rule = ({ relations }, rs) => { const out: Relation[] = []; for (const u of relations.filter(r => r.relationType === "USES_SKILL")) for (const l of relations.filter(r => r.from === u.to && ["LOADS","REFERENCED_BY"].includes(r.relationType))) { const r = makeRel(u.from, l.to, "TRANSITIVELY_USES", { confidence: 0.9, rule: "R4:transitive-skill" }); if (!rs.has(rk(r))) out.push(r); } return out; };
 const R5: Rule = ({ relations }) => { const ef = new Map<string,string[]>(); relations.filter(r => r.relationType === "DECOMPOSES_INTO").forEach(r => { const a = ef.get(r.to) ?? []; a.push(r.from); ef.set(r.to, a); }); const ni = new Set(relations.filter(r => r.relationType === "HAS_STATUS" && r.status_value === "not-implemented").map(r => r.from)); const out: Relation[] = []; for (const [e, fs] of ef) if (fs.length > 0 && fs.every(f => ni.has(f))) out.push(makeStatus(e, "blocked", "All " + fs.length + " features not-implemented", "R5:epic-blocked")); return out; };
+
+const R6: Rule = ({ entities, relations }) => {
+  // Feature IMPLEMENTED_BY ≥2 code_files where one is deprecated → HAS_STATUS superseded
+  const implBy = new Map<string, string[]>();
+  relations.filter(r => r.relationType === "IMPLEMENTED_BY").forEach(r => {
+    const arr = implBy.get(r.from) ?? []; arr.push(r.to); implBy.set(r.from, arr);
+  });
+  const deprecated = new Set(
+    [...entities.values()]
+      .filter(e => e.entityType === "code_file" && e.observations.some(o => o.includes("status: deprecated")))
+      .map(e => e.name)
+  );
+  const out: Relation[] = [];
+  for (const [feature, files] of implBy) {
+    const hasDep = files.some(f => deprecated.has(f));
+    const hasNew = files.some(f => !deprecated.has(f));
+    if (hasDep && hasNew) {
+      const depFiles = files.filter(f => deprecated.has(f));
+      out.push(makeStatus(feature, "has-deprecated-impl",
+        depFiles.join(", ") + " deprecated — superseded by newer code_file",
+        "R6:deprecated-impl-detection"));
+      // Also mark each deprecated file individually
+      for (const df of depFiles)
+        out.push(makeStatus(df, "deprecated", "Superseded by canonical implementation in apps/", "R6:deprecated-impl-detection"));
+    }
+  }
+  return out;
+};
 export const RULES = [
   { name: "R1:ac-test-gap", fn: R1 },
   { name: "R2:feature-not-decomposed", fn: R2 },
   { name: "R3:feature-not-implemented", fn: R3 },
   { name: "R4:transitive-skill", fn: R4 },
   { name: "R5:epic-blocked", fn: R5 },
+  { name: "R6:deprecated-impl-detection", fn: R6 },
 ];
 export async function reason(opts: { dryRun?: boolean; listRules?: boolean } = {}) {
   if (opts.listRules) { RULES.forEach(r => console.log(r.name)); return; }
