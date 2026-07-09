@@ -11,7 +11,7 @@ Investigate failures, flaky CI, production symptoms, or operational risk.
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe harness-research \
+goose run --recipe explore \
   --params task="investigate flaky CI failure" \
   --params repo_path="$PWD" \
   --params constraints="Read-only first. Identify repro, impact, mitigation, and follow-up Beads."
@@ -20,7 +20,7 @@ goose run --recipe harness-research \
 ### Method B — slash command in an interactive Goose session
 
 ```text
-/research investigate flaky CI failure; read-only first; identify repro, impact, mitigation, and follow-up Beads
+/explore investigate flaky CI failure; read-only first; identify repro, impact, mitigation, and follow-up Beads
 ```
 
 Planning alternative:
@@ -32,13 +32,13 @@ Planning alternative:
 ## Recommended command
 
 ```bash
-goose run --recipe harness-research   --params task="investigate flaky CI failure"   --params repo_path="$PWD"   --params constraints="Read-only first. Identify repro, impact, mitigation, and follow-up Beads."
+goose run --recipe explore   --params task="investigate flaky CI failure"   --params repo_path="$PWD"   --params constraints="Read-only first. Identify repro, impact, mitigation, and follow-up Beads."
 ```
 
 If action planning is needed:
 
 ```bash
-goose run --recipe harness-plan   --params task="stabilize flaky CI"   --params repo_path="$PWD"
+goose run --recipe plan   --params task="stabilize flaky CI"   --params repo_path="$PWD"
 ```
 
 ## Investigation flow

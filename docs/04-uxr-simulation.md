@@ -11,7 +11,7 @@ Use simulated UX research to harden product intent, personas, jobs-to-be-done, a
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe ui-ux-suite \
+goose run --recipe design \
   --params target="<product idea or flow>" \
   --params repo_path="$PWD"
 ```
@@ -19,7 +19,7 @@ goose run --recipe ui-ux-suite \
 ### Method B — slash command in an interactive Goose session
 
 ```text
-/uiux simulate UXR for <product idea or flow>
+/design simulate UXR for <product idea or flow>
 ```
 
 Spec-first alternative:
@@ -31,13 +31,13 @@ Spec-first alternative:
 ## Recommended command
 
 ```bash
-goose run --recipe ui-ux-suite   --params target="<product idea or flow>"   --params repo_path="$PWD"
+goose run --recipe design   --params target="<product idea or flow>"   --params repo_path="$PWD"
 ```
 
 For spec-first work:
 
 ```bash
-goose run --recipe sdd-master   --params initiative="Validate product concept with UXR simulation"   --params repo_path="$PWD"
+goose run --recipe sdd   --params initiative="Validate product concept with UXR simulation"   --params repo_path="$PWD"
 ```
 
 ## UXR simulation roles

@@ -11,7 +11,7 @@ Assess whether tests are sufficient, meaningful, maintainable, and connected to 
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe harness-review \
+goose run --recipe review \
   --params task="test quality review for current diff" \
   --params repo_path="$PWD" \
   --params constraints="Read-only. Focus on test gaps, brittle tests, missing edge cases, and quality gates."
@@ -26,7 +26,7 @@ goose run --recipe harness-review \
 ## Recommended command
 
 ```bash
-goose run --recipe harness-review   --params task="test quality review for current diff"   --params repo_path="$PWD"   --params constraints="Read-only. Focus on test gaps, brittle tests, missing edge cases, and quality gates."
+goose run --recipe review   --params task="test quality review for current diff"   --params repo_path="$PWD"   --params constraints="Read-only. Focus on test gaps, brittle tests, missing edge cases, and quality gates."
 ```
 
 ## What to inspect

@@ -14,20 +14,24 @@ The harness combines three layers:
 
 | User says... | Use case | Recipe |
 |---|---|---|
-| "Set this repo up for agentic development" | Init project | `sdd-master`, `harness-plan` |
-| "Review my changes" | Code review | `harness-review` |
-| "Find vulnerabilities / threat model this" | Security review | `harness-review` with security constraints |
-| "Pretend to be users and test the product idea" | UXR simulation | `ui-ux-suite`, `sdd-master` |
-| "Does this UI look good / accessible?" | UI review | `ui-ux-suite`, `harness-web-test` |
-| "Are the tests good enough?" | Test review | `harness-review` |
-| "Is this spec complete?" | Spec review | `sdd-master`, `harness-plan` |
-| "Score this project" | Judge and score | `harness-research`, `harness-review` |
-| "Implement this bead" | Implementation loop | `harness-implement` |
-| "Prepare a release" | Release readiness | `harness-release` |
-| "Investigate outage / flaky CI / operational risk" | Incident/SRE | `harness-research`, `harness-plan` |
-| "Research these modules in parallel" | Multi-agent research | Summon `delegate` |
-| "Improve docs/onboarding" | Documentation review | `harness-review` |
-| "Remember this repo convention" | Memory stewardship | `harness-memory` / `/memory` |
+| Goal | Category | Recipe / slash command |
+|---|---|---|
+| "Set this repo up for agentic development" | Init project | `sdd`, `plan` |
+| "Start a new feature" | Discovery | `/discover` |
+| "Write the spec" | Specification | `/spec` |
+| "Review my changes" | Code review | `/review` |
+| "Find vulnerabilities" | Security review | `/review` with security constraints |
+| "Test UX with simulated users" | UXR simulation | `/design`, `/sdd` |
+| "Does this UI look good / accessible?" | UI review | `/design`, `/verify` |
+| "Are the tests good enough?" | Test review | `/review` with test constraints |
+| "Is this spec complete?" | Spec review | `/sdd`, `/spec` |
+| "Score this project" | Judge and score | `/explore`, `/review` |
+| "Implement this bead" | Implementation loop | `/implement` |
+| "Prepare a release" | Release readiness | `/release` |
+| "Investigate outage / flaky CI" | Incident/SRE | `/explore`, `/plan` |
+| "Research these modules in parallel" | Multi-agent research | `/dev` with mode=explore |
+| "Improve docs/onboarding" | Documentation review | `/review` |
+| "Remember this repo convention" | Memory stewardship | `/remember` |
 
 ## Golden path
 
@@ -35,7 +39,7 @@ The harness combines three layers:
 bd prime || true
 bd ready --json || true
 
-goose run --recipe harness-master   --params task="<goal>"   --params repo_path="$PWD"   --params constraints="<optional constraints>"
+goose run --recipe dev --params task="<goal>" --params repo_path="$PWD" --params constraints="<optional constraints>"
 ```
 
 ## When to create Beads

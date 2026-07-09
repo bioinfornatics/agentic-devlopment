@@ -11,7 +11,7 @@ Review documentation for onboarding, correctness, operational usefulness, and ag
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe harness-review \
+goose run --recipe review \
   --params task="documentation review" \
   --params repo_path="$PWD" \
   --params constraints="Read-only. Focus on onboarding, command accuracy, missing prerequisites, and agent handoff quality."
@@ -26,7 +26,7 @@ goose run --recipe harness-review \
 ## Recommended command
 
 ```bash
-goose run --recipe harness-review   --params task="documentation review"   --params repo_path="$PWD"   --params constraints="Read-only. Focus on onboarding, command accuracy, missing prerequisites, and agent handoff quality."
+goose run --recipe review   --params task="documentation review"   --params repo_path="$PWD"   --params constraints="Read-only. Focus on onboarding, command accuracy, missing prerequisites, and agent handoff quality."
 ```
 
 ## Review dimensions

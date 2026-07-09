@@ -11,31 +11,31 @@ Use Beads memory for durable project facts that future agents should know.
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe harness-memory   --params action="remember: default validation is make test"   --params repo_path="$PWD"
+goose run --recipe remember   --params action="remember: default validation is make test"   --params repo_path="$PWD"
 ```
 
 Search:
 
 ```bash
-goose run --recipe harness-memory   --params action="search validation"   --params repo_path="$PWD"
+goose run --recipe remember   --params action="search validation"   --params repo_path="$PWD"
 ```
 
 ### Method B — slash command in an interactive Goose session
 
 ```text
-/memory remember: default validation is make test
+/remember remember: default validation is make test
 ```
 
 ```text
-/memory search validation
+/remember search validation
 ```
 
 ```text
-/memory recall validation-default
+/remember recall validation-default
 ```
 
 ```text
-/memory forget stale-key
+/remember forget stale-key
 ```
 
 Slash commands accept one free-text argument, so include the action and payload in the same text.

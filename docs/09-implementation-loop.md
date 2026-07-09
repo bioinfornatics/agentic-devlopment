@@ -11,7 +11,7 @@ Execute one scoped unit of work from claim to verified handoff.
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe harness-implement \
+goose run --recipe implement \
   --params task="bd-123" \
   --params repo_path="$PWD"
 ```
@@ -31,7 +31,7 @@ For non-Beads work, describe the scoped task:
 ## Recommended command
 
 ```bash
-goose run --recipe harness-implement   --params task="bd-123"   --params repo_path="$PWD"
+goose run --recipe implement   --params task="bd-123"   --params repo_path="$PWD"
 ```
 
 ## Loop

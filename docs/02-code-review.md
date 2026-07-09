@@ -11,7 +11,7 @@ Review a diff, PR, branch, bead implementation, or agent handoff.
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe harness-review \
+goose run --recipe review \
   --params task="review current diff" \
   --params repo_path="$PWD" \
   --params constraints="Read-only. Focus on correctness, tests, regressions, security, and Beads hygiene."
@@ -34,13 +34,13 @@ Slash commands accept one free-text argument; include focus/constraints in the t
 ## Recommended command
 
 ```bash
-goose run --recipe harness-review   --params task="review current diff"   --params repo_path="$PWD"   --params constraints="Read-only. Focus on correctness, tests, regressions, security, and Beads hygiene."
+goose run --recipe review   --params task="review current diff"   --params repo_path="$PWD"   --params constraints="Read-only. Focus on correctness, tests, regressions, security, and Beads hygiene."
 ```
 
 For a Beads issue:
 
 ```bash
-goose run --recipe harness-review   --params task="review bd-123 implementation"   --params repo_path="$PWD"
+goose run --recipe review   --params task="review bd-123 implementation"   --params repo_path="$PWD"
 ```
 
 ## Specialist agent

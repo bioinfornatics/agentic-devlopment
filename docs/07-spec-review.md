@@ -11,7 +11,7 @@ Review and harden a specification before implementation.
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe sdd-master \
+goose run --recipe sdd \
   --params initiative="review and harden the spec for <feature>" \
   --params repo_path="$PWD"
 ```
@@ -31,13 +31,13 @@ Planning alternative:
 ## Recommended command
 
 ```bash
-goose run --recipe sdd-master   --params initiative="review and harden the spec for <feature>"   --params repo_path="$PWD"
+goose run --recipe sdd   --params initiative="review and harden the spec for <feature>"   --params repo_path="$PWD"
 ```
 
 Alternative:
 
 ```bash
-goose run --recipe harness-plan   --params task="spec review for <feature>"   --params repo_path="$PWD"
+goose run --recipe plan   --params task="spec review for <feature>"   --params repo_path="$PWD"
 ```
 
 ## Spec review checklist

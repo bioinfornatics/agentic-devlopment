@@ -11,7 +11,7 @@ Initialize a repository so Goose and Beads can operate as an agentic development
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe sdd-master \
+goose run --recipe sdd \
   --params initiative="Initialize this project for agentic development" \
   --params repo_path="$PWD"
 ```
@@ -41,13 +41,13 @@ Slash commands accept one free-text argument; `repo_path` defaults to the curren
 ## Recommended recipe
 
 ```bash
-goose run --recipe sdd-master   --params initiative="Initialize this project for agentic development"   --params repo_path="$PWD"
+goose run --recipe sdd   --params initiative="Initialize this project for agentic development"   --params repo_path="$PWD"
 ```
 
 Alternative:
 
 ```bash
-goose run --recipe harness-plan   --params task="Initialize project harness"   --params repo_path="$PWD"
+goose run --recipe plan   --params task="Initialize project harness"   --params repo_path="$PWD"
 ```
 
 ## Beads setup checklist

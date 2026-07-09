@@ -11,7 +11,7 @@ Review a UI for visual quality, interaction states, accessibility, and implement
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe ui-ux-suite \
+goose run --recipe design \
   --params target="review the settings page UI" \
   --params repo_path="$PWD"
 ```
@@ -19,25 +19,25 @@ goose run --recipe ui-ux-suite \
 ### Method B — slash command in an interactive Goose session
 
 ```text
-/uiux review the settings page UI
+/design review the settings page UI
 ```
 
 Browser-specific alternative:
 
 ```text
-/webtest verify settings page UI at http://localhost:3000/settings
+/verify verify settings page UI at http://localhost:3000/settings
 ```
 
 ## Recommended command
 
 ```bash
-goose run --recipe ui-ux-suite   --params target="review the settings page UI"   --params repo_path="$PWD"
+goose run --recipe design   --params target="review the settings page UI"   --params repo_path="$PWD"
 ```
 
 If a browser must be used:
 
 ```bash
-goose run --recipe harness-web-test   --params task="verify settings page UI at http://localhost:3000/settings"   --params repo_path="$PWD"
+goose run --recipe verify   --params task="verify settings page UI at http://localhost:3000/settings"   --params repo_path="$PWD"
 ```
 
 ## Review dimensions

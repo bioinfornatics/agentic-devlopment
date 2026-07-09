@@ -11,7 +11,7 @@ Run a security-focused review of code, design, configuration, dependencies, or r
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe harness-review \
+goose run --recipe review \
   --params task="security review current diff and design" \
   --params repo_path="$PWD" \
   --params constraints="Read-only. Prioritize authn/authz, injection, secrets, unsafe IO, dependency risk, data loss, and supply chain."
@@ -28,7 +28,7 @@ Slash commands accept one free-text argument, so security scope should be writte
 ## Recommended command
 
 ```bash
-goose run --recipe harness-review   --params task="security review current diff and design"   --params repo_path="$PWD"   --params constraints="Read-only. Prioritize authn/authz, injection, secrets, unsafe IO, dependency risk, data loss, and supply chain."
+goose run --recipe review   --params task="security review current diff and design"   --params repo_path="$PWD"   --params constraints="Read-only. Prioritize authn/authz, injection, secrets, unsafe IO, dependency risk, data loss, and supply chain."
 ```
 
 ## When to use

@@ -11,7 +11,7 @@ Prepare and verify a release with gates and durable handoff.
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe harness-release \
+goose run --recipe release \
   --params task="release 1.2.3" \
   --params repo_path="$PWD" \
   --params constraints="Do not tag or push without explicit approval."
@@ -26,7 +26,7 @@ goose run --recipe harness-release \
 ## Recommended command
 
 ```bash
-goose run --recipe harness-release   --params task="release 1.2.3"   --params repo_path="$PWD"   --params constraints="Do not tag or push without explicit approval."
+goose run --recipe release   --params task="release 1.2.3"   --params repo_path="$PWD"   --params constraints="Do not tag or push without explicit approval."
 ```
 
 ## Release phases

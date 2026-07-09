@@ -29,30 +29,30 @@ intent → spec → Beads graph → TDD/implementation → review → validation
 
 ## Main recipes
 
-| Recipe | Purpose |
-|---|---|
-| `harness-master` | Default orchestrator for most Goose + Beads development work |
-| `harness-research` | Read-only codebase / docs / Beads research |
-| `harness-plan` | Convert a goal into a Beads-backed executable plan |
-| `harness-implement` | Implement a scoped bead with tests and handoff |
-| `harness-review` | Review code, tests, risks, and Beads hygiene |
-| `harness-web-test` | Browser/UI/accessibility verification |
-| `harness-release` | Gated release / CI / verification workflow |
-| `harness-memory` | Beads memory stewardship: remember/search/recall/forget durable facts |
-| `sdd-master` | Spec-Driven Development governance over the harness |
-| `ui-ux-suite` | UI/UX, accessibility, design-system, and web quality workflow |
+| Recipe              | Purpose                                                               |
+|---------------------|-----------------------------------------------------------------------|
+| `dev`    | Default orchestrator for most Goose + Beads development work          |
+| `explore`  | Read-only codebase / docs / Beads research                            |
+| `plan`      | Convert a goal into a Beads-backed executable plan                    |
+| `implement` | Implement a scoped bead with tests and handoff                        |
+| `review`    | Review code, tests, risks, and Beads hygiene                          |
+| `verify`  | Browser/UI/accessibility verification                                 |
+| `release`   | Gated release / CI / verification workflow                            |
+| `remember`    | Beads memory stewardship: remember/search/recall/forget durable facts |
+| `sdd`        | Spec-Driven Development governance over the harness                   |
+| `design`       | UI/UX, accessibility, design-system, and web quality workflow         |
 
 ## Main skills
 
-| Skill | Purpose |
-|---|---|
-| `agentic-dev-harness` | The combined Goose + Beads operating model |
-| `beads-harness` | Beads commands and durable workflow semantics |
-| `goose-orchestration` | Goose recipes, skills, subagents, Summon, and extension rules |
-| `sdd` | Spec-Driven Development loop |
-| `code-review` | Code review method for correctness, tests, security, and handoff |
-| `ux-quality` | Unified UI/UX quality framework |
-| `webapp-testing` | Browser automation and local web-app verification method |
+| Skill                 | Purpose                                                          |
+|-----------------------|------------------------------------------------------------------|
+| `agentic-dev-harness` | The combined Goose + Beads operating model                       |
+| `beads-harness`       | Beads commands and durable workflow semantics                    |
+| `goose-orchestration` | Goose recipes, skills, subagents, Summon, and extension rules    |
+| `sdd`                 | Spec-Driven Development loop                                     |
+| `code-review`         | Code review method for correctness, tests, security, and handoff |
+| `ux-quality`          | Unified UI/UX quality framework                                  |
+| `webapp-testing`      | Browser automation and local web-app verification method         |
 
 
 Skill evaluations live outside the skill packages in `evals/skills/`; see `docs/15-skill-evaluations.md` for the evaluation-driven workflow, visual definition review, and real A/B runner. Quick definition review: `python scripts/render-skill-eval-review.py`, then open `dist/skill-eval-review/index.html`. Real A/B example: `python scripts/run-skill-ab-eval.py --skill code-review`; old/new from git: `python scripts/run-skill-ab-eval.py --skill code-review --mode old-new --baseline-git-ref HEAD~1`. Full suite: `python scripts/run-skill-ab-suite.py --continue-on-failure`, then open `dist/evals/skills/index.html`. To test with a specific Goose binary, pass `--goose-cli ../third-parties/goose/target/debug/goose` or set `GOOSE_EVAL_CLI`. A/B runners use isolated Goose homes by default so `without_skill` hides installed project skills, agents, and recipes. Generic agent/recipe evals use `scripts/run-harness-ab-eval.py --kind agents|recipes`. SQLite history, including provider, model, turn usage, and feedback recommendations, is written to `dist/evals/evaluation.db`.
@@ -65,40 +65,40 @@ Named agents live in `.agents/agents/` and can be invoked through Goose Summon. 
 
 ### Orchestration + Research
 
-| Agent | Role | Invoke when |
-|---|---|---|
-| `harness-orchestrator` | Lead orchestrator for the SDD+TDD loop | Multi-step, multi-agent, or multi-phase work |
-| `codebase-researcher` | Read-only architecture mapper | Mapping blast radius, gathering evidence before planning |
-| `beads-planner` | Beads dependency graph builder | Converting a goal into executable Beads issues |
+| Agent                  | Role                                   | Invoke when                                              |
+|------------------------|----------------------------------------|----------------------------------------------------------|
+| `harness-orchestrator` | Lead orchestrator for the SDD+TDD loop | Multi-step, multi-agent, or multi-phase work             |
+| `codebase-researcher`  | Read-only architecture mapper          | Mapping blast radius, gathering evidence before planning |
+| `beads-planner`        | Beads dependency graph builder         | Converting a goal into executable Beads issues           |
 
 ### SDD Roles (Spec-Driven Development)
 
-| Agent | Role | Invoke when |
-|---|---|---|
-| `product-owner` | PRD + acceptance criteria with 100-pt quality gate | Start of any new feature or initiative |
-| `architect` | System design, ADRs, trade-off analysis | Touching system boundaries, technology decisions |
+| Agent           | Role                                               | Invoke when                                      |
+|-----------------|----------------------------------------------------|--------------------------------------------------|
+| `product-owner` | PRD + acceptance criteria with 100-pt quality gate | Start of any new feature or initiative           |
+| `architect`     | System design, ADRs, trade-off analysis            | Touching system boundaries, technology decisions |
 
 ### TDD Roles (Test-Driven Development)
 
-| Agent | Role | Invoke when |
-|---|---|---|
-| `tdd-guide` | RED→GREEN→REFACTOR cycle + 80% coverage gate | Before any new feature implementation or bug fix |
-| `implementation-worker` | Scoped bead implementation with TDD | Bead is claimed and ready for coding |
-| `qa-automation` | Full test pipeline: unit/integration/E2E + CI | After implementation is complete |
+| Agent                   | Role                                          | Invoke when                                      |
+|-------------------------|-----------------------------------------------|--------------------------------------------------|
+| `tdd-guide`             | RED→GREEN→REFACTOR cycle + 80% coverage gate  | Before any new feature implementation or bug fix |
+| `implementation-worker` | Scoped bead implementation with TDD           | Bead is claimed and ready for coding             |
+| `qa-automation`         | Full test pipeline: unit/integration/E2E + CI | After implementation is complete                 |
 
 ### Review + Quality
 
-| Agent | Role | Invoke when |
-|---|---|---|
-| `review-critic` | Confidence-filtered code review with proof requirement | After any implementation, before closing a bead |
-| `principal-engineer` | Blast radius, breaking changes, architecture coherence | Change touches shared infra, public APIs, or 2+ BLOCK verdicts |
-| `ux-researcher`       | User research, personas, journey maps         | New feature, user validation |
-| `ui-designer`         | Design system, WCAG 2.2 AA, a11y audit       | Any UI change |
-| `atomic-design`       | Component hierarchy (Atoms→Templates)         | Building component libraries |
-| `cognitive-ux`        | Laws of UX, Gestalt, cognitive biases         | Evaluating/justifying design decisions |
-| `agentic-ux`          | Agentic AI UX, trust calibration              | Designing AI agent interfaces |
-| `design-systems-arch` | Token architecture, governance, maturity      | Design system strategy |
-| `frontend-blueprint`  | Discovery → design direction → atomic build   | Creating new interfaces |
+| Agent                 | Role                                                   | Invoke when                                                    |
+|-----------------------|--------------------------------------------------------|----------------------------------------------------------------|
+| `review-critic`       | Confidence-filtered code review with proof requirement | After any implementation, before closing a bead                |
+| `principal-engineer`  | Blast radius, breaking changes, architecture coherence | Change touches shared infra, public APIs, or 2+ BLOCK verdicts |
+| `ux-researcher`       | User research, personas, journey maps                  | New feature, user validation                                   |
+| `ui-designer`         | Design system, WCAG 2.2 AA, a11y audit                 | Any UI change                                                  |
+| `atomic-design`       | Component hierarchy (Atoms→Templates)                  | Building component libraries                                   |
+| `cognitive-ux`        | Laws of UX, Gestalt, cognitive biases                  | Evaluating/justifying design decisions                         |
+| `agentic-ux`          | Agentic AI UX, trust calibration                       | Designing AI agent interfaces                                  |
+| `design-systems-arch` | Token architecture, governance, maturity               | Design system strategy                                         |
+| `frontend-blueprint`  | Discovery → design direction → atomic build            | Creating new interfaces                                        |
 
 ### SDD+TDD Orchestration Flow
 
@@ -151,7 +151,7 @@ cp -a .agents/agents ~/.agents/agents
 Validate recipes:
 
 ```bash
-goose recipe validate .goose/recipes/harness-master.yaml
+goose recipe validate .goose/recipes/dev.yaml
 find .goose/recipes -name '*.yaml' -print -exec goose recipe validate {} \;
 ```
 
@@ -164,7 +164,7 @@ goose skills list
 Run the master harness:
 
 ```bash
-goose run --recipe harness-master \
+goose run --recipe dev \
   --params task="Review the current diff" \
   --params repo_path="$PWD"
 ```
@@ -178,7 +178,7 @@ Detailed scenario documentation lives in [`USE_CASES.md`](USE_CASES.md) and [`do
 ### Code review
 
 ```bash
-goose run --recipe harness-review \
+goose run --recipe review \
   --params task="review current diff" \
   --params repo_path="$PWD" \
   --params constraints="Read-only. Focus on correctness, tests, security, and Beads hygiene."
@@ -187,7 +187,7 @@ goose run --recipe harness-review \
 ### Research
 
 ```bash
-goose run --recipe harness-research \
+goose run --recipe explore \
   --params task="understand the sync architecture" \
   --params repo_path="$PWD"
 ```
@@ -195,7 +195,7 @@ goose run --recipe harness-research \
 ### Planning
 
 ```bash
-goose run --recipe harness-plan \
+goose run --recipe plan \
   --params task="add feature X" \
   --params repo_path="$PWD"
 ```
@@ -203,7 +203,7 @@ goose run --recipe harness-plan \
 ### Implementation
 
 ```bash
-goose run --recipe harness-implement \
+goose run --recipe implement \
   --params task="bd-123" \
   --params repo_path="$PWD"
 ```
@@ -211,7 +211,7 @@ goose run --recipe harness-implement \
 ### UI / accessibility verification
 
 ```bash
-goose run --recipe ui-ux-suite \
+goose run --recipe design \
   --params target="settings page" \
   --params repo_path="$PWD"
 ```
@@ -238,18 +238,18 @@ Requires `pandoc`; PDF generation uses `xelatex` when available, otherwise tries
 Use memory for durable facts, not work tracking:
 
 ```bash
-goose run --recipe harness-memory --params action="remember: default validation is make test" --params repo_path="$PWD"
+goose run --recipe remember --params action="remember: default validation is make test" --params repo_path="$PWD"
 ```
 
 Interactive slash command:
 
 ```text
-/memory remember: default validation is make test
+/remember remember: default validation is make test
 ```
 
 See [`docs/14-memory.md`](docs/14-memory.md).
 
-Memory as navigation index: prefer short pointer memories that tell future agents which canonical file/section to read, when to read it, and the one-line invariant.
+Memory as a navigation index: prefer short pointer memories that tell future agents which canonical file/section to read, when to read it, and the one-line invariant.
 
 ## Beads operating rules
 
@@ -268,4 +268,4 @@ Do not use markdown TODO files as the source of truth for durable agentic work.
 
 ## License / ownership
 
-This harness is local operational configuration. Adapt freely for your projects.
+This harness is a local operational configuration. Adapt freely for your projects.

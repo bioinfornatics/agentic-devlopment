@@ -11,7 +11,7 @@ Score a project across engineering, product, security, testing, operations, and 
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe harness-research \
+goose run --recipe explore \
   --params task="judge and score project quality" \
   --params repo_path="$PWD" \
   --params constraints="Read-only. Score architecture, tests, security, docs, operations, UX, and Beads/agent readiness."
@@ -20,7 +20,7 @@ goose run --recipe harness-research \
 ### Method B — slash command in an interactive Goose session
 
 ```text
-/research judge and score project quality across architecture, tests, security, docs, operations, UX, and agent readiness
+/explore judge and score project quality across architecture, tests, security, docs, operations, UX, and agent readiness
 ```
 
 Optional second pass:
@@ -32,13 +32,13 @@ Optional second pass:
 ## Recommended command
 
 ```bash
-goose run --recipe harness-research   --params task="judge and score project quality"   --params repo_path="$PWD"   --params constraints="Read-only. Score architecture, tests, security, docs, operations, UX, and Beads/agent readiness."
+goose run --recipe explore   --params task="judge and score project quality"   --params repo_path="$PWD"   --params constraints="Read-only. Score architecture, tests, security, docs, operations, UX, and Beads/agent readiness."
 ```
 
 Then optionally run:
 
 ```bash
-goose run --recipe harness-review   --params task="project scorecard review"   --params repo_path="$PWD"
+goose run --recipe review   --params task="project scorecard review"   --params repo_path="$PWD"
 ```
 
 ## Scorecard dimensions

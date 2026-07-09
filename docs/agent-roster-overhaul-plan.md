@@ -299,7 +299,7 @@ description: "[Job] + domain. Use when: X, Y, Z."   ← routing signal for Summo
 ```bash
 goose skills list                         # verify skills still visible
 # smoke render key recipes
-goose run --recipe ./.goose/recipes/harness-master.yaml \
+goose run --recipe ./.goose/recipes/dev.yaml \
   --params task="smoke test" --render-recipe
 ```
 

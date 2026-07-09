@@ -11,16 +11,16 @@ Use parallel subagents for broad read-only investigation while keeping the paren
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe harness-master \
+goose run --recipe dev \
   --params task="parallel research on <topic>" \
   --params repo_path="$PWD" \
-  --params mode="research"
+  --params mode="explore"
 ```
 
 ### Method B — slash command in an interactive Goose session
 
 ```text
-/harness parallel research on <topic>; use read-only subagents and synthesize findings
+/dev parallel research on <topic>; use read-only subagents and synthesize findings
 ```
 
 For direct manual control, use Summon `delegate(..., async: true)` as shown below.
@@ -28,7 +28,7 @@ For direct manual control, use Summon `delegate(..., async: true)` as shown belo
 ## Recommended recipe
 
 ```bash
-goose run --recipe harness-master   --params task="parallel research on <topic>"   --params repo_path="$PWD"   --params mode="research"
+goose run --recipe dev   --params task="parallel research on <topic>"   --params repo_path="$PWD"   --params mode="explore"
 ```
 
 ## Direct Summon pattern

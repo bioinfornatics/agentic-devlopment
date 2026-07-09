@@ -58,7 +58,7 @@ goose skills list
 Smoke render important recipes:
 
 ```bash
-goose run --recipe ./.goose/recipes/harness-master.yaml \
+goose run --recipe ./.goose/recipes/dev.yaml \
   --params task="smoke test" \
   --render-recipe
 ```
@@ -114,7 +114,7 @@ Do not use markdown TODO files as a durable issue tracker.
 For read-only review of current changes:
 
 ```bash
-goose run --recipe harness-review \
+goose run --recipe review \
   --params task="review current diff" \
   --params repo_path="$PWD" \
   --params constraints="Read-only. Focus on correctness, maintainability, recipe validity, and harness coherence."
@@ -231,7 +231,7 @@ bd create "Review auth PR" \
 
 **Context window principle:** each subagent has its own isolated context window. Delegate aggressively — the orchestrator stays lean while subagents absorb their own context cost.
 
-## Named agent roster (11 agents)
+## Named agent roster (12 agents)
 
 ### Orchestration + Research
 - `harness-orchestrator` — lead orchestrator for the SDD+TDD loop
