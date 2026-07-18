@@ -1,1 +1,26 @@
-{"name":"@harness/apps","version":"1.0.0","private":true,"scripts":{"build":"pnpm -r build","kg:bootstrap":"pnpm --filter @harness/kg run bootstrap","kg:reason":"pnpm --filter @harness/kg run reason","kg:pipeline":"pnpm run kg:bootstrap && pnpm run kg:reason","dev":"pnpm --filter @harness/kg-visualizer dev"}}
+{
+  "name": "@harness/apps",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "kg:bootstrap": "pnpm --filter @harness/kg run bootstrap",
+    "kg:reason": "pnpm --filter @harness/kg run reason",
+    "kg:pipeline": "pnpm run kg:bootstrap && pnpm run kg:reason",
+    "dev": "pnpm --filter @harness/kg-visualizer dev",
+    "hub:dev": "pnpm --filter @harness/eval-hub dev",
+    "hub:build": "pnpm --filter @harness/eval-hub build",
+    "hub:start": "pnpm --filter @harness/eval-hub start",
+    "hub:tui": "pnpm --filter @harness/eval-hub start:tui",
+    "hub:server": "pnpm --filter @harness/eval-hub start:server",
+    "hub:run": "node ../apps/eval-hub/dist/index.js --run",
+    "hub:skills": "node ../apps/eval-hub/dist/index.js --run --layers skills",
+    "hub:agents": "node ../apps/eval-hub/dist/index.js --run --layers agents",
+    "hub:recipes": "node ../apps/eval-hub/dist/index.js --run --layers recipes",
+    "hub:all": "node ../apps/eval-hub/dist/index.js --run --layers skills,agents,recipes",
+    "hub:report": "node ../apps/eval-hub/dist/index.js --report",
+    "hub:open": "node ../apps/eval-hub/dist/index.js --open",
+    "hub:export": "node ../apps/eval-hub/dist/index.js --export-history",
+    "hub:report:open": "node ../apps/eval-hub/dist/index.js --report --open"
+  }
+}

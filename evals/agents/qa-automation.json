@@ -1,26 +1,32 @@
 [
   {
+    "skills": [
+      "webapp-testing"
+    ],
     "query": "Design the automated test strategy for `scripts/analyze-skill-eval-results.py`. Produce the test plan.",
     "files": [
       "scripts/analyze-skill-eval-results.py"
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The qa-automation agent should apply the test pyramid (70% unit / 20% integration / 10% E2E), define coverage gate \u226580%, and specify CI gates \u2014 baseline gives a generic test plan.",
+    "expected_skill_contribution": "The qa-automation agent should apply the test pyramid (70% unit / 20% integration / 10% E2E), define coverage gate ≥80%, and specify CI gates — baseline gives a generic test plan.",
     "fixture_intent": "Confirm that the agent structures the test plan around the pyramid ratio rather than listing tests ad hoc, and that coverage gate and CI blocking conditions are explicit and measurable rather than aspirational.",
     "baseline_gaps": [
       "Produces a flat list of tests without structuring them into unit / integration / E2E layers with pyramid ratio targets",
-      "Mentions coverage as a goal without specifying a numeric gate (\u226580% branches) that blocks merge",
+      "Mentions coverage as a goal without specifying a numeric gate (≥80% branches) that blocks merge",
       "Describes CI usage generically without specifying which test levels gate merge and which run on other triggers"
     ],
     "expected_behavior": [
-      "Structures the test plan explicitly as: unit tests ~70% of total cases, integration tests ~20%, E2E tests ~10% \u2014 with example test cases for each layer",
-      "Specifies the coverage gate as \u226580% branch coverage required before merge, not as a recommendation but as a hard gate",
+      "Structures the test plan explicitly as: unit tests ~70% of total cases, integration tests ~20%, E2E tests ~10% — with example test cases for each layer",
+      "Specifies the coverage gate as ≥80% branch coverage required before merge, not as a recommendation but as a hard gate",
       "Identifies at least 3 of the 8 mandatory edge cases to cover: empty input, malformed JSON, missing keys, boundary score values, multiple result files, zero-result inputs, encoding errors, and large file performance",
       "Specifies CI gate precisely: unit + integration tests must pass before merge; E2E tests run on critical paths only; coverage report published as artifact"
     ]
   },
   {
+    "skills": [
+      "webapp-testing"
+    ],
     "query": "Run the test suite and quarantine any flaky tests found. Document the quarantine and root cause for each.",
     "files": [
       "scripts/",
@@ -28,21 +34,24 @@
     ],
     "max_turns": 500,
     "difficulty": "difficult",
-    "expected_skill_contribution": "The qa-automation agent should detect flakiness (run 3-5x), quarantine with test.fixme(), identify root cause (race/animation/network), and file a Beads issue \u2014 not just re-run until it passes.",
+    "expected_skill_contribution": "The qa-automation agent should detect flakiness (run 3-5x), quarantine with test.fixme(), identify root cause (race/animation/network), and file a Beads issue — not just re-run until it passes.",
     "fixture_intent": "Verify that the agent treats intermittent failure as a first-class signal requiring quarantine and root-cause analysis rather than as noise to be suppressed by re-running until green.",
     "baseline_gaps": [
       "Re-runs failing tests repeatedly until they pass without marking them as flaky or applying any quarantine",
-      "Does not identify a root cause category for the intermittent failure \u2014 treats it as a one-off fluke",
+      "Does not identify a root cause category for the intermittent failure — treats it as a one-off fluke",
       "Omits filing a Beads issue for the quarantined test's root cause investigation"
     ],
     "expected_behavior": [
-      "Runs the test suite 3-5 times to detect intermittent failures \u2014 does not conclude flakiness from a single failure or a single pass",
+      "Runs the test suite 3-5 times to detect intermittent failures — does not conclude flakiness from a single failure or a single pass",
       "Quarantines confirmed flaky tests with `test.fixme(true, 'Flaky: Issue #N')` or language-equivalent marker that prevents false green CI results",
-      "Identifies root cause category for each quarantined test: race condition / animation timing / network timing \u2014 not a generic 'needs investigation' label",
+      "Identifies root cause category for each quarantined test: race condition / animation timing / network timing — not a generic 'needs investigation' label",
       "Produces a `bd create \"Fix flaky test: <name>\" -t task -p 2 --json` command for each quarantined test's root cause investigation, linking back to the quarantined test location"
     ]
   },
   {
+    "skills": [
+      "webapp-testing"
+    ],
     "query": "Build the complete CI test pipeline for the harness eval scripts: unit tests, integration tests, coverage gate, and test report artifacts.",
     "files": [
       "scripts/",
@@ -51,17 +60,17 @@
     ],
     "max_turns": 500,
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "The qa-automation agent should design CI pipeline with all three test levels, coverage gate blocking merge, JUnit XML output, and artifact upload \u2014 not just describe what tests to write.",
-    "fixture_intent": "Stress-test the agent's CI pipeline design depth \u2014 the discriminant is whether it produces a concrete workflow spec (YAML or equivalent) with gates, artifact definitions, and flaky-test threshold, versus prose descriptions of what could be tested.",
+    "expected_skill_contribution": "The qa-automation agent should design CI pipeline with all three test levels, coverage gate blocking merge, JUnit XML output, and artifact upload — not just describe what tests to write.",
+    "fixture_intent": "Stress-test the agent's CI pipeline design depth — the discriminant is whether it produces a concrete workflow spec (YAML or equivalent) with gates, artifact definitions, and flaky-test threshold, versus prose descriptions of what could be tested.",
     "baseline_gaps": [
       "Describes which tests should exist without specifying a CI workflow YAML structure, job dependencies, or step ordering",
-      "Does not specify artifact upload for test reports or coverage HTML \u2014 leaves observability as an afterthought",
+      "Does not specify artifact upload for test reports or coverage HTML — leaves observability as an afterthought",
       "Omits a numeric flaky-test threshold for pipeline health assessment"
     ],
     "expected_behavior": [
-      "Specifies CI gates as workflow conditions: unit + integration tests must pass; coverage \u226580% must pass; both conditions block merge via required status checks \u2014 not advisory",
+      "Specifies CI gates as workflow conditions: unit + integration tests must pass; coverage ≥80% must pass; both conditions block merge via required status checks — not advisory",
       "Specifies test report format: JUnit XML for test visibility in CI UI, coverage HTML uploaded as a workflow artifact with retention policy",
-      "Defines E2E scope explicitly: critical eval script workflows only (~10% of suite) \u2014 lists the specific workflows included, not just the percentage",
+      "Defines E2E scope explicitly: critical eval script workflows only (~10% of suite) — lists the specific workflows included, not just the percentage",
       "Applies the flaky-test threshold: pipeline health requires <5% flaky test rate; exceeding threshold triggers automatic quarantine step in the workflow"
     ]
   }

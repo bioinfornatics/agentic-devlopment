@@ -11,7 +11,7 @@ instructions: |
 
   ## Load skills first
   load skills sdd  — requirement traceability, Spec-Anchored Outcome Rule, auto-sizing.
-  load skills beads-harness  — Beads epic/story commands.
+  load skills beads  — Beads epic/story commands.
 
   ## Spec-Anchored Outcome Rule
   Every AC must state a PRECISE expected outcome:

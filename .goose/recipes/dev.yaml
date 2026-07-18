@@ -43,14 +43,14 @@ instructions: |
   | Feature discovery      | `sdd`                   | `product-owner`         | product-owner           |
   | UX research / personas | `ux-quality`            | `ux-researcher`         | ux-researcher           |
   | Formal spec (ACs)      | `sdd`                   | `architect`             | architect               |
-  | Dependency graph       | `beads-harness`         | `beads-planner`         | beads-planner           |
+  | Dependency graph       | `beads`         | `planner`         | planner           |
   | Code / PR review       | `code-review`           | `review-critic`         | review-critic           |
-  | Architecture / ADR     | `agentic-dev-harness`   | `architect`             | architect               |
+  | Architecture / ADR     | `agentic-devlopment`   | `architect`             | architect               |
   | Feature spec / PRD     | `sdd`                   | `product-owner`         | product-owner           |
-  | Beads graph / planning | `beads-harness`         | `beads-planner`         | beads-planner           |
-  | Research / blast-radius| `agentic-dev-harness`   | `codebase-researcher`   | codebase-researcher     |
-  | Implementation (TDD)   | `beads-harness`         | `implementation-worker` | implementation-worker   |
-  | Test-first cycle       | `agentic-dev-harness`   | `tdd-guide`             | tdd-guide               |
+  | Beads graph / planning | `beads`         | `planner`         | planner           |
+  | Research / blast-radius| `agentic-devlopment`   | `codebase-researcher`   | codebase-researcher     |
+  | Implementation (TDD)   | `beads`         | `implementation-worker` | implementation-worker   |
+  | Test-first cycle       | `agentic-devlopment`   | `tdd-guide`             | tdd-guide               |
   | Full test pipeline / CI| `webapp-testing`        | `qa-automation`         | qa-automation           |
   | UX research + personas | `ux-quality`            | `ux-researcher`         | ux-researcher           |
   | UI design + a11y audit | `ui-quality`            | `ui-designer`           | ui-designer             |
@@ -59,7 +59,7 @@ instructions: |
   | Design system audit    | `design-systems-arch`   | `ui-designer`           | ui-designer             |
   | Agentic AI UX          | `agentic-ux`            | `ux-researcher`         | ux-researcher           |
   | Breaking-change review | `code-review`           | `principal-engineer`    | principal-engineer      |
-  | Multi-step orchestration| `goose-orchestration`  | `harness-orchestrator`  | harness-orchestrator    |
+  | Multi-step orchestration| `goose-orchestration`  | `orchestrator`  | orchestrator    |
 
   ### In-session delegation (free-form, carries parent context)
   ```
@@ -201,7 +201,10 @@ prompt: |
     Complexity: [Micro | Small | Medium | Large]
 
   ## Step 1 — Orient (Generated Knowledge — do this first, before any other step)
-  load skills agentic-dev-harness.
+  load skills agentic-devlopment.
+  load skills goose-orchestration.
+  load skills beads.
+  load agent orchestrator.
   Run `bd prime` then `bd ready --json` if repo contains `.beads`.
   Read one existing file relevant to the task (patterns, conventions).
 

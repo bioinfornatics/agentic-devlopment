@@ -1,0 +1,65 @@
+[
+  {
+    "skills": ["harness-judge"],
+    "query": "Act as harness-judge and grade a completed session transcript for protocol compliance and evidence quality.",
+    "files": [".agents/agents/harness-judge.md", ".agents/skills/harness-judge/SKILL.md"],
+    "fixture_intent": "Normal scenario: agent persona should stay read-only, load the harness-judge methodology, and produce an evidence-backed report.",
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The harness-judge agent should behave as a read-only evaluator with strict evidence citation, not as an implementer or general reviewer.",
+    "baseline_gaps": [
+      "Agent starts advising implementation changes instead of judging evidence.",
+      "Agent produces a verdict without per-criterion scoring.",
+      "Agent does not cite transcript turns or exact artifact evidence."
+    ],
+    "expected_behavior": [
+      "States that the role is read-only evaluation and does not modify files or Beads.",
+      "Loads or explicitly applies the harness-judge skill methodology before scoring.",
+      "Identifies applicable domains A-F and marks irrelevant domains N/A with reasons.",
+      "Produces a score table with evidence for each scored criterion.",
+      "Emits a final PASS, PARTIAL, or FAIL verdict only after criterion scoring."
+    ]
+  },
+  {
+    "skills": ["harness-judge"],
+    "query": "Audit a recipe change for AD-001 compliance and eval JSON layer correctness.",
+    "files": [".goose/recipes/", "evals/recipes/", ".specs/STATE.md"],
+    "fixture_intent": "Difficult scenario: agent must distinguish in-session loaded agents from delegated agents and enforce AD-001 hard gates.",
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The harness-judge agent should apply recipe and orchestration rubrics, cite AD-001 evidence, and fail incorrect layer declarations.",
+    "baseline_gaps": [
+      "Agent treats delegated agents as if they belong in recipe eval agents fields.",
+      "Agent misses a recipe that loads orchestrator and a specialist together.",
+      "Agent treats recipe validation as optional."
+    ],
+    "expected_behavior": [
+      "Checks whether the recipe is Specialist, Orchestration, or Skill-only according to AD-001.",
+      "Fails or caps Domain D when a recipe mixes orchestrator with specialist agents in-session.",
+      "Checks that recipe eval JSON agents lists only in-session agents.",
+      "Requires goose recipe validate evidence for changed recipes.",
+      "Separates compatibility hard gates from quality recommendations."
+    ]
+  },
+  {
+    "skills": ["harness-judge"],
+    "query": "Judge a pair of baseline and enhanced eval transcripts for layer-delta value.",
+    "files": ["docs/15-skill-evaluations.md", "evals/"],
+    "fixture_intent": "Very difficult scenario: agent must avoid positional and verbosity bias while comparing two runs.",
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The harness-judge agent should score baseline and enhanced transcripts independently, then compute marginal value with regression checks and bias controls.",
+    "baseline_gaps": [
+      "Agent prefers the longer answer regardless of correctness.",
+      "Agent assumes the enhanced condition should win.",
+      "Agent produces only a qualitative comparison without criterion-level deltas."
+    ],
+    "expected_behavior": [
+      "Scores baseline and enhanced conditions independently before direct comparison.",
+      "Applies the same criteria to both conditions.",
+      "Mentions and mitigates at least positional bias and verbosity bias.",
+      "Reports criterion-level delta and a POSITIVE, NEUTRAL, or NEGATIVE delta verdict.",
+      "Identifies any regressions introduced by the enhanced condition."
+    ]
+  }
+]

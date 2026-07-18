@@ -1,0 +1,109 @@
+[
+  {
+    "agents": [
+      "review-critic"
+    ],
+    "skills": [
+      "code-review",
+      "agentic-devlopment",
+      "beads"
+    ],
+    "query": "Run a harness review scoped to code (scope=code). Review the diff that adds a new recipe sub_recipes entry pointing to a missing subrecipe YAML. Confirm the missing path is flagged as CRITICAL and that the verdict is BLOCK.",
+    "files": [
+      ".goose/recipes/",
+      ".goose/recipes/subrecipes/"
+    ],
+    "max_turns": 40,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The harness-review recipe should: declare scope (code), focus, and approach as first visible output; run `bd prime` then `bd ready --json` before any inspection; route to the `review` subrecipe for code analysis; surface the missing subrecipe path as a CRITICAL finding with exact file reference; emit verdict BLOCK before the findings list; and propose a `bd create` command for the CRITICAL finding — without modifying any file.",
+    "fixture_intent": "A recipe YAML patch that adds a sub_recipes entry pointing to a path that does not exist on disk; the agent must detect the broken reference as a CRITICAL finding and not produce a PASS-WITH-NITS or APPROVE verdict.",
+    "baseline_gaps": [
+      "declares verdict before running the review subrecipe — produces APPROVE without inspecting the diff",
+      "misses the missing subrecipe path — treats sub_recipes entries as informational rather than verifiable references",
+      "no `bd create` command proposed for the CRITICAL finding — ends with a prose summary"
+    ],
+    "expected_behavior": [
+      "declares scope (code), focus, and approach as the first visible output before any tool call",
+      "runs `bd prime` and `bd ready --json` before any file inspection",
+      "routes to the `review` subrecipe and collects severity-ranked code findings",
+      "surfaces the missing subrecipe path as a CRITICAL finding with exact file reference and quoted evidence",
+      "emits verdict BLOCK with one-sentence justification",
+      "proposes an exact `bd create` command for the CRITICAL finding",
+      "does not modify any file"
+    ]
+  },
+  {
+    "agents": [
+      "review-critic"
+    ],
+    "skills": [
+      "code-review",
+      "agentic-devlopment",
+      "beads"
+    ],
+    "query": "Run a harness review scoped to docs (scope=docs). Check documentation consistency for the harness: recipe validation status, skill completeness, and Beads hygiene. Emit a severity-ranked report with proposed bd create commands for any CRITICAL or HIGH findings.",
+    "files": [
+      ".goose/recipes/",
+      ".agents/skills/",
+      "docs/",
+      "AGENTS.md"
+    ],
+    "max_turns": 50,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The harness-review recipe should: declare scope (docs), focus, and approach as first visible output; route to the `doc-review` subrecipe; check recipe validation, skill completeness, and Beads hygiene non-discretionarily; severity-rank all findings as CRITICAL/HIGH/MEDIUM/LOW with file references; propose exact `bd create` commands for CRITICAL and HIGH findings; and treat Beads hygiene as a non-discretionary check not subject to confidence filtering.",
+    "baseline_gaps": [
+      "applies confidence filtering to Beads hygiene — skips or hedges TODO/FIXME/HACK findings instead of reporting them unconditionally",
+      "does not verify skill files for required sections — reports 'looks complete' without checking metadata block, example, and Load next",
+      "no `bd create` commands proposed — ends report with a prose narrative instead of actionable follow-ups"
+    ],
+    "expected_behavior": [
+      "declares scope (docs), focus, and approach as first visible output before any tool call",
+      "routes to the `doc-review` subrecipe for documentation consistency inspection",
+      "runs `goose recipe validate` on every recipe YAML and reports each as PASS or FAIL",
+      "checks Beads hygiene (TODO/FIXME/HACK) non-discretionarily across all target directories",
+      "verifies each skill file for required sections (metadata block, concrete example, Load next if cross-skill references exist)",
+      "severity-ranks all findings as CRITICAL/HIGH/MEDIUM/LOW with exact file paths",
+      "proposes exact `bd create` commands for all CRITICAL and HIGH findings",
+      "does not modify any file"
+    ]
+  },
+  {
+    "agents": [
+      "review-critic"
+    ],
+    "skills": [
+      "code-review",
+      "agentic-devlopment",
+      "beads"
+    ],
+    "query": "Run a full harness review (scope=full). Cover all layers in one pass: code diff review, recipe validation, skill completeness, memory pointer format, cross-reference integrity (sub_recipes paths, load agent, load skills references), harness workflow checklists, and Beads hygiene. Merge findings from both code and doc review passes. Emit a summary table (CRITICAL/HIGH/MEDIUM/LOW counts), per-finding evidence with file references, a single unified verdict (APPROVE | PASS-WITH-NITS | BLOCK), and proposed bd create commands for all CRITICAL and HIGH findings. At the end, propose one bd remember if a durable harness quality fact was discovered.",
+    "files": [
+      ".goose/recipes/",
+      ".goose/recipes/subrecipes/",
+      ".agents/skills/",
+      ".agents/agents/",
+      "docs/",
+      "AGENTS.md"
+    ],
+    "max_turns": 60,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The harness-review recipe should orchestrate both `review` and `doc-review` subrecipes in sequence, merge their findings without duplication, connect cross-surface implications (e.g., a code change that also breaks doc accuracy), and emit a single unified verdict. It must produce a summary table before the detailed findings, include exact file references and quoted evidence for every CRITICAL/HIGH finding, propose `bd create` commands rather than prose TODOs, and end with a memory checkpoint decision — proposing one `bd remember` if a durable fact was found, or explicitly skipping it if none.",
+    "baseline_gaps": [
+      "runs only one subrecipe (code or doc) instead of both — does not merge findings from both review passes",
+      "emits separate verdicts per subrecipe rather than a single unified verdict across all passes",
+      "produces a prose narrative rather than a structured summary table with CRITICAL/HIGH/MEDIUM/LOW counts",
+      "omits cross-surface implications — does not connect code findings to their documentation impact",
+      "memory checkpoint is skipped — no `bd remember` proposed and no explicit skip stated"
+    ],
+    "expected_behavior": [
+      "runs `review` subrecipe first (code review), then `doc-review` subrecipe (documentation), collecting all findings before synthesizing",
+      "merges findings from both passes into a single severity-ranked list, deduplicating overlapping observations",
+      "notes cross-surface implications between code and documentation changes in the synthesis section",
+      "emits a structured summary table (CRITICAL/HIGH/MEDIUM/LOW counts, code vs doc origin) before the detailed findings",
+      "for each CRITICAL or HIGH finding: exact file path, quoted evidence, concrete failure mode, and proposed `bd create` command",
+      "emits a single unified verdict (APPROVE | PASS-WITH-NITS | BLOCK) with one-sentence justification covering both passes",
+      "ends with a memory checkpoint: proposes one `bd remember` if a durable harness quality fact was discovered, or explicitly states none found",
+      "does not modify any file"
+    ]
+  }
+]

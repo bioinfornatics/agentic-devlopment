@@ -1,5 +1,11 @@
 [
   {
+    "agents": [
+      "codebase-researcher"
+    ],
+    "skills": [
+      "agentic-devlopment"
+    ],
     "query": "Research the current state of Beads issues and which recipe files are most at risk of breaking if `.goose/recipes/dev.yaml` is changed.",
     "files": [
       ".goose/recipes/dev.yaml",
@@ -8,7 +14,7 @@
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The research recipe should return a structured JSON-schema output with summary, relevant_files, beads_state, risks, recommended_next_steps \u2014 not prose only.",
+    "expected_skill_contribution": "The research recipe should return a structured JSON-schema output with summary, relevant_files, beads_state, risks, recommended_next_steps — not prose only.",
     "fixture_intent": "Validates that the research recipe is strictly read-only, returns all five required JSON schema output fields, and populates beads_state from actual Beads query results rather than fabricating it.",
     "baseline_gaps": [
       "Returns a prose summary without the five required structured schema fields",
@@ -16,13 +22,19 @@
       "Lists no concrete file paths in relevant_files or provides no evidence from recipe content"
     ],
     "expected_behavior": [
-      "Makes no file edits and no Beads mutations \u2014 strictly read-only throughout",
+      "Makes no file edits and no Beads mutations — strictly read-only throughout",
       "Returns output containing all five schema fields: summary, relevant_files, beads_state, risks, recommended_next_steps",
       "Populates `beads_state` using actual results from `bd ready --json` or `bd blocked --json`",
       "Lists at least two concrete file paths in `relevant_files` with supporting evidence from recipe file content"
     ]
   },
   {
+    "agents": [
+      "codebase-researcher"
+    ],
+    "skills": [
+      "agentic-devlopment"
+    ],
     "query": "Map the blast radius of removing the `skills` extension block from `implement.yaml`. Which other recipes, agents, and docs would be affected?",
     "files": [
       ".goose/recipes/implement.yaml",
@@ -47,6 +59,12 @@
     ]
   },
   {
+    "agents": [
+      "codebase-researcher"
+    ],
+    "skills": [
+      "agentic-devlopment"
+    ],
     "query": "Research all open Beads issues, identify which are blocked and why, and recommend the safest next implementation order. Read only.",
     "files": [
       ".beads/issues.jsonl",
@@ -64,7 +82,7 @@
     ],
     "expected_behavior": [
       "Runs `bd prime`, `bd ready --json`, and `bd blocked --json` to build a complete state picture before analysis",
-      "Makes no file edits and no Beads mutations \u2014 read-only throughout",
+      "Makes no file edits and no Beads mutations — read-only throughout",
       "Returns `recommended_next_steps` with explicit dependency rationale explaining which bead unblocks which",
       "Returns all five JSON schema fields (summary, relevant_files, beads_state, risks, recommended_next_steps) with content derived from actual Beads and recipe state"
     ]

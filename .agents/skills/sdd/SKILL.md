@@ -1,9 +1,14 @@
 ---
 name: sdd
 description: >
-  Spec-Driven Development: lightweight method for intent→spec→graph→TDD→implement→verify→learn
-  over the Goose+Beads harness. Load when planning, speccing, implementing, or verifying any
-  feature work in this harness.
+  Load when implementing features using Spec-Driven Development: spec before code,
+  requirements with [FEAT]-NN IDs, tests anchored to spec acceptance criteria.
+  Provides: scale decision table (micro / small / medium / large / complex) to choose
+  the right SDD depth, the full SDD loop (Intent → Spec → Graph → TDD → Implement →
+  Verify → Learn), Beads integration for task tracking, maker/checker split patterns,
+  and the brownfield retro-spec pattern for existing code. Use when asked to implement
+  any non-trivial feature, write a formal spec, or establish verifiable acceptance
+  criteria for a change.
 metadata:
   version: 3.0.0
 ---

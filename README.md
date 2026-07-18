@@ -115,48 +115,53 @@ flowchart TD
 
 **SDD on-ramp:** `/discover` → `/spec` → `/plan` → `/implement` → `/review` → `/verify` → `/release`
 
+<!-- BEGIN GENERATED: skills-table -->
 ## Skills (18)
 
-| Skill                  | Purpose                                                    |
-|------------------------|------------------------------------------------------------|
-| `agentic-dev-harness`  | Goose + Beads unified operating model                      |
-| `beads-harness`        | Beads commands, dependency graph, memory, gates            |
-| `sdd`                  | Spec-Driven Development loop, auto-sizing, spec-anchored   |
-| `code-review`          | Adaptive review: PR / feature / security / global / hotfix |
-| `goose-orchestration`  | Recipes, subagents, Summon, routing, guardrails            |
-| `systematic-debugging` | 4-phase root-cause investigation                           |
-| `ux-quality`           | User intent, IA, interaction states, design coherence      |
-| `ui-quality`           | WCAG 2.2 AA, keyboard nav, design system, Core Web Vitals  |
-| `webapp-testing`       | Browser automation, server lifecycle, a11y evidence        |
-| `cognitive-ux`         | Laws of UX (Fitts, Hick, Gestalt), cognitive biases        |
-| `agentic-ux`           | Agentic AI interface patterns, trust calibration           |
-| `atomic-design`        | Brad Frost Atoms → Molecules → Organisms → Templates       |
-| `design-systems-arch`  | W3C token architecture, governance, maturity model         |
-| `frontend-blueprint`   | Design consultation: discovery → direction → build         |
-| `knowledge-graph`      | KG CRUD, reasoning, SDD traceability                       |
-| `wcag-accessibility-audit` | WCAG 2.2 AA full audit protocol                       |
-| `atomic-design-fundamentals` | Foundational atomic design principles              |
-| `design-critique-case-studies` | Design critique with reference case studies      |
+| Skill | Purpose |
+|-------|---------|
+| `agentic-devlopment` | Load for any software development, feature implementation, debugging, code review, release |
+| `agentic-ux` | Load when designing, evaluating, or critiquing interfaces for AI-powered or agentic applications. |
+| `atomic-design` | Load when building, auditing, or organizing UI components and design systems using Brad Fr |
+| `beads` | Load when managing tasks, dependencies, or work state that must persist across sessions. |
+| `code-review` | Load when reviewing code, pull requests, architecture changes, or any diff. |
+| `cognitive-ux` | Load when evaluating usability, designing user flows, or explaining why users struggle wit |
+| `design-critique-case-studies` | Load when running or participating in a structured design critique, or when drawing on rea |
+| `design-systems-arch` | Load when architecting, auditing, or evolving a design system at scale. |
+| `frontend-blueprint` | Load when starting or reviewing any frontend implementation task where visual fidelity and |
+| `goose-orchestration` | Load before any call to delegate(), or when deciding which specialist to summon. |
+| `harness-judge` | Load before any LLM-as-judge evaluation of the agentic development harness. |
+| `knowledge-graph` | Load when creating, querying, or updating the project knowledge graph during Spec-Driven D |
+| `sdd` | Load when implementing features using Spec-Driven Development: spec before code, requireme |
+| `systematic-debugging` | Load at the first sign of any bug, test failure, unexpected behavior, or failing hypothesi |
+| `ui-quality` | Load when evaluating the visual and technical quality of a rendered UI: design system toke |
+| `ux-quality` | Load when evaluating user experience quality of an interface: user intent alignment, infor |
+| `wcag-accessibility-audit` | Load when conducting a formal web accessibility audit against WCAG 2. |
+| `webapp-testing` | Load when writing, running, or reviewing automated tests for a web application using Playw |
+<!-- END GENERATED: skills-table -->
 
-## Named agents (12)
+<!-- BEGIN GENERATED: agents-table -->
+## Named agents (13)
 
 Named agents in `.agents/agents/` — invoke with Goose Summon natural language:
 `load agent <name>` (in-session) or `delegate task bd-xxx and into those task load agent <name>` (isolated).
 
-| Agent                   | Role                                      | Invoke when                             |
-|-------------------------|-------------------------------------------|-----------------------------------------|
-| `harness-orchestrator`  | SDD+TDD loop orchestrator                 | Multi-step, multi-agent work            |
-| `codebase-researcher`   | Read-only architecture mapper             | Blast radius, pre-planning evidence     |
-| `beads-planner`         | Beads dependency graph                    | >5 interdependent issues                |
-| `product-owner`         | PRD + backlog, 100-pt quality gate        | Start of any new feature                |
-| `architect`             | System design, ADRs, trade-offs           | Technology decisions, system boundaries |
-| `tdd-guide`             | RED→GREEN→REFACTOR, 80% coverage          | Before any implementation               |
-| `implementation-worker` | Scoped TDD implementation                 | Bead claimed and ready                  |
-| `qa-automation`         | Test pipeline, flaky quarantine, CI       | After implementation                    |
-| `review-critic`         | Confidence-filtered review, APPROVE/BLOCK | After implementation                    |
-| `principal-engineer`    | Blast radius, breaking changes            | Shared infra, public API, 2+ BLOCKs     |
-| `ux-researcher`         | Personas, journeys, usability             | New feature, user validation            |
-| `ui-designer`           | Design system, WCAG 2.2 AA, a11y          | Any UI change                           |
+| Agent | Role | Model |
+|-------|------|-------|
+| `architect` | Use PROACTIVELY when planning a new feature, making a technology choice, or touc | opus-4-5 |
+| `codebase-researcher` | Read-only codebase researcher. | sonnet-4-5 |
+| `harness-judge` | Evidence-first LLM-as-judge for the Goose agentic development harness. | sonnet-4-5 |
+| `implementation-worker` | Implementation specialist for scoped Beads issues. | sonnet-4-5 |
+| `orchestrator` | Lead orchestrator for the SDD+TDD loop. | opus-4-5 |
+| `planner` | Beads dependency graph specialist. | sonnet-4-5 |
+| `principal-engineer` | Use when a change touches shared infrastructure, public APIs, breaking changes,  | opus-4-5 |
+| `product-owner` | Product Owner — owns the full backlog lifecycle: user story definition, PRD qual | opus-4-5 |
+| `qa-automation` | QA automation engineer. | sonnet-4-5 |
+| `review-critic` | Critical code and Beads handoff reviewer. | sonnet-4-5 |
+| `tdd-guide` | Use PROACTIVELY before any new feature implementation or bug fix. | sonnet-4-5 |
+| `ui-designer` | User interface designer. | sonnet-4-5 |
+| `ux-researcher` | User experience researcher. | sonnet-4-5 |
+<!-- END GENERATED: agents-table -->
 
 ## Quick start
 

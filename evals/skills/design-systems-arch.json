@@ -1,0 +1,73 @@
+[
+  {
+    "skills": [
+      "design-systems-arch"
+    ],
+    "query": "Audit the CSS in `docs/assets/site.css` for W3C design token architecture compliance. Identify which values are raw primitives, which should be semantic tokens, and which are component-level tokens.",
+    "files": [
+      "docs/assets/site.css"
+    ],
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The design-systems-arch skill applies the three-layer token architecture (Primitive → Semantic → Component) to classify existing CSS values.",
+    "baseline_gaps": [
+      "Agent audits CSS quality without applying the three-layer token classification.",
+      "Agent does not distinguish semantic intent from primitive value — treats all tokens as equivalent.",
+      "Agent lists issues without proposing the corrected three-layer structure."
+    ],
+    "expected_behavior": [
+      "Classifies every CSS custom property into one of three layers: Primitive (raw value), Semantic (intent-based alias), or Component (component-specific override).",
+      "Identifies values that bypass the semantic layer (component referencing primitives directly) as token architecture violations.",
+      "Proposes a three-layer token migration plan with the exact rename and alias chain for each violation.",
+      "States which violations break theming capability and why."
+    ]
+  },
+  {
+    "skills": [
+      "design-systems-arch"
+    ],
+    "query": "Design a multi-brand token architecture for the harness documentation site that supports a 'default' brand and a 'high-contrast' accessibility theme. Define the full three-layer token structure and the theming strategy.",
+    "files": [
+      "docs/assets/site.css"
+    ],
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The design-systems-arch skill applies the Multi-brand architecture pattern: semantic layer swap with primitives and components unchanged.",
+    "baseline_gaps": [
+      "Agent proposes separate CSS files per theme rather than a semantic-layer-swap architecture.",
+      "Agent does not define the Primitive layer as brand-invariant — allows brand tokens at the wrong layer.",
+      "Agent does not explain how the high-contrast theme satisfies WCAG AA contrast requirements through token overrides."
+    ],
+    "expected_behavior": [
+      "Defines the Primitive layer as brand-invariant (shared color values used by both brands).",
+      "Defines the Semantic layer as the brand-variable layer — swapping this layer alone changes the brand.",
+      "Shows how the high-contrast theme overrides only Semantic tokens, leaving Primitives and Component tokens unchanged.",
+      "Verifies that the high-contrast Semantic tokens satisfy WCAG AA 4.5:1 contrast ratios for text."
+    ]
+  },
+  {
+    "skills": [
+      "design-systems-arch"
+    ],
+    "query": "Conduct a full design system maturity assessment for the harness UI (docs site + eval report). Map it to the six-level maturity model, identify the current level and the blockers to the next level, and propose a governance model.",
+    "files": [
+      "docs/assets/site.css",
+      "dist/evals/report/index.html",
+      "docs/knowledge-graph.md"
+    ],
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The design-systems-arch skill applies the full maturity model (L0–L5), identifies level-specific blockers, and adds governance structure recommendations.",
+    "baseline_gaps": [
+      "Agent assesses the design system quality without applying the six-level maturity model.",
+      "Agent does not identify the specific blockers preventing progression to the next maturity level.",
+      "Agent does not propose a governance model — only technical improvements."
+    ],
+    "expected_behavior": [
+      "Maps the current state to a specific maturity level (L0–L5) with evidence from the audited files.",
+      "Identifies the specific blockers to the next level — not general improvements, but the exact criteria unmet.",
+      "Proposes a governance model: who owns the system, how exceptions are requested, how contributions are reviewed.",
+      "Estimates the effort to reach each subsequent maturity level as a rough LOE (days/weeks)."
+    ]
+  }
+]

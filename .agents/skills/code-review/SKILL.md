@@ -1,10 +1,12 @@
 ---
 name: code-review
 description: >
-  Adaptive code review for agentic development: detects review type from context,
-  loads the matching process reference, applies confidence-filtered findings with
-  Beads hygiene, and returns a verdict. Covers PR, feature, security, global,
-  release, and hotfix review types.
+  Load when reviewing code, pull requests, architecture changes, or any diff.
+  Adapts review depth to change type (PR / Feature / Security / Release / Hotfix /
+  Global). Enforces: read git diff first, apply a 4-question confidence gate,
+  produce a Verdict table with an explicit BLOCK / APPROVE / COMMENT recommendation,
+  cite exact file and line numbers for every finding. Zero findings is a valid and
+  correct output. Use when asked to review, audit, or critique any code change.
 metadata:
   version: 4.0.0
 ---
@@ -153,7 +155,7 @@ For HIGH / CRITICAL: is there a concrete exploit scenario or exact reproduction 
 
 ## Beads loop
 
-For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads-harness`.
+For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads`.
 
 Skill-specific commands:
     bd create "Review: <title>" --assignee review-critic       → file the review as a bead

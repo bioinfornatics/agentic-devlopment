@@ -18,8 +18,8 @@ instructions: |
     Recipes to validate: [list of *.yaml paths found or "none"]
 
   ## Load skills first
-  load skills agentic-dev-harness
-  load skills beads-harness
+  load skills agentic-devlopment
+  load skills beads
 
   ## Orient
   Run `bd prime` to load project context and memories before inspecting any file.

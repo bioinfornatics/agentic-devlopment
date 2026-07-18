@@ -1,4 +1,4 @@
-import { readdir, readFile, writeFile, access } from "node:fs/promises";
+import { readdir, readFile, writeFile, mkdir, access } from "node:fs/promises";
 import { join, basename, extname } from "node:path";
 import { parseJSONL } from "./types.js";
 const REPO = new URL("../../..", import.meta.url).pathname;
@@ -40,7 +40,7 @@ export async function bootstrap(opts = {}) {
     for (const f of await scan(join(REPO, "docs"), ".md"))
         recs.push(ent("doc:" + basename(f), "harness:doc", ["file:docs/" + basename(f), "scope:buildtime", "namespace:harness"]));
     const RS = { dev: "agentic-dev-harness", review: "code-review", implement: "beads-harness", spec: "sdd", discover: "sdd", plan: "beads-harness", verify: "webapp-testing", design: "ux-quality", sdd: "sdd" };
-    const RA = { review: "review-critic", implement: "implementation-worker", discover: "product-owner", spec: "architect", plan: "beads-planner", verify: "qa-automation", design: "ux-researcher" };
+    const RA = { review: "review-critic", implement: "implementation-worker", discover: "product-owner", spec: "architect", plan: "planner", verify: "qa-automation", design: "ux-researcher" };
     for (const [r, s] of Object.entries(RS))
         recs.push(rel("recipe:" + r, "skill:" + s, "USES_SKILL"));
     for (const [r, a] of Object.entries(RA))
@@ -77,6 +77,7 @@ export async function bootstrap(opts = {}) {
         return;
     }
     const ex = await ok(MEM) ? await readFile(MEM, "utf8") : "";
+    await mkdir(join(REPO, ".knowledge"), { recursive: true });
     await writeFile(MEM, ex + nr.map(r => JSON.stringify(r)).join("\n") + "\n");
     console.log("Bootstrap: added", nr.length, "records");
 }

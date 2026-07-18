@@ -1,5 +1,8 @@
 [
   {
+    "skills": [
+      "agentic-devlopment"
+    ],
     "query": "Map the architecture of the harness recipe layer. What are the entry points, what do they delegate to, and what are the risks?",
     "files": [
       ".goose/recipes/",
@@ -22,6 +25,9 @@
     ]
   },
   {
+    "skills": [
+      "agentic-devlopment"
+    ],
     "query": "Trace the blast radius of removing the `summon` extension from `implement.yaml`. Which agents, recipes, and docs would break?",
     "files": [
       ".goose/recipes/implement.yaml",
@@ -45,6 +51,9 @@
     ]
   },
   {
+    "skills": [
+      "agentic-devlopment"
+    ],
     "query": "Research which Beads issues are currently blocked, why, and recommend a safe unblocking order. Read only.",
     "files": [
       ".beads/issues.jsonl",

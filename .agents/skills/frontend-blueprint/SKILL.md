@@ -1,11 +1,13 @@
 ---
 name: frontend-blueprint
 description: >
-  Structured frontend design consultation: collects visual references, design
-  tokens, typography, brand guidelines, and layout preferences before generating
-  any code. Load when asked to build, design, create, or improve any frontend
-  interface, component, page, or UI element. Prioritises discovery over speed —
-  a correct first draft from understanding beats rework.
+  Load when starting or reviewing any frontend implementation task where visual
+  fidelity and quality gates matter. Enforces: references first (no code without
+  visual context), atomic delivery (one component per iteration), opinionated
+  guidance over presenting options. Runs a structured workflow: BRIEFING →
+  REFERENCES → DESIGN DIRECTION → EXECUTION PLAN → ATOMIC BUILD → REVIEW.
+  Use for new UI features, component builds, or any frontend task where you need
+  a disciplined implementation process with explicit design quality checkpoints.
 license: CC-BY-4.0
 metadata:
   author: Felipe Rodrigues (TLC) — adapted for harness

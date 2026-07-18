@@ -18,22 +18,25 @@ This spec documents acceptance criteria derived from the implemented system.
 
 WHEN `goose recipe validate` runs on each of the following top-level recipes:
 
-| Order | Recipe file                        | Slash command  |
-|------:|------------------------------------|----------------|
-| 1     | `.goose/recipes/discover.yaml`     | `/discover`    |
-| 2     | `.goose/recipes/explore.yaml`      | `/explore`     |
-| 3     | `.goose/recipes/spec.yaml`         | `/spec`        |
-| 4     | `.goose/recipes/design.yaml`       | `/design`      |
-| 5     | `.goose/recipes/sdd.yaml`          | `/sdd`         |
-| 6     | `.goose/recipes/plan.yaml`         | `/plan`        |
-| 7     | `.goose/recipes/dev.yaml`          | `/dev`         |
-| 8     | `.goose/recipes/implement.yaml`    | `/implement`   |
-| 9     | `.goose/recipes/review.yaml`       | `/review`      |
-| 10    | `.goose/recipes/verify.yaml`       | `/verify`      |
-| 11    | `.goose/recipes/release.yaml`      | `/release`     |
-| 12    | `.goose/recipes/remember.yaml`     | `/remember`    |
-| 13    | `.goose/recipes/doc-review.yaml`   | `/doc-review`  |
-| 14    | `.goose/recipes/harness-review.yaml` | —            |
+| Order | Recipe file                          | Slash command  |
+|------:|--------------------------------------|----------------|
+| 1     | `.goose/recipes/discover.yaml`       | `/discover`    |
+| 2     | `.goose/recipes/explore.yaml`        | `/explore`     |
+| 3     | `.goose/recipes/spec.yaml`           | `/spec`        |
+| 4     | `.goose/recipes/design.yaml`         | `/design`      |
+| 5     | `.goose/recipes/sdd.yaml`            | `/sdd`         |
+| 6     | `.goose/recipes/plan.yaml`           | `/plan`        |
+| 7     | `.goose/recipes/dev.yaml`            | `/dev`         |
+| 8     | `.goose/recipes/implement.yaml`      | `/implement`   |
+| 9     | `.goose/recipes/review.yaml`         | `/review`      |
+| 10    | `.goose/recipes/verify.yaml`         | `/verify`      |
+| 11    | `.goose/recipes/release.yaml`        | `/release`     |
+| 12    | `.goose/recipes/remember.yaml`       | `/remember`    |
+| 13    | `.goose/recipes/doc-review.yaml`     | `/doc-review`  |
+| 14    | `.goose/recipes/harness-review.yaml` | —              |
+| 15    | `.goose/recipes/harness-doc-review.yaml` | —            |
+| 16    | `.goose/recipes/harness-master.yaml` | —                |
+| 17    | `.goose/recipes/harness-audit.yaml` | —                 |
 
 THEN every recipe returns "valid" with 0 failures.
 
@@ -46,22 +49,25 @@ THEN it emits First Visible Output before any tool call
 AND it loads the relevant skill(s) via `load skills <name>`
 AND it delegates to the correct agent(s) per the following wiring table:
 
-| Recipe     | Skills loaded                                                                                        | Agents delegated to              |
-|------------|------------------------------------------------------------------------------------------------------|----------------------------------|
-| design     | ux-quality, cognitive-ux, ui-quality, atomic-design, design-systems-arch, webapp-testing, agentic-ux | ux-researcher, ui-designer       |
-| dev        | agentic-dev-harness, beads-harness                                                                   | harness-orchestrator (in-session, then delegates by task type) |
-| discover   | sdd, agentic-dev-harness                                                                             | ux-researcher, product-owner     |
-| doc-review | agentic-dev-harness, beads-harness                                                                   | review-critic (in-session, CRITICAL escalation only)           |
-| explore         | agentic-dev-harness                                                                             | codebase-researcher              |
-| harness-review  | code-review, agentic-dev-harness, beads-harness                                                 | review-critic                    |
-| implement       | beads-harness, sdd, agentic-dev-harness                                                         | implementation-worker, tdd-guide |
-| plan       | beads-harness, sdd                                                                                   | beads-planner, architect         |
-| release    | agentic-dev-harness                                                                                  | principal-engineer               |
-| remember   | beads-harness                                                                                        | (direct bd calls — no agent)     |
-| review     | code-review                                                                                          | review-critic                    |
-| sdd        | sdd, agentic-dev-harness                                                                             | harness-orchestrator (in-session, then routes by SDD phase)    |
-| spec       | sdd, beads-harness                                                                                   | architect, tdd-guide             |
-| verify     | agentic-dev-harness, webapp-testing                                                                  | qa-automation (in-session); ui-designer (summon, ui/web path)  |
+| Recipe          | Skills loaded                                                                                         | Agents delegated to                                            |
+|-----------------|-------------------------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| design          | ux-quality, cognitive-ux, ui-quality, atomic-design, design-systems-arch, webapp-testing, agentic-ux  | ux-researcher, ui-designer                                     |
+| dev             | agentic-devlopment, beads                                                                             | orchestrator (in-session, then delegates by task type)         |
+| discover        | sdd, agentic-devlopment                                                                               | ux-researcher, product-owner                                   |
+| doc-review      | agentic-devlopment, beads                                                                             | review-critic (in-session, CRITICAL escalation only)           |
+| explore         | agentic-devlopment                                                                                    | codebase-researcher                                            |
+| harness-review  | code-review, agentic-devlopment, beads                                                                | review-critic                                                  |
+| harness-doc-review | agentic-devlopment, beads                                                                          | review-critic                                                  |
+| harness-master  | agentic-devlopment, goose-orchestration, beads                                                        | orchestrator (in-session; routes to harness subrecipes)        |
+| harness-audit | harness-judge                                                                                       | harness-judge                                                 |
+| implement       | beads, sdd, agentic-devlopment                                                                        | implementation-worker                                          |
+| plan            | beads, sdd                                                                                            | planner, architect                                       |
+| release         | agentic-devlopment                                                                                    | principal-engineer                                             |
+| remember        | beads                                                                                                 | (direct bd calls — no agent)                                   |
+| review          | code-review                                                                                           | review-critic                                                  |
+| sdd             | sdd, agentic-devlopment                                                                               | orchestrator (in-session, then routes by SDD phase)            |
+| spec            | sdd, beads                                                                                            | architect, tdd-guide                                           |
+| verify          | agentic-devlopment, webapp-testing                                                                    | qa-automation (in-session); ui-designer (summon, ui/web path)  |
 
 ---
 
@@ -84,26 +90,26 @@ AND each maps to its corresponding recipe file in `~/.config/goose/recipes/`.
 WHEN `goose skills list` runs
 THEN all of the following 18 domain skills are visible (plus `skill-creator` tooling):
 
-| Skill name             | Domain                              |
-|------------------------|-------------------------------------|
-| `agentic-dev-harness`  | Harness orientation & delegation    |
-| `agentic-ux`           | UX for agentic interfaces           |
-| `atomic-design`        | Component hierarchy                 |
-| `beads-harness`        | Task tracking (Beads/Dolt)          |
-| `code-review`          | Adaptive code review                |
-| `cognitive-ux`         | Cognitive load & usability          |
-| `design-systems-arch`  | Design system architecture          |
-| `frontend-blueprint`   | Frontend architecture               |
-| `goose-orchestration`  | Multi-agent orchestration           |
-| `knowledge-graph`      | KG CRUD & reasoning                 |
-| `sdd`                  | Spec-Driven Development             |
-| `systematic-debugging` | Root cause & debugging protocol     |
-| `ui-quality`           | UI technical quality                |
-| `ux-quality`           | UX quality critique                 |
-| `webapp-testing`       | Browser/server integration testing  |
-| `atomic-design-fundamentals` | Foundational atomic design concepts |
-| `design-critique-case-studies` | Design critique with case studies |
-| `wcag-accessibility-audit` | WCAG 2.2 accessibility audit       |
+| Skill name                     | Domain                              |
+|--------------------------------|-------------------------------------|
+| `agentic-devlopment`           | Harness orientation & delegation    |
+| `agentic-ux`                   | UX for agentic interfaces           |
+| `atomic-design`                | Component hierarchy                 |
+| `beads`                        | Task tracking (Beads/Dolt)          |
+| `code-review`                  | Adaptive code review                |
+| `cognitive-ux`                 | Cognitive load & usability          |
+| `design-critique-case-studies` | Design critique with case studies   |
+| `design-systems-arch`          | Design system architecture          |
+| `frontend-blueprint`           | Frontend architecture               |
+| `goose-orchestration`          | Multi-agent orchestration           |
+| `harness-judge`                | LLM-as-judge harness evaluation     |
+| `knowledge-graph`              | KG CRUD & reasoning                 |
+| `sdd`                          | Spec-Driven Development             |
+| `systematic-debugging`         | Root cause & debugging protocol     |
+| `ui-quality`                   | UI technical quality                |
+| `ux-quality`                   | UX quality critique                 |
+| `webapp-testing`               | Browser/server integration testing  |
+| `wcag-accessibility-audit`     | WCAG 2.2 accessibility audit        |
 
 ---
 
@@ -115,7 +121,7 @@ THEN it follows exactly one of:
   a) **Specialist** — loads ≥1 specialist agent(s) in-session via `load agent X`
      (design, discover, doc-review, explore, implement, plan, release, review, spec, verify)
 
-  b) **Orchestration** — loads `harness-orchestrator` in-session; ALL specialists are
+  b) **Orchestration** — loads `orchestrator` in-session; ALL specialists are
      summoned as isolated sub-sessions; no specialist is loaded in-session
      (dev, sdd)
 
@@ -123,7 +129,7 @@ THEN it follows exactly one of:
      (remember)
 
 AND the in-session agent(s) SHALL match the `"agents"` field in the recipe's eval JSON
-AND no recipe SHALL mix `harness-orchestrator` with a specialist agent in the same session
+AND no recipe SHALL mix `orchestrator` with a specialist agent in the same session
 
 ---
 
@@ -138,20 +144,21 @@ AND the skill includes a Knowledge Generation step (orient before acting).
 ### AC-AGENT-01 — Agent format compliance
 
 WHEN agents are loaded from `.agents/agents/`
-THEN each of the following 12 agents has all four required sections
+THEN each of the following 13 agents has all four required sections
      (Prompt Defense Baseline · Operating Process · Output Format · Remember mantra):
 
 | Agent file                 | Persona                  |
 |----------------------------|--------------------------|
 | `architect.md`             | System architecture      |
-| `beads-planner.md`         | Task graph & backlog     |
+| `planner.md`         | Task graph & backlog     |
 | `codebase-researcher.md`   | Codebase exploration     |
-| `harness-orchestrator.md`  | Session orchestration    |
+| `orchestrator.md`          | Session orchestration    |
 | `implementation-worker.md` | Feature implementation   |
 | `principal-engineer.md`    | Release & quality gates  |
 | `product-owner.md`         | Discovery & requirements |
 | `qa-automation.md`         | Test automation & verify |
 | `review-critic.md`         | Code review & blocking   |
+| `harness-judge.md`         | Harness evaluation judge |
 | `tdd-guide.md`             | Test-Driven Development  |
 | `ui-designer.md`           | UI design & components   |
 | `ux-researcher.md`         | UX research & personas   |

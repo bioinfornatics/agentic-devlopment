@@ -9,15 +9,25 @@ Output: { content: [{ type: resource, resource: { uri: kg://visualizer, mimeType
 
 ## Visual Contract
 
-Nodes by entityType:
-  harness:recipe -> blue #4299e1
-  harness:skill  -> violet #9f7aea
-  harness:agent  -> green #48bb78
-  feature        -> red #fc8181
-  derived_status -> red solid #e53e3e
+Nodes by entityType (background-color):
+  harness:recipe       -> blue   #4299e1
+  harness:skill        -> violet #9f7aea
+  harness:agent        -> green  #48bb78
+  harness:doc          -> gray   #718096
+  epic                 -> orange #f6ad55
+  feature              -> red    #fc8181
+  acceptance_criterion -> green  #68d391
+  test                 -> teal   #4fd1c5
+  code_file            -> purple #b794f4
+  derived_status       -> red    #e53e3e
+  (any other)          -> gray   #a0aec0
+
+Border:
+  derived nodes  -> dashed orange border (#f6ad55, width 2)
+  asserted nodes -> no border
 
 Edges:
-  asserté  -> solid gray
-  inféré   -> dashed orange
+  asserté (derived: false) -> solid dark-gray #4a5568
+  inféré  (derived: true)  -> dashed orange   #f6ad55
 
 Data: memory.jsonl + derived.jsonl embedded as base64 in HTML.

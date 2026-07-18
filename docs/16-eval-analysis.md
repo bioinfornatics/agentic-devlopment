@@ -20,8 +20,8 @@ https://bioinfornatics.github.io/agentic-devlopment/
 Every eval suite run is exported to a committed JSON file:
 
 ```bash
-python scripts/run-skill-ab-suite.py --continue-on-failure
-python scripts/export-eval-history.py
+node apps/eval-hub/dist/index.js --run --layers skills --continue-on-failure
+node apps/eval-hub/dist/index.js --export-history
 git add evals/history/runs.json
 git commit -m "chore: update eval history after suite run"
 git push
@@ -30,7 +30,7 @@ git push
 `evals/history/runs.json` accumulates over time (append-only, ~2 KB/run).
 It is the source of truth for trends — no SQLite database required in CI.
 
-### Trend dashboard: `scripts/build-eval-report.py`
+### Trend dashboard: `.agents/skills/skill-creator/scripts/build-eval-report.py`
 
 Reads `evals/history/runs.json` and generates a standalone HTML trend report:
 - **Skill cards** with sparklines showing delta trend over the last 12 runs
@@ -40,7 +40,7 @@ Reads `evals/history/runs.json` and generates a standalone HTML trend report:
 No external dependencies — pure Python stdlib + inline CSS. Runs in < 1 second.
 
 ```bash
-python scripts/build-eval-report.py
+node apps/eval-hub/dist/index.js --report
 open dist/evals/report/index.html
 ```
 
@@ -57,10 +57,10 @@ Pages deploy is always fast because no model runs happen in CI.
 
 ```bash
 # 1. Run the suite (1–2 hours, API costs)
-python scripts/run-skill-ab-suite.py --continue-on-failure --runs-per-config 1
+node apps/eval-hub/dist/index.js --run --layers skills --continue-on-failure --runs-per-config 1
 
 # 2. Export results to committed history
-python scripts/export-eval-history.py
+node apps/eval-hub/dist/index.js --export-history
 # → prints: "History: N existing + M new = N+M total runs"
 
 # 3. Commit and push — Pages auto-deploys with fresh trends

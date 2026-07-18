@@ -1,0 +1,96 @@
+[
+  {
+    "agents": [
+      "harness-judge"
+    ],
+    "skills": [
+      "harness-judge"
+    ],
+    "query": "Run harness-audit with scope=skills. Score Domain B and cross-cutting Domain A with evidence.",
+    "files": [
+      ".agents/skills/",
+      ".agents/agents/harness-judge.md",
+      ".agents/skills/harness-judge/SKILL.md"
+    ],
+    "max_turns": 60,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The harness-audit recipe should load harness-judge agent plus harness-judge skill, remain read-only, and produce evidence-first scores for skill quality and prompt/context/loop engineering.",
+    "baseline_gaps": [
+      "Agent gives a holistic opinion without loading the harness-judge skill.",
+      "Agent omits evidence citations.",
+      "Agent modifies files during what should be a read-only audit."
+    ],
+    "expected_behavior": [
+      "States Harness-audit scope and required skill as first visible output.",
+      "Explicitly loads or requests load skill harness-judge before scoring.",
+      "Scores applicable domains with file-path evidence for each score.",
+      "Does not modify files, Beads, or memory.",
+      "Emits final PASS, PARTIAL, or FAIL only after score table."
+    ]
+  },
+  {
+    "agents": [
+      "harness-judge"
+    ],
+    "skills": [
+      "harness-judge"
+    ],
+    "query": "Run harness-audit with scope=recipes. Score Domain D and Domain F, including AD-001 compliance and eval JSON layer declarations.",
+    "files": [
+      ".goose/recipes/",
+      "evals/recipes/",
+      ".specs/STATE.md",
+      ".specs/features/harness-core/spec.md"
+    ],
+    "max_turns": 60,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The harness-audit recipe should use harness-judge methodology to evaluate recipe compatibility, AD-001 pattern compliance, orchestration, and layer declarations with evidence.",
+    "baseline_gaps": [
+      "Agent confuses loaded in-session agents with delegated agents.",
+      "Agent treats recipe validation as optional.",
+      "Agent does not cite recipe paths or spec rows."
+    ],
+    "expected_behavior": [
+      "States Harness-audit scope and required skill as first visible output.",
+      "Explicitly loads or requests load skill harness-judge before scoring.",
+      "Checks recipe validation and AD-001 compliance as hard gates.",
+      "Checks eval JSON agents and skills layer declarations.",
+      "Does not modify files, Beads, or memory.",
+      "Emits final PASS, PARTIAL, or FAIL only after score table."
+    ]
+  },
+  {
+    "agents": [
+      "harness-judge"
+    ],
+    "skills": [
+      "harness-judge"
+    ],
+    "query": "Run harness-audit with scope=all. Evaluate domains A-F and explicitly cover SDD, TDD, and GDD framework usage.",
+    "files": [
+      ".agents/agents/",
+      ".agents/skills/",
+      ".goose/recipes/",
+      ".specs/features/",
+      "evals/",
+      "docs/15-skill-evaluations.md"
+    ],
+    "max_turns": 70,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The harness-audit recipe should perform a full static artifact audit across domains A-F with explicit SDD/TDD/GDD framework analysis and evidence-backed scoring.",
+    "baseline_gaps": [
+      "Agent reviews only artifact formatting and omits frameworks.",
+      "Agent produces recommendations without score table evidence.",
+      "Agent modifies files or Beads during the audit."
+    ],
+    "expected_behavior": [
+      "States Harness-audit scope and required skill as first visible output.",
+      "Explicitly loads or requests load skill harness-judge before scoring.",
+      "Scores domains A-F with evidence-backed PASS, PARTIAL, FAIL, or N/A entries.",
+      "Covers SDD, TDD, and GDD in the framework section.",
+      "Does not modify files, Beads, or memory.",
+      "Emits final PASS, PARTIAL, or FAIL only after score table.",
+      "Checks orchestration flow logic: agents ask to load mandatory skills, recipes route to mandatory agents or delegated specialists, and validation/handoff are reachable."
+    ]
+  }
+]

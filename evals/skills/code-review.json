@@ -29,7 +29,7 @@
   {
     "skills": [
       "code-review",
-      "beads-harness"
+      "beads"
     ],
     "query": "Review the prepared skill-evaluation docs diff and tell me what follow-up work remains. Do not create files; propose durable Beads follow-ups when needed. If no parent bead is provided, give unlinked draft `bd create` commands.",
     "files": [
@@ -57,7 +57,7 @@
   {
     "skills": [
       "code-review",
-      "beads-harness"
+      "beads"
     ],
     "query": "Review the prepared diff for changes to harness recipes, skills, docs, and install scripts. Focus on correctness, validation, Beads follow-ups, and whether the change violates harness workflow rules.",
     "files": [

@@ -1,0 +1,65 @@
+[
+  {
+    "skills": ["harness-judge"],
+    "query": "Judge whether a completed harness session followed the required protocol. Use only the provided transcript evidence and produce a scored report.",
+    "files": [".agents/skills/harness-judge/SKILL.md", ".agents/agents/harness-judge.md", "docs/15-skill-evaluations.md"],
+    "fixture_intent": "Normal scenario: evidence-first LLM-as-judge rubric application for a completed transcript or artifact audit.",
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The harness-judge skill should force criteria-before-verdict scoring, evidence citations, bias guard awareness, and a structured PASS/PARTIAL/FAIL report instead of a holistic opinion.",
+    "baseline_gaps": [
+      "Agent gives a holistic verdict before scoring individual criteria.",
+      "Agent rewards polished prose without citing observable evidence.",
+      "Agent ignores timing and ordering violations in the trajectory."
+    ],
+    "expected_behavior": [
+      "Identifies the evaluation mode and applicable domains before scoring.",
+      "Scores criteria individually before the aggregate verdict.",
+      "Cites evidence for every PASS, PARTIAL, or FAIL score, using exact file paths, transcript turns, tool calls, command output, or explicit not found.",
+      "Flags at least one relevant judge bias risk such as verbosity, positional bias, sycophancy, style bias, or circularity.",
+      "Emits a final PASS, PARTIAL, or FAIL verdict with blocking failures and recommendations."
+    ]
+  },
+  {
+    "skills": ["harness-judge"],
+    "query": "Compare a baseline run without a skill against an enhanced run with a skill and decide whether the skill adds marginal value.",
+    "files": ["docs/15-skill-evaluations.md", ".agents/skills/harness-judge/SKILL.md"],
+    "fixture_intent": "Difficult scenario: layer-delta judging requires independent scoring of baseline and enhanced conditions before comparison.",
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The harness-judge skill should prevent assuming the enhanced layer is better, require independent baseline/enhanced scoring, and report positive, neutral, or negative delta with evidence.",
+    "baseline_gaps": [
+      "Agent assumes the with-skill run is better because it is longer or more structured.",
+      "Agent compares runs holistically instead of criterion by criterion.",
+      "Agent omits regression checks for the enhanced condition."
+    ],
+    "expected_behavior": [
+      "Scores the baseline condition independently before judging the enhanced condition.",
+      "Scores the enhanced condition using the same criteria as the baseline.",
+      "Reports criterion-level improvements, unchanged items, regressions, or N/A items.",
+      "Assigns a delta verdict of POSITIVE, NEUTRAL, or NEGATIVE with cited evidence.",
+      "States that more context, more agents, or longer output is not automatically better."
+    ]
+  },
+  {
+    "skills": ["harness-judge"],
+    "query": "Audit a harness artifact set containing a skill, agent, recipe, and eval JSON for Goose compatibility and orchestration correctness.",
+    "files": [".agents/skills/", ".agents/agents/", ".goose/recipes/", "evals/"],
+    "fixture_intent": "Very difficult scenario: multi-domain artifact audit across skill, agent, recipe, framework, and orchestration rules.",
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The harness-judge skill should apply domains A-F, distinguish compatibility hard gates from quality findings, and catch AD-001/layer-declaration mistakes.",
+    "baseline_gaps": [
+      "Agent reviews only prose quality and misses Goose compatibility constraints.",
+      "Agent confuses loaded in-session agents with delegated agents in recipe eval JSON.",
+      "Agent misses missing validation commands or generated-section risks."
+    ],
+    "expected_behavior": [
+      "Applies domain-specific checks for skills, agents, recipes, frameworks, and orchestration rather than one generic rubric.",
+      "Treats recipe validation and AD-001 recipe pattern compliance as hard gates for Domain D.",
+      "Checks that recipe eval JSON agents list only in-session agents and that declared skills exist.",
+      "Flags validation theater when success is claimed without command output or cited evidence.",
+      "Produces a score table with checklist IDs such as HJ001 through HJ030."
+    ]
+  }
+]

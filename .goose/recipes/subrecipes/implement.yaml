@@ -6,7 +6,7 @@ description: Implement a scoped Beads issue with tests, review, and handoff.
 instructions: |
   ## Load skills first
   load skills sdd  — SDD loop, spec-anchored outcome rule, SPEC_DEVIATION markers.
-  load skills agentic-dev-harness  — First Visible Output rule, Scoped plan format, blast radius.
+  load skills agentic-devlopment  — First Visible Output rule, Scoped plan format, blast radius.
 
   ## First visible output
   Before any tool call:
@@ -51,7 +51,7 @@ instructions: |
   - End with changed files, test output (pass count), bead status, spec AC IDs covered.
 
 
-## KG checkpoint — Phase implement (load skills knowledge-graph first)
+  ## KG checkpoint — Phase implement (load skills knowledge-graph first)
   After GREEN phase and before handoff:
   1. load skills knowledge-graph
   2. Create entity for what was built:
@@ -118,7 +118,7 @@ prompt: |
     - Scope: [exact files]
     - Spec: [.specs/features/*/spec.md or none]
 
-  Step 1: load skills sdd. load skills agentic-dev-harness.
+  Step 1: load skills sdd. load skills agentic-devlopment.
     Run bd prime. Read spec.md for [FEAT]-NN IDs.
   Step 2 RED: write failing test (name: test_FEAT_NN_desc). Confirm FAIL. No code yet.
   Step 3: Write on its own line: "Scoped plan:"

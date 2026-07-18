@@ -1,5 +1,13 @@
 [
   {
+    "agents": [
+      "orchestrator"
+    ],
+    "skills": [
+      "agentic-devlopment",
+      "beads",
+      "goose-orchestration"
+    ],
     "query": "Find the highest-risk parts of `.goose/recipes/dev.yaml` and the subrecipes it delegates to. Read only.",
     "files": [
       ".goose/recipes/dev.yaml",
@@ -7,7 +15,7 @@
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The master recipe should load agentic-dev-harness skill, orient via bd prime, emit an Orchestration decision naming explore flow, and synthesize results \u2014 not just inspect files.",
+    "expected_skill_contribution": "The master recipe should load agentic-devlopment skill, orient via bd prime, emit an Orchestration decision naming explore flow, and synthesize results — not just inspect files.",
     "fixture_intent": "Validates that the dev recipe loads its skill, primes Beads, emits a visible Orchestration decision block, and synthesizes findings rather than raw-dumping file contents.",
     "baseline_gaps": [
       "Agent inspects files without orienting via bd prime or loading the skill first",
@@ -15,13 +23,21 @@
       "Returns a flat file dump with no synthesis or risk ranking"
     ],
     "expected_behavior": [
-      "Loads `agentic-dev-harness` skill before any other action",
+      "Loads `agentic-devlopment` skill before any other action",
       "Runs `bd prime` or equivalent Beads orientation before inspecting files",
       "Emits a visible `Orchestration decision:` block naming the research flow and the rationale for delegation or direct execution",
       "Closes with synthesised risk-ranked findings with evidence drawn from specific recipe files"
     ]
   },
   {
+    "agents": [
+      "orchestrator"
+    ],
+    "skills": [
+      "agentic-devlopment",
+      "beads",
+      "goose-orchestration"
+    ],
     "query": "Plan a new `harness-security-review` recipe for this harness, then propose the Beads dependency graph. Do not implement.",
     "files": [
       ".goose/recipes/",
@@ -38,13 +54,21 @@
       "Outputs a prose plan with no executable bd commands or dependency encoding"
     ],
     "expected_behavior": [
-      "Loads `agentic-dev-harness` skill and runs `bd prime` before any planning activity",
+      "Loads `agentic-devlopment` skill and runs `bd prime` before any planning activity",
       "Emits an `Orchestration decision:` block identifying the plan flow as the routing target",
       "Checks `bd list --json` for existing issues to avoid duplicate Beads creation",
       "Outputs exact `bd create` commands in dependency order, not prose descriptions only"
     ]
   },
   {
+    "agents": [
+      "orchestrator"
+    ],
+    "skills": [
+      "agentic-devlopment",
+      "beads",
+      "goose-orchestration"
+    ],
     "query": "Implement the fix described in the active Beads issue scoped to `.goose/recipes/review.yaml`, validate it, and hand off.",
     "files": [
       ".goose/recipes/review.yaml",

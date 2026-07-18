@@ -15,11 +15,11 @@ instructions: |
     Estimated task count: [N tasks across M phases]
 
   ## Skill and agent routing
-  - load skills beads-harness    (Beads workflow, dependency graph patterns, bd commands)
+  - load skills beads    (Beads workflow, dependency graph patterns, bd commands)
   - load skills sdd              (SDD phases, requirement traceability, auto-sizing)
   - Delegate architecture decomposition to `architect`:
       "Break spec ACs into implementation tasks for [feature]. Read .specs/features/[feature]/spec.md."
-  - Delegate graph validation to `beads-planner`:
+  - Delegate graph validation to `planner`:
       "Validate dependency graph for [feature] — check for cycles and unreachable nodes."
 
   ## Planning workflow
@@ -62,8 +62,8 @@ instructions: |
   After all tasks created:
   1. `bd graph --json`  — verify no cycles.
   2. `bd ready --json`  — verify at least one task is immediately available (no blockers).
-  Delegate to `beads-planner` if the graph has >10 nodes or any cycles are found:
-    load agent beads-planner
+  Delegate to `planner` if the graph has >10 nodes or any cycles are found:
+    load agent planner
 
   ### Step 5 — Gate (Large/Complex scope only)
   For Large/Complex scope, create a human-review gate before implementation begins:
@@ -147,7 +147,7 @@ prompt: |
   State: Plan scope, spec source (spec.md found / bead / user description), estimated task count.
 
   ## Step 2 — Orient
-  load skills beads-harness. load skills sdd.
+  load skills beads. load skills sdd.
   Run `bd prime`. Run `bd ready --json`.
   Read `.specs/features/{{ feature }}/spec.md` if present — extract all [FEAT]-NN IDs.
   Optionally delegate deep graph building to the plan-worker subrecipe:
@@ -165,7 +165,7 @@ prompt: |
   ## Step 5 — Validate graph
   Run `bd graph --json`. Confirm no cycles.
   Run `bd ready --json`. Confirm at least one task has no blockers.
-  If >10 nodes or cycles found: delegate to `beads-planner`.
+  If >10 nodes or cycles found: delegate to `planner`.
 
   ## Step 6 — Handoff
   Print the plan table. Store memory snapshot.

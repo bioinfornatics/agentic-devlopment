@@ -139,6 +139,7 @@ managed = [
     ("remember", "remember.yaml"),
     ("sdd", "sdd.yaml"),
     ("design", "design.yaml"),
+    ("doc-review", "doc-review.yaml"),
 ]
 managed_names = {name.lower() for name, _ in managed}
 
@@ -317,4 +318,19 @@ if (( VALIDATE )); then
   fi
 fi
 
-echo "Install complete. Try: goose session, then /harness <task>"
+# Install Goose plugin (hooks) into user plugins directory
+SRC_PLUGINS="$ROOT/.agents/plugins"
+DST_PLUGINS="$HOME/.agents/plugins"
+if [[ -d "$SRC_PLUGINS" ]]; then
+  for plugin_dir in "$SRC_PLUGINS"/*/; do
+    [[ -d "$plugin_dir" ]] || continue
+    plugin_name="$(basename "$plugin_dir")"
+    run mkdir -p "$DST_PLUGINS"
+    run cp -a "$plugin_dir" "$DST_PLUGINS/$plugin_name"
+    # Make hook scripts executable
+    find "$DST_PLUGINS/$plugin_name/scripts" -name '*.sh' -exec chmod +x {} \; 2>/dev/null || true
+    echo "Installed plugin: $plugin_name → $DST_PLUGINS/$plugin_name"
+  done
+fi
+
+echo "Install complete. Try: goose session, then /dev <task>"

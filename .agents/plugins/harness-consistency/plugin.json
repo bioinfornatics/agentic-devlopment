@@ -1,0 +1,5 @@
+{
+  "name": "harness-consistency",
+  "version": "1.0.0",
+  "description": "Auto-regenerate documentation tables and run consistency checks after Goose edits harness structure files (skills, agents, recipes, evals)."
+}

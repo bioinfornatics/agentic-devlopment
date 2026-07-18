@@ -1,0 +1,74 @@
+[
+  {
+    "skills": [
+      "knowledge-graph"
+    ],
+    "query": "Create KG entities for the newly documented `layer-delta` eval mode: create entities for the mode itself, its relationship to each eval kind (skills/agents/recipes), and link them to the relevant spec file.",
+    "files": [
+      ".specs/features/eval-suite/spec.md",
+      ".knowledge/memory.jsonl"
+    ],
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The knowledge-graph skill provides the two-namespace model, mandatory observation fields, and the buildtime-only rule.",
+    "baseline_gaps": [
+      "Agent creates entities without checking for existing duplicates first.",
+      "Agent creates runtime entities (eval run results) instead of buildtime entities (eval mode spec).",
+      "Agent does not link the new entities to the spec_file entity via the SPECIFIED_IN relation."
+    ],
+    "expected_behavior": [
+      "Runs search_nodes before creating any entity to check for existing duplicates.",
+      "Creates only buildtime entities (spec artefacts, not run results) — correctly applies the buildtime-only rule.",
+      "Links the new eval mode entity to the spec_file entity using the SPECIFIED_IN relation type.",
+      "Adds mandatory observations (scope: buildtime, status) to every new entity."
+    ]
+  },
+  {
+    "skills": [
+      "knowledge-graph"
+    ],
+    "query": "Search `.knowledge/memory.jsonl` for all acceptance_criterion entities in the eval-suite feature. For each AC without a linked test entity (via the ANCHORS relation), create a Beads issue and report the coverage gap.",
+    "files": [
+      ".knowledge/memory.jsonl",
+      ".specs/features/eval-suite/spec.md"
+    ],
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The knowledge-graph skill provides the ANCHORS relation traversal pattern and the gap detection protocol for AC coverage.",
+    "baseline_gaps": [
+      "Agent reads the spec file for ACs instead of querying the KG, missing the graph traversal.",
+      "Agent does not check the ANCHORS relation — only checks entity existence.",
+      "Agent creates Beads issues without citing the AC ID and spec file location."
+    ],
+    "expected_behavior": [
+      "Queries the KG using open_nodes or search_nodes to find all acceptance_criterion entities in the eval-suite scope.",
+      "For each AC entity, checks for an outgoing ANCHORS relation to a test entity — flags missing relations as coverage gaps.",
+      "Creates a Beads issue for each gap: `bd create \"Test gap: <AC-ID>\" --assignee tdd-guide` with the exact AC ID.",
+      "Produces a coverage matrix: AC IDs × linked test entities, with gaps clearly marked."
+    ]
+  },
+  {
+    "skills": [
+      "knowledge-graph"
+    ],
+    "query": "Trace the complete SDD buildtime chain for the harness-core feature in the KG: from epic → user_story → acceptance_criterion → component → code_file → test. Report every gap and every missing relation type.",
+    "files": [
+      ".knowledge/memory.jsonl",
+      ".specs/features/harness-core/spec.md"
+    ],
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The knowledge-graph skill applies all seven traversal patterns, detects every missing link in the chain, and uses all nine relation types correctly.",
+    "baseline_gaps": [
+      "Agent traverses only one or two levels of the chain rather than the full epic-to-test path.",
+      "Agent does not distinguish missing entities from missing relations — treats both as the same gap.",
+      "Agent does not apply the integrity rules (e.g., every AC must have scope=buildtime) to find hidden quality gaps."
+    ],
+    "expected_behavior": [
+      "Traverses all six levels of the SDD chain using the graph traversal patterns from the skill.",
+      "Distinguishes entity gaps (missing entities) from relation gaps (entities exist but not linked).",
+      "Applies at least three integrity rules from the skill to detect hidden quality issues beyond just missing links.",
+      "Produces a chain coverage report: each level, the count of entities, the count of linked entities at the next level, and the gap count."
+    ]
+  }
+]

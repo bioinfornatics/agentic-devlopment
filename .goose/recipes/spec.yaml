@@ -16,7 +16,7 @@ instructions: |
 
   ## Skill and agent routing
   - load skills sdd          (requirement traceability, spec-anchored approach, Spec-Anchored Outcome Rule)
-  - load skills beads-harness  (Beads epic/story creation)
+  - load skills beads  (Beads epic/story creation)
   - Delegate feasibility check to `architect`:
       "Can these ACs be implemented as described?"
   - Delegate testability check to `tdd-guide`:
@@ -125,7 +125,7 @@ prompt: |
   State: Spec scope, level (Micro/Full), input source.
 
   ## Step 2 — Orient
-  load skills sdd. load skills beads-harness.
+  load skills sdd. load skills beads.
   Run `bd prime`. Read `.specs/features/{{ feature }}/discovery.md` if present.
 
   ## Step 3 — Write spec

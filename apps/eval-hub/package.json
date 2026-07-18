@@ -1,0 +1,42 @@
+{
+  "name": "@harness/eval-hub",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Native TypeScript eval hub — TUI + HTTP API for the harness A/B evaluation pipeline",
+  "main": "dist/index.js",
+  "bin": {
+    "eval-hub": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "start:tui": "node dist/index.js --tui",
+    "start:server": "node dist/index.js --server --port 7331",
+    "test": "vitest run",
+    "test:unit": "vitest run --reporter=verbose",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:smoke": "playwright test smoke/",
+    "test:all": "pnpm run test:unit && pnpm run test:e2e",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.0",
+    "@rezi-ui/core": "0.1.0-beta.2",
+    "@rezi-ui/node": "0.1.0-beta.2",
+    "better-sqlite3": "^11.0.0",
+    "chart.js": "^4.5.1",
+    "hono": "^4.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^2.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}

@@ -117,21 +117,21 @@ There are two useful loops: a quick visual review of the eval definitions, and a
 Use this before editing skill text or before asking someone to review the eval set. It does **not** execute model runs; it renders `query`, `baseline_gaps`, and `expected_behavior` in the skill-creator review UI.
 
 ```bash
-python scripts/render-skill-eval-review.py
+node apps/eval-hub/dist/index.js --open
 xdg-open dist/skill-eval-review/index.html
 ```
 
 If `skill-creator` is installed somewhere other than `~/.agents/skills/skill-creator`, pass it explicitly:
 
 ```bash
-python scripts/render-skill-eval-review.py \
+node apps/eval-hub/dist/index.js --open \
   --skill-creator-dir /path/to/skill-creator \
   --output dist/skill-eval-review/index.html
 ```
 
 ### 2. Execute A/B runs
 
-Use `scripts/run-skill-ab-eval.py` for behavioral review. It creates isolated copied worktrees under `dist/evals/`, runs Goose for each scenario, grades each output with an LLM, aggregates `benchmark.json`, and renders the skill-creator HTML review.
+Use `.agents/skills/skill-creator/scripts/run-skill-ab-eval.py` for behavioral review. It creates isolated copied worktrees under `dist/evals/`, runs Goose for each scenario, grades each output with an LLM, aggregates `benchmark.json`, and renders the skill-creator HTML review.
 
 #### Eval modes
 
@@ -148,7 +148,7 @@ The runner supports three comparison modes:
 Single-skill `with_skill` / `without_skill` run:
 
 ```bash
-python scripts/run-skill-ab-eval.py \
+node apps/eval-hub/dist/index.js --run --layers skills \
   --skill code-review \
   --runs-per-config 1
 
@@ -201,7 +201,7 @@ Use `--ambient-goose` only when you intentionally want the caller's normal Goose
 If the isolated home cannot use your default provider, pass explicit provider/model flags that work with the copied minimal Goose config:
 
 ```bash
-python scripts/run-skill-ab-eval.py \
+node apps/eval-hub/dist/index.js --run --layers skills \
   --skill code-review \
   --provider custom_claude_from_azure \
   --model claude-sonnet-4-6
@@ -214,7 +214,7 @@ Use the suite runner when you want every `evals/skills/*.json` file executed and
 By default, runtime outputs are grouped by subject under `dist/evals/skills/<skill-name>/<content-hash>/`. For skill evals, the hash covers the primary skill directory, so uncommitted skill edits are reflected without requiring a commit. Pass `--run-id-source git` to use the current commit instead; this requires a clean working tree. Pass `--workspace-root` to override the output root completely.
 
 ```bash
-python scripts/run-skill-ab-suite.py \
+node apps/eval-hub/dist/index.js --run --layers skills \
   --runs-per-config 1 \
   --continue-on-failure
 
@@ -224,7 +224,7 @@ xdg-open dist/evals/skills/index.html
 Use `--goose-cli` or `GOOSE_EVAL_CLI` to force a specific Goose binary for both task and grader runs, for example:
 
 ```bash
-python scripts/run-skill-ab-suite.py \
+node apps/eval-hub/dist/index.js --run --layers skills \
   --continue-on-failure \
   --goose-cli ../third-parties/goose/target/debug/goose
 ```
@@ -236,8 +236,8 @@ The task prompt intentionally does **not** include `expected_behavior` or `basel
 The suite runner uses the same strict isolated Goose baseline by default. Pass `--ambient-goose` only to debug with your normal installed skills/agents/recipes visible. Use `--skills` to run a subset while developing an eval:
 
 ```bash
-python scripts/run-skill-ab-suite.py \
-  --skills code-review sdd
+node apps/eval-hub/dist/index.js --run --layers skills \
+  --subjects code-review sdd
 ```
 
 The suite index links to each per-skill review and benchmark:
@@ -316,12 +316,12 @@ The skill runner is the main path for `evals/skills/`. The generic harness runne
 
 ```bash
 # single subject
-python scripts/run-harness-ab-eval.py --kind agents  --subject review-critic
-python scripts/run-harness-ab-eval.py --kind recipes --subject review
+node apps/eval-hub/dist/index.js --run --layers agents  --subject review-critic
+node apps/eval-hub/dist/index.js --run --layers recipes --subject review
 
 # full suite
-python scripts/run-harness-ab-suite.py --kind agents  --continue-on-failure
-python scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure
+node apps/eval-hub/dist/index.js --run --layers agents  --continue-on-failure
+node apps/eval-hub/dist/index.js --run --layers recipes --continue-on-failure
 ```
 
 Default output layouts:
@@ -344,8 +344,8 @@ Agent subjects resolve to `.agents/agents/<agent-name>.md`. Recipe subjects reso
 **Post-suite for agents and recipes** — no quality gate (that is skills-specific); export history and build the trend report:
 
 ```bash
-python scripts/export-eval-history.py
-python scripts/build-eval-report.py
+node apps/eval-hub/dist/index.js --export-history
+node apps/eval-hub/dist/index.js --report
 xdg-open dist/evals/report/index.html
 ```
 
@@ -354,7 +354,7 @@ xdg-open dist/evals/report/index.html
 After a suite run, analyze the artifacts and check for structural problems:
 
 ```bash
-python scripts/analyze-skill-eval-results.py \
+node apps/eval-hub/dist/index.js --report \
   --check \
   --max-turn-threshold 0.5 \
   --negative-delta-gate \
@@ -385,7 +385,7 @@ xdg-open dist/evals/skills/analysis-index.html
 Prefer a git ref for the original baseline when the previous version is committed. This avoids manual snapshot directories:
 
 ```bash
-python scripts/run-skill-ab-eval.py \
+node apps/eval-hub/dist/index.js --run --layers skills \
   --skill code-review \
   --mode old-new \
   --baseline-git-ref HEAD~1 \
@@ -398,7 +398,7 @@ xdg-open dist/evals/skills/code-review/<content-hash>/review.html
 The runner materializes `.agents/skills/<skill-name>` from `--baseline-git-ref` into the generated workspace and compares it against the working-tree candidate at `.agents/skills/<skill-name>`. You can also compare two refs directly:
 
 ```bash
-python scripts/run-skill-ab-eval.py \
+node apps/eval-hub/dist/index.js --run --layers skills \
   --skill code-review \
   --mode old-new \
   --baseline-git-ref v1.0.0 \
@@ -437,60 +437,76 @@ If you create workspaces by hand instead of using the runner, the viewer expects
 
 | Skill | Eval file |
 | --- | --- |
-| Agentic development harness | `evals/skills/agentic-dev-harness.json` |
-| Agentic UX | `evals/skills/agentic-ux.json` |
-| Atomic design | `evals/skills/atomic-design.json` |
-| Atomic design fundamentals | `evals/skills/atomic-design-fundamentals.json` |
-| Beads harness | `evals/skills/beads-harness.json` |
-| Code review | `evals/skills/code-review.json` |
-| Cognitive UX | `evals/skills/cognitive-ux.json` |
-| Design critique & case studies | `evals/skills/design-critique-case-studies.json` |
-| Design systems architecture | `evals/skills/design-systems-arch.json` |
-| Frontend blueprint | `evals/skills/frontend-blueprint.json` |
-| Goose orchestration | `evals/skills/goose-orchestration.json` |
-| Knowledge graph | `evals/skills/knowledge-graph.json` |
-| SDD | `evals/skills/sdd.json` |
-| Systematic debugging | `evals/skills/systematic-debugging.json` |
-| UI quality | `evals/skills/ui-quality.json` |
-| UX quality | `evals/skills/ux-quality.json` |
-| WCAG accessibility audit | `evals/skills/wcag-accessibility-audit.json` |
-| Webapp testing | `evals/skills/webapp-testing.json` |
+<!-- BEGIN GENERATED: eval-skills -->
+| Skill | Eval file |
+| --- | --- |
+| `agentic-devlopment` | `evals/skills/agentic-devlopment.json` |
+| `agentic-ux` | `evals/skills/agentic-ux.json` |
+| `atomic-design` | `evals/skills/atomic-design.json` |
+| `beads` | `evals/skills/beads.json` |
+| `code-review` | `evals/skills/code-review.json` |
+| `cognitive-ux` | `evals/skills/cognitive-ux.json` |
+| `design-critique-case-studies` | `evals/skills/design-critique-case-studies.json` |
+| `design-systems-arch` | `evals/skills/design-systems-arch.json` |
+| `frontend-blueprint` | `evals/skills/frontend-blueprint.json` |
+| `goose-orchestration` | `evals/skills/goose-orchestration.json` |
+| `harness-judge` | `evals/skills/harness-judge.json` |
+| `knowledge-graph` | `evals/skills/knowledge-graph.json` |
+| `sdd` | `evals/skills/sdd.json` |
+| `systematic-debugging` | `evals/skills/systematic-debugging.json` |
+| `ui-quality` | `evals/skills/ui-quality.json` |
+| `ux-quality` | `evals/skills/ux-quality.json` |
+| `wcag-accessibility-audit` | `evals/skills/wcag-accessibility-audit.json` |
+| `webapp-testing` | `evals/skills/webapp-testing.json` |
+<!-- END GENERATED: eval-skills -->
 
 ### Agents (mode: `layer-delta` — Layer 2 vs Layer 1)
 
 | Agent | Eval file | Supporting skills (Layer 1 baseline) |
 | --- | --- | --- |
-| architect | `evals/agents/architect.json` | `sdd`, `agentic-dev-harness` |
-| beads-planner | `evals/agents/beads-planner.json` | `beads-harness` |
-| codebase-researcher | `evals/agents/codebase-researcher.json` | `agentic-dev-harness` |
-| harness-orchestrator | `evals/agents/harness-orchestrator.json` | `agentic-dev-harness`, `beads-harness` |
-| implementation-worker | `evals/agents/implementation-worker.json` | `beads-harness`, `sdd` |
-| principal-engineer | `evals/agents/principal-engineer.json` | `agentic-dev-harness`, `code-review` |
-| product-owner | `evals/agents/product-owner.json` | `sdd` |
-| qa-automation | `evals/agents/qa-automation.json` | `webapp-testing` |
-| review-critic | `evals/agents/review-critic.json` | `code-review` |
-| tdd-guide | `evals/agents/tdd-guide.json` | `sdd` |
-| ui-designer | `evals/agents/ui-designer.json` | `webapp-testing`, `ux-quality` |
-| ux-researcher | `evals/agents/ux-researcher.json` | `ux-quality` |
+<!-- BEGIN GENERATED: eval-agents -->
+| Agent | Eval file | Supporting skills (Layer 1 baseline) |
+| --- | --- | --- |
+| `architect` | `evals/agents/architect.json` | `sdd`, `agentic-devlopment` |
+| `codebase-researcher` | `evals/agents/codebase-researcher.json` | `agentic-devlopment` |
+| `harness-judge` | `evals/agents/harness-judge.json` | `harness-judge` |
+| `implementation-worker` | `evals/agents/implementation-worker.json` | `beads`, `sdd` |
+| `orchestrator` | `evals/agents/orchestrator.json` | `agentic-devlopment`, `beads` |
+| `planner` | `evals/agents/planner.json` | `beads` |
+| `principal-engineer` | `evals/agents/principal-engineer.json` | `agentic-devlopment`, `code-review` |
+| `product-owner` | `evals/agents/product-owner.json` | `sdd` |
+| `qa-automation` | `evals/agents/qa-automation.json` | `webapp-testing` |
+| `review-critic` | `evals/agents/review-critic.json` | `code-review` |
+| `tdd-guide` | `evals/agents/tdd-guide.json` | `sdd` |
+| `ui-designer` | `evals/agents/ui-designer.json` | `webapp-testing`, `ux-quality` |
+| `ux-researcher` | `evals/agents/ux-researcher.json` | `ux-quality` |
+<!-- END GENERATED: eval-agents -->
 
 ### Recipes (mode: `layer-delta` — Layer 3 vs Layer 2)
 
 | Recipe | Eval file | In-session agents (Layer 2) | Skills (Layer 1) |
 | --- | --- | --- | --- |
-| design | `evals/recipes/design.json` | `ui-designer`, `ux-researcher` | `ui-quality`, `ux-quality`, `webapp-testing` |
-| dev | `evals/recipes/dev.json` | `harness-orchestrator` | `agentic-dev-harness`, `beads-harness` |
-| discover | `evals/recipes/discover.json` | `product-owner` | `agentic-dev-harness`, `sdd` |
-| doc-review | `evals/recipes/doc-review.json` | `review-critic` | `agentic-dev-harness`, `beads-harness` |
-| explore | `evals/recipes/explore.json` | `codebase-researcher` | `agentic-dev-harness` |
-| harness-review | `evals/recipes/harness-review.json` | `review-critic` | `code-review`, `agentic-dev-harness`, `beads-harness` |
-| implement | `evals/recipes/implement.json` | `implementation-worker` | `beads-harness`, `sdd` |
-| plan | `evals/recipes/plan.json` | `architect`, `beads-planner` | `beads-harness`, `sdd` |
-| release | `evals/recipes/release.json` | `principal-engineer` | `agentic-dev-harness` |
-| remember | `evals/recipes/remember.json` | — | `beads-harness` |
-| review | `evals/recipes/review.json` | `review-critic` | `code-review` |
-| sdd | `evals/recipes/sdd.json` | `harness-orchestrator` | `agentic-dev-harness`, `sdd` |
-| spec | `evals/recipes/spec.json` | `architect`, `tdd-guide` | `beads-harness`, `sdd` |
-| verify | `evals/recipes/verify.json` | `qa-automation` | `agentic-dev-harness`, `webapp-testing` |
+<!-- BEGIN GENERATED: eval-recipes -->
+| Recipe | Eval file | In-session agents (Layer 2) | Skills (Layer 1) |
+| --- | --- | --- | --- |
+| `design` | `evals/recipes/design.json` | `ux-researcher`, `ui-designer` | `ux-quality`, `ui-quality`, `webapp-testing` |
+| `dev` | `evals/recipes/dev.json` | `orchestrator` | `agentic-devlopment`, `beads`, `goose-orchestration` |
+| `discover` | `evals/recipes/discover.json` | `product-owner` | `sdd`, `agentic-devlopment` |
+| `doc-review` | `evals/recipes/doc-review.json` | `review-critic` | `agentic-devlopment`, `beads` |
+| `explore` | `evals/recipes/explore.json` | `codebase-researcher` | `agentic-devlopment` |
+| `harness-audit` | `evals/recipes/harness-audit.json` | `harness-judge` | `harness-judge` |
+| `harness-doc-review` | `evals/recipes/harness-doc-review.json` | `review-critic` | `agentic-devlopment`, `beads` |
+| `harness-master` | `evals/recipes/harness-master.json` | `orchestrator` | `agentic-devlopment`, `goose-orchestration`, `beads` |
+| `harness-review` | `evals/recipes/harness-review.json` | `review-critic` | `code-review`, `agentic-devlopment`, `beads` |
+| `implement` | `evals/recipes/implement.json` | `implementation-worker` | `beads`, `sdd` |
+| `plan` | `evals/recipes/plan.json` | `planner`, `architect` | `beads`, `sdd` |
+| `release` | `evals/recipes/release.json` | `principal-engineer` | `agentic-devlopment` |
+| `remember` | `evals/recipes/remember.json` | — | `beads` |
+| `review` | `evals/recipes/review.json` | `review-critic` | `code-review` |
+| `sdd` | `evals/recipes/sdd.json` | `orchestrator` | `sdd`, `agentic-devlopment` |
+| `spec` | `evals/recipes/spec.json` | `architect`, `tdd-guide` | `sdd`, `beads` |
+| `verify` | `evals/recipes/verify.json` | `qa-automation` | `webapp-testing`, `agentic-devlopment` |
+<!-- END GENERATED: eval-recipes -->
 
 
 ## Done criteria

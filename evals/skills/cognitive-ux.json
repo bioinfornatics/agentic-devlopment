@@ -1,0 +1,73 @@
+[
+  {
+    "skills": [
+      "cognitive-ux"
+    ],
+    "query": "Evaluate the harness slash command interface described in `docs/getting-started.md` for Hick's Law and Fitts's Law violations. How does the number and organisation of commands affect decision time?",
+    "files": [
+      "docs/getting-started.md",
+      "docs/00-index.md"
+    ],
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The cognitive-ux skill applies Hick's Law (decision time vs choice count) and Fitts's Law (target acquisition) to produce evidence-based UX findings.",
+    "baseline_gaps": [
+      "Agent counts commands without applying Hick's Law formula or progressive-disclosure implication.",
+      "Agent does not apply Fitts's Law to the command interface (distance/size of invocation mechanism).",
+      "Agent produces a general 'there are too many options' observation without citing a law."
+    ],
+    "expected_behavior": [
+      "Applies Hick's Law: states that n=12 commands increases decision time logarithmically and recommends grouping or progressive disclosure.",
+      "Applies Fitts's Law: evaluates whether the most frequent commands are easiest to reach (shortest to type, most memorable).",
+      "Cites the exact law for each finding, not just general UX feedback.",
+      "Produces at least one concrete design recommendation backed by a cognitive principle."
+    ]
+  },
+  {
+    "skills": [
+      "cognitive-ux"
+    ],
+    "query": "Apply Miller's Law, the Gestalt principles, and the Peak-End Rule to evaluate the harness SDD on-ramp sequence (discover → spec → plan → implement → review → verify → release). Identify where cognitive load peaks and how the ending experience is designed.",
+    "files": [
+      "docs/getting-started.md",
+      "docs/00-index.md"
+    ],
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The cognitive-ux skill applies three distinct cognitive principles to the same workflow, identifying overload points and the experience arc.",
+    "baseline_gaps": [
+      "Agent evaluates the workflow sequentially without applying cognitive load measurement.",
+      "Agent does not apply the Peak-End Rule to assess how the overall experience is remembered.",
+      "Agent treats all seven phases as equally demanding rather than identifying the cognitive load spikes."
+    ],
+    "expected_behavior": [
+      "Applies Miller's Law: identifies which phase(s) exceed 7±2 information chunks and recommends chunking strategies.",
+      "Applies Gestalt proximity: evaluates whether related phases are visually and conceptually grouped.",
+      "Applies Peak-End Rule: identifies the 'peak' moment (highest engagement/complexity) and evaluates whether the 'end' (release) provides a satisfying, clean exit.",
+      "Produces a cognitive load map of the seven phases with specific law citations for each finding."
+    ]
+  },
+  {
+    "skills": [
+      "cognitive-ux"
+    ],
+    "query": "Conduct a comprehensive cognitive audit of the harness decision table in `docs/00-index.md`. Apply every relevant Law of UX and cognitive bias to the table design, prioritise findings by cognitive impact, and propose a redesign.",
+    "files": [
+      "docs/00-index.md"
+    ],
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The cognitive-ux skill applies the full Laws of UX catalogue and cognitive biases list simultaneously, prioritises by impact, and derives design implications — not just findings.",
+    "baseline_gaps": [
+      "Agent lists laws without applying them systematically to each element of the decision table.",
+      "Agent does not address cognitive biases (anchoring, confirmation bias, choice overload) separately from laws.",
+      "Agent produces a list of issues without a prioritised redesign proposal."
+    ],
+    "expected_behavior": [
+      "Applies at least five distinct Laws of UX to the decision table, with a specific finding for each.",
+      "Separately addresses cognitive biases affecting how users process the table (anchoring on first row, confirmation bias in category selection).",
+      "Prioritises findings by cognitive impact: which violations cause the most decision paralysis or errors?",
+      "Proposes a concrete redesign (table restructuring, progressive disclosure, or alternative format) backed by the cognitive principles applied."
+    ]
+  }
+]

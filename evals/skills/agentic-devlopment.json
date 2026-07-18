@@ -1,0 +1,85 @@
+[
+  {
+    "skills": [
+      "agentic-devlopment",
+      "beads",
+      "goose-orchestration"
+    ],
+    "query": "Add a new Goose recipe that runs a documentation review workflow for this harness. Before editing, inspect existing patterns and write a short scoped plan, then follow the harness workflow for durable edits.",
+    "files": [
+      ".goose/recipes/",
+      "docs/",
+      "AGENTS.md"
+    ],
+    "fixture_intent": "Normal scenario: durable-edit loop \u2014 bd prime + bead claim before writes, Scoped plan: label (colon required) before first write, recipe validate, compact handoff. max_turns=40 keeps all pre-write actions visible to the grader.",
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The agentic harness skill enforces the durable-edit loop: bd prime first (\u226410 turns before writes), Scoped plan: label before first write, bead claimed before write, validation run, compact handoff. The skill now includes gotchas that bd prime must be the FIRST shell command and that the plan label requires a colon.",
+    "baseline_gaps": [
+      "Agent may edit recipe files before creating or claiming durable Beads work.",
+      "Agent may skip researching existing recipe patterns and validation guidance.",
+      "Agent may omit recipe validation, Beads state, or git status from the handoff."
+    ],
+    "expected_behavior": [
+      "Runs `bd prime` (or equivalent Beads orientation) AND creates or claims a bead before the first file write \u2014 both actions must appear before any `write` or `edit` tool call.",
+      "Inspects at least one existing recipe for structural patterns before editing \u2014 a shell `cat` or `read` of any `.goose/recipes/*.yaml` file before the first write suffices.",
+      "States a section labeled `Scoped plan:` or `Scoped Plan:` (colon required) before the first `write` or `edit` tool call \u2014 a plan written after editing is retrospective and does not satisfy this item.",
+      "Runs `goose recipe validate` for the changed recipe and reports the result explicitly.",
+      "Reports files changed, validation result, Beads status (bead ID + created\u2192claimed\u2192closed trail), git status, and remaining risks, then stops."
+    ]
+  },
+  {
+    "skills": [
+      "agentic-devlopment",
+      "goose-orchestration"
+    ],
+    "query": "Find the highest-risk parts of the recipe and agent orchestration in this harness; read-only only.",
+    "files": [
+      ".goose/recipes/",
+      ".agents/agents/",
+      "AGENTS.md"
+    ],
+    "fixture_intent": "Difficult scenario: read-only orchestration investigation \u2014 delegation decision, concrete evidence, Beads-compatible follow-ups without executing them.",
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The skill should preserve strict read-only investigation, make an explicit orchestration/delegation decision, and propose Beads-compatible follow-ups without executing them.",
+    "baseline_gaps": [
+      "Agent may perform writes during a read-only investigation.",
+      "Agent may provide generic risks without evidence from harness files.",
+      "Agent may fail to propose durable follow-up work in a read-only-safe way."
+    ],
+    "expected_behavior": [
+      "Explicitly declares the task read-only and makes no file edits or Beads mutations.",
+      "States an explicit orchestration/delegation decision before starting \u2014 names the selected flow and explains why delegation is or is not used.",
+      "Produces a risk-ranked report with exact file paths or recipe/agent names as evidence.",
+      "Proposes Beads-compatible follow-ups as `bd create` commands or issue titles without executing them."
+    ]
+  },
+  {
+    "skills": [
+      "agentic-devlopment",
+      "beads"
+    ],
+    "query": "Finish the active Beads issue that is scoped to `.goose/recipes/harness-review.yaml`, then hand off safely. If no exact active issue exists in the isolated worktree, create and claim one before editing.",
+    "files": [
+      ".goose/recipes/harness-review.yaml",
+      "AGENTS.md",
+      ".beads/issues.jsonl"
+    ],
+    "fixture_intent": "Very difficult scenario: end-to-end scoped Beads-backed change \u2014 identify/create issue, edit only scoped file, validate recipe, update durable state, complete handoff.",
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The skill mandates three non-negotiable outputs a baseline omits: a labeled `Scoped plan:` heading before the first file write (not a retrospective summary), the exact bead lifecycle trail `bead-ID: created \u2192 claimed \u2192 closed` with IDs, and a `git diff --stat` or equivalent confirming only the scoped file was touched.",
+    "baseline_gaps": [
+      "Agent edits the file and explains what it did afterwards \u2014 retrospective plan rather than pre-edit Scoped plan.",
+      "Agent closes the bead without reporting the bead ID lifecycle trail (created \u2192 claimed \u2192 closed) with actual IDs.",
+      "Agent does not confirm blast radius: does not show that only the scoped file was changed."
+    ],
+    "expected_behavior": [
+      "States a heading literally labeled `Scoped plan:` or `Scoped Plan:` before the first file write \u2014 a plan written after editing does not satisfy this item.",
+      "Edits only `.goose/recipes/harness-review.yaml`; no other file is modified.",
+      "Runs `goose recipe validate .goose/recipes/harness-review.yaml` and includes the validation result (pass/fail) in the handoff.",
+      "Reports the bead lifecycle with actual IDs in the format `<bead-id>: created \u2192 claimed \u2192 closed` and includes git status confirming a clean or single-file diff."
+    ]
+  }
+]

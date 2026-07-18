@@ -38,7 +38,7 @@ node dist/cli.js visualize            # open dist/kg/index.html
 ```
 src/types.ts      # Shared types — Entity, Relation, KG, makeRel, makeStatus
 src/bootstrap.ts  # Scan .agents/, .goose/recipes/, docs/ → memory.jsonl
-src/reason.ts     # 5 forward-chaining rules + RULES export
+src/reason.ts     # 6 forward-chaining rules + RULES export
 src/cli.ts        # CLI entry: bootstrap|reason|pipeline|visualize|rules
 dist/cli.js       # Built binary (shebang added post-build)
 ```

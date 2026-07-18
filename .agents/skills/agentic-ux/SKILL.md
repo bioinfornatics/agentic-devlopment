@@ -1,11 +1,11 @@
 ---
 name: agentic-ux
 description: >
-  Design patterns for agentic AI interfaces: trust calibration, delegation UX,
-  multi-agent orchestration patterns, generative UI, AI safety guardrails, and
-  the paradigm shift from tool-based to agent-based interaction. Load when
-  designing or evaluating agentic AI products, AI copilot interfaces, or
-  multi-step autonomous workflows.
+  Load when designing, evaluating, or critiquing interfaces for AI-powered or agentic
+  applications. Covers trust calibration, graduated delegation UX, interruption points,
+  graceful degradation, and the three-era progression (Tool → Copilot → Agent).
+  Use when reviewing any UI where AI takes autonomous actions, or when deciding how
+  to communicate agent state, progress, confidence, and handoff to users.
 metadata:
   author: phazurlabs (adapted for harness)
   upstream: https://github.com/phazurlabs/ux-ui-mastery/tree/main/skills/agentic-ai-generative-ux
@@ -76,7 +76,7 @@ Read-only report → Suggest + confirm → Auto-approve low-risk → Gate high-r
 Start left. Earn trust through demonstrated reliability before moving right.
 
 ## Relevance to this harness
-Our agents (harness-orchestrator, implementation-worker, review-critic) ARE
+Our agents (orchestrator, implementation-worker, review-critic) ARE
 the agentic system. Design decisions about output format, escalation triggers,
 and user confirmation gates directly affect user trust and adoption.
 
@@ -91,6 +91,33 @@ Before applying this skill, generate context:
 1. Read the relevant files (use `analyze` or `read` tools)
 2. Identify the specific scope (component, feature, endpoint)
 3. Only then apply the methodology in this skill
+
+## Generative-Driven Design Loop
+
+Use this loop whenever an AI-facing UX decision benefits from exploration rather than a single obvious answer.
+
+1. **Frame** — state the user goal, non-goals, constraints, success metrics, and known risks before generating options.
+2. **Generate** — produce at least two materially different options; do not stop at the first plausible design.
+3. **Compare** — evaluate each option against explicit criteria: user control, transparency, trust calibration, accessibility, failure recovery, and implementation risk.
+4. **Select** — choose one option with a short trade-off rationale tied to the criteria; record rejected alternatives when they may be revisited.
+5. **Validate** — require observable evidence: usability rubric, accessibility check, browser interaction evidence, judge review, or human decision. Preference-only prose is not validation.
+6. **Escalate** — if evidence conflicts, risk is high, or N repeated failures occur, pause and ask for human direction rather than regenerating indefinitely.
+
+### GDD output contract
+
+~~~markdown
+GDD decision:
+- Goal:
+- Options considered:
+  1. ...
+  2. ...
+- Criteria:
+- Trade-offs:
+- Selected option:
+- Validation evidence:
+- Escalation needed: yes/no
+~~~
+
 ## Self-validation checklist
 
 Before completing the task:

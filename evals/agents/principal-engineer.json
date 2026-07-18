@@ -1,5 +1,9 @@
 [
   {
+    "skills": [
+      "agentic-devlopment",
+      "code-review"
+    ],
     "query": "Review the agent roster overhaul changes for blast radius and breaking changes.",
     "files": [
       ".agents/agents/",
@@ -23,6 +27,10 @@
     ]
   },
   {
+    "skills": [
+      "agentic-devlopment",
+      "code-review"
+    ],
     "query": "Review changes to `dev.yaml` routing instructions and `goose-orchestration/SKILL.md` for breaking changes and public API stability.",
     "files": [
       ".goose/recipes/dev.yaml",
@@ -45,6 +53,10 @@
     ]
   },
   {
+    "skills": [
+      "agentic-devlopment",
+      "code-review"
+    ],
     "query": "Review the full session's changes (agents + skills + recipes + docs + evals) as the escalation path for 2+ BLOCK verdicts from review-critic.",
     "files": [
       ".agents/",

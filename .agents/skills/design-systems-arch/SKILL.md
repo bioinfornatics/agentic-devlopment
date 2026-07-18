@@ -1,11 +1,13 @@
 ---
 name: design-systems-arch
 description: >
-  Design system architecture: W3C design token specification, component library
-  patterns, theming and multi-brand architecture, governance models, and
-  design-to-code integration. Load when designing or auditing a design system,
-  defining token architecture, planning component libraries, or evaluating
-  design system maturity and governance.
+  Load when architecting, auditing, or evolving a design system at scale. Covers
+  W3C design token architecture (primitive → semantic → component three-layer model),
+  component library patterns (compound, headless, render-prop/slot, provider),
+  governance (decision log, semantic versioning, contribution process, deprecation
+  policy), and the L0–L5 design system maturity model. Use when establishing token
+  structure, planning component APIs, assessing design system health, or deciding
+  how to govern a shared component library across teams.
 metadata:
   author: phazurlabs (adapted for harness)
   upstream: https://github.com/phazurlabs/ux-ui-mastery/tree/main/skills/design-systems-architecture

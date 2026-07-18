@@ -14,6 +14,12 @@ Use Beads memory for durable project facts that future agents should know.
 goose run --recipe remember   --params action="remember: default validation is make test"   --params repo_path="$PWD"
 ```
 
+Retrieve by key (AC-BEADS-03):
+
+```bash
+bd recall validation-default
+```
+
 Search:
 
 ```bash

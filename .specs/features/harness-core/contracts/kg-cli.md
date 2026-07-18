@@ -18,9 +18,17 @@ memory.jsonl (one record per line):
   entity: { type, name, entityType, observations[] }
   relation: { type, from, to, relationType }
 
-derived.jsonl (one record per line):
-  { type: relation, from, to, relationType: HAS_STATUS,
-    derived: true, rule, confidence, status_value, reason, inferred_at }
+derived.jsonl (one record per line — two record kinds):
+  entity: { type: entity, name, entityType: derived_status, derived: true, observations[] }
+    — one per unique status node (e.g. "status:test-gap")
+  relation:
+    HAS_STATUS:        { type: relation, from, to, relationType: HAS_STATUS,
+                         derived: true, rule, confidence, status_value, reason, inferred_at }
+    TRANSITIVELY_USES: { type: relation, from, to, relationType: TRANSITIVELY_USES,
+                         derived: true, rule: "R4:transitive-skill", confidence: 0.9, inferred_at }
+
+  Rules that emit HAS_STATUS: R1, R2, R3, R5, R6
+  Rules that emit other relation types: R4 (TRANSITIVELY_USES)
 
 ## Idempotence
 

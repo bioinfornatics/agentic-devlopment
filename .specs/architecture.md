@@ -4,7 +4,9 @@ Status: Active | ADRs: STATE.md
 
 ## System Map
 
-Recipes (12 workflow verbs) load Skills (14 packs) and delegate to Agents (12 named).
+Recipes (14 workflow verbs) load Skills (17 domain + 1 tooling) and delegate to Agents (12 named).
+Eval layer model: Layer 0 (nothing) → Layer 1 (skills) → Layer 2 (agents+skills) → Layer 3 (recipes+agents+skills).
+A/B mode per layer: skills use `with-without` (L1 vs L0); agents and recipes use `layer-delta` (each vs the layer below).
 Extensions: beads, knowledgegraphmemory, kg-visualizer.
 State: Beads (Dolt git-synced) + KG (memory.jsonl + derived.jsonl).
 

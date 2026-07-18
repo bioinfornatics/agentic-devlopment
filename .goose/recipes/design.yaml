@@ -77,7 +77,7 @@ prompt: |
     AI interface patterns: [yes | no]
     Starting phase: Phase 1 UX Research
 
-  Step 1 Orient: load skills agentic-dev-harness. Run bd prime and bd ready --json.
+  Step 1 Orient: load skills agentic-devlopment. Run bd prime and bd ready --json.
   Step 2 Phase 1 UX Research: load skills ux-quality. load skills cognitive-ux. load agent ux-researcher.
   Step 3 Phase 2 UI Design: load skills ui-quality. load skills atomic-design. load skills design-systems-arch.
     If AI interface: load skills agentic-ux. load agent ui-designer.

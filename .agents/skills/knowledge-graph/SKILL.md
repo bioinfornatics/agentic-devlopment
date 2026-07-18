@@ -1,9 +1,13 @@
 ---
 name: knowledge-graph
 description: >
-  Knowledge Graph MCP for SDD product development. Load to create entities, relations and
-  observations, query the graph, and detect coverage gaps across the full buildtime chain.
-  Use during any SDD phase to record and traverse product artifacts.
+  Load when creating, querying, or updating the project knowledge graph during
+  Spec-Driven Development. Covers two namespaces (harness: for agents/skills/recipes;
+  product: for features/components/specs), entity types, full relation vocabulary,
+  CRUD protocol by SDD phase (discover/spec/plan/implement/review/verify), and
+  traversal query patterns. Use after any structural change to agents, skills, or
+  recipes, when implementing a feature with SDD, or when querying project
+  architecture relationships. Always search before creating to avoid duplicates.
 metadata:
   version: 1.0.0
 ---
@@ -167,7 +171,7 @@ add_observations([{entityName:"test_FEAT_01_desc",observations:["status:passing"
 - **Visualize** — drag `.knowledge/memory.jsonl` onto https://memviz.herich.tech
 
 ## Beads loop
-For Beads workflow commands, load skill: `beads-harness`.
+For Beads workflow commands, load skill: `beads`.
 
 ---
 

@@ -34,9 +34,9 @@ instructions: |
   | UX research  | `ux-quality`           | `ux-researcher`         | ux-researcher         |
   | UI design    | `ui-quality`           | `ui-designer`           | ui-designer           |
   | Spec         | `sdd`                  | `architect`             | architect             |
-  | Beads graph  | `beads-harness`        | `beads-planner`         | beads-planner         |
-  | TDD          | `agentic-dev-harness`  | `tdd-guide`             | tdd-guide             |
-  | Implement    | `beads-harness`        | `implementation-worker` | implementation-worker |
+  | Beads graph  | `beads`        | `planner`         | planner         |
+  | TDD          | `agentic-devlopment`  | `tdd-guide`             | tdd-guide             |
+  | Implement    | `beads`        | `implementation-worker` | implementation-worker |
   | Review       | `code-review`          | `review-critic`         | review-critic         |
   | Debug        | `systematic-debugging` | `implementation-worker` | implementation-worker |
   | Verify       | `webapp-testing`       | `qa-automation`         | qa-automation         |
@@ -115,7 +115,8 @@ prompt: |
   If phase=auto: inspect existing .specs/ files and Beads state to determine current position.
 
   ## Step 2 — Orient (bd prime FIRST)
-  load skills sdd. load skills agentic-dev-harness.
+  load skills sdd. load skills agentic-devlopment.
+  load agent orchestrator.
   Run `bd prime` then `bd ready --json`.
   Check for `.specs/features/{{ initiative }}/` — read discovery.md and spec.md if present.
 

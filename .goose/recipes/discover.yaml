@@ -22,7 +22,7 @@ instructions: |
 
   ## Skill and agent routing
   - load skills sdd               (auto-sizing, requirement traceability, implicit-req dimensions)
-  - load skills agentic-dev-harness  (orientation, Beads workflow)
+  - load skills agentic-devlopment  (orientation, Beads workflow)
   - Delegate to `product-owner`: write user stories + PRD quality gate (>=85/100)
   - For UI features: delegate to `ux-researcher`: personas + user journeys (BEFORE product-owner)
   - Beads: `bd create "<feature>" --issue_type epic -p 2 --json`
@@ -128,7 +128,7 @@ prompt: |
   State your scope declaration (Micro/Small/Medium/Large/Complex) before any tool call.
 
   ## Step 2 — Orient
-  load skills sdd. load skills agentic-dev-harness.
+  load skills sdd. load skills agentic-devlopment.
   Run `bd prime` then `bd ready --json`.
 
   ## Step 3 — Auto-size

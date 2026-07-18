@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "atomic-design-fundamentals": {
+      "source": "thebushidocollective/han",
+      "sourceType": "github",
+      "skillPath": "plugins/patterns/atomic-design/skills/atomic-design-fundamentals/SKILL.md",
+      "computedHash": "4a2d3a077911fd8da7ac42c42ff120345e476078ede8f523c9a0a7b4e3eb7cc8"
+    },
+    "design-critique-case-studies": {
+      "source": "phazurlabs/ux-ui-mastery",
+      "sourceType": "github",
+      "skillPath": "skills/design-critique-case-studies/SKILL.md",
+      "computedHash": "f7735b60d9debb9beddf96a324441b1e1327696254926179fbf21ea08b718a22"
+    },
+    "wcag-accessibility-audit": {
+      "source": "mastepanoski/claude-skills",
+      "sourceType": "github",
+      "skillPath": "skills/wcag-accessibility-audit/SKILL.md",
+      "computedHash": "794f471ae3f854ff5184f2b8ef2cbaa31c62feb5fe593d1cf6125c5c56c6ab8e"
+    }
+  }
+}

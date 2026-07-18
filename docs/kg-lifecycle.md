@@ -11,18 +11,19 @@
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  A-BOX  — Faits assertés  (.knowledge/memory.jsonl)                    │
 │                                                                         │
-│  Harness layer    Auto ← kg-bootstrap.py (git hook + build-docs.sh)   │
-│  (recipes/skills/    ← Déclenché à chaque commit harness               │
-│   agents/docs)                                                          │
+│  Harness layer    Auto ← `node apps/kg/dist/cli.js bootstrap`          │
+│  (recipes/skills/         (git hook + build-docs.sh)                   │
+│   agents/docs)       ← Déclenché à chaque commit harness               │
 │                                                                         │
 │  Product layer    Semi-auto ← Recipe checkpoints MCP (implement/spec/  │
 │  (features/ACs/         review/discover) via create_entities            │
-│   code_files/tests)   Manuel ← bd create + kg-bootstrap --product      │
+│   code_files/tests)   Manuel ← bd create + node apps/kg/dist/cli.js bootstrap --product │
 │                                                                         │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  T-BOX  — Faits inférés  (.knowledge/derived.jsonl)                    │
 │                                                                         │
-│  Auto ← kg-reason.py (git hook post-commit, build-docs.sh, CI)        │
+│  Auto ← `node apps/kg/dist/cli.js reason`                             │
+│       (git hook post-commit, build-docs.sh, CI)                        │
 │  6 règles: R1-R6 (forward chaining jusqu'au point fixe)                │
 │                                                                         │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -42,7 +43,7 @@
 
 ```bash
 # Une seule commande — lit agents/ skills/ recipes/ docs/ → memory.jsonl
-python3 scripts/kg-bootstrap.py
+node apps/kg/dist/cli.js bootstrap
 
 # Résultat: .knowledge/memory.jsonl avec:
 # 12 agents, 14 skills, 12 recipes, docs → entités harness:*
@@ -55,7 +56,7 @@ python3 scripts/kg-bootstrap.py
 mkdir -p .knowledge
 
 # Phase 2 — bootstrapper les entités harness (toolchain)
-python3 /chemin/vers/harness/scripts/kg-bootstrap.py
+node apps/kg/dist/cli.js bootstrap
 
 # Phase 3 — ajouter les entités produit initiales (via /discover)
 /discover "User authentication with OAuth Google"
@@ -64,7 +65,7 @@ python3 /chemin/vers/harness/scripts/kg-bootstrap.py
 #   create_relations(feature DECOMPOSES_INTO epic)
 
 # Phase 4 — raisonner (inférer les gaps initiaux)
-python3 scripts/kg-reason.py
+node apps/kg/dist/cli.js reason
 # → derived.jsonl: feature oauth-google → HAS_STATUS not-decomposed (pas de user_story)
 
 # Phase 5 — visualiser
@@ -82,11 +83,11 @@ xdg-open dist/kg/index.html  # ou VS Code task "KG: Bootstrap + Reason + Visuali
 ```bash
 # .git/hooks/post-commit (installé par scripts/install.sh)
 #!/bin/bash
-python3 scripts/kg-bootstrap.py --dry-run > /dev/null 2>&1 &&   python3 scripts/kg-bootstrap.py &&   python3 scripts/kg-reason.py
+node apps/kg/dist/cli.js bootstrap --dry-run > /dev/null 2>&1 && node apps/kg/dist/cli.js pipeline
 ```
 
 **Déclenchement :** chaque `git commit` sur le harness → KG automatiquement à jour.
-**Idempotent :** kg-bootstrap.py ne duplique pas les entités existantes.
+**Idempotent :** `node apps/kg/dist/cli.js bootstrap` ne duplique pas les entités existantes (KG-03).
 
 ### Couche produit — via les recipe checkpoints
 
@@ -106,7 +107,7 @@ Chaque phase SDD écrit dans le KG via le MCP `knowledgegraphmemory` :
 
 ```bash
 # À chaque changement de memory.jsonl
-python3 scripts/kg-reason.py
+node apps/kg/dist/cli.js reason
 # → re-calcule derived.jsonl en ~0.1s (forward chaining, 117 entités = instant)
 ```
 
@@ -118,7 +119,7 @@ python3 scripts/kg-reason.py
 
 ```bash
 # .git/hooks/post-commit
-python3 scripts/kg-bootstrap.py && python3 scripts/kg-reason.py
+node apps/kg/dist/cli.js pipeline
 ```
 
 **Ce qui se passe :** chaque commit sur agents/, skills/, recipes/ → harness:agent, harness:skill,
@@ -156,9 +157,9 @@ add_observations [{entityName:"feat-login-oauth", observations:["bead:proj-abc c
 
 ```bash
 # scripts/build-docs.sh (fin du script)
-python3 scripts/kg-bootstrap.py    # refresh harness layer
-python3 scripts/kg-reason.py       # re-infer derived facts
-cp scripts/kg-visualizer.html dist/kg/index.html  # update visualizer
+node apps/kg/dist/cli.js bootstrap    # refresh harness layer
+node apps/kg/dist/cli.js reason       # re-infer derived facts
+cp apps/kg-visualizer/src/app.html dist/kg/index.html  # update visualizer
 ```
 
 **Déclenché :** `./scripts/build-docs.sh` ou VS Code task "Harness: Build Documentation".
@@ -169,25 +170,25 @@ cp scripts/kg-visualizer.html dist/kg/index.html  # update visualizer
 
 ```
 JOUR 1 — Initiation
-  kg-bootstrap.py                    → harness layer (117 entités)
+  node apps/kg/dist/cli.js bootstrap → harness layer
   /discover "feature X"              → epic + feature entities créés
-  kg-reason.py                       → gaps inférés: not-decomposed, not-implemented
+  node apps/kg/dist/cli.js reason    → gaps inférés: not-decomposed, not-implemented
 
 SPRINT 1 — Spec + Plan
   /spec "feature X"                  → ACs [FEAT]-01..05 créés dans KG
-  kg-reason.py                       → R1: 5 ACs → HAS_STATUS test-gap
+  node apps/kg/dist/cli.js reason    → R1: 5 ACs → HAS_STATUS test-gap
   /plan "feature X"                  → beads TRACKS user_stories
 
 SPRINT 2 — TDD + Implement
   /implement bead-xxx                → RED test créé: test entity + LOCATED_IN code_file
-  kg-reason.py                       → R1: AC test-gap SE FERME si VALIDATES ajouté
+  node apps/kg/dist/cli.js reason    → R1: AC test-gap SE FERME si VALIDATES ajouté
   /implement bead-yyy                → component + IMPLEMENTED_IN + IMPLEMENTS
-  kg-reason.py                       → R3: not-implemented SE FERME pour cette feature
+  node apps/kg/dist/cli.js reason    → R3: not-implemented SE FERME pour cette feature
 
 SPRINT 3 — Review + Verify
   /review                            → search_nodes gaps → findings générés
   /verify                            → add_observations "status:passing"
-  kg-reason.py                       → toutes les règles ré-évaluées
+  node apps/kg/dist/cli.js reason    → toutes les règles ré-évaluées
 
 RELEASE
   build-docs.sh                      → KG complet + visualiser à jour
@@ -200,13 +201,13 @@ RELEASE
 
 | Mécanisme | État |
 |---|---|
-| kg-bootstrap.py (harness layer) | ✅ Opérationnel |
-| kg-reason.py (6 règles, forward chaining) | ✅ Opérationnel |
+| `node apps/kg/dist/cli.js bootstrap` (harness layer) | ✅ Opérationnel |
+| `node apps/kg/dist/cli.js reason` (6 règles, forward chaining) | ✅ Opérationnel |
 | Recipe checkpoints (implement/spec/review/discover) | ✅ Intégrés dans subrecipes |
 | Agent KG orientation (review-critic/implementation-worker/product-owner) | ✅ Intégrés |
 | Visualiseur (D3.js, asserté+inféré) | ✅ dist/kg/index.html |
 | **Git hook post-commit** | ❌ À installer (scripts/install.sh à mettre à jour) |
 | **bd close → KG observation** | ❌ Pas encore automatique |
-| **kg-bootstrap --product** (scan src/) | ✅ Flag disponible, usage manuel |
+| **`node apps/kg/dist/cli.js bootstrap --product`** (scan src/) | ✅ Flag disponible, usage manuel |
 | **Goose App visualiseur** (KG-08) | 🔓 Backlog P4 |
 | **Règle R4 et R6** (transitivity, undeclared skill) | ✅ Codées, 0 trigger actuel (données insuffisantes) |

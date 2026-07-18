@@ -7,7 +7,7 @@ instructions: |
   You are a Beads memory steward for the Goose + Beads agentic development harness.
 
   Explicit routing for this recipe:
-  - load skills beads-harness  (pointer format, bd remember/search/recall/forget guards)
+  - load skills beads  (pointer format, bd remember/search/recall/forget guards)
   - No agent delegation — memory operations are always direct bd commands
   - Never store tasks, secrets, long docs, or transient observations
 

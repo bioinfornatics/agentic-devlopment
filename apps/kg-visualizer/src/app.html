@@ -1,72 +1,1455 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Knowledge Graph</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Knowledge Graph · Harness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.34.0/dist/cytoscape.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
 <style>
-body{margin:0;background:#0f1117;color:#e2e8f0;font-family:sans-serif;height:100vh;display:flex;flex-direction:column}
-#hd{padding:8px 16px;background:#1a1f2e;border-bottom:1px solid #2d3748;font-size:12px;color:#90cdf4}
-#cy{flex:1}
-#info{position:fixed;right:0;top:32px;width:240px;background:#1a1f2e;padding:10px;height:calc(100vh - 32px);overflow:auto;font-size:11px;border-left:1px solid #2d3748}
+/* ─────────────────────────────────────────────
+   DESIGN TOKENS — single source of truth
+   ───────────────────────────────────────────── */
+:root {
+  /* Surfaces */
+  --bg-base:     #0d1117;
+  --bg-surface:  #161b22;
+  --bg-elevated: #21262d;
+  --bg-input:    #0d1117;
+
+  /* Borders */
+  --border-muted:  #30363d;
+  --border-subtle: #21262d;
+
+  /* Text */
+  --text-primary: #e6edf3;
+  --text-muted:   #8b949e;
+  --text-dim:     #484f58;
+
+  /* Accents */
+  --accent-blue:   #58a6ff;
+  --accent-amber:  #e3b341;
+  --accent-green:  #3fb950;
+  --accent-red:    #f85149;
+  --accent-purple: #bc8cff;
+
+  /* Entity colours */
+  --c-recipe:    #58a6ff;
+  --c-skill:     #bc8cff;
+  --c-agent:     #3fb950;
+  --c-doc:       #6e7681;
+  --c-epic:      #f0883e;
+  --c-feature:   #f85149;
+  --c-criterion: #3fb950;
+  --c-test:      #39d3bb;
+  --c-codefile:  #a371f7;
+  --c-derived:   #e3433c;
+  --c-story:     #79c0ff;
+  --c-decision:  #d2a8ff;
+
+  /* Typography */
+  --font-ui:   system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+
+  /* Spacing (base-4) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+
+  /* Radius */
+  --r-sm: 4px;
+  --r-md: 6px;
+
+  /* Motion */
+  --ease: 0.15s ease;
+}
+
+/* ─────────────────────────────────────────────
+   RESET
+   ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 44px 1fr;
+  grid-template-columns: 1fr 260px;
+  grid-template-areas:
+    "header header"
+    "canvas panel";
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────
+   HEADER  (Unit A + B)
+   ───────────────────────────────────────────── */
+#header {
+  grid-area: header;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-4);
+  overflow: hidden;
+}
+
+#header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-shrink: 0;
+}
+
+#header-brand svg {
+  opacity: 0.8;
+}
+
+#header-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+#header-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-muted);
+  flex-shrink: 0;
+}
+
+/* Stats badges */
+#stats {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-shrink: 0;
+}
+
+.stat-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-sm);
+  padding: 2px var(--sp-2);
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stat-badge span.label {
+  color: var(--text-dim);
+  font-size: 10px;
+}
+
+/* Filter pills */
+#filters {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0;
+}
+#filters::-webkit-scrollbar { display: none; }
+
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px var(--sp-2);
+  border-radius: 100px;
+  border: 1px solid var(--border-muted);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--ease);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.filter-pill:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-muted);
+}
+.filter-pill.active {
+  color: #fff;
+  border-color: transparent;
+  background: currentColor;
+}
+.filter-pill.active .pill-text {
+  color: #fff;
+  mix-blend-mode: multiply; /* makes text white-on-color legible */
+}
+.filter-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Header actions */
+#header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  background: transparent;
+  border: 1px solid var(--border-muted);
+  color: var(--text-muted);
+  border-radius: var(--r-sm);
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--ease);
+}
+.icon-btn:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+.icon-btn:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────
+   GRAPH CANVAS  (Unit D)
+   ───────────────────────────────────────────── */
+#canvas-wrap {
+  grid-area: canvas;
+  position: relative;
+  background: var(--bg-base);
+  overflow: hidden;
+}
+
+#cy {
+  width: 100%;
+  height: 100%;
+}
+
+/* Loading overlay */
+#loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  background: var(--bg-base);
+  z-index: 10;
+  transition: opacity var(--ease);
+}
+#loading.hidden { opacity: 0; pointer-events: none; }
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border-muted);
+  border-top-color: var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Empty state */
+#empty-state {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-6);
+  text-align: center;
+}
+#empty-state.visible { display: flex; }
+
+#empty-state svg { opacity: 0.25; }
+#empty-state h3 { font-size: 14px; color: var(--text-muted); font-weight: 500; }
+#empty-state p { font-size: 12px; color: var(--text-dim); max-width: 220px; }
+
+/* Legend overlay  (Unit C) */
+#legend {
+  position: absolute;
+  bottom: var(--sp-4);
+  left: var(--sp-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--r-md);
+  padding: var(--sp-3);
+  min-width: 160px;
+  z-index: 5;
+  transition: all var(--ease);
+}
+
+#legend-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-2);
+}
+
+#legend-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+#legend-toggle {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0;
+  font-size: 10px;
+  transition: color var(--ease);
+}
+#legend-toggle:hover { color: var(--text-muted); }
+
+#legend-body { display: flex; flex-direction: column; gap: 5px; }
+#legend.collapsed #legend-body { display: none; }
+#legend.collapsed { min-width: 0; }
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1;
+}
+.legend-item .swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.legend-item.derived .swatch {
+  border: 1.5px dashed var(--accent-amber);
+  background: transparent;
+}
+
+/* Keyboard hint */
+#kbd-hint {
+  position: absolute;
+  bottom: var(--sp-4);
+  right: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: right;
+  z-index: 5;
+}
+.kbd {
+  display: inline-block;
+  border: 1px solid var(--border-muted);
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-size: 9px;
+  background: var(--bg-surface);
+  color: var(--text-dim);
+}
+
+/* ─────────────────────────────────────────────
+   DETAIL PANEL  (Unit E)
+   ───────────────────────────────────────────── */
+#panel {
+  grid-area: panel;
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border-muted);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#panel-placeholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-6);
+  text-align: center;
+}
+
+#panel-placeholder svg { opacity: 0.2; }
+#panel-placeholder p {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+#panel-detail {
+  flex: 1;
+  overflow-y: auto;
+  display: none;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-muted) transparent;
+}
+#panel-detail.visible { display: flex; }
+
+/* Panel header */
+#panel-entity-header {
+  padding: var(--sp-4);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+#panel-entity-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  word-break: break-all;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+#panel-entity-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 100px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-muted);
+  color: var(--text-muted);
+}
+#panel-entity-type .type-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+#panel-entity-derived-badge {
+  display: none;
+  margin-top: var(--sp-2);
+  font-size: 10px;
+  color: var(--accent-amber);
+  font-family: var(--font-mono);
+}
+#panel-entity-derived-badge.visible { display: block; }
+
+/* Panel sections */
+.panel-section {
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.panel-section-title {
+  padding: var(--sp-2) var(--sp-4);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  background: var(--bg-base);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.panel-section-body {
+  padding: var(--sp-2) 0;
+}
+
+/* Observation chips */
+.obs-item {
+  padding: var(--sp-1) var(--sp-4);
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+  word-break: break-word;
+  border-left: 2px solid transparent;
+  transition: border-color var(--ease);
+}
+.obs-item:hover { border-left-color: var(--accent-blue); }
+
+/* Relation rows */
+.rel-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: 5px var(--sp-4);
+  border-left: 2px solid transparent;
+  transition: all var(--ease);
+  cursor: pointer;
+}
+.rel-row:hover {
+  background: var(--bg-elevated);
+  border-left-color: var(--accent-green);
+}
+.rel-row.incoming:hover { border-left-color: var(--accent-red); }
+
+.rel-row .rel-direction {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.rel-row.incoming .rel-direction { color: var(--accent-red); }
+.rel-row.outgoing .rel-direction { color: var(--accent-green); }
+
+.rel-row-content { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+.rel-type {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rel-target {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-blue);
+  word-break: break-all;
+}
+.rel-row.incoming .rel-target { color: var(--text-muted); }
+
+.rel-derived-tag {
+  font-size: 9px;
+  color: var(--accent-amber);
+  font-family: var(--font-mono);
+}
+
+/* Empty section */
+.section-empty {
+  padding: var(--sp-2) var(--sp-4);
+  font-size: 11px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ─────────────────────────────────────────────
+   SCROLLBAR GLOBAL
+   ───────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-muted); border-radius: 4px; }
+
+/* ─────────────────────────────────────────────
+   SEARCH BAR  (A1)
+   ───────────────────────────────────────────── */
+#search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 1;
+  min-width: 90px;
+  max-width: 200px;
+}
+
+#search-input {
+  width: 100%;
+  height: 28px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--r-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 0 24px 0 var(--sp-2);
+  outline: none;
+  transition: border-color var(--ease);
+}
+#search-input:focus { border-color: var(--accent-blue); }
+#search-input::placeholder { color: var(--text-dim); }
+/* Hide browser native clear button (Chrome/Safari) */
+#search-input::-webkit-search-cancel-button { display: none; }
+
+#search-clear {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 10px;
+  line-height: 1;
+  padding: 2px;
+  display: none;
+  transition: color var(--ease);
+}
+#search-clear:hover { color: var(--text-primary); }
+#search-clear.visible { display: block; }
+
+#search-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent-amber);
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: none;
+  margin-left: var(--sp-1);
+}
+#search-count.visible { display: inline; }
+
+/* ─────────────────────────────────────────────
+   FOCUS / ACCESSIBILITY
+   ───────────────────────────────────────────── */
+*:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}
 </style>
 </head>
 <body>
-<div id="hd">Loading KG...</div>
-<div id="cy"></div>
-<div id="info"><em style="color:#718096">Click a node</em></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════ -->
+<header id="header" role="banner">
+  <!-- Brand -->
+  <div id="header-brand">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <circle cx="8" cy="4" r="2.5" stroke="#58a6ff" stroke-width="1.5"/>
+      <circle cx="3" cy="12" r="2" stroke="#3fb950" stroke-width="1.5"/>
+      <circle cx="13" cy="12" r="2" stroke="#bc8cff" stroke-width="1.5"/>
+      <line x1="8" y1="6.5" x2="4" y2="10.5" stroke="#30363d" stroke-width="1.2"/>
+      <line x1="8" y1="6.5" x2="12" y2="10.5" stroke="#30363d" stroke-width="1.2"/>
+    </svg>
+    <span id="header-title">Knowledge Graph</span>
+  </div>
+
+  <div id="header-divider" aria-hidden="true"></div>
+
+  <!-- Stats -->
+  <div id="stats" role="status" aria-live="polite" aria-label="Graph statistics">
+    <div class="stat-badge">
+      <span class="label">nodes</span>
+      <span id="stat-nodes" aria-label="node count">—</span>
+    </div>
+    <div class="stat-badge">
+      <span class="label">edges</span>
+      <span id="stat-edges" aria-label="edge count">—</span>
+    </div>
+    <div class="stat-badge" id="stat-derived-wrap" style="display:none">
+      <span class="label" style="color:var(--accent-amber)">derived</span>
+      <span id="stat-derived" style="color:var(--accent-amber)">—</span>
+    </div>
+  </div>
+
+  <div id="header-divider-2" aria-hidden="true" style="margin-left:4px"></div>
+
+  <!-- Search (A1) -->
+  <div role="search" style="display:flex;align-items:center;gap:var(--sp-1);flex-shrink:1;min-width:0">
+    <div id="search-wrap">
+      <input id="search-input" type="text"
+             aria-label="Search nodes by name"
+             placeholder="/ search…"
+             autocomplete="off" spellcheck="false"/>
+      <button id="search-clear" aria-label="Clear search (Esc)" title="Clear search">✕</button>
+    </div>
+    <span id="search-count" aria-live="polite" aria-atomic="true"></span>
+  </div>
+
+  <!-- Filter pills -->
+  <nav id="filters" role="navigation" aria-label="Filter by entity type"></nav>
+
+  <!-- Actions -->
+  <div id="header-actions">
+    <button class="icon-btn" id="btn-fit" title="Fit graph (F)" aria-label="Fit graph to viewport">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="M1 4V1h3M8 1h3v3M11 8v3H8M4 11H1V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <button class="icon-btn" id="btn-reset" title="Reset layout (R)" aria-label="Reset force layout">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="M10 6a4 4 0 1 1-1.17-2.83" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M7 3h3V6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CANVAS WRAP
+     ═══════════════════════════════════════════════════════════ -->
+<div id="canvas-wrap" role="main" aria-label="Knowledge graph canvas">
+
+  <!-- Graph -->
+  <div id="cy" aria-label="Interactive graph — use mouse to pan and zoom, click nodes to inspect"></div>
+
+  <!-- Loading state -->
+  <div id="loading" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <span id="loading-text">Parsing knowledge graph…</span>
+  </div>
+
+  <!-- Empty state -->
+  <div id="empty-state" role="status">
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      <circle cx="24" cy="24" r="20" stroke="#8b949e" stroke-width="2" stroke-dasharray="4 4"/>
+      <circle cx="24" cy="24" r="4" fill="#8b949e"/>
+    </svg>
+    <h3>No entities found</h3>
+    <p>The active filter returned no matching nodes. Try "All" to reset.</p>
+  </div>
+
+  <!-- Legend (Unit C) -->
+  <aside id="legend" aria-label="Entity type legend">
+    <div id="legend-header">
+      <span id="legend-title">Legend</span>
+      <button id="legend-toggle" aria-label="Collapse legend" aria-expanded="true">▾</button>
+    </div>
+    <div id="legend-body" role="list">
+      <!-- Populated by JS -->
+    </div>
+  </aside>
+
+  <!-- Keyboard hints -->
+  <div id="kbd-hint" aria-hidden="true">
+    <span><kbd class="kbd">/</kbd> search</span>
+    <span><kbd class="kbd">F</kbd> fit</span>
+    <span><kbd class="kbd">R</kbd> reset</span>
+    <span><kbd class="kbd">Esc</kbd> clear</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     DETAIL PANEL
+     ═══════════════════════════════════════════════════════════ -->
+<aside id="panel" role="complementary" aria-label="Node detail panel">
+
+  <!-- Placeholder -->
+  <div id="panel-placeholder">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <circle cx="16" cy="8" r="4" stroke="#8b949e" stroke-width="1.5"/>
+      <circle cx="6" cy="24" r="3" stroke="#8b949e" stroke-width="1.5"/>
+      <circle cx="26" cy="24" r="3" stroke="#8b949e" stroke-width="1.5"/>
+      <path d="M12 12L8 21M20 12L24 21" stroke="#8b949e" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <p>Click any node to inspect its observations, outgoing relations, and incoming relations.</p>
+  </div>
+
+  <!-- Detail view (hidden until node selected) -->
+  <div id="panel-detail" role="region" aria-live="polite" aria-label="Selected node details">
+
+    <!-- Entity header -->
+    <div id="panel-entity-header">
+      <div id="panel-entity-name" aria-label="Entity name"></div>
+      <div id="panel-entity-type">
+        <span class="type-dot" id="panel-type-dot"></span>
+        <span id="panel-type-label"></span>
+      </div>
+      <div id="panel-entity-derived-badge">⟳ inferred (derived)</div>
+    </div>
+
+    <!-- Observations -->
+    <div class="panel-section" id="section-obs">
+      <div class="panel-section-title">Observations</div>
+      <div class="panel-section-body" id="obs-body"></div>
+    </div>
+
+    <!-- Outgoing relations -->
+    <div class="panel-section" id="section-out">
+      <div class="panel-section-title">Outgoing relations</div>
+      <div class="panel-section-body" id="out-body"></div>
+    </div>
+
+    <!-- Incoming relations -->
+    <div class="panel-section" id="section-in">
+      <div class="panel-section-title">Incoming relations</div>
+      <div class="panel-section-body" id="in-body"></div>
+    </div>
+
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════════
+     APPLICATION SCRIPT
+     ═══════════════════════════════════════════════════════════ -->
 <script>
-cytoscape.use(cytoscapeFcose);
-var COLORS = {
-  'harness:recipe':'#4299e1','harness:skill':'#9f7aea','harness:agent':'#48bb78',
-  'harness:doc':'#718096','epic':'#f6ad55','feature':'#fc8181',
-  'acceptance_criterion':'#68d391','test':'#4fd1c5','code_file':'#b794f4',
-  'derived_status':'#e53e3e'
+'use strict';
+
+/* ── Design tokens mirrored in JS ─────────────────────────── */
+const ENTITY_COLORS = {
+  'harness:recipe':        '#58a6ff',
+  'harness:skill':         '#bc8cff',
+  'harness:agent':         '#3fb950',
+  'harness:doc':           '#6e7681',
+  'harness:eval':          '#79c0ff',
+  'harness:fixture':       '#8b949e',
+  'epic':                  '#f0883e',
+  'feature':               '#f85149',
+  'acceptance_criterion':  '#3fb950',
+  'test':                  '#39d3bb',
+  'code_file':             '#a371f7',
+  'spec_file':             '#c084fc',
+  'doc_file':              '#8b949e',
+  'config_file':           '#6e7681',
+  'derived_status':        '#e3433c',
+  'user_story':            '#79c0ff',
+  'decision':              '#d2a8ff',
+  'bead':                  '#f6ad55',
+  'spec':                  '#68d391',
+  'component':             '#63b3ed',
+  'api_endpoint':          '#fbb6ce',
+  'domain_service':        '#fbd38d',
+  'data_model':            '#9ae6b4',
+  'ui_screen':             '#90cdf4',
+  'repository':            '#feb2b2',
 };
-var jsonl = atob('{{B64}}');
-var filter = {{FILTER}};
-var nodeMap = {}, rels = [];
-jsonl.split('
-').filter(Boolean).forEach(function(l) {
+
+const FALLBACK_COLOR = '#a0aec0';
+
+function nodeColor(type) {
+  return ENTITY_COLORS[type] || FALLBACK_COLOR;
+}
+
+/* ── Parse data ───────────────────────────────────────────── */
+cytoscape.use(cytoscapeFcose);
+
+const rawB64  = '{{B64}}';
+const initFilter = {{FILTER}};
+
+let jsonlRaw = '';
+try { jsonlRaw = atob(rawB64); } catch(e) { console.error('base64 decode failed', e); }
+
+const nodeMap = Object.create(null); // name → entity record
+const relList = [];                  // raw relation records
+
+jsonlRaw.split('\n').filter(Boolean).forEach(line => {
   try {
-    var d = JSON.parse(l);
-    if (d.type === 'entity' && !nodeMap[d.name]) nodeMap[d.name] = d;
-    else if (d.type === 'relation') rels.push(d);
-  } catch(e) {}
+    const d = JSON.parse(line);
+    if (d.type === 'entity') {
+      // last write wins (memory.jsonl then derived.jsonl)
+      if (!nodeMap[d.name]) nodeMap[d.name] = d;
+      else Object.assign(nodeMap[d.name], d);
+    } else if (d.type === 'relation') {
+      relList.push(d);
+    }
+  } catch (_) {}
 });
-var nodes = Object.values(nodeMap)
-  .filter(function(n) { return !filter || n.entityType === filter; })
-  .map(function(n) { return { data: { id: n.name, label: n.name.length > 20 ? n.name.slice(0,18) + '...' : n.name, entityType: n.entityType, obs: n.observations, derived: n.derived } }; });
-var ids = new Set(nodes.map(function(n) { return n.data.id; }));
-var edges = rels
-  .filter(function(r) { return ids.has(r.from) && ids.has(r.to); })
-  .map(function(r, i) { return { data: { id: 'e' + i, source: r.from, target: r.to, label: r.relationType, derived: r.derived } }; });
-document.getElementById('hd').textContent = 'KG: ' + nodes.length + ' entities - ' + edges.length + ' relations';
-var cy = cytoscape({
-  container: document.getElementById('cy'),
-  elements: nodes.concat(edges),
-  style: [
-    { selector: 'node', style: { 'label': 'data(label)', 'font-size': 9, 'text-valign': 'bottom', 'color': '#a0aec0',
-      'background-color': function(n) { return COLORS[n.data('entityType')] || '#a0aec0'; },
-      'border-width': function(n) { return n.data('derived') ? 2 : 0; },
-      'border-color': '#f6ad55', 'border-style': 'dashed' }},
-    { selector: 'edge', style: { 'curve-style': 'bezier', 'target-arrow-shape': 'triangle', 'arrow-scale': 0.7,
-      'line-color': function(e) { return e.data('derived') ? '#f6ad55' : '#4a5568'; },
-      'target-arrow-color': function(e) { return e.data('derived') ? '#f6ad55' : '#4a5568'; },
-      'label': 'data(label)', 'font-size': 7, 'color': '#4a5568',
-      'line-style': function(e) { return e.data('derived') ? 'dashed' : 'solid'; } }},
-    { selector: ':selected', style: { 'border-color': '#90cdf4', 'border-width': 3 }}
-  ],
-  layout: { name: 'fcose', quality: 'proof', animate: true }
+
+const allEntities = Object.values(nodeMap);
+
+/* ── Collect known entity types for filter pills ─────────── */
+const typeCounts = Object.create(null);
+allEntities.forEach(e => {
+  typeCounts[e.entityType] = (typeCounts[e.entityType] || 0) + 1;
 });
-cy.on('tap', 'node', function(e) {
-  var d = e.target.data();
-  var obs = (d.obs || []).map(function(o) { return '<div>' + o + '</div>'; }).join('');
-  var out = cy.edges().filter(function(r) { return r.data('source') === d.id; }).map(function(r) { return '<div style="color:#68d391">-&gt; ' + r.data('label') + ' -&gt; ' + r.data('target') + '</div>'; }).join('');
-  var inp = cy.edges().filter(function(r) { return r.data('target') === d.id; }).map(function(r) { return '<div style="color:#fc8181">&lt;- ' + r.data('label') + ' &lt;- ' + r.data('source') + '</div>'; }).join('');
-  document.getElementById('info').innerHTML = '<b style="color:#90cdf4">' + d.id + '</b><br><em style="color:#9f7aea">' + d.entityType + '</em><hr>' + obs + out + inp;
+const sortedTypes = Object.entries(typeCounts)
+  .sort(([,a],[,b]) => b - a)
+  .map(([t]) => t);
+
+/* ── State ────────────────────────────────────────────────── */
+let activeFilter = initFilter; // null = show all
+let cy;
+let selectedNodeId = null;
+
+/* ── Build filter pills ───────────────────────────────────── */
+const filtersEl = document.getElementById('filters');
+
+function buildFilterPills() {
+  filtersEl.innerHTML = '';
+
+  // "All" pill
+  const allPill = makePill('All', null, null);
+  filtersEl.appendChild(allPill);
+
+  sortedTypes.forEach(type => {
+    const count = typeCounts[type];
+    const pill = makePill(type, type, nodeColor(type));
+    filtersEl.appendChild(pill);
+  });
+
+  syncPillStates();
+}
+
+function makePill(label, filterValue, color) {
+  const btn = document.createElement('button');
+  btn.className = 'filter-pill';
+  btn.dataset.filter = filterValue ?? '';
+  btn.setAttribute('aria-pressed', 'false');
+
+  const dot = document.createElement('span');
+  dot.className = 'dot';
+  dot.style.background = color || '#8b949e';
+  dot.setAttribute('aria-hidden', 'true');
+
+  const text = document.createElement('span');
+  text.className = 'pill-text';
+  text.textContent = label;
+
+  btn.append(dot, text);
+  btn.addEventListener('click', () => {
+    activeFilter = filterValue;
+    // A1: clear search when switching type filter
+    if (_searchInput) { _searchInput.value = ''; applySearch(''); }
+    applyFilter();
+    syncPillStates();
+    clearSelection();
+  });
+  return btn;
+}
+
+function syncPillStates() {
+  filtersEl.querySelectorAll('.filter-pill').forEach(p => {
+    const fv = p.dataset.filter || null;
+    const active = fv === activeFilter;
+    p.classList.toggle('active', active);
+    p.setAttribute('aria-pressed', String(active));
+    if (active && fv) {
+      p.style.background = nodeColor(fv);
+      p.style.borderColor = nodeColor(fv);
+      p.style.color = '#fff';
+    } else {
+      p.style.background = '';
+      p.style.borderColor = '';
+      p.style.color = '';
+    }
+  });
+}
+
+/* ── Build legend ─────────────────────────────────────────── */
+function buildLegend() {
+  const body = document.getElementById('legend-body');
+  body.innerHTML = '';
+
+  sortedTypes.slice(0, 12).forEach(type => {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.setAttribute('role', 'listitem');
+
+    const sw = document.createElement('span');
+    sw.className = 'swatch';
+    sw.style.background = nodeColor(type);
+    sw.setAttribute('aria-hidden', 'true');
+
+    const lbl = document.createElement('span');
+    lbl.textContent = type;
+
+    item.append(sw, lbl);
+    body.appendChild(item);
+  });
+
+  // Derived edge indicator
+  const derivedItem = document.createElement('div');
+  derivedItem.className = 'legend-item derived';
+  derivedItem.setAttribute('role', 'listitem');
+  derivedItem.innerHTML = `<span class="swatch" aria-hidden="true"></span><span>inferred relation</span>`;
+  body.appendChild(derivedItem);
+}
+
+// Legend collapse/expand
+document.getElementById('legend-toggle').addEventListener('click', function() {
+  const legend = document.getElementById('legend');
+  const expanded = legend.classList.toggle('collapsed');
+  this.textContent = expanded ? '▸' : '▾';
+  this.setAttribute('aria-expanded', String(!expanded));
+  this.setAttribute('aria-label', expanded ? 'Expand legend' : 'Collapse legend');
 });
+
+/* ── Build Cytoscape elements ─────────────────────────────── */
+function buildElements(filter) {
+  const filtered = filter
+    ? allEntities.filter(e => e.entityType === filter)
+    : allEntities;
+
+  const ids = new Set(filtered.map(e => e.name));
+
+  const nodes = filtered.map(e => ({
+    data: {
+      id: e.name,
+      label: e.name.length > 22 ? e.name.slice(0, 20) + '…' : e.name,
+      fullLabel: e.name,
+      entityType: e.entityType,
+      obs: e.observations || [],
+      derived: !!e.derived,
+    }
+  }));
+
+  const edges = relList
+    .filter(r => ids.has(r.from) && ids.has(r.to))
+    .map((r, i) => ({
+      data: {
+        id: 'e' + i,
+        source: r.from,
+        target: r.to,
+        label: r.relationType,
+        derived: !!r.derived,
+      }
+    }));
+
+  return { nodes, edges, ids };
+}
+
+/* ── Cytoscape styles ─────────────────────────────────────── */
+const CY_STYLE = [
+  {
+    selector: 'node',
+    style: {
+      'width': 32,
+      'height': 32,
+      'background-color': n => nodeColor(n.data('entityType')),
+      'border-width': n => n.data('derived') ? 2 : 0,
+      'border-color': '#e3b341',
+      'border-style': 'dashed',
+      'label': 'data(label)',
+      'font-family': '"JetBrains Mono", "Fira Code", ui-monospace, monospace',
+      'font-size': 9,
+      'font-weight': 400,
+      'text-valign': 'bottom',
+      'text-halign': 'center',
+      'text-margin-y': 4,
+      'color': '#8b949e',
+      'text-background-color': '#0d1117',
+      'text-background-opacity': 0.75,
+      'text-background-padding': 2,
+      'text-background-shape': 'roundrectangle',
+      'transition-property': 'border-width, border-color, opacity, background-color',
+      'transition-duration': 150,
+    }
+  },
+  {
+    selector: 'node:selected',
+    style: {
+      'border-width': 3,
+      'border-color': '#58a6ff',
+      'border-style': 'solid',
+      'color': '#e6edf3',
+      'font-size': 10,
+    }
+  },
+  {
+    selector: 'node.hovered',
+    style: {
+      'border-width': 2,
+      'border-color': '#58a6ff',
+      'border-style': 'solid',
+      'color': '#e6edf3',
+      'z-index': 10,
+    }
+  },
+  {
+    selector: 'node.dimmed',
+    style: { 'opacity': 0.2 }
+  },
+  {
+    selector: 'edge',
+    style: {
+      'curve-style': 'bezier',
+      'target-arrow-shape': 'triangle',
+      'arrow-scale': 0.6,
+      'line-color': e => e.data('derived') ? '#e3b341' : '#30363d',
+      'target-arrow-color': e => e.data('derived') ? '#e3b341' : '#30363d',
+      'line-style': e => e.data('derived') ? 'dashed' : 'solid',
+      'line-dash-pattern': [6, 3],
+      'label': 'data(label)',
+      'font-family': '"JetBrains Mono", ui-monospace, monospace',
+      'font-size': 7,
+      'color': '#484f58',
+      'text-rotation': 'autorotate',
+      'text-background-color': '#0d1117',
+      'text-background-opacity': 0.7,
+      'text-background-padding': 2,
+      'text-background-shape': 'roundrectangle',
+      'width': 1,
+      'opacity': 0.8,
+      'transition-property': 'opacity, line-color',
+      'transition-duration': 150,
+    }
+  },
+  {
+    selector: 'edge.highlighted',
+    style: {
+      'line-color': '#58a6ff',
+      'target-arrow-color': '#58a6ff',
+      'opacity': 1,
+      'width': 2,
+      'color': '#8b949e',
+    }
+  },
+  {
+    selector: 'edge.dimmed',
+    style: { 'opacity': 0.06 }
+  },
+  /* A1 — search-match: amber border, full opacity even when dimmed */
+  {
+    selector: 'node.search-match',
+    style: {
+      'border-width': 2.5,
+      'border-color': '#e3b341',
+      'border-style': 'solid',
+      'opacity': 1,
+    }
+  },
+];
+
+/* ── Init graph ───────────────────────────────────────────── */
+function initGraph() {
+  const { nodes, edges } = buildElements(activeFilter);
+
+  cy = cytoscape({
+    container: document.getElementById('cy'),
+    elements: nodes.concat(edges),
+    style: CY_STYLE,
+    layout: { name: 'fcose', quality: 'proof', animate: true, animationDuration: 600 },
+    minZoom: 0.1,
+    maxZoom: 4,
+    wheelSensitivity: 0.3,
+  });
+
+  updateStats(nodes.length, edges.length);
+  checkEmpty(nodes.length);
+
+  /* Node hover */
+  cy.on('mouseover', 'node', e => {
+    e.target.addClass('hovered');
+  });
+  cy.on('mouseout', 'node', e => {
+    e.target.removeClass('hovered');
+  });
+
+  /* Node tap → detail panel */
+  cy.on('tap', 'node', e => {
+    const node = e.target;
+    const d = node.data();
+    selectedNodeId = d.id;
+    highlightNeighbourhood(node);
+    showDetail(d, node);
+  });
+
+  /* Tap canvas background → clear */
+  cy.on('tap', e => {
+    if (e.target === cy) clearSelection();
+  });
+
+  /* Hide loading overlay */
+  const loading = document.getElementById('loading');
+  loading.classList.add('hidden');
+  setTimeout(() => { loading.style.display = 'none'; }, 200);
+}
+
+/* ── Neighbourhood highlight ──────────────────────────────── */
+function highlightNeighbourhood(node) {
+  const neighbourhood = node.closedNeighborhood();
+  cy.elements().addClass('dimmed');
+  neighbourhood.removeClass('dimmed');
+  neighbourhood.edges().addClass('highlighted');
+}
+
+function clearHighlight() {
+  cy.elements().removeClass('dimmed highlighted hovered');
+}
+
+/* ── Apply entity type filter ─────────────────────────────── */
+function applyFilter() {
+  const { nodes, edges, ids } = buildElements(activeFilter);
+
+  cy.startBatch();
+  cy.elements().remove();
+  cy.add(nodes.concat(edges));
+  cy.endBatch();
+
+  cy.layout({ name: 'fcose', quality: 'proof', animate: true, animationDuration: 500 }).run();
+
+  updateStats(nodes.length, edges.length);
+  checkEmpty(nodes.length);
+}
+
+/* ── Stats update ─────────────────────────────────────────── */
+function updateStats(nodeCount, edgeCount) {
+  document.getElementById('stat-nodes').textContent = nodeCount;
+  document.getElementById('stat-edges').textContent = edgeCount;
+
+  const derivedNodeCount = allEntities.filter(e => e.derived).length;
+  const derivedWrap = document.getElementById('stat-derived-wrap');
+  if (derivedNodeCount > 0) {
+    derivedWrap.style.display = 'flex';
+    document.getElementById('stat-derived').textContent = derivedNodeCount;
+  } else {
+    derivedWrap.style.display = 'none';
+  }
+}
+
+/* ── Empty state ──────────────────────────────────────────── */
+function checkEmpty(count) {
+  const es = document.getElementById('empty-state');
+  es.classList.toggle('visible', count === 0);
+}
+
+/* ── Detail panel ─────────────────────────────────────────── */
+function showDetail(d, cyNode) {
+  document.getElementById('panel-placeholder').style.display = 'none';
+
+  const detail = document.getElementById('panel-detail');
+  detail.classList.add('visible');
+
+  // Header
+  document.getElementById('panel-entity-name').textContent = d.fullLabel || d.id;
+  document.getElementById('panel-entity-name').setAttribute('aria-label', 'Entity: ' + (d.fullLabel || d.id));
+
+  const typeDot = document.getElementById('panel-type-dot');
+  typeDot.style.background = nodeColor(d.entityType);
+  document.getElementById('panel-type-label').textContent = d.entityType || 'unknown';
+
+  const derivedBadge = document.getElementById('panel-entity-derived-badge');
+  derivedBadge.classList.toggle('visible', !!d.derived);
+
+  // Observations
+  const obsBody = document.getElementById('obs-body');
+  obsBody.innerHTML = '';
+  const obs = d.obs || [];
+  if (obs.length === 0) {
+    obsBody.innerHTML = '<div class="section-empty">No observations recorded.</div>';
+  } else {
+    obs.forEach(o => {
+      const div = document.createElement('div');
+      div.className = 'obs-item';
+      div.textContent = o;
+      obsBody.appendChild(div);
+    });
+  }
+
+  // Outgoing relations
+  const outBody = document.getElementById('out-body');
+  outBody.innerHTML = '';
+  const outEdges = cyNode.outgoers('edge');
+  if (outEdges.length === 0) {
+    outBody.innerHTML = '<div class="section-empty">No outgoing relations.</div>';
+  } else {
+    outEdges.forEach(edge => {
+      outBody.appendChild(makeRelRow({
+        direction: '→',
+        type: edge.data('label'),
+        target: edge.data('target'),
+        derived: edge.data('derived'),
+        dirClass: 'outgoing',
+      }));
+    });
+  }
+
+  // Incoming relations
+  const inBody = document.getElementById('in-body');
+  inBody.innerHTML = '';
+  const inEdges = cyNode.incomers('edge');
+  if (inEdges.length === 0) {
+    inBody.innerHTML = '<div class="section-empty">No incoming relations.</div>';
+  } else {
+    inEdges.forEach(edge => {
+      inBody.appendChild(makeRelRow({
+        direction: '←',
+        type: edge.data('label'),
+        target: edge.data('source'),
+        derived: edge.data('derived'),
+        dirClass: 'incoming',
+      }));
+    });
+  }
+}
+
+function makeRelRow({ direction, type, target, derived, dirClass }) {
+  const row = document.createElement('div');
+  row.className = 'rel-row ' + dirClass;
+  row.setAttribute('role', 'button');
+  row.setAttribute('tabindex', '0');
+  row.setAttribute('aria-label', direction + ' ' + type + ' ' + target);
+
+  const dirSpan = document.createElement('span');
+  dirSpan.className = 'rel-direction';
+  dirSpan.textContent = direction;
+  dirSpan.setAttribute('aria-hidden', 'true');
+
+  const content = document.createElement('div');
+  content.className = 'rel-row-content';
+
+  const typeEl = document.createElement('div');
+  typeEl.className = 'rel-type';
+  typeEl.textContent = type;
+
+  const targetEl = document.createElement('div');
+  targetEl.className = 'rel-target';
+  targetEl.textContent = target;
+
+  content.append(typeEl, targetEl);
+
+  if (derived) {
+    const tag = document.createElement('div');
+    tag.className = 'rel-derived-tag';
+    tag.textContent = '⟳ inferred';
+    content.appendChild(tag);
+  }
+
+  row.append(dirSpan, content);
+
+  // Click to navigate to that node
+  const navigate = () => {
+    const targetNode = cy.$('#' + CSS.escape(target));
+    if (targetNode.length) {
+      cy.animate({ center: { eles: targetNode }, zoom: Math.max(cy.zoom(), 1.2) }, { duration: 300 });
+      targetNode.emit('tap');
+    }
+  };
+  row.addEventListener('click', navigate);
+  row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') navigate(); });
+
+  return row;
+}
+
+/* ── Clear selection ──────────────────────────────────────── */
+function clearSelection() {
+  selectedNodeId = null;
+  clearHighlight();
+  cy.elements().unselect();
+  document.getElementById('panel-detail').classList.remove('visible');
+  document.getElementById('panel-placeholder').style.display = '';
+}
+
+/* ── Search (A1) ──────────────────────────────────────────── */
+const _searchInput = document.getElementById('search-input');
+const _searchClear = document.getElementById('search-clear');
+const _searchCount = document.getElementById('search-count');
+let   _searchQuery = '';
+
+function applySearch(raw) {
+  _searchQuery = (raw || '').trim().toLowerCase();
+  const active = _searchQuery.length > 0;
+  _searchClear.classList.toggle('visible', active);
+  _searchCount.classList.toggle('visible', active);
+
+  if (!cy) return;
+
+  if (!active) {
+    // Remove inline opacity overrides — class-based styles resume
+    cy.nodes().forEach(n => { n.removeClass('search-match'); n.style('opacity', null); });
+    cy.edges().forEach(e => e.style('opacity', null));
+    _searchCount.textContent = '';
+    return;
+  }
+
+  let hits = 0;
+  const matched = new Set();
+
+  cy.nodes().forEach(n => {
+    const label = (n.data('fullLabel') || n.id()).toLowerCase();
+    if (label.includes(_searchQuery)) {
+      matched.add(n.id());
+      hits++;
+    }
+  });
+
+  // Apply inline opacity — higher priority than class styles
+  cy.nodes().forEach(n => {
+    if (matched.has(n.id())) {
+      n.addClass('search-match');
+      n.style('opacity', 1);
+    } else {
+      n.removeClass('search-match');
+      n.style('opacity', 0.10);
+    }
+  });
+
+  cy.edges().forEach(e => {
+    const srcOk = matched.has(e.data('source'));
+    const tgtOk = matched.has(e.data('target'));
+    e.style('opacity', (srcOk || tgtOk) ? 0.8 : 0.04);
+  });
+
+  _searchCount.textContent = hits + '\u202f/\u202f' + cy.nodes().length;
+}
+
+_searchInput.addEventListener('input', e => applySearch(e.target.value));
+
+_searchClear.addEventListener('click', () => {
+  _searchInput.value = '';
+  applySearch('');
+  _searchInput.focus();
+});
+
+_searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    _searchInput.value = '';
+    applySearch('');
+    _searchInput.blur();
+  }
+});
+
+/* ── Button handlers ──────────────────────────────────────── */
+document.getElementById('btn-fit').addEventListener('click', () => {
+  cy.animate({ fit: { padding: 40 } }, { duration: 300 });
+});
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  cy.layout({ name: 'fcose', quality: 'proof', animate: true, animationDuration: 500 }).run();
+});
+
+/* ── Keyboard shortcuts ───────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  switch (e.key.toUpperCase()) {
+    case 'F':
+      cy && cy.animate({ fit: { padding: 40 } }, { duration: 300 });
+      break;
+    case 'R':
+      cy && cy.layout({ name: 'fcose', quality: 'proof', animate: true, animationDuration: 500 }).run();
+      break;
+    case 'ESCAPE':
+      clearSelection();
+      break;
+    case '/':
+      e.preventDefault();
+      _searchInput.focus();
+      break;
+  }
+});
+
+/* ── Bootstrap ────────────────────────────────────────────── */
+buildFilterPills();
+buildLegend();
+initGraph();
 </script>
 </body>
 </html>

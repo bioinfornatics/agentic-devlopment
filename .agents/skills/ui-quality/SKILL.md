@@ -1,9 +1,13 @@
 ---
 name: ui-quality
 description: >
-  UI quality evaluation: design system token compliance, WCAG 2.2 AA accessibility,
-  keyboard navigation, colour contrast, accessible names, and Core Web Vitals.
-  Load after implementation or for accessibility gate checks.
+  Load when evaluating the visual and technical quality of a rendered UI: design
+  system token compliance, accessibility (WCAG 2.2 AA mandatory browser tests),
+  and Core Web Vitals. Requires browser screenshots or Playwright snapshots as
+  evidence — code inspection alone is insufficient. Enforces [VERIFIED — browser-tested]
+  vs [ASSUMPTION — code-inspection] evidence labelling and an accessibility gate
+  checklist. Use when conducting a UI quality review, QA pass, or preparing an
+  accessibility evidence report for a rendered interface.
 metadata:
   version: 1.0.0
   scope: tactical
@@ -112,7 +116,7 @@ bd create "UI: <finding>" --assignee ui-designer -p 2 --json
 
 ## Beads loop
 
-For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads-harness`.
+For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads`.
 
 Skill-specific commands:
     bd create "UI: <finding>" --assignee ui-designer -p 2    → file design/a11y findings

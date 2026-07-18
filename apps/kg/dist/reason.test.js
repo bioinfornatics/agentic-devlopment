@@ -23,7 +23,7 @@ describe("parseJSONL", () => {
     });
 });
 describe("RULES", () => {
-    it("KG-01: exports 5+ named rules", () => {
+    it("RULES: exports 5+ named rules (R1–R6)", () => {
         expect(RULES.length).toBeGreaterThanOrEqual(5);
         const names = RULES.map(r => r.name);
         expect(names).toContain("R1:ac-test-gap");
@@ -117,6 +117,30 @@ describe("RULES", () => {
         const r5 = RULES.find(r => r.name === "R5:epic-blocked");
         const d = r5.fn(kg, rs);
         // no HAS_STATUS not-implemented in relations, so epic is not blocked
+        expect(d).toHaveLength(0);
+    });
+});
+describe("R6: deprecated-impl-detection", () => {
+    it("R6: feature with one deprecated and one canonical code_file → has-deprecated-impl", () => {
+        const kg = parseJSONL([
+            e("feat-z", "feature"),
+            e("old.ts", "code_file", ["path: old.ts", "status: deprecated"]),
+            e("new.ts", "code_file", ["path: new.ts"]),
+            r("feat-z", "old.ts", "IMPLEMENTED_BY"),
+            r("feat-z", "new.ts", "IMPLEMENTED_BY"),
+        ].join("\n"));
+        const rs = new Set(kg.relations.map(rel => rel.from + "|" + rel.to + "|" + rel.relationType));
+        const d = RULES.find(r => r.name === "R6:deprecated-impl-detection").fn(kg, rs);
+        expect(d.some(x => x.status_value === "has-deprecated-impl")).toBe(true);
+    });
+    it("R6: feature with only one non-deprecated code_file → no gap", () => {
+        const kg = parseJSONL([
+            e("feat-ok", "feature"),
+            e("ok.ts", "code_file", ["path: ok.ts"]),
+            r("feat-ok", "ok.ts", "IMPLEMENTED_BY"),
+        ].join("\n"));
+        const rs = new Set(kg.relations.map(rel => rel.from + "|" + rel.to + "|" + rel.relationType));
+        const d = RULES.find(r => r.name === "R6:deprecated-impl-detection").fn(kg, rs);
         expect(d).toHaveLength(0);
     });
 });

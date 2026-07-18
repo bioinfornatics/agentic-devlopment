@@ -2,7 +2,7 @@
   {
     "skills": [
       "sdd",
-      "beads-harness"
+      "beads"
     ],
     "query": "Plan support for a security-review recipe in this harness using SDD. Do not implement yet; produce the spec slice, acceptance criteria, risks, and Beads graph.",
     "files": [

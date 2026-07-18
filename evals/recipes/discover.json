@@ -1,5 +1,12 @@
 [
   {
+    "agents": [
+      "product-owner"
+    ],
+    "skills": [
+      "sdd",
+      "agentic-devlopment"
+    ],
     "query": "Discover a new feature: 'add Bruno API test collection support to the verify recipe'. Assess scope, produce problem statement and user stories.",
     "files": [
       ".goose/recipes/verify.yaml",
@@ -23,6 +30,13 @@
     ]
   },
   {
+    "agents": [
+      "product-owner"
+    ],
+    "skills": [
+      "sdd",
+      "agentic-devlopment"
+    ],
     "query": "Discover the requirements for a 'parallel skill eval runner' feature. Run the 9-dimension implicit-requirement sweep and produce the discovery document.",
     "files": [
       "scripts/run-skill-ab-suite.py",
@@ -46,6 +60,13 @@
     ]
   },
   {
+    "agents": [
+      "product-owner"
+    ],
+    "skills": [
+      "sdd",
+      "agentic-devlopment"
+    ],
     "query": "Discover requirements for splitting the 'verify' recipe into type-specific sub-workflows. Identify ambiguities, run the implicit-requirement sweep, and produce a Beads epic with dependency-ordered stories.",
     "files": [
       ".goose/recipes/verify.yaml",

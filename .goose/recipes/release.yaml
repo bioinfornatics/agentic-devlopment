@@ -5,11 +5,11 @@ instructions: |
   You orchestrate gated release with CI waits and rollback documentation.
 
   Explicit routing for this recipe:
-  - load skills agentic-dev-harness  (quality gates, Beads gate protocol)
+  - load skills agentic-devlopment  (quality gates, Beads gate protocol)
   - In-session agent: load agent principal-engineer
   - Durable assignment: `bd create "Release gate: <version>" --assignee principal-engineer -p 1 --json`
 
-  load skills agentic-dev-harness first, then run the `release` subrecipe.
+  load skills agentic-devlopment first, then run the `release` subrecipe.
   Stop on first gate FAIL — do not proceed past a failed gate.
 
   Loop cycle: run `bd prime` to orient before any work, `bd ready --json` to triage,
@@ -81,7 +81,7 @@ prompt: |
   Wait for their reply and use it as the task for all subsequent steps. Do not call any tool until you have it.
 
   Step 1 — First visible output: state release target, current git status, gate plan.
-  Step 2 — Orient: load skill agentic-dev-harness. Run bd prime and bd ready --json.
+  Step 2 — Orient: load skill agentic-devlopment. Run bd prime and bd ready --json.
   Step 3 — Pre-release gate: verify all beads closed, tests pass, git clean, version bumped.
   Step 4 — Execute release: use release subrecipe.
   Step 5 — Post-release: verify deployed artifact, run smoke test, close release bead.

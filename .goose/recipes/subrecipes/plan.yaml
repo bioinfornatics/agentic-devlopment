@@ -6,7 +6,7 @@ description: Convert a goal into a Beads-backed executable implementation graph.
 instructions: |
   ## Load skills first
   load skills sdd  — requirement traceability, auto-sizing, duplicate-check protocol.
-  load skills beads-harness  — Beads commands, dependency semantics, planning protocol.
+  load skills beads  — Beads commands, dependency semantics, planning protocol.
 
   ## First visible output
   Before any tool call:

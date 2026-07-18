@@ -1,10 +1,12 @@
 ---
 name: cognitive-ux
 description: >
-  Cognitive psychology applied to UX: Laws of UX (Hick, Fitts, Jakob, Miller,
-  Gestalt, Peak-End Rule), cognitive biases, mental models, attention and memory
-  patterns. Load when designing interactions, justifying UX decisions, analysing
-  user behaviour, or evaluating why an interface causes confusion or frustration.
+  Load when evaluating usability, designing user flows, or explaining why users
+  struggle with an interface using cognitive psychology evidence. Provides Laws of
+  UX quick-reference (Hick, Fitts, Jakob, Miller, Gestalt, Peak-End, Von Restorff,
+  Doherty) and cognitive bias analysis (anchoring, choice overload, framing, loss
+  aversion). Use when auditing UX quality, making design decisions that affect
+  cognitive load, or justifying design choices with research-backed principles.
 metadata:
   author: phazurlabs (adapted for harness)
   upstream: https://github.com/phazurlabs/ux-ui-mastery/tree/main/skills/cognitive-psychology-ux

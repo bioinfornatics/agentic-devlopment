@@ -64,7 +64,7 @@ pandoc "${DOCS[@]}" \
   -o "$HTML_OUT"
 
 # WCAG: wrap body content in <main> landmark + fix lang attr
-python3 scripts/wcag-postprocess.py "$HTML_OUT"
+python3 .agents/skills/wcag-accessibility-audit/scripts/wcag-postprocess.py "$HTML_OUT"
 
 cp "$HTML_OUT" "$HTML_INDEX"
 

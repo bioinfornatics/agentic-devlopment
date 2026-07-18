@@ -2,7 +2,7 @@
   {
     "run_id": "dd8bf6428b853574",
     "kind": "skills",
-    "subject": "agentic-dev-harness",
+    "subject": "agentic-devlopment",
     "content_hash": "dd8bf6428b853574",
     "git_commit": "7ff1f7c6ba95eaffd10ad701e6f631ea8ee677bc",
     "git_dirty": 1,
@@ -128,7 +128,7 @@
   {
     "run_id": "09cf746fa6d32418",
     "kind": "skills",
-    "subject": "beads-harness",
+    "subject": "beads",
     "content_hash": "09cf746fa6d32418",
     "git_commit": "7ff1f7c6ba95eaffd10ad701e6f631ea8ee677bc",
     "git_dirty": 1,
@@ -630,7 +630,7 @@
   {
     "run_id": "dd8bf6428b853574",
     "kind": "skills",
-    "subject": "agentic-dev-harness",
+    "subject": "agentic-devlopment",
     "content_hash": "dd8bf6428b853574",
     "git_commit": "4d936c64c0399e4a33902df75734da695203ec79",
     "git_dirty": 1,
@@ -756,7 +756,7 @@
   {
     "run_id": "c1f6b6d838a3dc0b",
     "kind": "skills",
-    "subject": "beads-harness",
+    "subject": "beads",
     "content_hash": "c1f6b6d838a3dc0b",
     "git_commit": "4d936c64c0399e4a33902df75734da695203ec79",
     "git_dirty": 1,
@@ -1311,7 +1311,7 @@
   {
     "run_id": "d14609fafe07b784",
     "kind": "skills",
-    "subject": "agentic-dev-harness",
+    "subject": "agentic-devlopment",
     "content_hash": "d14609fafe07b784",
     "git_commit": "4ffd1db6f30e2418e525ff99f311a50e33b03685",
     "git_dirty": 1,
@@ -1613,7 +1613,7 @@
   {
     "run_id": "53e45302adb64756",
     "kind": "skills",
-    "subject": "agentic-dev-harness",
+    "subject": "agentic-devlopment",
     "content_hash": "53e45302adb64756",
     "git_commit": "0a79c0e3f43dafc0e4c26dacf4fa238f65a85258",
     "git_dirty": 1,
@@ -1690,7 +1690,7 @@
   {
     "run_id": "b85b8587526ce1b0",
     "kind": "skills",
-    "subject": "beads-harness",
+    "subject": "beads",
     "content_hash": "b85b8587526ce1b0",
     "git_commit": "1e91e5fc9fde20116b30b66a0b17a3abebba42cd",
     "git_dirty": 1,
@@ -2092,7 +2092,7 @@
   {
     "run_id": "16f600b3476e8bce",
     "kind": "skills",
-    "subject": "agentic-dev-harness",
+    "subject": "agentic-devlopment",
     "content_hash": "16f600b3476e8bce",
     "git_commit": "b6ad881ffba0b91731e891530a94e09ace597ddd",
     "git_dirty": 1,
@@ -2165,7 +2165,7 @@
   {
     "run_id": "ca96f39e3615f761",
     "kind": "skills",
-    "subject": "beads-harness",
+    "subject": "beads",
     "content_hash": "ca96f39e3615f761",
     "git_commit": "b6ad881ffba0b91731e891530a94e09ace597ddd",
     "git_dirty": 1,
@@ -2238,7 +2238,7 @@
   {
     "run_id": "e2923f65bc268bde",
     "kind": "skills",
-    "subject": "agentic-dev-harness",
+    "subject": "agentic-devlopment",
     "content_hash": "e2923f65bc268bde",
     "git_commit": "44ce3227356d906baf1a8a47e303eda223f537d3",
     "git_dirty": 1,
@@ -2477,7 +2477,7 @@
   {
     "run_id": "d323a5525567f4df",
     "kind": "skills",
-    "subject": "beads-harness",
+    "subject": "beads",
     "content_hash": "d323a5525567f4df",
     "git_commit": "44ce3227356d906baf1a8a47e303eda223f537d3",
     "git_dirty": 1,
@@ -3691,7 +3691,7 @@
   {
     "run_id": "e2923f65bc268bde",
     "kind": "skills",
-    "subject": "agentic-dev-harness",
+    "subject": "agentic-devlopment",
     "content_hash": "e2923f65bc268bde",
     "git_commit": "a185d1ce2048d0e0c08039eb8611ab6ad17b70bd",
     "git_dirty": 1,
@@ -3947,7 +3947,7 @@
   {
     "run_id": "d323a5525567f4df",
     "kind": "skills",
-    "subject": "beads-harness",
+    "subject": "beads",
     "content_hash": "d323a5525567f4df",
     "git_commit": "1b327019c9784fa9050a9cbd566a32ec92fb3368",
     "git_dirty": 1,
@@ -4132,7 +4132,7 @@
   {
     "run_id": "e2923f65bc268bde",
     "kind": "skills",
-    "subject": "agentic-dev-harness",
+    "subject": "agentic-devlopment",
     "content_hash": "e2923f65bc268bde",
     "git_commit": "1b327019c9784fa9050a9cbd566a32ec92fb3368",
     "git_dirty": 1,
@@ -5585,7 +5585,7 @@
   {
     "run_id": "d323a5525567f4df",
     "kind": "skills",
-    "subject": "beads-harness",
+    "subject": "beads",
     "content_hash": "d323a5525567f4df",
     "git_commit": "ef59704851683dad349589c8c8cd1f0807bb5690",
     "git_dirty": 1,
@@ -5770,7 +5770,7 @@
   {
     "run_id": "e2923f65bc268bde",
     "kind": "skills",
-    "subject": "agentic-dev-harness",
+    "subject": "agentic-devlopment",
     "content_hash": "e2923f65bc268bde",
     "git_commit": "ef59704851683dad349589c8c8cd1f0807bb5690",
     "git_dirty": 1,

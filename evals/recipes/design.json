@@ -1,5 +1,14 @@
 [
   {
+    "agents": [
+      "ux-researcher",
+      "ui-designer"
+    ],
+    "skills": [
+      "ux-quality",
+      "ui-quality",
+      "webapp-testing"
+    ],
     "query": "Run a UX quality review of the generated documentation site in `dist/docs/html/index.html`.",
     "files": [
       "dist/docs/html/index.html",
@@ -8,12 +17,12 @@
     ],
     "max_turns": 500,
     "difficulty": "normal",
-    "expected_skill_contribution": "The design recipe should apply the 8-dimension evaluation stack in order, require browser evidence before findings, and rank issues by user impact \u2014 not just aesthetic preference.",
+    "expected_skill_contribution": "The design recipe should apply the 8-dimension evaluation stack in order, require browser evidence before findings, and rank issues by user impact — not just aesthetic preference.",
     "fixture_intent": "A built documentation site with its source docs and stylesheet; the agent must evaluate the rendered site through the 8-dimension stack and rank findings by user impact rather than by ease of detection.",
     "baseline_gaps": [
       "gives generic aesthetic feedback without the 8-dimension structure",
-      "no browser evidence \u2014 states findings from file inspection alone",
-      "no impact ranking \u2014 lists issues in discovery order, not by user impact"
+      "no browser evidence — states findings from file inspection alone",
+      "no impact ranking — lists issues in discovery order, not by user impact"
     ],
     "expected_behavior": [
       "evaluates at least 5 of the 8 dimensions in order (User Intent, IA, Interaction States, Visual, Design System, Accessibility, Performance, Evidence)",
@@ -23,6 +32,15 @@
     ]
   },
   {
+    "agents": [
+      "ux-researcher",
+      "ui-designer"
+    ],
+    "skills": [
+      "ux-quality",
+      "ui-quality",
+      "webapp-testing"
+    ],
     "query": "Audit the harness documentation navigation and contributor onboarding path for accessibility and information architecture issues.",
     "files": [
       "README.md",
@@ -35,8 +53,8 @@
     "expected_skill_contribution": "The recipe should focus on navigation IA and accessibility (not broad visual audit), test keyboard navigation with browser tooling, and provide exact element locations for findings.",
     "fixture_intent": "The documentation entry points (README, INSTALL, index, rendered site) as the onboarding path; the agent must evaluate navigation IA and keyboard accessibility specifically, not perform a broad visual audit.",
     "baseline_gaps": [
-      "broad visual review without keyboard test \u2014 no Tab navigation exercised",
-      "no exact element locations \u2014 findings reference sections loosely without file/element specificity",
+      "broad visual review without keyboard test — no Tab navigation exercised",
+      "no exact element locations — findings reference sections loosely without file/element specificity",
       "mixes a11y blockers with cosmetic nits without severity labels"
     ],
     "expected_behavior": [
@@ -47,6 +65,15 @@
     ]
   },
   {
+    "agents": [
+      "ux-researcher",
+      "ui-designer"
+    ],
+    "skills": [
+      "ux-quality",
+      "ui-quality",
+      "webapp-testing"
+    ],
     "query": "Evaluate `docs/assets/site.css` as a design system surface: tokens, variants, accessibility states, consistency, and regression risk.",
     "files": [
       "docs/assets/site.css",
@@ -57,9 +84,9 @@
     "expected_skill_contribution": "The recipe should evaluate CSS as a design-system (not just visual appearance): token naming, variant coverage, accessibility states (focus/hover/disabled), theming, and propose Beads follow-ups.",
     "fixture_intent": "The site CSS and rendered HTML as a design-system surface; the agent must evaluate token naming, variant coverage, and accessibility states structurally rather than commenting on visual aesthetics.",
     "baseline_gaps": [
-      "reviews visual appearance only \u2014 no evaluation of token structure or naming conventions",
-      "ignores accessibility states \u2014 does not assess focus, hover, or disabled CSS rules",
-      "no follow-up beads \u2014 identifies issues without proposing `bd create` commands"
+      "reviews visual appearance only — no evaluation of token structure or naming conventions",
+      "ignores accessibility states — does not assess focus, hover, or disabled CSS rules",
+      "no follow-up beads — identifies issues without proposing `bd create` commands"
     ],
     "expected_behavior": [
       "evaluates token naming, variant coverage, and accessibility states (focus, hover, disabled) from the CSS",

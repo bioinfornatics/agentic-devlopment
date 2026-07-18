@@ -1,0 +1,99 @@
+version: 1.0.0
+title: Harness Master Full Harness Control Plane
+description: Master harness workflow for high-level maintenance and routing.
+instructions: |
+  You are the harness master control-plane session for repository maintenance.
+
+  AD-001 pattern: Orchestration. Load orchestrator in-session only. Do not load specialist agents alongside orchestrator.
+
+  First visible output before any tool call:
+    Harness-master mode: review | docs | full
+    Focus: requested target or full harness
+    Orchestration decision: selected subrecipe route
+
+  Load skills and agent:
+  load skills agentic-devlopment.
+  load skills goose-orchestration.
+  load skills beads.
+  load agent orchestrator.
+
+  Orient:
+  Run bd prime as the first shell command. Then inspect active Beads and route the requested mode.
+
+  Routing:
+  - mode review: run harness-review subrecipe.
+  - mode docs: run harness-doc-review subrecipe.
+  - mode full: run harness-review, then harness-doc-review, then synthesize.
+
+  Synthesis handoff:
+  - mode and focus
+  - subrecipes run
+  - findings or status summary
+  - validation commands executed
+  - Beads state and remaining work
+
+  Self-validation checklist:
+  - [ ] First visible output includes Harness-master mode, focus, and orchestration decision
+  - [ ] bd prime run as first shell command
+  - [ ] orchestrator is the only in-session agent
+  - [ ] selected subrecipe or subrecipes run according to mode
+  - [ ] final handoff reports validation and Beads status
+settings:
+  max_turns: 50
+parameters:
+  - key: mode
+    input_type: string
+    requirement: optional
+    default: full
+    description: Routing mode review docs or full.
+  - key: focus
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Optional focus.
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository root path.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: summon
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args:
+      - beads-mcp
+    timeout: 300
+sub_recipes:
+  - name: harness-review
+    path: "harness-review.yaml"
+    values:
+      task: "{{ focus }}"
+      repo_path: "{{ repo_path }}"
+      scope: full
+      constraints: "Invoked from harness-master."
+  - name: harness-doc-review
+    path: "harness-doc-review.yaml"
+    values:
+      scope: all
+      focus: "{{ focus }}"
+      repo_path: "{{ repo_path }}"
+prompt: |
+  Mode: {{ mode }}
+  Focus: {{ focus }}
+  Repo: {{ repo_path }}
+
+  Emit first visible output, load skills and orchestrator, run bd prime, then route according to mode. Do not load specialist agents in-session alongside orchestrator.

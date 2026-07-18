@@ -77,8 +77,8 @@ Editor shortcuts:
 
 ## Files
 
-- `agentic-dev-harness.json`
-- `beads-harness.json`
+- `agentic-devlopment.json`
+- `beads.json`
 - `code-review.json`
 - `goose-orchestration.json`
 - `sdd.json`

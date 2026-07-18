@@ -1,5 +1,13 @@
 [
   {
+    "agents": [
+      "architect",
+      "tdd-guide"
+    ],
+    "skills": [
+      "sdd",
+      "beads"
+    ],
     "query": "Write the formal spec for 'Bruno API test support in verify recipe'. Produce WHEN/THEN/SHALL acceptance criteria with [FEAT]-NN IDs.",
     "files": [
       ".goose/recipes/verify.yaml",
@@ -23,6 +31,14 @@
     ]
   },
   {
+    "agents": [
+      "architect",
+      "tdd-guide"
+    ],
+    "skills": [
+      "sdd",
+      "beads"
+    ],
     "query": "Write a formal spec for the parallel eval runner feature, validating ACs with architect (feasibility) and tdd-guide (testability). Run the spec closure gate.",
     "files": [
       "scripts/run-skill-ab-suite.py",
@@ -46,6 +62,14 @@
     ]
   },
   {
+    "agents": [
+      "architect",
+      "tdd-guide"
+    ],
+    "skills": [
+      "sdd",
+      "beads"
+    ],
     "query": "Spec the full SDD+TDD cycle for recipe eval coverage: write spec.md, create Beads stories for all 3 phases (spec, implement, review), store pointer memory.",
     "files": [
       "evals/recipes/",

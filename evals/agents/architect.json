@@ -1,15 +1,19 @@
 [
   {
+    "skills": [
+      "sdd",
+      "agentic-devlopment"
+    ],
     "query": "Design the caching strategy for the Beads dependency graph in this harness. Propose options and recommend one.",
     "files": [
       ".beads/",
-      ".agents/skills/beads-harness/SKILL.md",
+      ".agents/skills/beads/SKILL.md",
       "AGENTS.md"
     ],
     "max_turns": 500,
     "difficulty": "normal",
     "expected_skill_contribution": "The architect should propose at least 2 alternatives with a trade-off table, recommend the simplest design that meets requirements, and produce a draft ADR — baseline gives one solution without alternatives.",
-    "fixture_intent": "Beads data files and the beads-harness skill are present so the architect can ground alternatives in actual data shapes and access patterns rather than pure speculation.",
+    "fixture_intent": "Beads data files and the beads skill are present so the architect can ground alternatives in actual data shapes and access patterns rather than pure speculation.",
     "baseline_gaps": [
       "Proposes only one caching solution without considering alternatives or explaining why others were rejected.",
       "Presents analysis as prose paragraphs rather than a structured trade-off table with Option/Pros/Cons/Complexity/Recommended columns.",
@@ -23,6 +27,10 @@
     ]
   },
   {
+    "skills": [
+      "sdd",
+      "agentic-devlopment"
+    ],
     "query": "Design the agent routing mechanism for the harness: how should user intent automatically map to the right specialist agent?",
     "files": [
       ".agents/agents/",
@@ -46,6 +54,10 @@
     ]
   },
   {
+    "skills": [
+      "sdd",
+      "agentic-devlopment"
+    ],
     "query": "Review the full harness architecture after the agent roster overhaul. Identify technical debt, scalability risks, and propose the next architectural iteration.",
     "files": [
       ".agents/agents/",

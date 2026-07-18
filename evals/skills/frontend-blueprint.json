@@ -1,0 +1,74 @@
+[
+  {
+    "skills": [
+      "frontend-blueprint"
+    ],
+    "query": "Gather all requirements before building a new skill-evaluation summary component for the harness eval report. Follow the full Frontend Blueprint discovery protocol and produce a design direction statement.",
+    "files": [
+      "dist/evals/report/index.html",
+      "docs/16-eval-analysis.md"
+    ],
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The frontend-blueprint skill enforces the BRIEFING → REFERENCES → DESIGN DIRECTION workflow and prevents code generation without discovery.",
+    "baseline_gaps": [
+      "Agent immediately proposes a component design or code without completing BRIEFING and REFERENCES phases.",
+      "Agent accepts vague requirements ('show eval results') without challenging them.",
+      "Agent does not produce a Design Direction Statement before any technical proposal."
+    ],
+    "expected_behavior": [
+      "Completes the BRIEFING phase: asks the five discovery questions (problem, user, success, constraints, out-of-scope) and challenges vague answers.",
+      "Requires at least one visual reference before proceeding to DESIGN DIRECTION — does not accept 'just make it look good'.",
+      "Produces a Design Direction Statement: aesthetic commitment, typography, spacing density, and interaction style.",
+      "Does not write a single line of code until the DESIGN DIRECTION phase is complete and approved."
+    ]
+  },
+  {
+    "skills": [
+      "frontend-blueprint"
+    ],
+    "query": "Conduct the full Frontend Blueprint workflow for the harness knowledge graph visualizer redesign. Complete all six phases (BRIEFING → REFERENCES → DESIGN DIRECTION → EXECUTION PLAN → ATOMIC BUILD → REVIEW) and produce a phased delivery plan.",
+    "files": [
+      "apps/kg-visualizer/README.md",
+      "docs/knowledge-graph.md"
+    ],
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The skill enforces all six phases in order, produces an Execution Plan with atomic delivery units, and gates code on design approval.",
+    "baseline_gaps": [
+      "Agent skips directly to EXECUTION PLAN without completing REFERENCES and DESIGN DIRECTION.",
+      "Agent proposes the full redesign in one delivery unit rather than atomic pieces.",
+      "Agent does not gate the ATOMIC BUILD phase on DESIGN DIRECTION approval."
+    ],
+    "expected_behavior": [
+      "Completes all six phases in strict order, with explicit phase boundary markers.",
+      "Produces an Execution Plan that breaks the redesign into the smallest meaningful atomic delivery units.",
+      "States explicitly that ATOMIC BUILD cannot begin without DESIGN DIRECTION approval.",
+      "In the REVIEW phase, validates each atomic unit against the Design Direction Statement before proposing the next unit."
+    ]
+  },
+  {
+    "skills": [
+      "frontend-blueprint"
+    ],
+    "query": "Apply the Frontend Blueprint to audit the existing harness documentation site, identify where the current design deviates from best practices, and produce a complete refactor brief that implementation-worker can execute atomically.",
+    "files": [
+      "docs/assets/site.css",
+      "dist/docs/html/agentic-development-harness.html"
+    ],
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The skill applies opinionated guidance to an existing design, identifies principle violations, and produces an atomic refactor plan rather than a bulk rewrite.",
+    "baseline_gaps": [
+      "Agent produces a list of improvements without applying the Frontend Blueprint's opinionated guidance principles.",
+      "Agent proposes a bulk rewrite rather than an atomic refactor plan.",
+      "Agent does not validate the existing design against a Design Direction Statement (requiring one to be derived from the current state)."
+    ],
+    "expected_behavior": [
+      "Derives a Design Direction Statement from the existing design before identifying deviations.",
+      "Applies the Fidelity over Speed principle: identifies the deviations with highest rework risk if left unfixed.",
+      "Produces a refactor brief broken into atomic units, each independently releasable.",
+      "States which elements of the existing design are correct and should NOT be changed — applying the 'opinionated guidance' principle both ways."
+    ]
+  }
+]

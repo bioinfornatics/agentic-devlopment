@@ -1,5 +1,9 @@
 [
   {
+    "skills": [
+      "beads",
+      "sdd"
+    ],
     "query": "Implement the simplest open Beads issue. Claim it, make the minimal change, validate, and hand off.",
     "files": [
       ".beads/issues.jsonl",
@@ -23,6 +27,10 @@
     ]
   },
   {
+    "skills": [
+      "beads",
+      "sdd"
+    ],
     "query": "Implement the scoped change to `.goose/recipes/review.yaml` using TDD. Write failing test first, then implement, then validate recipe.",
     "files": [
       ".goose/recipes/review.yaml",
@@ -45,6 +53,10 @@
     ]
   },
   {
+    "skills": [
+      "beads",
+      "sdd"
+    ],
     "query": "Implement the scoped skill update to `.agents/skills/code-review/SKILL.md`. Discovered work must be filed as a follow-up bead, not done inline. Full handoff required.",
     "files": [
       ".agents/skills/code-review/SKILL.md",

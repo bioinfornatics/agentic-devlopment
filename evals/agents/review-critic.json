@@ -1,5 +1,8 @@
 [
   {
+    "skills": [
+      "code-review"
+    ],
     "query": "Review the current diff in the harness. Focus on correctness and Beads hygiene.",
     "files": [
       ".goose/recipes/",
@@ -23,6 +26,9 @@
     ]
   },
   {
+    "skills": [
+      "code-review"
+    ],
     "query": "Review `.agents/skills/code-review/SKILL.md` changes. Report findings with proof for any HIGH severity issues.",
     "files": [
       ".agents/skills/code-review/SKILL.md"
@@ -44,6 +50,9 @@
     ]
   },
   {
+    "skills": [
+      "code-review"
+    ],
     "query": "Review a multi-surface diff touching recipes, skills, and agents. Produce a severity-ranked report with Beads hygiene check and follow-up proposals.",
     "files": [
       ".goose/recipes/review.yaml",

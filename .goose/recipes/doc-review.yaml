@@ -25,8 +25,8 @@ instructions: |
   | Memory pointers  | bd memories (live) or referenced in docs | "read when" trigger, canonical source, <250 chars  |
 
   ## Skill and agent routing
-  - load skills agentic-dev-harness   (orientation, Beads workflow)
-  - load skills beads-harness         (memory pointer format rules)
+  - load skills agentic-devlopment   (orientation, Beads workflow)
+  - load skills beads         (memory pointer format rules)
   - Delegate doc-review subrecipe     (isolated scan worker)
   - In-session escalation: load agent review-critic (when recipe/skill has CRITICAL finding)
 
@@ -50,7 +50,7 @@ instructions: |
   - A "## Load next" or progressive-disclosure section (if it references other skills)
   Check that every skill referenced in a recipe's instructions exists on disk.
 
-  ### Memory pointer format (from beads-harness skill)
+  ### Memory pointer format (from beads skill)
   For each `bd remember` call found in docs or skills:
   - Value must contain "read when <trigger>" (not "read before", not "read always")
   - Value must contain "canonical source is <file>#<section>"
@@ -92,7 +92,7 @@ instructions: |
   - [ ] First visible output declared (scope + focus + approach)
   - [ ] bd prime run before any inspection
   - [ ] All recipes validated with `goose recipe validate`
-  - [ ] Memory pointer format checked against beads-harness rules
+  - [ ] Memory pointer format checked against beads rules
   - [ ] Internal cross-references verified
   - [ ] Findings severity-ranked
   - [ ] Proposed Beads follow-up commands included for CRITICAL/HIGH findings
@@ -177,7 +177,7 @@ prompt: |
   before any tool call.
 
   ## Step 2 — Orient
-  load skills agentic-dev-harness. load skills beads-harness.
+  load skills agentic-devlopment. load skills beads.
   Run `bd prime`, then `bd ready --json`, then `bd memories documentation`.
 
   ## Step 3 — Run doc-review subrecipe

@@ -1,0 +1,77 @@
+[
+  {
+    "skills": [
+      "agentic-ux"
+    ],
+    "query": "Evaluate the trust-calibration design of the orchestrator agent. Does its spec communicate what the agent can do autonomously, where it needs confirmation, and how users can interrupt or redirect it?",
+    "files": [
+      ".agents/agents/orchestrator.md"
+    ],
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The agentic-ux skill should apply transparent-autonomy and graduated-trust-calibration principles, identifying missing interruption points and unclear scope declarations.",
+    "baseline_gaps": [
+      "Agent lists capabilities but does not evaluate from a delegation-UX perspective.",
+      "Agent misses the distinction between confirmation-required flows and auto-approved actions.",
+      "Agent does not flag the absence of a visible stop/redirect mechanism in the spec."
+    ],
+    "expected_behavior": [
+      "Applies the Transparent Autonomy principle: identifies whether the spec surfaces what the agent accesses, why, and what its current goal is.",
+      "Applies Graduated Trust Calibration: distinguishes low-risk auto-approved actions from high-stakes gate conditions.",
+      "Identifies missing Meaningful Interruption Points — whether the spec describes checkpoints where users can pause and redirect.",
+      "Produces a prioritised list of agentic UX gaps, not a generic capability summary."
+    ]
+  },
+  {
+    "skills": [
+      "agentic-ux"
+    ],
+    "query": "Review the delegation UX patterns in the dev.yaml and sdd.yaml recipes. Do they give users sufficient visibility into what will happen before execution begins, and appropriate control during multi-step workflows?",
+    "files": [
+      ".goose/recipes/dev.yaml",
+      ".goose/recipes/sdd.yaml"
+    ],
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The agentic-ux skill adds the Agent Era interaction model: goal delegation + outcome review, First Visible Output as trust anchor, and Appropriate Abstraction Level to avoid overwhelming users.",
+    "baseline_gaps": [
+      "Agent evaluates recipes as workflow specs without framing them as delegation UX artifacts.",
+      "Agent misses that the 'First Visible Output' requirement is an agentic trust mechanism, not just formatting.",
+      "Agent does not evaluate whether the orchestration complexity is appropriately abstracted from the user."
+    ],
+    "expected_behavior": [
+      "Identifies the First Visible Output blocks as a Transparent Autonomy mechanism and evaluates whether they communicate enough for the user to trust the plan.",
+      "Applies the Appropriate Abstraction Level principle: checks whether orchestration details visible to developers are unnecessarily surfaced to end users.",
+      "Evaluates Graceful Degradation: does each recipe describe what happens when a delegated sub-agent fails?",
+      "Produces specific gap findings tied to named agentic UX principles, not generic review comments."
+    ]
+  },
+  {
+    "skills": [
+      "agentic-ux"
+    ],
+    "query": "Audit the complete harness recipe interaction model across the SDD loop (discover → spec → plan → implement → review → verify) for agentic UX coherence. Identify where the user's role shifts from supervisor to operator and back, and whether the interface model matches each phase.",
+    "files": [
+      ".goose/recipes/discover.yaml",
+      ".goose/recipes/spec.yaml",
+      ".goose/recipes/plan.yaml",
+      ".goose/recipes/implement.yaml",
+      ".goose/recipes/review.yaml",
+      ".goose/recipes/verify.yaml"
+    ],
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The agentic-ux skill applies all five core principles across a six-phase workflow, maps the interaction model to the Three Eras framework, and identifies phase-level UX coherence gaps.",
+    "baseline_gaps": [
+      "Agent evaluates each recipe independently without mapping the user's role progression across phases.",
+      "Agent does not apply the Three Eras framework to identify where interaction models mismatch task complexity.",
+      "Agent misses cross-phase Peak-End Rule application — the overall SDD loop experience lacks a designed memorable peak and clean exit."
+    ],
+    "expected_behavior": [
+      "Maps each SDD phase to the correct interaction model (Copilot Era for spec/review, Agent Era for implement/verify) and flags mismatches.",
+      "Applies all five core agentic UX principles across the six-phase loop, not just the most obvious one.",
+      "Identifies the overall loop's Peak-End Rule design: which phase creates the 'peak moment' of confidence, and whether the release phase provides a clean exit.",
+      "Produces a cross-phase coherence matrix with specific recipe-level recommendations."
+    ]
+  }
+]

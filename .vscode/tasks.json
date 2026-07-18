@@ -2,302 +2,221 @@
   "version": "2.0.0",
   "inputs": [
     {
-      "id": "skillEvalSubset",
+      "id": "skillsSubset",
       "type": "promptString",
-      "description": "Skill subset, e.g. code-review sdd. Leave empty for full suite.",
-      "default": ""
+      "description": "Space-separated skill names, e.g. code-review sdd.",
+      "default": "code-review"
     },
     {
-      "id": "skillEvalReviewSkill",
+      "id": "skillReview",
       "type": "promptString",
-      "description": "Skill to open review for, e.g. code-review or sdd.",
+      "description": "Skill name to open review for, e.g. code-review.",
       "default": "code-review"
     },
     {
       "id": "featureName",
       "type": "promptString",
-      "description": "Feature name (e.g. user-auth, checkout-flow)",
+      "description": "Feature name, e.g. user-auth checkout-flow.",
       "default": "my-feature"
     },
     {
-      "id": "recipeEvalSubject",
+      "id": "recipeSubject",
       "type": "promptString",
-      "description": "Recipe to eval (review, implement, discover, spec, plan, verify…)",
+      "description": "Recipe name, e.g. review implement discover spec plan verify.",
       "default": "review"
     },
     {
-      "id": "recipeEvalSubset",
+      "id": "agentSubject",
       "type": "promptString",
-      "description": "Space-separated recipes (e.g. review implement discover)",
-      "default": "review implement"
+      "description": "Agent name, e.g. review-critic tdd-guide architect.",
+      "default": "review-critic"
     },
     {
-      "id": "agentEvalSubject",
+      "id": "evalHubRunId",
       "type": "promptString",
-      "description": "Agent to eval (review-critic, tdd-guide, architect…)",
-      "default": "review-critic"
+      "description": "Layered run ID to resume, e.g. 20260718T111747Z.",
+      "default": ""
     }
   ],
   "tasks": [
     {
-      "label": "Eval: Full A/B Suite",
-      "detail": "Sequential (max-workers=1). Uses gooseEvalCli from settings.",
+      "label": "Eval: Skills — All",
+      "detail": "eval-hub · L1 vs L0 · all 18 skills · 5 workers · ambient",
       "type": "shell",
-      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 1 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "command": "node apps/eval-hub/dist/index.js --run --ambient-goose --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" --layers skills --workers 5",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
-      }
+      },
+      "dependsOn": [
+        "Eval Hub: Build"
+      ]
     },
     {
-      "label": "Eval: Full A/B Suite (parallel 3 workers)",
-      "detail": "Parallel: 3 skills simultaneously. --ambient-goose required for keychain providers.",
+      "label": "Eval: Skills — Subset",
+      "detail": "eval-hub · L1 vs L0 · named skills (space/comma separated) · ambient",
       "type": "shell",
-      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "command": "node apps/eval-hub/dist/index.js --run --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" --layers skills --workers 5 --subjects ${input:skillsSubset}",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
-      }
+      },
+      "dependsOn": [
+        "Eval Hub: Build"
+      ]
     },
     {
-      "label": "Eval: A/B Suite Subset",
-      "detail": "Run only selected skills, e.g. 'code-review sdd'.",
+      "label": "Eval: Agents — All",
+      "detail": "eval-hub · L2 vs L1 · all agents · 5 workers · ambient",
       "type": "shell",
-      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 1 --skills ${input:skillEvalSubset} --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "command": "node apps/eval-hub/dist/index.js --run --ambient-goose --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" --layers agents --workers 5",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
-      }
+      },
+      "dependsOn": [
+        "Eval Hub: Build"
+      ]
     },
     {
-      "label": "SDD: Discover feature",
-      "detail": "Discovery phase — user stories, personas, problem statement → .specs/ + Beads epic",
+      "label": "Eval: Agents — Single",
+      "detail": "eval-hub · L2 vs L1 · one agent · ambient",
       "type": "shell",
-      "command": "python3 -c \"import subprocess; subprocess.run(['goose', 'run', '--recipe', '.goose/recipes/discover.yaml', '--params', 'feature=${input:featureName}', '--params', 'repo_path=.'])\"",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      }
-    },
-    {
-      "label": "SDD: Write spec",
-      "detail": "Formal spec — WHEN/THEN/SHALL ACs with [FEAT]-NN IDs → .specs/features/[feature]/spec.md",
-      "type": "shell",
-      "command": "python3 -c \"import subprocess; subprocess.run(['goose', 'run', '--recipe', '.goose/recipes/spec.yaml', '--params', 'feature=${input:featureName}', '--params', 'repo_path=.'])\"",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      }
-    },
-    {
-      "label": "Eval: Full A/B Suite + Post-Suite Workflow",
-      "detail": "Suite → analyze → export history → build trend report → open both views.",
-      "type": "shell",
-      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python3 scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate && python3 scripts/export-eval-history.py && python3 scripts/build-eval-report.py && xdg-open dist/evals/report/index.html",
+      "command": "node apps/eval-hub/dist/index.js --run --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" --layers agents --workers 1 --subjects ${input:agentSubject}",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
-      }
+      },
+      "dependsOn": [
+        "Eval Hub: Build"
+      ]
     },
     {
-      "label": "Eval: Analyze Results + Quality Gate",
+      "label": "Eval: Recipes — All",
+      "detail": "eval-hub · L3 vs L2 · all recipes · 5 workers · ambient",
       "type": "shell",
-      "command": "python3 scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate",
+      "command": "node apps/eval-hub/dist/index.js --run --ambient-goose --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" --layers recipes --workers 5",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
-      }
+      },
+      "dependsOn": [
+        "Eval Hub: Build"
+      ]
     },
     {
-      "label": "Eval: Analyze Results + Open Analysis Index",
+      "label": "Eval: Recipes — Single",
+      "detail": "eval-hub · L3 vs L2 · one recipe · ambient",
       "type": "shell",
-      "command": "python3 scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate && xdg-open dist/evals/skills/analysis-index.html",
+      "command": "node apps/eval-hub/dist/index.js --run --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" --layers recipes --workers 1 --subjects ${input:recipeSubject}",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
-      }
+      },
+      "dependsOn": [
+        "Eval Hub: Build"
+      ]
     },
     {
-      "label": "Eval: Export History (DB → JSON)",
-      "detail": "Exports evaluation.db → evals/history/runs.json for GitHub Pages and CI. Run after every suite.",
+      "label": "Eval: All Layers (L1→L2→L3)",
+      "detail": "eval-hub · skills → agents → recipes · early-stop enabled · 5 workers · ambient",
       "type": "shell",
-      "command": "python3 scripts/export-eval-history.py",
+      "command": "node apps/eval-hub/dist/index.js --run --ambient-goose --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" --layers skills,agents,recipes --workers 5",
       "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "dependsOn": [
+        "Eval Hub: Build"
+      ]
+    },
+    {
+      "label": "Eval: Post-Suite — Analyze & Report",
+      "detail": "eval-hub · build HTML trend dashboard + open in browser",
+      "type": "shell",
+      "command": "node apps/eval-hub/dist/index.js --report --open",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "dependsOn": [
+        "Eval Hub: Build"
+      ]
+    },
+    {
+      "label": "Eval: Open — Suite Results",
+      "type": "shell",
+      "command": "node apps/eval-hub/dist/index.js --open",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "shared"
-      }
+      },
+      "detail": "eval-hub · open the trend report in the default browser",
+      "dependsOn": [
+        "Eval Hub: Build"
+      ]
     },
     {
-      "label": "Eval: Build Trend Report",
-      "detail": "Generates dist/evals/report/index.html from evaluation.db (or runs.json fallback).",
+      "label": "Eval: Open — Skill Review",
       "type": "shell",
-      "command": "python3 scripts/build-eval-report.py && xdg-open dist/evals/report/index.html",
+      "command": "node apps/eval-hub/dist/index.js --open",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "shared"
-      }
+      },
+      "detail": "eval-hub · open trend report (per-skill review available once --analyze is implemented)",
+      "dependsOn": [
+        "Eval Hub: Build"
+      ]
     },
     {
-      "label": "Eval: Post-Suite Workflow",
-      "detail": "Analyze + Export history + Build trend report + Open both views. Run after every suite.",
+      "label": "Eval: Open — Trend Report",
       "type": "shell",
-      "command": "python3 scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate && python3 scripts/export-eval-history.py && python3 scripts/build-eval-report.py && xdg-open dist/evals/report/index.html && xdg-open dist/evals/skills/analysis-index.html",
-      "group": "test",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      }
-    },
-    {
-      "label": "Eval: Open Suite Results (benchmark viewer)",
-      "type": "shell",
-      "command": "python3 scripts/open-skill-eval-review.py",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "Eval: Open Skill Review",
-      "type": "shell",
-      "command": "python3 scripts/open-skill-eval-review.py --skill ${input:skillEvalReviewSkill}",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "Eval: Open Trend Report",
-      "type": "shell",
-      "command": "xdg-open dist/evals/report/index.html",
+      "command": "node apps/eval-hub/dist/index.js --open",
       "problemMatcher": [],
       "presentation": {
         "reveal": "silent",
         "panel": "shared"
-      }
-    },
-    {
-      "label": "Eval: Open Analysis Index",
-      "type": "shell",
-      "command": "xdg-open dist/evals/skills/analysis-index.html",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "silent",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "Eval: Recipes — Full Suite",
-      "detail": "Run all 12 recipe A/B evals. --ambient-goose required for keychain providers.",
-      "type": "shell",
-      "command": "python3 scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
-      "group": "test",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      }
-    },
-    {
-      "label": "Eval: Recipes — Single recipe",
-      "detail": "A/B eval for one recipe. Prompts for name (e.g. review, implement, discover).",
-      "type": "shell",
-      "command": "python3 scripts/run-harness-ab-eval.py --kind recipes --subject ${input:recipeEvalSubject} --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
-      "group": "test",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      }
-    },
-    {
-      "label": "Eval: Recipes — Subset",
-      "detail": "A/B eval for selected recipes (space-separated). Prompts for list.",
-      "type": "shell",
-      "command": "python3 scripts/run-harness-ab-suite.py --kind recipes --subjects ${input:recipeEvalSubset} --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
-      "group": "test",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      }
-    },
-    {
-      "label": "Eval: Agents — Full Suite",
-      "detail": "Run all 12 agent A/B evals. --ambient-goose required.",
-      "type": "shell",
-      "command": "python3 scripts/run-harness-ab-suite.py --kind agents --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
-      "group": "test",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      }
-    },
-    {
-      "label": "Eval: Agents — Single agent",
-      "detail": "A/B eval for one agent. Prompts for name (e.g. review-critic, tdd-guide).",
-      "type": "shell",
-      "command": "python3 scripts/run-harness-ab-eval.py --kind agents --subject ${input:agentEvalSubject} --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
-      "group": "test",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      }
-    },
-    {
-      "label": "Eval: All Kinds — Full Suite (skills + recipes + agents)",
-      "detail": "Complete evaluation: skills (parallel 3), then recipes, then agents.",
-      "type": "shell",
-      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python3 scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python3 scripts/run-harness-ab-suite.py --kind agents --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
-      "group": "test",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      }
-    },
-    {
-      "label": "Eval: Skills + Recipes (Parallel)",
-      "detail": "Launch skills A/B suite and recipes A/B suite simultaneously. Waits for both before returning.",
+      },
+      "detail": "eval-hub · open trend report in the default browser",
       "dependsOn": [
-        "Eval: Full A/B Suite (parallel 3 workers)",
-        "Eval: Recipes — Full Suite"
-      ],
-      "dependsOrder": "parallel",
-      "group": "test",
-      "problemMatcher": []
+        "Eval Hub: Build"
+      ]
     },
     {
-      "label": "Eval: Skills + Recipes (Parallel) + Post-Suite",
-      "detail": "Skills and recipes in parallel, then analyze + export + trend report + open both views.",
-      "dependsOn": [
-        "Eval: Skills + Recipes (Parallel)"
-      ],
+      "label": "SDD: Discover Feature",
+      "detail": "Discovery phase — user stories, personas, problem statement → .specs/ + Beads epic.",
       "type": "shell",
-      "command": "python3 scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate && python3 scripts/export-eval-history.py && python3 scripts/build-eval-report.py && xdg-open dist/evals/report/index.html && xdg-open dist/evals/skills/analysis-index.html",
-      "group": "test",
+      "command": "goose run --recipe .goose/recipes/discover.yaml --params 'feature=${input:featureName}' --params 'repo_path=.'",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "SDD: Write Spec",
+      "detail": "Formal spec — WHEN/THEN/SHALL ACs with [FEAT]-NN IDs → .specs/features/[feature]/spec.md.",
+      "type": "shell",
+      "command": "goose run --recipe .goose/recipes/spec.yaml --params 'feature=${input:featureName}' --params 'repo_path=.'",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -306,7 +225,7 @@
     },
     {
       "label": "Harness: Build Documentation",
-      "detail": "Runs pandoc to generate dist/docs/html/ and also builds the eval trend report.",
+      "detail": "Runs pandoc to generate dist/docs/html/ and builds the eval trend report.",
       "type": "shell",
       "command": "./scripts/build-docs.sh",
       "group": "build",
@@ -329,7 +248,7 @@
       }
     },
     {
-      "label": "Harness: Install / Update Local Config",
+      "label": "Harness: Install / Update Config",
       "detail": "Copies recipes, skills, agents to ~/.config/goose and ~/.agents, updates slash commands.",
       "type": "shell",
       "command": "./scripts/install.sh",
@@ -340,7 +259,7 @@
       }
     },
     {
-      "label": "Harness: goose skills list",
+      "label": "Harness: List Skills",
       "type": "shell",
       "command": "goose skills list",
       "problemMatcher": [],
@@ -350,19 +269,8 @@
       }
     },
     {
-      "label": "KG: Open Local Visualizer (D3.js)",
-      "detail": "Open standalone KG visualizer (D3.js force graph, no server needed). Drag .knowledge/memory.jsonl to explore.",
-      "type": "shell",
-      "command": "xdg-open dist/kg/index.html || open dist/kg/index.html",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "silent",
-        "panel": "shared"
-      }
-    },
-    {
-      "label": "KG: Bootstrap harness KG",
-      "detail": "Repopulate .knowledge/memory.jsonl from current agents/skills/recipes state",
+      "label": "KG: Bootstrap",
+      "detail": "Repopulate .knowledge/memory.jsonl from current agents/skills/recipes state.",
       "type": "shell",
       "command": "node apps/kg/dist/cli.js bootstrap",
       "problemMatcher": [],
@@ -372,18 +280,8 @@
       }
     },
     {
-      "label": "KG: Open Online Visualizer (memviz.herich.tech)",
-      "detail": "Copy .knowledge/memory.jsonl path, then open memviz.herich.tech and drag the file",
-      "type": "shell",
-      "command": "xdg-open https://memviz.herich.tech",
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "never"
-      }
-    },
-    {
-      "label": "KG: Reason (forward chaining → derived.jsonl)",
-      "detail": "Apply semantic rules on memory.jsonl → produces .knowledge/derived.jsonl with inferred facts",
+      "label": "KG: Reason",
+      "detail": "Apply semantic rules on memory.jsonl → .knowledge/derived.jsonl with inferred facts.",
       "type": "shell",
       "command": "node apps/kg/dist/cli.js reason",
       "problemMatcher": [],
@@ -393,8 +291,8 @@
       }
     },
     {
-      "label": "KG: Bootstrap + Reason + Visualize",
-      "detail": "Full KG pipeline: bootstrap → reason → open visualizer",
+      "label": "KG: Full Pipeline",
+      "detail": "Bootstrap → Reason → Open local D3.js visualizer.",
       "type": "shell",
       "command": "node apps/kg/dist/cli.js bootstrap && node apps/kg/dist/cli.js reason && xdg-open dist/kg/index.html",
       "problemMatcher": [],
@@ -404,10 +302,50 @@
       }
     },
     {
-      "label": "KG: Full Pipeline (bootstrap → reason → visualize)",
-      "detail": "Refresh harness KG + infer derived facts + open visualizer",
+      "label": "KG: Open Visualizer",
+      "detail": "Open standalone D3.js force graph. Drag .knowledge/memory.jsonl to explore.",
       "type": "shell",
-      "command": "node apps/kg/dist/cli.js bootstrap && node apps/kg/dist/cli.js reason && xdg-open dist/kg/index.html",
+      "command": "xdg-open dist/kg/index.html",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Eval Hub: Build",
+      "detail": "Compile eval-hub TypeScript (required before any hub:run task).",
+      "type": "shell",
+      "command": "pnpm -C apps hub:build",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Eval Hub: Resume",
+      "detail": "TypeScript runner · resume a previous layered run by its timestamp ID.",
+      "type": "shell",
+      "command": "node apps/eval-hub/dist/index.js --run --resume ${input:evalHubRunId} --workers 3 --ambient-goose --continue-on-failure --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "dependsOn": "Eval Hub: Build",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval Hub: Export History",
+      "detail": "eval-hub · export SQLite history → evals/history/runs.json (git-committable)",
+      "type": "shell",
+      "command": "node apps/eval-hub/dist/index.js --export-history",
+      "dependsOn": [
+        "Eval Hub: Build"
+      ],
+      "group": "test",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",

@@ -47,3 +47,5 @@ bd prime
 bd ready --json
 bd blocked --json
 ```
+
+| Harness audit | /harness-audit | Read-only LLM-as-judge audit of agents, skills, recipes, frameworks, and orchestration. |

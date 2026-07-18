@@ -1,7 +1,14 @@
 ---
 name: webapp-testing
 description: >
-  Toolkit for testing local web applications with browser automation, screenshots, console inspection, accessibility checks, and reproducible evidence.
+  Load when writing, running, or reviewing automated tests for a web application
+  using Playwright or similar browser automation. Enforces: identify the start
+  command and base URL first, check for an existing running server before starting
+  one, test keyboard navigation in browser only (never by code inspection). Covers
+  accessibility evidence labelling, accessible name checklist (links / images /
+  form inputs / landmarks), and server lifecycle management. Use when asked to write
+  end-to-end tests, browser automation tests, or browser-verified accessibility
+  checks for any web application.
 metadata:
   version: 3.0.0
 ---
@@ -96,7 +103,7 @@ Do not self-approve accessibility or layout findings — cross-check with at lea
 
 ## Beads loop
 
-For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads-harness`.
+For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads`.
 
 Skill-specific commands:
     bd create "WebTest: <finding>" --assignee qa-automation   → file test/a11y findings

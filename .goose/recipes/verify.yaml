@@ -24,13 +24,14 @@ instructions: |
   | Figma, design tokens, .css, component specs | ui | WCAG + design system |
 
   ## Skill and agent routing per type
-  - api:     load skills agentic-dev-harness; delegate qa-automation
+  - api:     load skills agentic-devlopment; delegate qa-automation
   - web:     load skills webapp-testing + ui-quality; delegate qa-automation + ui-designer
-  - cli:     load skills agentic-dev-harness; delegate qa-automation
-  - library: load skills agentic-dev-harness; delegate qa-automation
+  - cli:     load skills agentic-devlopment; delegate qa-automation
+  - library: load skills agentic-devlopment; delegate qa-automation
   - ui:     load skills ui-quality and design-systems-arch and atomic-design; delegate ui-designer
 
   ## Orient (bd prime FIRST)
+  load agent qa-automation.
   1. Run bd prime — load known defects, test memories, quality gates.
   2. Run bd ready --json — check for open verification beads.
   3. Read spec.md if present to extract [FEAT]-NN AC IDs to verify.

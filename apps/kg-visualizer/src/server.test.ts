@@ -19,9 +19,11 @@ describe("@harness/kg-visualizer server", () => {
   });
 
   it("app.html has WCAG lang attribute", async () => {
+    // WCAG 3.1.1 requires a lang attribute; value may be 'en' or 'fr'
+    // depending on the UI language of the active design.
     const { readFile } = await import("node:fs/promises");
     const { join } = await import("node:path");
     const html = await readFile(join(import.meta.dirname, "../src/app.html"), "utf8");
-    expect(html).toMatch(/lang=["']fr["']/);
+    expect(html).toMatch(/lang=["'](en|fr)["']/);
   });
 });

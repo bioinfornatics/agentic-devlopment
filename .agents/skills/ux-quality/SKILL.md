@@ -1,9 +1,12 @@
 ---
 name: ux-quality
 description: >
-  UX quality evaluation: user intent alignment, information architecture, interaction
-  state completeness, and design coherence. Load when validating a user flow, planning
-  a new feature, or investigating why users struggle.
+  Load when evaluating user experience quality of an interface: user intent alignment,
+  information architecture, interaction state coverage (loading / empty / error /
+  success / disabled / focus / offline states), and design coherence. Requires
+  Playwright browser inspection or live snapshot as evidence. Use when auditing
+  a user flow, reviewing an interactive feature, or validating that all interaction
+  states are correctly handled and communicated to the user.
 metadata:
   version: 1.0.0
   scope: strategic
@@ -88,13 +91,15 @@ bd create "UX: <finding>" --assignee ux-researcher -p 2 --json
 
 ## Beads loop
 
-For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads-harness`.
+For Beads workflow commands (prime, ready, claim, close, remember), load skill: `beads`.
 
 Skill-specific commands:
     bd create "UX: <finding>" --assignee ux-researcher -p 2  → file UX research findings
 ## Progressive disclosure
 Load critique methodology when running a structured design review:
   Load `references/critique-methodology.md` — Liz Lerman, 30/60/90, Gestalt, Nielsen heuristics
+Load UX research methods when planning user research:
+  Load `references/ux-research-methods.md` — personas, journey maps, interview guides, usability scripts
 
 ## Progressive disclosure — skills spécialisés
 

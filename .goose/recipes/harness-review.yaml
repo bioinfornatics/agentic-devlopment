@@ -10,8 +10,8 @@ instructions: |
 
   Explicit routing for this recipe (AD-001 — Specialist pattern):
   - load skills code-review          (adaptive code/PR review methodology)
-  - load skills agentic-dev-harness  (harness workflow rules and scope discipline)
-  - load skills beads-harness        (memory-pointer format and Beads hygiene rules)
+  - load skills agentic-devlopment  (harness workflow rules and scope discipline)
+  - load skills beads        (memory-pointer format and Beads hygiene rules)
   - In-session agent: load agent review-critic
 
   ## First visible output (required before any tool call)
@@ -22,8 +22,8 @@ instructions: |
 
   ## Orient (bd prime FIRST — run before anything else)
   load skills code-review.
-  load skills agentic-dev-harness.
-  load skills beads-harness.
+  load skills agentic-devlopment.
+  load skills beads.
   load agent review-critic.
   1. Run `bd prime` — load project memories and workflow context.
   2. Run `bd ready --json` — check for related review beads already open.
@@ -150,8 +150,8 @@ prompt: |
 
   ## Step 2 — Orient
   load skills code-review.
-  load skills agentic-dev-harness.
-  load skills beads-harness.
+  load skills agentic-devlopment.
+  load skills beads.
   load agent review-critic.
   Run `bd prime`, then `bd ready --json`, then `bd memories harness`.
 

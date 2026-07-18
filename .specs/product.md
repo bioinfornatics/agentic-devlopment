@@ -27,24 +27,31 @@ they do not get discarded after the first sprint.
   User intent
        │
        ▼
-  Recipe (/discover, /spec, /implement…)     ← workflow entry point
-       │  loads
-       ▼
-  Skill (sdd, code-review, beads-harness…)  ← methodology and domain knowledge
-       │  delegates to
-       ▼
-  Agent (product-owner, review-critic…)     ← specialist persona with operating protocol
-       │  tracks work in
-       ▼
-  Beads (durable task graph, git-synced)    ← epics, stories, tasks, dependencies
+  Recipe (/discover, /spec, /implement…)              ← workflow entry point
+       │  simultaneously
+       ├─ load skills <name>                           ← methodology injected into session
+       └─ load agent <specialist>  (or harness-orchestrator for /dev, /sdd)
+                    │
+                    │  two patterns (AD-001):
+                    │
+          ┌─────────┴──────────────────┐
+          │  Specialist                │  Orchestration
+          │  session IS the agent      │  session IS harness-orchestrator
+          │  (review-critic, etc.)     │  (/dev, /sdd)
+          │                            │  delegates ALL specialists
+          │                            │  via Summon (sub-sessions)
+          └─────────┬──────────────────┘
+                    │
+                    ▼
+  Beads (durable task graph, git-synced)              ← epics, stories, tasks, dependencies
        │  traces artifacts in
        ▼
-  Knowledge Graph (.knowledge/)             ← specs, code, tests, decisions linked together
+  Knowledge Graph (.knowledge/)                       ← specs, code, tests, decisions linked
 ```
 
-- A **recipe** is the entry point — it knows *which* skill to load and *which* agent to delegate to. 
-- A **skill** carries the methodology — it knows *how* to approach a class of problems. 
-- An **agent** is a specialist persona — it knows *who* is responsible and *what* their operating protocol is.
+- A **recipe** is the entry point — it loads the right skill(s) and adopts the right agent persona simultaneously. The session either *is* the specialist (direct invocation) or *is* the orchestrator which then summons specialists as sub-sessions.
+- A **skill** carries the methodology — it knows *how* to approach a class of problems.
+- An **agent** is a specialist persona — it knows *who* is responsible and *what* their operating protocol is. Agents are either loaded in-session (the session *becomes* the agent) or summoned as isolated sub-sessions.
 
 ---
 

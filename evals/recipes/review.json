@@ -1,5 +1,11 @@
 [
   {
+    "agents": [
+      "review-critic"
+    ],
+    "skills": [
+      "code-review"
+    ],
     "query": "Review the prepared install-script change that adds a new slash command mapping.",
     "files": [
       "scripts/install.sh",
@@ -25,6 +31,12 @@
     ]
   },
   {
+    "agents": [
+      "review-critic"
+    ],
+    "skills": [
+      "code-review"
+    ],
     "query": "Review the diff in `.agents/skills/code-review/SKILL.md` and `docs/15-skill-evaluations.md`. Focus on Beads hygiene and harness-rule compliance.",
     "files": [
       ".agents/skills/code-review/SKILL.md",
@@ -47,6 +59,12 @@
     ]
   },
   {
+    "agents": [
+      "review-critic"
+    ],
+    "skills": [
+      "code-review"
+    ],
     "query": "Review a multi-surface diff touching recipes, skills, and docs simultaneously. Produce a severity-ranked report with validation steps.",
     "files": [
       ".goose/recipes/review.yaml",

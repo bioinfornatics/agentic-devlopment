@@ -20,9 +20,33 @@
     ],
     "expected_behavior": [
       "Evaluates at least 5 of the 8 dimensions in order: User Intent, Information Architecture, Interaction States, Visual Taste, Design System, Accessibility, Performance, Evidence.",
-      "Requests or captures browser evidence (screenshot, console output, or a11y snapshot) before stating findings \u2014 no evidence means no finding.",
+      "Requests or captures browser evidence (screenshot, console output, or a11y snapshot) before stating findings — no evidence means no finding.",
       "Ranks the top issues by user impact, not by ease of detection.",
       "Separates accessibility blockers from visual polish recommendations."
+    ]
+  },
+  {
+    "skills": [
+      "ui-quality",
+      "webapp-testing"
+    ],
+    "query": "Evaluate the harness eval trend report (`dist/evals/report/index.html`) for data-visualisation UI quality: information hierarchy, colour encoding, interactive states, and WCAG 2.2 AA contrast compliance for chart elements.",
+    "files": [
+      "dist/evals/report/index.html"
+    ],
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The ui-quality skill applies the 8-dimension technical quality framework to data visualisation, requiring browser-tested evidence for contrast and interaction state findings.",
+    "baseline_gaps": [
+      "Agent evaluates chart aesthetics without applying the 8-dimension technical quality framework.",
+      "Agent reports contrast violations from code inspection alone rather than browser-measured evidence.",
+      "Agent misses interactive state coverage (hover, focus, loading) for chart elements."
+    ],
+    "expected_behavior": [
+      "Applies the 8-dimension framework to the trend report: visual hierarchy, contrast, interactive states, responsiveness, typography, whitespace, accessibility, performance.",
+      "Labels every finding [VERIFIED — browser-tested] or [ASSUMPTION — code-inspection], per the skill's evidence protocol.",
+      "Checks at least three interactive states for chart elements: hover tooltip, keyboard focus indicator, and empty/loading state.",
+      "For contrast violations, provides the measured ratio and the WCAG 2.2 threshold for that element type (4.5:1 for text, 3:1 for UI components)."
     ]
   },
   {
@@ -34,7 +58,7 @@
       "docs/assets/site.css",
       "docs/BOOK.md"
     ],
-    "fixture_intent": "Very difficult scenario: design-system evaluation \u2014 tokens, variants, accessibility states, regression risk, Beads follow-ups.",
+    "fixture_intent": "Very difficult scenario: design-system evaluation — tokens, variants, accessibility states, regression risk, Beads follow-ups.",
     "difficulty": "very_difficult",
     "max_turns": 500,
     "expected_skill_contribution": "The UI/UX skill should evaluate CSS/layout tokens as a design-system surface, separate blockers from recommendations, and propose Beads follow-ups for product/design-system work.",
@@ -46,7 +70,7 @@
       "Evaluates the CSS as a design-system surface: checks token naming, variant coverage, accessibility states (focus, hover, disabled), and theming consistency.",
       "Distinguishes design-system blockers (missing required accessibility states, broken token references) from recommendations (naming conventions, docs).",
       "Proposes Beads follow-ups using `bd create` commands or issue titles for design-system improvement work.",
-      "Reports evidence from the actual CSS file (property names, values, or line references) \u2014 no unsupported assertions."
+      "Reports evidence from the actual CSS file (property names, values, or line references) — no unsupported assertions."
     ]
   }
 ]

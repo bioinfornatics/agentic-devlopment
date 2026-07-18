@@ -51,7 +51,7 @@ Suite (thread principal)
 
 **Interface :**
 ```bash
-python3 scripts/run-skill-ab-suite.py \
+node apps/eval-hub/dist/index.js --run --layers skills \
   --max-workers 3    # défaut=3 ; 1=séquentiel (rétrocompatible)
   --continue-on-failure
 ```
@@ -86,16 +86,16 @@ python3 scripts/run-skill-ab-suite.py \
 
 | Fichier | Changement |
 |---|---|
-| `scripts/run-skill-ab-suite.py` | ~40 lignes — `ProcessPoolExecutor`, boucle `as_completed`, argument `--max-workers` |
+| `.agents/skills/skill-creator/scripts/run-skill-ab-suite.py` | ~40 lignes — `ProcessPoolExecutor`, boucle `as_completed`, argument `--max-workers` |
 
 ### Fichiers inchangés
 
 | Fichier | Raison |
 |---|---|
-| `scripts/run-skill-ab-eval.py` | Unité de travail par skill — reste séquentiel en interne |
+| `.agents/skills/skill-creator/scripts/run-skill-ab-eval.py` | Unité de travail par skill — reste séquentiel en interne |
 | `scripts/eval_utils.py` | Écriture DB déjà isolée par skill |
-| `scripts/analyze-skill-eval-results.py` | Post-traitement — inchangé |
-| `scripts/build-eval-report.py` | Inchangé |
+| `.agents/skills/skill-creator/scripts/analyze-skill-eval-results.py` | Post-traitement — inchangé |
+| `.agents/skills/skill-creator/scripts/build-eval-report.py` | Inchangé |
 | VSCode tasks / JetBrains `.run/` | Invoquent la suite — inchangés |
 
 ---
@@ -273,7 +273,7 @@ Le flag `--ambient-goose` existe pour ce cas exact :
 - Isolation filesystem intentionnellement abandonnée (acceptable)
 
 ```bash
-python3 scripts/run-skill-ab-suite.py \
+node apps/eval-hub/dist/index.js --run --layers skills \
   --ambient-goose --max-workers 3 --continue-on-failure
 ```
 

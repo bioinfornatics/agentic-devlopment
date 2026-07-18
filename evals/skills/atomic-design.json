@@ -1,0 +1,71 @@
+[
+  {
+    "skills": [
+      "atomic-design"
+    ],
+    "query": "Classify the UI elements described in the KG visualizer README into the atomic design hierarchy (Quark → Atom → Molecule → Organism → Template → Page). Identify any elements that violate the hierarchy rules.",
+    "files": [
+      "apps/kg-visualizer/README.md"
+    ],
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The atomic-design skill provides the six-level classification system, presentational-component rule, and violation detection criteria.",
+    "baseline_gaps": [
+      "Agent lists UI elements without applying a structured hierarchy.",
+      "Agent does not check the presentational-component rule (no data fetching inside atoms/molecules).",
+      "Agent conflates organisms and templates, missing the layout-vs-content distinction."
+    ],
+    "expected_behavior": [
+      "Assigns each UI element to exactly one hierarchy level with a justification citing the skill's definition.",
+      "Identifies any element that violates the containment rules (e.g., a molecule importing from an organism).",
+      "Applies the presentational-component rule: flags any component that mixes rendering with data fetching.",
+      "Produces a hierarchy table, not just a prose description."
+    ]
+  },
+  {
+    "skills": [
+      "atomic-design"
+    ],
+    "query": "Evaluate the component structure decisions in the harness documentation site CSS (`docs/assets/site.css`) against atomic design principles. Identify quark-level violations (hardcoded values instead of tokens) and propose the minimal token set.",
+    "files": [
+      "docs/assets/site.css"
+    ],
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The atomic-design skill distinguishes Quarks (design tokens) from Atoms (visual elements), identifies hardcoded-value anti-patterns, and defines the minimal quark set required.",
+    "baseline_gaps": [
+      "Agent reviews CSS for style quality without applying the Quark level as a structured audit lens.",
+      "Agent does not distinguish between hardcoded values that should be quarks vs intentional one-off values.",
+      "Agent does not produce a proposed token set — only a list of issues."
+    ],
+    "expected_behavior": [
+      "Audits the CSS through the Quark lens: identifies repeated literal values (colours, spacing, radii) that should be design tokens.",
+      "Distinguishes quarks (shared primitive values) from intentional per-component overrides.",
+      "Proposes a minimal quark set as CSS custom properties with naming conventions from the skill.",
+      "Maps each proposed token back to the exact CSS lines that would use it."
+    ]
+  },
+  {
+    "skills": [
+      "atomic-design"
+    ],
+    "query": "Design a complete atomic component hierarchy for the harness evaluation trend report UI (`dist/evals/report/index.html`). Define all six levels, apply all key rules, and produce a build-order plan for implementation-worker.",
+    "files": [
+      "dist/evals/report/index.html"
+    ],
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The atomic-design skill applies all six levels, enforces all containment rules, produces a bottom-up build order, and identifies template-vs-page distinctions for test fixtures.",
+    "baseline_gaps": [
+      "Agent produces a flat component list without the six-level hierarchy structure.",
+      "Agent does not apply the co-location rule or the single-responsibility rule to molecule definitions.",
+      "Agent skips the Template level, merging it with Page — preventing reuse across different data sets."
+    ],
+    "expected_behavior": [
+      "Defines at least one artefact at each of the six levels (Quark through Page) with justifications.",
+      "Applies the single-responsibility rule: each Atom has exactly one visual element and one responsibility.",
+      "Defines Templates as layout structures with content slots — no real data — enabling fixture-based testing.",
+      "Produces a bottom-up build order (Quarks → Atoms → Molecules → Organisms → Templates → Pages) that implementation-worker can follow atomically."
+    ]
+  }
+]

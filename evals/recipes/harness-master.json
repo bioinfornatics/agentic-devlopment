@@ -1,0 +1,83 @@
+[
+  {
+    "agents": [
+      "orchestrator"
+    ],
+    "skills": [
+      "agentic-devlopment",
+      "goose-orchestration",
+      "beads"
+    ],
+    "files": [
+      ".goose/recipes/harness-master.yaml"
+    ],
+    "max_turns": 50,
+    "query": "Run harness-master in mode docs and synthesize the routed workflow.",
+    "difficulty": "normal",
+    "expected_skill_contribution": "Harness-master preserves orchestration boundaries and routes to harness subrecipes.",
+    "baseline_gaps": [
+      "Loads specialist agents in-session.",
+      "Skips orchestration decision."
+    ],
+    "expected_behavior": [
+      "Declares Harness-master mode focus and orchestration decision as first visible output.",
+      "Loads orchestrator as only in-session agent.",
+      "Routes to the correct harness subrecipe or subrecipes.",
+      "Reports validation and Beads status in final handoff."
+    ]
+  },
+  {
+    "agents": [
+      "orchestrator"
+    ],
+    "skills": [
+      "agentic-devlopment",
+      "goose-orchestration",
+      "beads"
+    ],
+    "files": [
+      ".goose/recipes/harness-master.yaml"
+    ],
+    "max_turns": 50,
+    "query": "Run harness-master in mode review and synthesize the routed workflow.",
+    "difficulty": "difficult",
+    "expected_skill_contribution": "Harness-master preserves orchestration boundaries and routes to harness subrecipes.",
+    "baseline_gaps": [
+      "Loads specialist agents in-session.",
+      "Skips orchestration decision."
+    ],
+    "expected_behavior": [
+      "Declares Harness-master mode focus and orchestration decision as first visible output.",
+      "Loads orchestrator as only in-session agent.",
+      "Routes to the correct harness subrecipe or subrecipes.",
+      "Reports validation and Beads status in final handoff."
+    ]
+  },
+  {
+    "agents": [
+      "orchestrator"
+    ],
+    "skills": [
+      "agentic-devlopment",
+      "goose-orchestration",
+      "beads"
+    ],
+    "files": [
+      ".goose/recipes/harness-master.yaml"
+    ],
+    "max_turns": 50,
+    "query": "Run harness-master in mode full and synthesize the routed workflow.",
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Harness-master preserves orchestration boundaries and routes to harness subrecipes.",
+    "baseline_gaps": [
+      "Loads specialist agents in-session.",
+      "Skips orchestration decision."
+    ],
+    "expected_behavior": [
+      "Declares Harness-master mode focus and orchestration decision as first visible output.",
+      "Loads orchestrator as only in-session agent.",
+      "Routes to the correct harness subrecipe or subrecipes.",
+      "Reports validation and Beads status in final handoff."
+    ]
+  }
+]

@@ -1,0 +1,76 @@
+[
+  {
+    "skills": [
+      "systematic-debugging"
+    ],
+    "query": "The KG pipeline command `node apps/kg/dist/cli.js pipeline` exits with a non-zero code. Apply the systematic debugging protocol to diagnose and fix the failure. Do not propose a fix before completing Phase 1.",
+    "files": [
+      "apps/kg/src/cli.ts",
+      "apps/kg/src/bootstrap.ts",
+      "apps/kg/package.json"
+    ],
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The systematic-debugging skill enforces the Iron Law (no fixes before root cause) and the four-phase protocol.",
+    "baseline_gaps": [
+      "Agent immediately proposes a fix based on the error message without completing Phase 1.",
+      "Agent treats the first hypothesis as confirmed without the Reproduce Consistently step.",
+      "Agent skips Phase 2 (Hypothesis Testing) and jumps from symptom to fix."
+    ],
+    "expected_behavior": [
+      "Explicitly states completion of Phase 1 before proposing any fix — cites the Iron Law.",
+      "Reproduces the failure consistently before forming a hypothesis.",
+      "Completes all four phases in order, with explicit phase boundary markers.",
+      "The proposed fix targets the root cause identified in Phase 1, not the symptom."
+    ]
+  },
+  {
+    "skills": [
+      "systematic-debugging"
+    ],
+    "query": "An eval scenario passes on the first run but fails intermittently on subsequent runs. Apply the full systematic debugging protocol to trace this flakiness to root cause. Identify the exact environmental or state dependency causing non-determinism.",
+    "files": [
+      "scripts/run-skill-ab-eval.py",
+      "scripts/eval_utils.py"
+    ],
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The systematic-debugging skill applies the Reproduce Consistently phase with variation testing to isolate environmental dependencies.",
+    "baseline_gaps": [
+      "Agent guesses that it is a timing issue without systematic environmental variation testing.",
+      "Agent proposes retry logic as a fix rather than investigating the non-determinism root cause.",
+      "Agent does not apply the 'especially when under time pressure' rule — takes the quick-fix path."
+    ],
+    "expected_behavior": [
+      "Applies Phase 1 methodically: varies the environment (clean worktree, different run order, parallel vs sequential) to identify the triggering condition.",
+      "Refuses to propose retry logic as a solution — explicitly cites that symptom-masking is a protocol violation.",
+      "Identifies the specific state dependency (filesystem state, concurrent access, seed data) causing non-determinism.",
+      "Proposes a fix that eliminates the root cause, with a verification step to confirm the flakiness is gone."
+    ]
+  },
+  {
+    "skills": [
+      "systematic-debugging"
+    ],
+    "query": "The harness eval runner produces different pass rates for the same skill on two consecutive runs with no code changes. Apply all four phases of systematic debugging to this reproducibility failure, and produce a root cause report with supporting evidence.",
+    "files": [
+      "scripts/run-skill-ab-eval.py",
+      "scripts/eval_utils.py",
+      "scripts/run-skill-ab-suite.py"
+    ],
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The systematic-debugging skill applies all four phases including the advanced Phase 4 (Prevention) to produce a root cause report with evidence, not hypotheses.",
+    "baseline_gaps": [
+      "Agent produces a list of possible causes without systematic elimination.",
+      "Agent stops after Phase 2 (Hypothesis Testing) without completing Phase 3 (Fix) or Phase 4 (Prevention).",
+      "Agent's root cause report is a hypothesis rather than an evidenced finding."
+    ],
+    "expected_behavior": [
+      "Completes all four phases: Investigation, Hypothesis Testing, Fix Verification, and Prevention.",
+      "Phase 4 produces at least one structural change (test, assertion, or guard) that prevents the same issue from recurring.",
+      "The root cause report distinguishes confirmed findings (with evidence) from remaining hypotheses.",
+      "The fix is minimal and targeted — does not modify working code to fix a different issue."
+    ]
+  }
+]

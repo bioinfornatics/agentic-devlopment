@@ -4,8 +4,8 @@
       "review-critic"
     ],
     "skills": [
-      "agentic-dev-harness",
-      "beads-harness"
+      "agentic-devlopment",
+      "beads"
     ],
     "query": "Run a documentation review scoped to recipes only. Validate every *.yaml in .goose/recipes/ and subrecipes/, check that each top-level recipe has a First Visible Output section, and report findings by severity.",
     "files": [
@@ -34,8 +34,8 @@
       "review-critic"
     ],
     "skills": [
-      "agentic-dev-harness",
-      "beads-harness"
+      "agentic-devlopment",
+      "beads"
     ],
     "query": "Run a documentation review scoped to skills and memory. Check every skill file in .agents/skills/ for required sections (metadata block, concrete example, Load next if it cross-references another skill). Also check all bd remember calls in docs/ and recipes for memory pointer format compliance (read-when trigger, canonical source, invariant, ≤250 chars). Report findings with severity and proposed Beads follow-ups.",
     "files": [
@@ -65,8 +65,8 @@
       "review-critic"
     ],
     "skills": [
-      "agentic-dev-harness",
-      "beads-harness"
+      "agentic-devlopment",
+      "beads"
     ],
     "query": "Run a full documentation review of the harness (scope=all). Cover all layers: recipe validation, skill completeness, memory pointer format, internal cross-reference integrity (sub_recipes paths, load agent references, load skills references), harness workflow checklists, and Beads hygiene (TODO/FIXME/HACK). Produce a severity-ranked report with a summary table, per-finding evidence, and proposed bd create commands for CRITICAL/HIGH. At the end, propose one bd remember for any durable documentation fact discovered.",
     "files": [

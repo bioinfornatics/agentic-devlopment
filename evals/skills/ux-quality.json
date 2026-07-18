@@ -20,7 +20,7 @@
     ],
     "expected_behavior": [
       "Evaluates at least 5 of the 8 dimensions in order: User Intent, Information Architecture, Interaction States, Visual Taste, Design System, Accessibility, Performance, Evidence.",
-      "Requests or captures browser evidence (screenshot, console output, or a11y snapshot) before stating findings \u2014 no evidence means no finding.",
+      "Requests or captures browser evidence (screenshot, console output, or a11y snapshot) before stating findings — no evidence means no finding.",
       "Ranks the top issues by user impact, not by ease of detection.",
       "Separates accessibility blockers from visual polish recommendations."
     ]
@@ -37,7 +37,7 @@
       "docs/00-index.md",
       "dist/docs/html/index.html"
     ],
-    "fixture_intent": "Difficult scenario: scoped IA + accessibility review \u2014 accessibility blockers separated from content polish, exact locations for findings.",
+    "fixture_intent": "Difficult scenario: scoped IA + accessibility review — accessibility blockers separated from content polish, exact locations for findings.",
     "difficulty": "difficult",
     "max_turns": 500,
     "expected_skill_contribution": "The UI/UX skill should focus on navigation and contributor discovery, separating accessibility blockers from content/discovery polish with concrete locations or reproduction steps.",
@@ -50,6 +50,31 @@
       "Separates accessibility blockers (WCAG 2.2 AA violations) from content/discovery polish using explicit severity labels.",
       "Provides exact file names, section headings, or HTML element locations for each finding.",
       "Requests browser evidence (a11y snapshot or keyboard test) before stating accessibility findings."
+    ]
+  },
+  {
+    "skills": [
+      "ux-quality",
+      "cognitive-ux"
+    ],
+    "query": "Conduct a full 8-dimension UX quality audit of the complete harness SDD workflow as documented in `docs/getting-started.md` and `docs/00-index.md`. Apply the ux-quality framework, cognitive load analysis, and produce a scored quality report with Beads follow-ups for all MEDIUM+ findings.",
+    "files": [
+      "docs/getting-started.md",
+      "docs/00-index.md"
+    ],
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The ux-quality skill applies all eight evaluation dimensions simultaneously, produces a scored report, and mandates Beads follow-ups for actionable findings.",
+    "baseline_gaps": [
+      "Agent evaluates only 2-3 dimensions rather than all eight.",
+      "Agent produces qualitative observations without a scored report.",
+      "Agent proposes follow-up as markdown TODOs rather than exact `bd create` commands."
+    ],
+    "expected_behavior": [
+      "Applies all eight ux-quality dimensions: user intent, information architecture, interaction states, visual hierarchy, accessibility, cognitive load, error recovery, and onboarding.",
+      "Produces a scored report: each dimension scored 1-5 with evidence for each score.",
+      "Identifies the two lowest-scoring dimensions as priority improvement targets.",
+      "Produces exact `bd create \"UX: <title>\" --assignee ux-researcher -p <priority> --json` commands for every MEDIUM+ finding — no markdown TODOs."
     ]
   }
 ]

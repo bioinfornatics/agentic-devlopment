@@ -28,56 +28,100 @@ describe("AC-SKILL-02: skills self-validation checklist", () => {
   });
 });
 
-// ── AC-EVAL-01/02: eval coverage ──────────────────────────────────────────
-describe("AC-EVAL-01/02: eval coverage harness", () => {
-  it("AC-EVAL-02: all 12 recipes have an eval JSON file", async () => {
-    const recipesDir = join(REPO, ".goose", "recipes");
-    const evalsDir = join(REPO, "evals", "recipes");
-    const recipeFiles = (await readdir(recipesDir)).filter(f => f.endsWith(".yaml") && !f.startsWith("subrecipe"));
-    const evalFiles = new Set((await readdir(evalsDir)).filter(f => f.endsWith(".json")).map(f => f.replace(".json", "")));
-    const missing = recipeFiles.map(f => f.replace(".yaml", "")).filter(name => !evalFiles.has(name));
-    expect(missing, "Recipes missing eval: " + missing.join(", ")).toHaveLength(0);
-  });
+// ── AC-EVAL-01/02/04/05: eval coverage and layer-delta contracts ─────────
+describe("AC-EVAL-01/02/04/05: eval coverage and layer-delta contracts", () => {
+  async function readJsonArray(path: string): Promise<any[]> {
+    const parsed = JSON.parse(await readFile(path, "utf8"));
+    expect(Array.isArray(parsed), path + " must contain a scenario array").toBe(true);
+    return parsed;
+  }
 
-  it("AC-EVAL-02: each recipe eval has exactly 3 scenarios", async () => {
-    const evalsDir = join(REPO, "evals", "recipes");
-    const files = (await readdir(evalsDir)).filter(f => f.endsWith(".json"));
-    const problems: string[] = [];
-    for (const f of files) {
-      const scenarios = JSON.parse(await readFile(join(evalsDir, f), "utf8"));
-      if (!Array.isArray(scenarios) || scenarios.length < 1)
-        problems.push(`${f}: ${Array.isArray(scenarios) ? scenarios.length : "not array"} scenarios`);
-    }
-    expect(problems, "Eval files with wrong scenario count: " + problems.join(", ")).toHaveLength(0);
-  });
-
-  it("AC-EVAL-02: each recipe scenario has required fields", async () => {
-    const evalsDir = join(REPO, "evals", "recipes");
-    const files = (await readdir(evalsDir)).filter(f => f.endsWith(".json"));
-    const problems: string[] = [];
-    for (const f of files) {
-      const scenarios = JSON.parse(await readFile(join(evalsDir, f), "utf8"));
-      for (const [i, s] of scenarios.entries()) {
-        if (!s.query) problems.push(`${f}[#${i}]: missing query`);
-        if (!Array.isArray(s.expected_behavior) || s.expected_behavior.length < 1)
-          problems.push(`${f}[#${i}]: missing expected_behavior`);
-        if (!s.max_turns) problems.push(`${f}[#${i}]: missing max_turns`);
-      }
-    }
-    expect(problems, "Scenarios with missing fields: " + problems.join("; ")).toHaveLength(0);
-  });
-
-  it("AC-EVAL-01: all 8 skill evals exist with scenarios", async () => {
+  it("AC-EVAL-01: every authored skill eval has at least 3 scenarios for positive-delta checks", async () => {
     const evalsDir = join(REPO, "evals", "skills");
     const skillsDir = join(REPO, ".agents", "skills");
     const authoredSkills = (await readdir(skillsDir, { withFileTypes: true }))
       .filter(d => d.isDirectory())
       .map(d => d.name)
-      .filter(n => !["find-skills","goose-doc-guide","skill-creator"].includes(n));
-    const evalFiles = new Set((await readdir(evalsDir)).filter(f => f.endsWith(".json")).map(f => f.replace(".json","")));
-    // At least 7 skills have evals (not all authored skills need eval)
-    const covered = authoredSkills.filter(s => evalFiles.has(s));
-    expect(covered.length).toBeGreaterThanOrEqual(7);
+      .filter(n => !["find-skills", "goose-doc-guide", "skill-creator"].includes(n))
+      .sort();
+    const evalFiles = new Set((await readdir(evalsDir)).filter(f => f.endsWith(".json")).map(f => f.replace(".json", "")));
+    const problems: string[] = [];
+    for (const skill of authoredSkills) {
+      if (!evalFiles.has(skill)) { problems.push(skill + ": missing eval JSON"); continue; }
+      const scenarios = await readJsonArray(join(evalsDir, skill + ".json"));
+      if (scenarios.length < 3) problems.push(skill + ": " + scenarios.length + " scenarios (<3)");
+      for (const [i, scenario] of scenarios.entries()) {
+        if (!Array.isArray(scenario.skills) || !scenario.skills.includes(skill))
+          problems.push(skill + ".json[#" + i + "]: skills array must include " + skill);
+        if (!Array.isArray(scenario.expected_behavior) || scenario.expected_behavior.length < 1)
+          problems.push(skill + ".json[#" + i + "]: missing expected_behavior");
+        if (!Array.isArray(scenario.baseline_gaps) || scenario.baseline_gaps.length < 1)
+          problems.push(skill + ".json[#" + i + "]: missing baseline_gaps");
+        if (!scenario.difficulty) problems.push(skill + ".json[#" + i + "]: missing difficulty");
+      }
+    }
+    expect(problems, "Skill eval positive-delta coverage problems: " + problems.join("; ")).toHaveLength(0);
+  });
+
+  it("AC-EVAL-02: every top-level recipe has an eval JSON file with at least 3 scenarios", async () => {
+    const recipesDir = join(REPO, ".goose", "recipes");
+    const evalsDir = join(REPO, "evals", "recipes");
+    const recipeNames = (await readdir(recipesDir)).filter(f => f.endsWith(".yaml")).map(f => f.replace(".yaml", "")).sort();
+    const evalFiles = new Set((await readdir(evalsDir)).filter(f => f.endsWith(".json")).map(f => f.replace(".json", "")));
+    const problems: string[] = [];
+    for (const recipe of recipeNames) {
+      if (!evalFiles.has(recipe)) { problems.push(recipe + ": missing eval JSON"); continue; }
+      const scenarios = await readJsonArray(join(evalsDir, recipe + ".json"));
+      if (scenarios.length < 3) problems.push(recipe + ": " + scenarios.length + " scenarios (<3)");
+      for (const [i, scenario] of scenarios.entries()) {
+        if (!scenario.query) problems.push(recipe + ".json[#" + i + "]: missing query");
+        if (!Array.isArray(scenario.expected_behavior) || scenario.expected_behavior.length < 1)
+          problems.push(recipe + ".json[#" + i + "]: missing expected_behavior");
+        if (!scenario.max_turns) problems.push(recipe + ".json[#" + i + "]: missing max_turns");
+      }
+    }
+    expect(problems, "Recipe eval coverage problems: " + problems.join("; ")).toHaveLength(0);
+  });
+
+  it("AC-EVAL-04: agent evals declare Layer 1 skills-only baseline and layer-delta expectations", async () => {
+    const evalsDir = join(REPO, "evals", "agents");
+    const files = (await readdir(evalsDir)).filter(f => f.endsWith(".json"));
+    const problems: string[] = [];
+    for (const f of files) {
+      const agent = f.replace(".json", "");
+      const scenarios = await readJsonArray(join(evalsDir, f));
+      for (const [i, scenario] of scenarios.entries()) {
+        if (!Array.isArray(scenario.skills) || scenario.skills.length < 1)
+          problems.push(f + "[#" + i + "]: missing Layer 1 skills baseline");
+        const text = JSON.stringify(scenario).toLowerCase();
+        if (!text.includes("baseline") && !text.includes("skills"))
+          problems.push(f + "[#" + i + "]: lacks baseline/layer-delta rationale text");
+        if (!scenario.expected_skill_contribution)
+          problems.push(f + "[#" + i + "]: missing expected_skill_contribution for with_agent+skills delta");
+        if (agent === "orchestrator" && !text.includes("orchestration decision"))
+          problems.push(f + "[#" + i + "]: orchestrator eval should check Orchestration decision");
+      }
+    }
+    expect(problems, "Agent layer-delta eval contract problems: " + problems.join("; ")).toHaveLength(0);
+  });
+
+  it("AC-EVAL-05: recipe evals declare Layer 2 agents+skills baseline and layer-delta expectations", async () => {
+    const evalsDir = join(REPO, "evals", "recipes");
+    const files = (await readdir(evalsDir)).filter(f => f.endsWith(".json"));
+    const problems: string[] = [];
+    for (const f of files) {
+      const scenarios = await readJsonArray(join(evalsDir, f));
+      for (const [i, scenario] of scenarios.entries()) {
+        if (!Array.isArray(scenario.agents)) problems.push(f + "[#" + i + "]: missing agents array for Layer 2 baseline");
+        if (!Array.isArray(scenario.skills)) problems.push(f + "[#" + i + "]: missing skills array for Layer 2 baseline");
+        const text = JSON.stringify(scenario).toLowerCase();
+        if (!text.includes("baseline") && !text.includes("layer"))
+          problems.push(f + "[#" + i + "]: lacks baseline/layer-delta rationale text");
+        if (!scenario.expected_skill_contribution)
+          problems.push(f + "[#" + i + "]: missing expected_skill_contribution for with_recipe+agents+skills delta");
+      }
+    }
+    expect(problems, "Recipe layer-delta eval contract problems: " + problems.join("; ")).toHaveLength(0);
   });
 });
 
@@ -322,5 +366,33 @@ describe("AC-EVAL-06: layer declarations in eval JSON files", () => {
       }
     }
     expect(problems, "Missing skills on disk: " + problems.join("; ")).toHaveLength(0);
+  });
+});
+
+// ── AC-EVAL-03: grader uses events.jsonl transcript (not stdout tail) ─────
+describe("AC-EVAL-03: grader uses events.jsonl transcript (not stdout tail)", () => {
+  const EVAL_RUNNER = join(REPO, "apps", "eval-hub", "src", "domains", "execution", "evalRunner.ts");
+  const WORKSPACE_WRITER = join(REPO, "apps", "eval-hub", "src", "domains", "persistence", "workspaceWriter.ts");
+  const EVENT_TYPES = join(REPO, "apps", "eval-hub", "src", "shared", "events.ts");
+
+  it("AC-EVAL-03: eval-hub persists stream events to events.jsonl instead of relying on stdout tail", async () => {
+    const runner = await readFile(EVAL_RUNNER, "utf8");
+    const writer = await readFile(WORKSPACE_WRITER, "utf8");
+    expect(runner).toContain("appendEvent(");
+    expect(writer).toContain("events.jsonl");
+    expect(writer).toContain("appendFile");
+  });
+
+  it("AC-EVAL-03: event schema captures goose turns and grading events", async () => {
+    const src = await readFile(EVENT_TYPES, "utf8");
+    expect(src).toContain("goose.turn");
+    expect(src).toContain("subject.graded");
+  });
+
+  it("AC-EVAL-03: event capture includes early turn visibility", async () => {
+    const src = await readFile(EVAL_RUNNER, "utf8");
+    expect(src).toContain("goose.turn");
+    expect(src).toContain("parseStreamLine");
+    expect(src).not.toMatch(/stdout\.slice\(-\d+\)|tail -n/);
   });
 });

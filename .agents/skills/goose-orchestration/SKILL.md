@@ -1,7 +1,12 @@
 ---
 name: goose-orchestration
 description: >
-  Goose orchestration manual: extensions, recipes, subrecipes, subagents, Summon load/delegate, skills, sessions, and guardrails.
+  Load before any call to delegate(), or when deciding which specialist to summon.
+  Provides the load() discovery protocol (call with no args to get live agent names
+  and descriptions), the mandatory Orchestration decision block template, subagent
+  isolation rules, write-scope partitioning, and Beads assignee routing patterns.
+  Covers the Orchestration, Specialist, and Skill-only recipe patterns (AD-001).
+  Do not load for single-agent tasks that require no delegation.
 metadata:
   version: 1.0.0
 ---
@@ -11,7 +16,8 @@ metadata:
 ## Knowledge generation (before any delegation decision)
 
 Before emitting an Orchestration decision, generate explicit knowledge:
-1. Call `load()` with no arguments — list available agents and their descriptions.
+1. Call `load()` with no arguments — **primary source of agent names and descriptions**.
+   The list returned by `load()` is authoritative; the routing table below is a reading guide.
 2. Run `bd prime` — load current Beads state (open issues, memories, workflow context).
 3. Check `bd ready --json` — identify which beads are waiting for assignment.
 Only after this knowledge is generated: emit the Orchestration decision block.
@@ -31,15 +37,15 @@ Load knowledge:
 
 ```text
 load()
-load(source: "beads-harness")
-load(source: "harness-research")
+load(source: "beads")
+load(source: "explore")
 ```
 
 Delegate:
 
 ```text
 delegate(instructions: "Research X read-only", async: true)
-delegate(source: "harness_review", parameters: { task: "bd-123" })
+delegate(source: "review", parameters: { task: "bd-123" })
 delegate(source: "reviewer", instructions: "Review this diff")
 ```
 
@@ -53,38 +59,42 @@ load(source: "<task_id>", cancel: true)
 
 ## Agent and Subrecipe Routing Table
 
-This is the **canonical routing reference** for the harness.
-Load this skill before any delegation decision.
-Call `load()` to confirm agent availability at runtime — descriptions you see
-there must match the "Invoke when" column below.
+> **Primary source: `load()` at runtime.**
+> This table is a **reading guide** — not a fixed list.
+> Always call `load()` first; the names and descriptions it returns are authoritative.
+> This table teaches you *how to read* descriptions to match intent.
+> New or renamed agents discovered via `load()` are routed the same way: read description, match intent.
 
 ### Named agents — `delegate(source: "<name>", instructions: "…")`
 
 | Agent | Role | Invoke when | Do NOT invoke when |
 |---|---|---|---|
-| `harness-orchestrator` | SDD+TDD loop coordinator | Multi-step, multi-agent, multi-phase work | Single-scope task; standalone research |
+| `orchestrator` | SDD+TDD loop coordinator | Multi-step, multi-agent, multi-phase work | Single-scope task; standalone research |
 | `product-owner` | PRD + acceptance criteria, 100-pt quality gate | Start of any feature or initiative | Implementation, architecture, bug fixes |
 | `architect` | System design, ADRs, trade-off analysis | Technology decision or system boundary touched | Implementation or tactical code review |
-| `beads-planner` | Beads dependency graph, exact `bd` commands | Goal spans >1 file/session/agent; no issues exist | Issues already exist and are claimable |
+| `planner` | Beads dependency graph, exact `bd` commands | Goal spans >1 file/session/agent; no issues exist | Issues already exist and are claimable |
 | `codebase-researcher` | Read-only architecture mapper | Map blast radius; gather pre-planning evidence | Anything requiring writes |
 | `tdd-guide` | RED→GREEN→REFACTOR + 80% coverage gate | Before any new feature implementation or bug fix | Research, planning, or review phases |
-| `implementation-worker` | Scoped bead coding with TDD | Bead is claimed and ready for coding | Planning, architecture, or review |
+| `implementation-worker` | Scoped bead coding with TDD | Bead is claimed and ready for coding; load `systematic-debugging` skill for root-cause debugging | Planning, architecture, or review |
 | `review-critic` | Confidence-filtered code review + Beads hygiene | After any implementation; before closing bead | Planning or architecture decisions |
 | `principal-engineer` | Blast radius, breaking changes, escalation | Shared infra touched; public API changed; 2+ BLOCKs | Routine review (use review-critic first) |
 | `qa-automation` | Full test pipeline: unit + integration + E2E + CI | After implementation is complete | Before implementation exists |
 | `ux-researcher` | User research, personas, usability testing | New feature, user validation | Visual design, a11y compliance |
-  | `ui-designer`   | Design system, WCAG 2.2 AA, a11y audit | Any UI change | User research, backend-only |
+| `ui-designer` | Design system, WCAG 2.2 AA, a11y audit | Any UI change | User research, backend-only |
 
 ### Subrecipes — structured, isolated sessions, typed parameters
 
+> Subrecipe names come from the recipe's `sub_recipes` block — confirmed via `load()`.
+
 | Subrecipe | Role | Prefer over named agent when |
 |---|---|---|
-| `harness_research` | Read-only codebase + Beads research | Headless/CLI invocation; typed params needed |
-| `harness_plan` | Goal → Beads dependency graph | CLI planning run outside a session |
-| `harness_implement` | Scoped bead coding with handoff | CLI implementation run |
-| `harness_review` | Code + tests + Beads hygiene | CLI review run; JSON response schema needed |
-| `harness_web_test` | Playwright + accessibility | CLI browser verification run |
-| `harness_release` | Gated release + CI waits | Release workflow from CLI |
+| `explore` | Read-only codebase + Beads research | Headless/CLI invocation; typed params needed |
+| `plan` | Goal → Beads dependency graph | CLI planning run outside a session |
+| `implement` | Scoped bead coding with TDD handoff | CLI implementation run |
+| `review` | Code + tests + Beads hygiene | CLI review run; JSON response schema needed |
+| `spec` | Formal WHEN/THEN/SHALL spec writing | CLI spec phase; typed params needed |
+| `verify` | Adaptive verification (api/web/cli/lib/ui) | CLI verification run |
+| `doc-review` | Harness documentation review | Read-only doc audit from CLI |
 
 ### Routing decision algorithm
 
@@ -92,7 +102,7 @@ there must match the "Invoke when" column below.
 1. call load()                     → read live agent names + descriptions
 2. match user intent               → "Invoke when" column above
 3. single intent, clear match      → delegate to that agent directly
-4. multi-intent or unclear         → delegate to harness-orchestrator
+4. multi-intent or unclear         → delegate to orchestrator
 5. emit Orchestration decision     → before every delegate() call
 6. parallel read-only work         → async: true + load(source: "<task_id>")
 7. write work                      → one writer per file/module, no overlap
@@ -111,7 +121,7 @@ there must match the "Invoke when" column below.
 
 ## Beads as orchestration state (Loop Engineering pattern)
 
-For full Beads command reference, load skill: `beads-harness`.
+For full Beads command reference, load skill: `beads`.
 
 Beads replaces STATE.md from Loop Engineering. The full orchestration loop:
 
@@ -190,7 +200,7 @@ load()  ← discover agents + subrecipes + their descriptions
     │
     ├─ Structured workflow phase (isolated session, typed params)?
     │      → subrecipe via sub_recipes block
-    │        delegate(source: "harness_review", parameters: {task: "…"})
+    │        delegate(source: "review", parameters: {task: "…"})
     │
     └─ Specialist role (free-form, in-session context sharing)?
            → named agent via Summon
@@ -264,15 +274,15 @@ bd close <id> --reason "Done: <summary>"
 | `review-critic`         | Code review, Beads hygiene, PR gates       |
 | `architect`             | System design, ADRs, trade-off analysis    |
 | `product-owner`         | PRD, acceptance criteria, user stories     |
-| `beads-planner`         | Dependency graphs, bd command sequences    |
+| `planner`         | Dependency graphs, bd command sequences    |
 | `codebase-researcher`   | Read-only research, blast-radius mapping   |
-| `implementation-worker` | Scoped TDD implementation                  |
+| `implementation-worker` | Scoped TDD implementation; load `systematic-debugging` skill for debugging tasks |
 | `tdd-guide`             | RED→GREEN→REFACTOR, coverage gates         |
 | `qa-automation`         | Test pipeline, flaky tests, CI integration |
 | `ux-researcher`         | User research, personas, journey maps, usability testing |
 | `ui-designer`           | Design system tokens, WCAG 2.2 AA, a11y, browser evidence |
 | `principal-engineer`    | Breaking changes, blast radius, escalation |
-| `harness-orchestrator`  | Multi-step SDD+TDD coordination            |
+| `orchestrator`          | Multi-step SDD+TDD coordination            |
 
 ## Subagent constraints
 
@@ -379,3 +389,13 @@ Stop once the requested orchestration plan or synthesis is complete.
 - Put specialized repeatable units in subrecipes.
 - Use response schemas for automation.
 - Include `summon` explicitly when a recipe has an `extensions` block and needs delegation.
+
+## Methodology Locality Guard
+
+Keep orchestration methodology in this skill and specialist methodology in specialist skills. Recipes should state workflow entry points, required loads, parameters, and completion conditions; they should not duplicate broad routing tables or reusable delegation protocols unless the text is a short invocation reminder.
+
+Before editing a recipe, check:
+
+- Does reusable delegation logic belong here instead of in the recipe?
+- Does the recipe eval JSON list only the in-session agent(s), excluding delegated/summoned specialists?
+- Does the recipe eval JSON include this skill when the recipe depends on orchestration-specific behavior such as Orchestration decision, non-overlapping worker scopes, or Delegation audit?

@@ -18,11 +18,8 @@ if sh.exists():
     text = sh.read_text()
     # Find the managed list closing bracket
     # Inject after the last entry in the managed list (before the closing bracket line)
-    old = '    ("uiux", "design.yaml"),
-]'
-    new = '    ("uiux", "design.yaml"),
-    ("security", "harness-security-review.yaml"),
-]'
+    old = '    ("uiux", "design.yaml"),\n]'
+    new = '    ("uiux", "design.yaml"),\n    ("security", "harness-security-review.yaml"),\n]'
     if old in text:
         sh.write_text(text.replace(old, new, 1))
         print("[fixture] install.sh: security slash command added (recipe does not exist)")
@@ -43,8 +40,7 @@ if ps1.exists():
     text = ps1.read_text()
     # Find last entry in the Managed array (ends with } without trailing comma, then ) or ])
     old = "        @{ command = 'uiux';      file = 'ui-ux-suite.yaml' }"
-    new = "        @{ command = 'uiux';      file = 'ui-ux-suite.yaml' },
-        @{ command = 'security';  file = 'harness-security-review.yaml' }"
+    new = "        @{ command = 'uiux';      file = 'ui-ux-suite.yaml' },\n        @{ command = 'security';  file = 'harness-security-review.yaml' }"
     if old in text:
         ps1.write_text(text.replace(old, new, 1))
         print("[fixture] install.ps1: security slash command added")

@@ -1,0 +1,72 @@
+[
+  {
+    "skills": [
+      "wcag-accessibility-audit"
+    ],
+    "query": "Audit the harness documentation index page (`dist/docs/html/agentic-development-harness.html`) for WCAG 2.2 AA compliance. Apply the Perceivable principle (guideline 1.1 and 1.4) and report all violations with criterion references.",
+    "files": [
+      "dist/docs/html/agentic-development-harness.html",
+      "docs/assets/site.css"
+    ],
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The wcag-accessibility-audit skill provides the WCAG 2.2 criterion numbers, conformance levels, and structured violation format.",
+    "baseline_gaps": [
+      "Agent identifies accessibility issues without citing WCAG criterion numbers.",
+      "Agent conflates A and AA conformance levels — treats all violations as equally urgent.",
+      "Agent reports findings in prose rather than the structured criterion/impact/remedy format."
+    ],
+    "expected_behavior": [
+      "Cites the exact WCAG 2.2 criterion number for every finding (e.g., 1.4.3 Contrast Minimum — AA).",
+      "Distinguishes A violations (must fix for basic compliance) from AA violations (required for most standards).",
+      "Produces findings in the structured format: criterion ID, level, description, impact, remedy.",
+      "Does not report AAA issues as AA violations — maintains conformance level discipline."
+    ]
+  },
+  {
+    "skills": [
+      "wcag-accessibility-audit"
+    ],
+    "query": "Conduct a full POUR audit of the harness evaluation trend report (`dist/evals/report/index.html`). Apply all four WCAG principles (Perceivable, Operable, Understandable, Robust) and produce a compliance matrix.",
+    "files": [
+      "dist/evals/report/index.html"
+    ],
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The wcag-accessibility-audit skill applies all four POUR principles systematically, not just the obvious visual ones.",
+    "baseline_gaps": [
+      "Agent audits contrast and alt text (Perceivable only) and misses Operable, Understandable, and Robust.",
+      "Agent does not produce a compliance matrix — only a list of issues.",
+      "Agent does not check Robust criteria (4.1.x): missing aria labels, invalid ARIA roles, or name/role/value violations."
+    ],
+    "expected_behavior": [
+      "Applies all four POUR principles: Perceivable (1.x), Operable (2.x), Understandable (3.x), Robust (4.x).",
+      "Produces a compliance matrix: principle × guideline × pass/fail/not-applicable.",
+      "Checks Operable keyboard navigation (2.1.1) — not just visual compliance.",
+      "Checks Robust criterion 4.1.2 (Name, Role, Value) for all interactive elements."
+    ]
+  },
+  {
+    "skills": [
+      "wcag-accessibility-audit"
+    ],
+    "query": "Perform a comprehensive WCAG 2.2 AA accessibility audit of the harness KG visualizer (`dist/kg/index.html`). Apply all four POUR principles, identify WCAG 2.2-specific new criteria (2.4.11 Focus Appearance, 2.5.8 Target Size), and produce a prioritised remediation plan.",
+    "files": [
+      "dist/kg/index.html"
+    ],
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The wcag-accessibility-audit skill applies WCAG 2.2-specific new success criteria not in 2.1, produces a priority-ordered remediation plan, and distinguishes legal compliance issues from best-practice improvements.",
+    "baseline_gaps": [
+      "Agent applies only WCAG 2.1 criteria and misses the new 2.2 criteria (2.4.11, 2.5.8, 3.2.6, 3.3.7).",
+      "Agent produces a flat findings list without remediation priority ordering.",
+      "Agent does not distinguish legal compliance failures from best-practice improvements."
+    ],
+    "expected_behavior": [
+      "Explicitly identifies and applies WCAG 2.2-new criteria: 2.4.11 Focus Appearance, 2.5.3 Target Size (Minimum), and at least one other 2.2 addition.",
+      "Produces a remediation plan prioritised by: (1) A-level violations, (2) AA-level violations, (3) AAA/best-practice.",
+      "Distinguishes legally required AA compliance from best-practice AAA improvements.",
+      "For interactive graph elements (nodes, edges), checks 2.5.3 Target Size (24×24px minimum) and 4.1.2 Name/Role/Value."
+    ]
+  }
+]

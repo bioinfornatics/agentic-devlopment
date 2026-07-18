@@ -66,7 +66,8 @@ Useful flags:
 By default, the installer upserts these slash commands in `~/.config/goose/config.yaml`:
 
 ```text
-/harness /research /plan /implement /review /webtest /release /memory /sdd /uiux
+/dev /discover /spec /explore /plan /implement /review /doc-review
+/verify /design /sdd /release /remember
 ```
 
 The update is idempotent: existing entries for those command names are replaced, not duplicated. Other user-defined slash commands are preserved. Use `--skip-slash-commands` or `-SkipSlashCommands` to opt out.
@@ -117,8 +118,8 @@ goose skills list
 Expected custom skills include:
 
 ```text
-agentic-dev-harness
-beads-harness
+agentic-devlopment
+beads
 goose-orchestration
 sdd
 code-review
@@ -135,15 +136,10 @@ goose recipe list --verbose
 Expected recipes include:
 
 ```text
-harness-master
-harness-research
-harness-plan
-harness-implement
-harness-review
-harness-web-test
-harness-release
-sdd-master
-ui-ux-suite
+dev       discover  explore   spec
+design    sdd       plan      implement
+review    verify    release   remember
+doc-review  harness-review
 ```
 
 ## Configure Goose extensions
@@ -171,7 +167,7 @@ goose configure
 Render without running:
 
 ```bash
-goose run --recipe harness-master \
+goose run --recipe dev \
   --params task="smoke test" \
   --render-recipe
 ```
@@ -181,7 +177,7 @@ Run a read-only review in a repository:
 ```bash
 cd /path/to/repo
 
-goose run --recipe harness-review \
+goose run --recipe review \
   --params task="review current diff" \
   --params repo_path="$PWD" \
   --params constraints="Read-only smoke test. Do not modify files."
@@ -195,7 +191,7 @@ In a Beads-enabled repo:
 bd prime
 bd ready --json
 
-goose run --recipe harness-master \
+goose run --recipe dev \
   --params task="work on the next ready bead" \
   --params repo_path="$PWD"
 ```

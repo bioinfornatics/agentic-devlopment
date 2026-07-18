@@ -8,23 +8,23 @@ Agents are thin operating protocols (130–180 lines); skills hold the methodolo
 
 | Agent | Skills loaded |
 |---|---|
-| harness-orchestrator | agentic-dev-harness, goose-orchestration, beads-harness |
-| codebase-researcher | agentic-dev-harness, goose-orchestration |
-| beads-planner | beads-harness, agentic-dev-harness |
-| product-owner | sdd, agentic-dev-harness |
-| architect | agentic-dev-harness, sdd |
-| tdd-guide | agentic-dev-harness, systematic-debugging |
-| implementation-worker | agentic-dev-harness, beads-harness |
+| orchestrator | agentic-devlopment, goose-orchestration, beads |
+| codebase-researcher | agentic-devlopment, goose-orchestration |
+| planner | beads, agentic-devlopment |
+| product-owner | sdd, agentic-devlopment |
+| architect | agentic-devlopment, sdd |
+| tdd-guide | agentic-devlopment, systematic-debugging |
+| implementation-worker | agentic-devlopment, beads |
 | review-critic | code-review |
-| principal-engineer | agentic-dev-harness, code-review |
-| qa-automation | agentic-dev-harness, webapp-testing, systematic-debugging |
+| principal-engineer | agentic-devlopment, code-review |
+| qa-automation | agentic-devlopment, webapp-testing, systematic-debugging |
 | ux-researcher | ux-quality / ui-quality, webapp-testing |
 | ui-designer   | ux-quality / ui-quality, webapp-testing |
 
 ## Core skills
 
-- `agentic-dev-harness` — master operating model.
-- `beads-harness` — Beads commands and durable task graph semantics.
+- `agentic-devlopment` — master operating model.
+- `beads` — Beads commands and durable task graph semantics.
 - `goose-orchestration` — Goose extensions, recipes, subrecipes, subagents, Summon.
 - `sdd` — product engineering governance loop.
 - `code-review` — review methodology.

@@ -27,6 +27,9 @@ flowchart LR
     style L fill:#e8eaf6,stroke:#3949ab
 ```
 
+> **Flowchart → table mapping:** `/explore` + `/plan` = discovery phase;
+> `TDD` + `/implement` = implementation phase; `/verify` is embedded in `/release`.
+
 ## Mental model
 
 The harness combines three layers:
@@ -37,28 +40,35 @@ The harness combines three layers:
 
 ## Decision table
 
-| User says...                               | Use case             | Recipe                              |
-|--------------------------------------------|----------------------|-------------------------------------|
-| Goal                                       | Category             | Recipe / slash command              |
-| ---                                        | ---                  | ---                                 |
-| "Set this repo up for agentic development" | Init project         | `sdd`, `plan`                       |
-| "Start a new feature"                      | Discovery            | `/discover`                         |
-| "Write the spec"                           | Specification        | `/spec`                             |
-| "Review my changes"                        | Code review          | `/review`                           |
-| "Find vulnerabilities"                     | Security review      | `/review` with security constraints |
-| "Test UX with simulated users"             | UXR simulation       | `/design`, `/sdd`                   |
-| "Does this UI look good / accessible?"     | UI review            | `/design`, `/verify`                |
-| "Are the tests good enough?"               | Test review          | `/review` with test constraints     |
-| "Is this spec complete?"                   | Spec review          | `/sdd`, `/spec`                     |
-| "Score this project"                       | Judge and score      | `/explore`, `/review`               |
-| "Implement this bead"                      | Implementation loop  | `/implement`                        |
-| "Prepare a release"                        | Release readiness    | `/release`                          |
-| "Investigate outage / flaky CI"            | Incident/SRE         | `/explore`, `/plan`                 |
-| "Research these modules in parallel"       | Multi-agent research | `/dev` with mode=explore            |
-| "Improve docs/onboarding"                  | Documentation review | `/review`                           |
-| "Remember this repo convention"            | Memory stewardship   | `/remember`                         |
+> **Quick gate — which situation are you in?**
+> - 🆕 Setting up a new repo for the first time → [Phase 1 — Setup](#phase-1--setup-once-per-project)
+> - 🏗️ Building, implementing, or shipping a feature (most visits) → [Phase 2 — Feature lifecycle](#phase-2--feature-lifecycle-golden-path)
+> - 🔍 Reviewing, operating, or maintaining → [Phase 3–6](#phase-3--review--quality)
 
-## Golden path
+⭐ = golden-path steps used on every feature.
+
+---
+
+### Phase 1 — Setup *(once per project)*
+
+| Recipe | What you want to do |
+|---|---|
+| `/sdd` then `/plan` | Set this repo up for agentic development |
+
+---
+
+### Phase 2 — Feature lifecycle *(golden path)*
+
+> **Start here.** Run all four steps in sequence for every feature.
+
+| Recipe | What you want to do |
+|---|---|
+| ⭐ `/discover` | Start a new feature |
+| ⭐ `/spec` | Write the spec |
+| ⭐ `/implement` | Implement this bead |
+| ⭐ `/release` | Prepare a release |
+
+**Run it now:**
 
 ```bash
 bd prime || true
@@ -66,6 +76,48 @@ bd ready --json || true
 
 goose run --recipe dev --params task="<goal>" --params repo_path="$PWD" --params constraints="<optional constraints>"
 ```
+
+---
+
+### Phase 3 — Review & quality
+
+| Recipe | What you want to do |
+|---|---|
+| `/review` | Review changes, audit security, or check test coverage |
+| `/spec` then `/sdd` | Validate the spec |
+| `/explore` then `/review` | Score this project |
+
+> **`/review` modes:** pass `constraints="security"` for a security audit,
+> `constraints="tests"` for test-coverage review, or omit for general code review.
+
+---
+
+### Phase 4 — Design & UX
+
+| Recipe | What you want to do |
+|---|---|
+| `/design` then `/sdd` | Test UX with simulated users |
+| `/design` then `/verify` | Review UI / check accessibility |
+
+---
+
+### Phase 5 — Operations
+
+| Recipe | What you want to do |
+|---|---|
+| `/explore` then `/plan` | Investigate outage / flaky CI |
+| `/dev` (mode=explore) | Research modules in parallel |
+
+---
+
+### Phase 6 — Maintenance
+
+| Recipe | What you want to do |
+|---|---|
+| `/doc-review` | Improve docs / onboarding |
+| `/remember` | Save a repo convention for future sessions |
+
+---
 
 ## When to create Beads
 
@@ -90,3 +142,11 @@ Delegate to subagents when:
 - you need independent critique.
 
 Do not delegate overlapping write scopes.
+
+---
+
+## Ready? Copy and run
+
+```bash
+goose run --recipe dev --params task="<goal>" --params repo_path="$PWD" --params constraints="<optional constraints>"
+```

@@ -1,6 +1,14 @@
 ---
 name: systematic-debugging
-description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+description: >
+  Load at the first sign of any bug, test failure, unexpected behavior, or failing
+  hypothesis — before proposing any fix. Enforces the Iron Law: NO FIX WITHOUT
+  ROOT CAUSE INVESTIGATION FIRST. Runs four mandatory phases: Root Cause
+  Investigation, Pattern Analysis, Hypothesis Testing, Implementation. Detects red
+  flags (fixing symptoms, skipping root cause, applying the same fix twice). Use
+  immediately when an error occurs, when a fix did not work, or when the cause of
+  unexpected behavior is unknown.
+version: "1.0.0"
 ---
 
 # Systematic Debugging
@@ -289,7 +297,7 @@ These techniques are part of systematic debugging and available in this director
 
 ## Beads integration
 
-For Beads workflow commands, load skill: `beads-harness`.
+For Beads workflow commands, load skill: `beads`.
 
 When a bug is diagnosed and a fix is planned:
 

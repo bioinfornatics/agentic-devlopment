@@ -1,0 +1,73 @@
+[
+  {
+    "skills": [
+      "beads"
+    ],
+    "query": "Inspect the next available harness maintenance issue and start work only if claimable work exists. If no claimable issue exists, report that state and do not modify files.",
+    "files": [
+      ".beads/",
+      "AGENTS.md"
+    ],
+    "fixture_intent": "Normal scenario: inspect-and-claim discipline \u2014 bd prime, bd ready, atomic claim or explicit no-work report.",
+    "difficulty": "normal",
+    "max_turns": 500,
+    "expected_skill_contribution": "The Beads skill should inspect durable ready state, claim work only when claimable work exists, and otherwise report the no-work state without modifying files.",
+    "baseline_gaps": [
+      "Agent may choose work without checking durable ready state.",
+      "Agent may not claim work atomically before starting."
+    ],
+    "expected_behavior": [
+      "Runs `bd prime` and `bd ready --json` before any other action.",
+      "Claims selected work with `bd update <id> --claim --json` before any modification when claimable work exists.",
+      "When no claimable work exists, explicitly reports that state and makes no file edits or Beads mutations.",
+      "Summarises selected scope and blockers, or summarises the no-work-available state, then stops."
+    ]
+  },
+  {
+    "skills": [
+      "beads"
+    ],
+    "query": "A task to validate recipe YAML must wait for the task that edits `.goose/recipes/harness-master.yaml`; encode this dependency in Beads.",
+    "files": [
+      ".goose/recipes/harness-master.yaml"
+    ],
+    "fixture_intent": "Very difficult scenario: dependency direction, requirement language, verification \u2014 `bd dep add B A` means B needs A.",
+    "difficulty": "very_difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The Beads skill should encode the dependency using `bd dep add <B> <A>` (B needs A), explicitly reject 'A blocks B' framing, create both beads if they don't exist, verify with `bd blocked --json` and report the actual blocked output showing the validate-bead is not claimable \u2014 a baseline agent either reverses the direction or skips verification output.",
+    "baseline_gaps": [
+      "Agent may reverse the dependency direction (add edit-bead as dependent on validate-bead).",
+      "Agent states 'dependency added' without running a verification query or showing its output.",
+      "Agent uses 'blocks' language ('edit blocks validate') rather than requirement language ('validate needs edit')."
+    ],
+    "expected_behavior": [
+      "Creates both beads (edit-harness-master and validate-recipe) if they do not already exist before adding the dependency.",
+      "Uses `bd dep add <validate-id> <edit-id>` \u2014 the validate-bead is the child (it needs the edit-bead), not the reverse.",
+      "Explicitly rejects 'blocks' framing: states the dependency as 'validate needs edit' or 'validate depends on edit', never 'edit blocks validate'.",
+      "Runs `bd blocked --json` or `bd ready --json` after adding the dependency and reports the actual command output showing the validate-bead is blocked/not-ready."
+    ]
+  },
+  {
+    "skills": [
+      "beads"
+    ],
+    "query": "Store a durable pointer memory that the canonical release checklist for this harness is in docs/10-release-readiness.md; avoid copying the checklist content or creating task files.",
+    "files": [
+      "docs/10-release-readiness.md"
+    ],
+    "fixture_intent": "Difficult scenario: pointer memory discipline \u2014 'read when' trigger phrase required (not 'read before'), short key, no content dump, no MEMORY.md. Skill gotcha now explicitly names this distinction.",
+    "difficulty": "difficult",
+    "max_turns": 500,
+    "expected_skill_contribution": "The Beads skill should store a short pointer memory with a stable key using the exact 'read when <trigger>' wording (not 'read before'), avoiding long content, MEMORY.md, or markdown TODO tracking. The skill now includes a verbatim template and a gotcha for the 'read when' vs 'read before' distinction.",
+    "baseline_gaps": [
+      "Agent may store long-form checklist content in memory instead of a pointer.",
+      "Agent may create MEMORY.md or markdown TODO files."
+    ],
+    "expected_behavior": [
+      "Stores or proposes a `bd remember` command with a stable kebab-case `--key`.",
+      "Uses the pointer format with `read when <trigger>` (not 'read before') \u2014 e.g. 'Release checklist: canonical source is docs/10-release-readiness.md; read when preparing a release; invariant: <rule>' \u2014 under 250 characters. The `#section` anchor is optional when the file has no named sections.",
+      "Does not copy the checklist content into the memory value.",
+      "Does not create MEMORY.md, markdown TODO files, or Beads task issues for this memory."
+    ]
+  }
+]

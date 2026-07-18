@@ -7,10 +7,10 @@ description: >
 instructions: |
   ## Detect type and load matching skill
   From target_type parameter and task context, load:
-  - api:     load skills agentic-dev-harness
+  - api:     load skills agentic-devlopment
   - web:     load skills webapp-testing + ui-quality
-  - cli:     load skills agentic-dev-harness + systematic-debugging
-  - library: load skills agentic-dev-harness
+  - cli:     load skills agentic-devlopment + systematic-debugging
+  - library: load skills agentic-devlopment
   - ui:   load skills ui-quality and load skills atomic-design
 
   ## First visible output
@@ -29,8 +29,7 @@ instructions: |
      curl -sf http://localhost:<port>/health || echo "SERVER DOWN — check README for start command"
   3. Run Bruno collection:
      bru run --env <env> <collection-path> --reporter json
-     Fallback: curl -s -w "
-HTTP_CODE" <endpoint> | tee /tmp/response.txt
+     Fallback: curl -s -w "\nHTTP_CODE" <endpoint> | tee /tmp/response.txt
   4. For each failing request: show method, URL, request body, response status, response body.
   5. Cross-check against [FEAT]-NN ACs — verify each AC has a corresponding test.
   6. Report: N passed / M failed, coverage per AC ID.
