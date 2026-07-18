@@ -427,4 +427,5 @@
 {"type":"relation","from":"eval-mode:layer-delta","to":"AC-EVAL-04","relationType":"HAS_CRITERION"}
 {"type":"relation","from":"eval-mode:layer-delta","to":"AC-EVAL-05","relationType":"HAS_CRITERION"}
 {"type":"relation","from":"eval-mode:layer-delta","to":"AC-EVAL-06","relationType":"HAS_CRITERION"}
-{"type":"relation","from":"eval-kind:skills","to":"scripts/run-skill-ab-suite.py","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"eval-kind:skills","to":"scripts/run-skill-ab-suite.py","relationType":"IMPLEMENTED_IN"}{"type":"entity","name":"test:harness-test-ts","entityType":"test","observations":["scope:buildtime","file:apps/kg/src/harness.test.ts","status:passing","covers:AC-SKILL-02 AC-EVAL-01 AC-EVAL-02 AC-EVAL-06 AC-RECIPE-02 AC-RECIPE-03 AC-KG-01 AC-KG-02 AC-BEADS-01"]}
+{"type":"relation","from":"test:harness-test-ts","to":"AC-EVAL-06","relationType":"VALIDATES"}

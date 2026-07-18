@@ -217,3 +217,110 @@ describe("AC-RECIPE-03: slash command registration", () => {
     }
   });
 });
+
+// ── AC-EVAL-06: layer declarations in eval JSON files ────────────────────
+describe("AC-EVAL-06: layer declarations in eval JSON files", () => {
+  const agentsEvalDir = (repo: string) => join(repo, "evals", "agents");
+  const recipesEvalDir = (repo: string) => join(repo, "evals", "recipes");
+  const agentsDir = (repo: string) => join(repo, ".agents", "agents");
+  const skillsDir = (repo: string) => join(repo, ".agents", "skills");
+
+  it("AC-EVAL-06: every agent eval scenario has a skills array", async () => {
+    const dir = agentsEvalDir(REPO);
+    const files = (await readdir(dir)).filter(f => f.endsWith(".json"));
+    const problems: string[] = [];
+    for (const f of files) {
+      const scenarios = JSON.parse(await readFile(join(dir, f), "utf8"));
+      if (!Array.isArray(scenarios)) { problems.push(`${f}: not an array`); continue; }
+      for (const [i, s] of scenarios.entries()) {
+        if (!Array.isArray(s.skills))
+          problems.push(`${f}[#${i}]: missing or non-array skills field`);
+      }
+    }
+    expect(problems, "Agent evals with missing skills: " + problems.join("; ")).toHaveLength(0);
+  });
+
+  it("AC-EVAL-06: every recipe eval scenario has agents + skills arrays", async () => {
+    const dir = recipesEvalDir(REPO);
+    const files = (await readdir(dir)).filter(f => f.endsWith(".json"));
+    const problems: string[] = [];
+    for (const f of files) {
+      const scenarios = JSON.parse(await readFile(join(dir, f), "utf8"));
+      if (!Array.isArray(scenarios)) { problems.push(`${f}: not an array`); continue; }
+      for (const [i, s] of scenarios.entries()) {
+        if (!Array.isArray(s.agents))
+          problems.push(`${f}[#${i}]: missing or non-array agents field`);
+        if (!Array.isArray(s.skills))
+          problems.push(`${f}[#${i}]: missing or non-array skills field`);
+      }
+    }
+    expect(problems, "Recipe evals with missing agents/skills: " + problems.join("; ")).toHaveLength(0);
+  });
+
+  it("AC-EVAL-06: every declared skill in agent evals exists on disk", async () => {
+    const evalDir = agentsEvalDir(REPO);
+    const skillsRoot = skillsDir(REPO);
+    const availableSkills = new Set(
+      (await readdir(skillsRoot, { withFileTypes: true }))
+        .filter(d => d.isDirectory())
+        .map(d => d.name)
+    );
+    const files = (await readdir(evalDir)).filter(f => f.endsWith(".json"));
+    const problems: string[] = [];
+    for (const f of files) {
+      const scenarios = JSON.parse(await readFile(join(evalDir, f), "utf8"));
+      if (!Array.isArray(scenarios)) continue;
+      for (const [i, s] of scenarios.entries()) {
+        for (const skill of (s.skills ?? [])) {
+          if (!availableSkills.has(skill))
+            problems.push(`${f}[#${i}]: skill "${skill}" not found in .agents/skills/`);
+        }
+      }
+    }
+    expect(problems, "Missing skills on disk: " + problems.join("; ")).toHaveLength(0);
+  });
+
+  it("AC-EVAL-06: every declared agent in recipe evals exists on disk", async () => {
+    const evalDir = recipesEvalDir(REPO);
+    const agentsRoot = agentsDir(REPO);
+    const availableAgents = new Set(
+      (await readdir(agentsRoot)).filter(f => f.endsWith(".md")).map(f => f.replace(".md", ""))
+    );
+    const files = (await readdir(evalDir)).filter(f => f.endsWith(".json"));
+    const problems: string[] = [];
+    for (const f of files) {
+      const scenarios = JSON.parse(await readFile(join(evalDir, f), "utf8"));
+      if (!Array.isArray(scenarios)) continue;
+      for (const [i, s] of scenarios.entries()) {
+        for (const agent of (s.agents ?? [])) {
+          if (!availableAgents.has(agent))
+            problems.push(`${f}[#${i}]: agent "${agent}" not found in .agents/agents/`);
+        }
+      }
+    }
+    expect(problems, "Missing agents on disk: " + problems.join("; ")).toHaveLength(0);
+  });
+
+  it("AC-EVAL-06: every declared skill in recipe evals exists on disk", async () => {
+    const evalDir = recipesEvalDir(REPO);
+    const skillsRoot = skillsDir(REPO);
+    const availableSkills = new Set(
+      (await readdir(skillsRoot, { withFileTypes: true }))
+        .filter(d => d.isDirectory())
+        .map(d => d.name)
+    );
+    const files = (await readdir(evalDir)).filter(f => f.endsWith(".json"));
+    const problems: string[] = [];
+    for (const f of files) {
+      const scenarios = JSON.parse(await readFile(join(evalDir, f), "utf8"));
+      if (!Array.isArray(scenarios)) continue;
+      for (const [i, s] of scenarios.entries()) {
+        for (const skill of (s.skills ?? [])) {
+          if (!availableSkills.has(skill))
+            problems.push(`${f}[#${i}]: skill "${skill}" not found in .agents/skills/`);
+        }
+      }
+    }
+    expect(problems, "Missing skills on disk: " + problems.join("; ")).toHaveLength(0);
+  });
+});
