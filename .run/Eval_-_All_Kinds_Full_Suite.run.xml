@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Eval - All Kinds Full Suite" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 3 --goose-cli &quot;/home/jmercier/Codes/third-parties/goose/target/debug/goose&quot; &amp;&amp; python3 scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure --ambient-goose --goose-cli &quot;/home/jmercier/Codes/third-parties/goose/target/debug/goose&quot; &amp;&amp; python3 scripts/run-harness-ab-suite.py --kind agents --continue-on-failure --ambient-goose --goose-cli &quot;/home/jmercier/Codes/third-parties/goose/target/debug/goose&quot;" />
+    <option name="SCRIPT_TEXT" value="python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 5 --goose-cli &quot;/home/jmercier/Codes/third-parties/goose/target/debug/goose&quot; &amp;&amp; python3 scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure --ambient-goose --max-workers 5 --goose-cli &quot;/home/jmercier/Codes/third-parties/goose/target/debug/goose&quot; &amp;&amp; python3 scripts/run-harness-ab-suite.py --kind agents --continue-on-failure --ambient-goose --max-workers 5 --goose-cli &quot;/home/jmercier/Codes/third-parties/goose/target/debug/goose&quot;" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />

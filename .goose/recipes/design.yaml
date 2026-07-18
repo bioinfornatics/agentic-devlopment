@@ -26,12 +26,12 @@ instructions: |
   Evaluate product UI across: user intent, visual taste, information architecture,
   design tokens/components, frontend states/performance, accessibility, and browser evidence.
 settings:
-  temperature: 0.2
   max_turns: 35
 parameters:
   - key: target
     input_type: string
-    requirement: required
+    requirement: optional
+    default: ""
     description: UI/page/component/product flow to evaluate or build.
   - key: repo_path
     input_type: string
@@ -66,6 +66,11 @@ sub_recipes:
 prompt: |
   Target: {{ target }}
   Repo: {{ repo_path }}
+
+  ## Step 0 — Elicit target if missing
+  If the target line above is blank or empty, ask the user:
+  "What UI/page/component/product flow would you like to design or evaluate?"
+  Wait for their reply and use it as the target for all subsequent steps. Do not call any tool until you have it.
 
   First visible output before any tool call:
     Design scope: {{ target }}

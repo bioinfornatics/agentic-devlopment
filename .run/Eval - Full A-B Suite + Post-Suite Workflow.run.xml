@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Eval - Full A/B Suite + Post-Suite Workflow" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="python scripts/run-skill-ab-suite.py --continue-on-failure &amp;&amp; python scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate &amp;&amp; python scripts/export-eval-history.py &amp;&amp; python scripts/build-eval-report.py &amp;&amp; xdg-open dist/evals/report/index.html" />
+    <option name="SCRIPT_TEXT" value="python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 5 &amp;&amp; python3 scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate &amp;&amp; python3 scripts/export-eval-history.py &amp;&amp; python3 scripts/build-eval-report.py &amp;&amp; xdg-open dist/evals/report/index.html" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />

@@ -1,0 +1,176 @@
+version: 1.0.0
+title: Harness Review — Comprehensive Quality Check
+description: >
+  Full-spectrum review of the agentic development harness: code quality,
+  documentation consistency, recipe validation, and Beads workflow hygiene.
+  Combines code-review and doc-review into a single pass and emits a
+  unified APPROVE | PASS-WITH-NITS | BLOCK verdict.
+instructions: |
+  You orchestrate a comprehensive review of the agentic development harness.
+
+  Explicit routing for this recipe (AD-001 — Specialist pattern):
+  - load skills code-review          (adaptive code/PR review methodology)
+  - load skills agentic-dev-harness  (harness workflow rules and scope discipline)
+  - load skills beads-harness        (memory-pointer format and Beads hygiene rules)
+  - In-session agent: load agent review-critic
+
+  ## First visible output (required before any tool call)
+  State this exact block before any tool call or skill load:
+    Harness-review scope: [code | docs | full]
+    Focus: [what is being reviewed, or "full harness" if unspecified]
+    Approach: [code subrecipe only | doc-review subrecipe only | both in sequence]
+
+  ## Orient (bd prime FIRST — run before anything else)
+  1. Run `bd prime` — load project memories and workflow context.
+  2. Run `bd ready --json` — check for related review beads already open.
+  3. Run `bd memories harness` — load any persisted harness quality facts.
+  Only then proceed with the review workflow.
+
+  ## Routing by scope
+
+  **scope = code (or full)** → run `review` subrecipe for code/diff changes.
+  **scope = docs (or full)** → run `doc-review` subrecipe for documentation consistency.
+  **scope = full (default)** → run both subrecipes in sequence; synthesize into one report.
+
+  When scope is "full", run code review first, then doc review. Collect all findings
+  before synthesizing to avoid context fragmentation.
+
+  ## Synthesis
+  Merge findings from all review passes:
+  - Rank all findings by severity: CRITICAL → HIGH → MEDIUM → LOW
+  - Note cross-surface implications (e.g., a recipe change that also breaks doc accuracy)
+  - Emit a single unified verdict: APPROVE | PASS-WITH-NITS | BLOCK
+
+  Verdict semantics:
+  - APPROVE       = zero actionable findings
+  - PASS-WITH-NITS = only LOW/MEDIUM findings; no blocking issue
+  - BLOCK         = one or more CRITICAL or HIGH findings with proof
+
+  ## Self-validation checklist (complete before returning)
+  - [ ] First visible output declared (scope + focus + approach)
+  - [ ] bd prime run before any inspection
+  - [ ] Code review subrecipe run (if scope is "code" or "full")
+  - [ ] Doc-review subrecipe run (if scope is "docs" or "full")
+  - [ ] All findings severity-ranked (CRITICAL/HIGH/MEDIUM/LOW) with file references
+  - [ ] Cross-surface implications noted between code and documentation changes
+  - [ ] Single unified verdict emitted: APPROVE | PASS-WITH-NITS | BLOCK
+  - [ ] Proposed `bd create` commands included for every CRITICAL/HIGH finding
+  - [ ] No files modified (read-only review unless explicitly instructed)
+
+  Memory checkpoint:
+  - At the end, decide whether a durable harness quality fact was learned.
+  - If yes, store or propose: `bd remember "<fact>" --key <stable-key>`.
+  - Prefer pointer memories over content memories (< 250 chars, "read when" trigger).
+  - Never store review findings in memory — create beads for actionable work.
+settings:
+  max_turns: 40
+parameters:
+  - key: task
+    input_type: string
+    requirement: optional
+    default: ""
+    description: >
+      Review target — task description, bead ID, file path, or PR reference.
+      Leave blank for a full harness review.
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Repository root path (must contain .goose/ and .agents/).
+  - key: scope
+    input_type: select
+    requirement: optional
+    default: full
+    options: [full, code, docs]
+    description: >
+      Review scope.
+      full = code review + documentation review (default);
+      code = code/diff/PR review only;
+      docs = documentation consistency review only.
+  - key: constraints
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Extra review constraints or pass/fail criteria.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: summon
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args:
+      - beads-mcp
+    timeout: 300
+sub_recipes:
+  - name: review
+    path: "subrecipes/review.yaml"
+    description: Code, diff, and PR review using the review-critic worker.
+    values:
+      task: "{{ task }}"
+      repo_path: "{{ repo_path }}"
+      constraints: "{{ constraints }}"
+  - name: doc-review
+    path: "subrecipes/doc-review.yaml"
+    description: Documentation consistency and memory-pointer hygiene review.
+    values:
+      scope: all
+      repo_path: "{{ repo_path }}"
+      focus: "{{ task }}"
+      constraints: "{{ constraints }}"
+prompt: |
+  Task: {{ task }}
+  Repo: {{ repo_path }}
+  Scope: {{ scope }}
+  Constraints: {{ constraints }}
+
+  ## Step 0 — Elicit task if missing
+  If the task line above is blank or empty AND scope is "code", ask the user:
+  "What would you like me to review? (describe the goal, paste a bead ID, or provide a file/PR path)"
+  Wait for their reply before proceeding.
+  If scope is "docs" or "full" with no task, proceed immediately with a full harness review.
+
+  ## Step 1 — First visible output
+  State the scope, focus, and approach before any tool call or skill load.
+
+  ## Step 2 — Orient
+  load skills code-review.
+  load skills agentic-dev-harness.
+  load skills beads-harness.
+  load agent review-critic.
+  Run `bd prime`, then `bd ready --json`, then `bd memories harness`.
+
+  ## Step 3a — Code review (scope: full or code)
+  If scope is "full" or "code":
+    Run `review` subrecipe for: {{ task }}
+    Collect severity-ranked code findings before proceeding.
+
+  ## Step 3b — Documentation review (scope: full or docs)
+  If scope is "full" or "docs":
+    Run `doc-review` subrecipe (scope: all, focus: "{{ task }}").
+    Collect severity-ranked documentation findings.
+
+  ## Step 4 — Synthesize
+  Merge all findings from both passes.
+  Group by severity: CRITICAL → HIGH → MEDIUM → LOW.
+  Note cross-surface implications between code and documentation changes.
+  Emit the unified verdict: APPROVE | PASS-WITH-NITS | BLOCK.
+
+  ## Step 5 — Handoff
+  Report:
+  - Total findings by severity (code + docs combined)
+  - Top 3 actionable findings with proposed fix or exact `bd create` command
+  - Whether any recipe failed `goose recipe validate`
+  - Unified verdict with one-sentence justification
+  Stop after the handoff block. Do not continue exploring.

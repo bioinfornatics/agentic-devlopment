@@ -55,7 +55,7 @@
       "label": "Eval: Full A/B Suite (parallel 3 workers)",
       "detail": "Parallel: 3 skills simultaneously. --ambient-goose required for keychain providers.",
       "type": "shell",
-      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 3 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
@@ -101,7 +101,7 @@
       "label": "Eval: Full A/B Suite + Post-Suite Workflow",
       "detail": "Suite → analyze → export history → build trend report → open both views.",
       "type": "shell",
-      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 3 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python3 scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate && python3 scripts/export-eval-history.py && python3 scripts/build-eval-report.py && xdg-open dist/evals/report/index.html",
+      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python3 scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate && python3 scripts/export-eval-history.py && python3 scripts/build-eval-report.py && xdg-open dist/evals/report/index.html",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
@@ -210,7 +210,7 @@
       "label": "Eval: Recipes — Full Suite",
       "detail": "Run all 12 recipe A/B evals. --ambient-goose required for keychain providers.",
       "type": "shell",
-      "command": "python3 scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "command": "python3 scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
@@ -234,7 +234,7 @@
       "label": "Eval: Recipes — Subset",
       "detail": "A/B eval for selected recipes (space-separated). Prompts for list.",
       "type": "shell",
-      "command": "python3 scripts/run-harness-ab-suite.py --kind recipes --subjects ${input:recipeEvalSubset} --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "command": "python3 scripts/run-harness-ab-suite.py --kind recipes --subjects ${input:recipeEvalSubset} --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
@@ -246,7 +246,7 @@
       "label": "Eval: Agents — Full Suite",
       "detail": "Run all 12 agent A/B evals. --ambient-goose required.",
       "type": "shell",
-      "command": "python3 scripts/run-harness-ab-suite.py --kind agents --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "command": "python3 scripts/run-harness-ab-suite.py --kind agents --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
       "group": "test",
       "problemMatcher": [],
       "presentation": {
@@ -270,7 +270,33 @@
       "label": "Eval: All Kinds — Full Suite (skills + recipes + agents)",
       "detail": "Complete evaluation: skills (parallel 3), then recipes, then agents.",
       "type": "shell",
-      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 3 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python3 scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python3 scripts/run-harness-ab-suite.py --kind agents --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "command": "python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 5 --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python3 scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\" && python3 scripts/run-harness-ab-suite.py --kind agents --continue-on-failure --ambient-goose --goose-cli \"${config:agenticDevelopment.gooseEvalCli}\"",
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Eval: Skills + Recipes (Parallel)",
+      "detail": "Launch skills A/B suite and recipes A/B suite simultaneously. Waits for both before returning.",
+      "dependsOn": [
+        "Eval: Full A/B Suite (parallel 3 workers)",
+        "Eval: Recipes — Full Suite"
+      ],
+      "dependsOrder": "parallel",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Eval: Skills + Recipes (Parallel) + Post-Suite",
+      "detail": "Skills and recipes in parallel, then analyze + export + trend report + open both views.",
+      "dependsOn": [
+        "Eval: Skills + Recipes (Parallel)"
+      ],
+      "type": "shell",
+      "command": "python3 scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate && python3 scripts/export-eval-history.py && python3 scripts/build-eval-report.py && xdg-open dist/evals/report/index.html && xdg-open dist/evals/skills/analysis-index.html",
       "group": "test",
       "problemMatcher": [],
       "presentation": {

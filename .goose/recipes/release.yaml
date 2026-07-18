@@ -24,12 +24,12 @@ instructions: |
   - Prefer pointer memories over content memories to reduce token use.
   - Never store secrets, tokens, credentials, or transient observations.
 settings:
-  temperature: 0.15
   max_turns: 30
 parameters:
   - key: task
     input_type: string
-    requirement: required
+    requirement: optional
+    default: ""
     description: Task, topic, or bead ID.
   - key: repo_path
     input_type: string
@@ -74,6 +74,11 @@ prompt: |
   Release: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
+
+  ## Step 0 — Elicit task if missing
+  If the task line above is blank or empty, ask the user:
+  "What would you like to release? (release goal, version, or bead ID)"
+  Wait for their reply and use it as the task for all subsequent steps. Do not call any tool until you have it.
 
   Step 1 — First visible output: state release target, current git status, gate plan.
   Step 2 — Orient: load skill agentic-dev-harness. Run bd prime and bd ready --json.

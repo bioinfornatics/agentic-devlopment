@@ -33,7 +33,6 @@ instructions: |
   - Prefer pointer memories over content memories to reduce token use.
   - Never store secrets, tokens, credentials, or transient observations.
 settings:
-  temperature: 0.1
   max_turns: 20
 parameters:
   - key: repo_path
@@ -43,7 +42,8 @@ parameters:
     description: Repository path.
   - key: topic
     input_type: string
-    requirement: required
+    requirement: optional
+    default: ""
     description: Research topic or bead.
   - key: constraints
     input_type: string

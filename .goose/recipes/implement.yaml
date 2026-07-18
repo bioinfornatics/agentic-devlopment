@@ -26,12 +26,12 @@ instructions: |
   - Prefer pointer memories over content memories to reduce token use.
   - Never store secrets, tokens, credentials, or transient observations.
 settings:
-  temperature: 0.15
   max_turns: 30
 parameters:
   - key: task
     input_type: string
-    requirement: required
+    requirement: optional
+    default: ""
     description: Task, topic, or bead ID.
   - key: repo_path
     input_type: string
@@ -77,6 +77,11 @@ prompt: |
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
 
+  ## Step 0 — Elicit task if missing
+  If the task line above is blank or empty, ask the user:
+  "What would you like me to implement? (describe the task or paste a bead ID)"
+  Wait for their reply and use it as the task for all subsequent steps. Do not call any tool until you have it.
+
   ## Step 1 — Orient (Generated Knowledge first)
   load skills beads-harness. load skills sdd.
   Run `bd prime`. Run `bd ready --json`. Read `.specs/features/*/spec.md` if present.
@@ -99,6 +104,13 @@ prompt: |
   If tests PASS → proceed to Step 5.
   If tests FAIL → loop back to Step 3 (fix the implementation, NOT the tests).
   Max 3 fix iterations before escalating to user.
+
+  ## Memory checkpoint — GREEN phase
+  When tests pass (GREEN), call `remember_memory` to persist phase state:
+  ```
+  remember_memory sdd/phase "GREEN | Bead: <bead-id> | AC: <AC-IDs-covered> | Tests: <test-count> passing"
+  ```
+  Keep entries < 500 chars. This enables cross-session context recovery for ongoing work.
 
   ## Step 5 — REFACTOR + handoff
   Clean up the implementation without changing tests.

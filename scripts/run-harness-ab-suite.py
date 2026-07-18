@@ -7,6 +7,7 @@ import html
 import json
 import os
 import subprocess
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -89,6 +90,8 @@ def main() -> int:
     parser.add_argument("--quiet", action="store_true")
     parser.add_argument("--no-profile", action="store_true")
     parser.add_argument("--continue-on-failure", action="store_true")
+    parser.add_argument("--max-workers", type=int, default=1, metavar="N",
+                        help="Subjects to run in parallel (default 1 = sequential). Set to 3-4 for parallel runs.")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
@@ -99,7 +102,9 @@ def main() -> int:
         raise SystemExit(f"No {args.kind} evals found under {evals_dir}")
     runner = ROOT / "scripts" / "run-harness-ab-eval.py"
     results: dict[str, dict[str, Any]] = {}
-    for subject in subjects:
+
+    def _run_one_subject(subject: str) -> dict[str, Any]:
+        """Worker: run one subject eval in an isolated subprocess, return result dict."""
         cmd = [
             sys.executable,
             str(runner),
@@ -131,19 +136,62 @@ def main() -> int:
         if args.no_profile:
             cmd.append("--no-profile")
         started = datetime.now(timezone.utc)
-        print(f"== Running {args.kind} eval suite item: {subject} ==", flush=True)
-        proc = subprocess.run(cmd, cwd=ROOT)
+        # stdout/stderr captured in parallel mode to avoid interleaved output across subjects.
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=(args.max_workers > 1), text=True)
         elapsed = (datetime.now(timezone.utc) - started).total_seconds()
-        # Find latest workspace for links.
         subject_dir = workspace_root / subject
-        workspace = max((p for p in subject_dir.iterdir() if (p / "benchmark.json").exists()), key=lambda p: (p / "benchmark.json").stat().st_mtime, default=subject_dir) if subject_dir.exists() else subject_dir
-        results[subject] = {"returncode": proc.returncode, "command": cmd, "workspace": str(workspace)}
-        print(f"[done] {args.kind} subject={subject} rc={proc.returncode} duration={elapsed:.1f}s", flush=True)
-        if proc.returncode != 0 and not args.continue_on_failure:
-            break
+        workspace = (
+            max(
+                (p for p in subject_dir.iterdir() if (p / "benchmark.json").exists()),
+                key=lambda p: (p / "benchmark.json").stat().st_mtime,
+                default=subject_dir,
+            )
+            if subject_dir.exists()
+            else subject_dir
+        )
+        return {
+            "subject": subject,
+            "returncode": proc.returncode,
+            "command": cmd,
+            "workspace": str(workspace),
+            "elapsed": elapsed,
+            "stdout": getattr(proc, "stdout", None) or "",
+            "stderr": getattr(proc, "stderr", None) or "",
+        }
+
+    def _handle_subject_result(result: dict[str, Any]) -> None:
+        """Print buffered output (parallel mode) and record in results dict."""
+        subject = result["subject"]
+        if result["stdout"]:
+            print(result["stdout"], end="", flush=True)
+        if result["stderr"]:
+            print(result["stderr"], end="", flush=True)
+        print(f"[done] {args.kind} subject={subject} rc={result['returncode']} duration={result['elapsed']:.1f}s", flush=True)
+        results[subject] = result
+
+    if args.max_workers <= 1:
+        # Sequential mode (default) — identical behaviour to original implementation.
+        for subject in subjects:
+            print(f"== Running {args.kind} eval suite item: {subject} ==", flush=True)
+            _handle_subject_result(_run_one_subject(subject))
+            if results[subject]["returncode"] != 0 and not args.continue_on_failure:
+                break
+    else:
+        # Parallel mode — subjects run concurrently, output printed as atomic blocks.
+        print(f"== Parallel {args.kind} suite: {len(subjects)} subjects, max_workers={args.max_workers} ==", flush=True)
+        with ThreadPoolExecutor(max_workers=args.max_workers) as pool:
+            future_to_subject = {pool.submit(_run_one_subject, subject): subject for subject in subjects}
+            for future in as_completed(future_to_subject):
+                subject = future_to_subject[future]
+                print(f"== Completed {args.kind} eval suite item: {subject} ==", flush=True)
+                _handle_subject_result(future.result())
+                if results[subject]["returncode"] != 0 and not args.continue_on_failure:
+                    pool.shutdown(wait=False, cancel_futures=True)
+                    break
+
     output = args.output or (workspace_root / "index.html")
     generate_index(output=output, skills=subjects, workspace_root=workspace_root, results=results, command=sys.argv)
-    print(f"Suite index written to {output}")
+    print(f"Suite index written to {output}", flush=True)
     return 0 if all(item["returncode"] == 0 for item in results.values()) else 1
 
 

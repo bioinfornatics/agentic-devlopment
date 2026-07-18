@@ -9,6 +9,7 @@ import sqlite3
 import os
 import subprocess
 import sys
+import tempfile
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -86,8 +87,64 @@ def read_json(path: Path, default: Any = None) -> Any:
 
 
 def write_json(path: Path, data: Any) -> None:
+    """Write JSON to path atomically via a unique sibling temp file + os.replace().
+
+    os.replace() is atomic on Linux (same filesystem): readers always see either
+    the old file or the complete new file, never a partial write.  Safe for
+    concurrent workers writing to different paths and for crash recovery.
+
+    tempfile.mkstemp() gives a per-call unique name (e.g. analysis-XXXXXX.tmp),
+    preventing the shadow-file collision that occurs when two processes call
+    write_json() for the same destination path simultaneously — both would have
+    created the same fixed '.tmp' name and corrupted each other's content.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+    fd, tmp_str = tempfile.mkstemp(dir=path.parent, suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+        os.replace(tmp_str, path)
+    except Exception:
+        try:
+            os.unlink(tmp_str)
+        except OSError:
+            pass
+        raise
+
+
+def write_text_atomic(path: Path, text: str) -> None:
+    """Write text to path atomically via a unique sibling temp file + os.replace().
+
+    Same concurrency guarantee as write_json(): unique mkstemp name prevents
+    shadow collisions between concurrent writers; os.replace() is atomic.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_str = tempfile.mkstemp(dir=path.parent, suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(text)
+        os.replace(tmp_str, path)
+    except Exception:
+        try:
+            os.unlink(tmp_str)
+        except OSError:
+            pass
+        raise
+
+
+def _open_db(db_path: Path) -> sqlite3.Connection:
+    """Open a SQLite connection with WAL journal mode and 30 s busy timeout.
+
+    PRAGMA journal_mode=WAL is database-level and persists in the file header;
+    it is redundant after the first call but harmless to repeat.
+    PRAGMA busy_timeout is connection-level and MUST be applied to every new
+    connection so concurrent writers retry instead of failing immediately with
+    OperationalError: database is locked.
+    """
+    con = sqlite3.connect(str(db_path))
+    con.execute("PRAGMA journal_mode=WAL")
+    con.execute("PRAGMA busy_timeout=30000")
+    return con
 
 
 def utc_now() -> str:
@@ -646,8 +703,8 @@ def analyze_run(run_dir: Path, scenario: dict[str, Any], subject: str, eval_id: 
         "scenario_hash": scenario_hash_val,
     }
     write_json(run_dir / "analysis.json", analysis)
-    (run_dir / "sequence.mmd").write_text(mermaid_sequence(timeline, f"{subject} eval-{eval_id} {configuration} {run_dir.name}"))
-    (run_dir / "analysis.md").write_text(run_analysis_md(analysis))
+    write_text_atomic(run_dir / "sequence.mmd", mermaid_sequence(timeline, f"{subject} eval-{eval_id} {configuration} {run_dir.name}"))
+    write_text_atomic(run_dir / "analysis.md", run_analysis_md(analysis))
     return analysis
 
 
@@ -879,7 +936,7 @@ def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, An
         if llm_analysis is not None:
             scenario_analysis["llm_analysis"] = llm_analysis
         write_json(eval_path / "analysis.json", scenario_analysis)
-        (eval_path / "analysis.md").write_text(scenario_analysis_md(scenario_analysis))
+        write_text_atomic(eval_path / "analysis.md", scenario_analysis_md(scenario_analysis))
         scenario_analyses.append(scenario_analysis)
     subject_analysis = {
         "subject": subject,
@@ -900,7 +957,7 @@ def analyze_subject(subject_dir: Path, args: argparse.Namespace) -> dict[str, An
         ],
     }
     write_json(run_dir / "analysis.json", subject_analysis)
-    (run_dir / "analysis.md").write_text(subject_analysis_md(subject_analysis))
+    write_text_atomic(run_dir / "analysis.md", subject_analysis_md(subject_analysis))
     return subject_analysis
 
 
@@ -970,7 +1027,7 @@ def subject_analysis_md(analysis: dict[str, Any]) -> str:
 
 def init_analysis_tables(db_path: Path) -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(db_path) as db:
+    with _open_db(db_path) as db:
         db.execute(
             """
             CREATE TABLE IF NOT EXISTS eval_analysis (
@@ -988,10 +1045,16 @@ def init_analysis_tables(db_path: Path) -> None:
                 confidence REAL,
                 analysis_path TEXT,
                 sequence_path TEXT,
+                efficiency_json TEXT,
                 created_at TEXT NOT NULL
             )
             """
         )
+        # Add efficiency_json to existing databases that predate this column.
+        try:
+            db.execute("ALTER TABLE eval_analysis ADD COLUMN efficiency_json TEXT")
+        except sqlite3.OperationalError:
+            pass  # column already exists
         db.execute(
             """
             CREATE TABLE IF NOT EXISTS eval_scenario_analysis (
@@ -1013,12 +1076,33 @@ def init_analysis_tables(db_path: Path) -> None:
             )
             """
         )
+        db.execute(
+            """
+            CREATE TABLE IF NOT EXISTS eval_feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                run_id TEXT,
+                kind TEXT NOT NULL,
+                subject TEXT NOT NULL,
+                eval_id INTEGER,
+                configuration TEXT,
+                run_number INTEGER,
+                recommendation_type TEXT,
+                severity TEXT,
+                message TEXT,
+                evidence TEXT,
+                git_commit TEXT,
+                provider TEXT,
+                model TEXT,
+                created_at TEXT NOT NULL
+            )
+            """
+        )
 
 
 def persist_analysis(db_path: Path, analyses: list[dict[str, Any]], workspace_root: Path) -> None:
     init_analysis_tables(db_path)
     created = utc_now()
-    with sqlite3.connect(db_path) as db:
+    with _open_db(db_path) as db:
         for subject_analysis in analyses:
             subject = subject_analysis["subject"]
             run_id = subject_analysis["content_hash"]
@@ -1049,13 +1133,12 @@ def persist_analysis(db_path: Path, analyses: list[dict[str, Any]], workspace_ro
                     ),
                 )
                 eval_dir = workspace_root / subject / run_id / f"eval-{scenario.get('eval_id')}"
-                # Persist efficiency recommendations to eval_feedback
-                for rec in (read_json(
-                    workspace_root / subject / run_id / f"eval-{scenario.get('eval_id')}"
-                    / str(list((workspace_root / subject / run_id / f"eval-{scenario.get('eval_id')}").iterdir())[0].name if (workspace_root / subject / run_id / f"eval-{scenario.get('eval_id')}").exists() else "") / "run-1" / "analysis.json",
-                    {}
-                ) or {}).get("efficiency_recs", []):
-                    try:
+                # Persist efficiency recommendations from every run analysis file.
+                for run_analysis_path in sorted(eval_dir.glob("*/run-*/analysis.json")):
+                    _run_data = read_json(run_analysis_path, {}) or {}
+                    _run_config = run_analysis_path.parent.parent.name
+                    _run_num = int(run_analysis_path.parent.name.split("-")[-1]) if run_analysis_path.parent.name.startswith("run-") else 1
+                    for rec in _run_data.get("efficiency_recs", []):
                         db.execute(
                             """
                             INSERT INTO eval_feedback(
@@ -1065,7 +1148,7 @@ def persist_analysis(db_path: Path, analyses: list[dict[str, Any]], workspace_ro
                             """,
                             (
                                 run_id, "skills", subject, scenario.get("eval_id"),
-                                rec.get("configuration"), 1,
+                                _run_config, _run_num,
                                 rec.get("recommendation_type", "efficiency"),
                                 rec.get("severity"),
                                 rec.get("message", "")[:500],
@@ -1073,16 +1156,14 @@ def persist_analysis(db_path: Path, analyses: list[dict[str, Any]], workspace_ro
                                 None, None, None, created,
                             ),
                         )
-                    except Exception:
-                        pass  # avoid breaking persist on path issues
                 for run_analysis_path in eval_dir.glob("*/run-*/analysis.json"):
                     run = read_json(run_analysis_path, {}) or {}
                     db.execute(
                         """
                         INSERT INTO eval_analysis(
                             run_id, kind, subject, eval_id, configuration, run_number, skill_impact, scenario_quality,
-                            root_causes_json, bad_actions_json, confidence, analysis_path, sequence_path, created_at
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            root_causes_json, bad_actions_json, confidence, analysis_path, sequence_path, efficiency_json, created_at
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
                         (
                             run_id,
@@ -1098,6 +1179,7 @@ def persist_analysis(db_path: Path, analyses: list[dict[str, Any]], workspace_ro
                             run.get("confidence"),
                             str(run_analysis_path),
                             str(run_analysis_path.with_name("sequence.mmd")),
+                            json.dumps(run.get("efficiency")) if run.get("efficiency") else None,
                             created,
                         ),
                     )
@@ -1215,8 +1297,8 @@ def write_suite_summary(workspace_root: Path, analyses: list[dict[str, Any]]) ->
         negative_neutral = sum(1 for scenario in item.get('scenarios', []) if scenario.get('skill_impact') in {'negative', 'neutral'})
         max_warnings = sum(1 for scenario in item.get('scenarios', []) if scenario.get('max_turn_warning'))
         lines.append(f"| {item['subject']} | `{item['content_hash']}` | {len(item.get('scenarios', []))} | {negative_neutral} | {max_warnings} | {causes} |")
-    (workspace_root / "analysis-summary.md").write_text("\n".join(lines) + "\n")
-    (workspace_root / "analysis-index.html").write_text(render_html_summary(analyses, recs))
+    write_text_atomic(workspace_root / "analysis-summary.md", "\n".join(lines) + "\n")
+    write_text_atomic(workspace_root / "analysis-index.html", render_html_summary(analyses, recs))
 
 
 def render_html_summary(analyses: list[dict[str, Any]], recs: list[dict[str, Any]] | None = None) -> str:
@@ -1298,17 +1380,41 @@ def main() -> int:
                         help="Gate: WARN if any subject has one or more negative skill delta scenarios.")
     parser.add_argument("--efficiency-gate", action="store_true",
                         help="Gate: WARN if any scenario has pass_rate=1.0 AND max_turns_reached (answer-key leakage suspected).")
+    parser.add_argument("--reanalyze", action="store_true",
+                        help="Ignore existing subject-analysis.json checkpoints and recompute from raw artifacts.")
     args = parser.parse_args()
 
+    # ── Phase 1: per-subject analysis → checkpoint JSON ───────────────────────
+    # Each subject's result is written to {run_dir}/subject-analysis.json as soon
+    # as it is computed.  If a checkpoint exists and --reanalyze is not set the
+    # subject is skipped (resumable runs).  This decouples the expensive per-run
+    # artifact parsing from the final atomic DB write.
     analyses = []
+    fresh = 0
+    cached = 0
     for subject_dir in discover_subjects(args.workspace_root, args.skill):
+        run_dir = latest_hash_dir(subject_dir, args.hash)
+        if not run_dir:
+            continue
+        checkpoint = run_dir / "subject-analysis.json"
+        if checkpoint.exists() and not args.reanalyze:
+            existing = read_json(checkpoint, {})
+            if existing:
+                analyses.append(existing)
+                cached += 1
+                continue
         analysis = analyze_subject(subject_dir, args)
         if analysis:
+            write_json(checkpoint, analysis)  # crash-safe: write_json uses temp+os.replace()
             analyses.append(analysis)
+            fresh += 1
+
+    # ── Phase 2: aggregate + single atomic DB write ────────────────────────────
     write_suite_summary(args.workspace_root, analyses)
     if not args.no_sqlite:
         persist_analysis(args.db, analyses, args.workspace_root)
-    print(f"Analyzed {len(analyses)} subjects under {args.workspace_root}")
+    print(f"Analyzed {len(analyses)} subjects under {args.workspace_root} "
+          f"({fresh} fresh, {cached} from checkpoint)")
     print(f"Summary: {args.workspace_root / 'analysis-summary.md'}")
 
     if args.check:
@@ -1354,7 +1460,7 @@ def main() -> int:
             # (only when DB is available and --efficiency-gate is set)
             if args.efficiency_gate and not args.no_sqlite and args.db.exists():
                 try:
-                    _edb = __import__("sqlite3").connect(args.db)
+                    _edb = _open_db(args.db)
                     _erows = _edb.execute(
                         "SELECT ea.eval_id, ea.configuration, ea.efficiency_json "
                         "FROM eval_analysis ea "

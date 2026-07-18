@@ -238,6 +238,50 @@ for name, file in managed:
 PY
 }
 
+# Copy project skills into $DST_SKILLS while preserving any external skills
+# installed alongside them (third-party skills not tracked in this repo).
+# A plain copy_dir would wipe untracked skills on every install.
+merge_skills_dir() {
+  local src="$1"
+  local dst="$2"
+  local stamp_backup="$dst.backup-$STAMP"
+
+  # Collect the names of project-owned skills (subdirs in source).
+  local src_names=()
+  for d in "$src"/*/; do
+    [[ -d "$d" ]] && src_names+=("$(basename "$d")")
+  done
+
+  # Back up or remove the existing destination.
+  if [[ -e "$dst" ]] && (( BACKUP )); then
+    run mv "$dst" "$stamp_backup"
+  elif [[ -e "$dst" ]]; then
+    run rm -rf "$dst"
+  fi
+
+  # Install project skills fresh.
+  run cp -a "$src" "$dst"
+
+  # Restore every sub-directory from the backup that is NOT a project skill.
+  # In dry-run mode the backup was never created, so scan the live dst instead.
+  local scan_dir="$stamp_backup"
+  (( DRY_RUN )) && scan_dir="$dst"
+  if [[ -d "$scan_dir" ]]; then
+    for external in "$scan_dir"/*/; do
+      [[ -d "$external" ]] || continue
+      local name; name="$(basename "$external")"
+      local is_project=0
+      for proj in "${src_names[@]}"; do
+        [[ "$proj" == "$name" ]] && is_project=1 && break
+      done
+      if (( ! is_project )); then
+        echo "Preserving external skill: $name"
+        run cp -a "$external" "$dst/$name"
+      fi
+    done
+  fi
+}
+
 require_dir "$SRC_RECIPES"
 require_dir "$SRC_SKILLS"
 require_dir "$SRC_AGENTS"
@@ -254,7 +298,7 @@ Installing Agentic Development Harness
 INFO
 
 copy_dir "$SRC_RECIPES" "$DST_RECIPES"
-copy_dir "$SRC_SKILLS" "$DST_SKILLS"
+merge_skills_dir "$SRC_SKILLS" "$DST_SKILLS"
 copy_dir "$SRC_AGENTS" "$DST_AGENTS"
 update_slash_commands
 

@@ -61,12 +61,12 @@ instructions: |
   Loop cycle: bd prime -> bd ready -> claim -> implement -> close -> handoff.
   Keep decisions explicit, small, testable, and durable in Beads.
 settings:
-  temperature: 0.2
   max_turns: 35
 parameters:
   - key: initiative
     input_type: string
-    requirement: required
+    requirement: optional
+    default: ""
     description: Product or engineering initiative.
   - key: repo_path
     input_type: string
@@ -104,6 +104,11 @@ prompt: |
   Initiative: {{ initiative }}
   Repo: {{ repo_path }}
   Phase: {{ phase }}
+
+  ## Step 0 — Elicit initiative if missing
+  If the initiative line above is blank or empty, ask the user:
+  "What product or engineering initiative would you like to spec and design?"
+  Wait for their reply and use it as the initiative for all subsequent steps. Do not call any tool until you have it.
 
   ## Step 1 — First Visible Output
   Declare the SDD phase you are entering and the complexity tier before any action.

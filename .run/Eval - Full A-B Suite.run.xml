@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Eval - Full A/B Suite" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="python scripts/run-skill-ab-suite.py --ambient-goose --continue-on-failure" />
+    <option name="SCRIPT_TEXT" value="python3 scripts/run-skill-ab-suite.py --ambient-goose --continue-on-failure --max-workers 5" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />

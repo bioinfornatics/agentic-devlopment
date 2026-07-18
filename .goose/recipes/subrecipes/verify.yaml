@@ -83,7 +83,6 @@ HTTP_CODE" <endpoint> | tee /tmp/response.txt
   Return to caller (verify.yaml) — do NOT loop internally.
   Caller owns the retry loop (max 3 cycles).
 settings:
-  temperature: 0.1
   max_turns: 35
 parameters:
   - key: task

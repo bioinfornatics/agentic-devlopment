@@ -89,12 +89,12 @@ instructions: |
   - Prefer pointer memories over content memories to reduce token use.
   - Never store secrets, tokens, credentials, or transient observations.
 settings:
-  temperature: 0.2
   max_turns: 40
 parameters:
   - key: task
     input_type: string
-    requirement: required
+    requirement: optional
+    default: ""
     description: The user goal or bead ID to drive the harness.
   - key: repo_path
     input_type: string
@@ -188,6 +188,17 @@ prompt: |
   Repo: {{ repo_path }}
   Mode: {{ mode }}
   Constraints: {{ constraints }}
+
+  ## Step 0 — Elicit task if missing
+  If the task line above is blank or empty, ask the user:
+  "What would you like me to work on? (describe the goal or paste a bead ID)"
+  Wait for their reply and use it as the task for all subsequent steps. Do not call any tool until you have it.
+
+  ## First visible output (required before any tool call)
+  State immediately before loading any skill or running any command:
+    Task scope: [one sentence summarising {{ task }}]
+    Routing plan: [subrecipe | named agent | direct inspection]
+    Complexity: [Micro | Small | Medium | Large]
 
   ## Step 1 — Orient (Generated Knowledge — do this first, before any other step)
   load skills agentic-dev-harness.

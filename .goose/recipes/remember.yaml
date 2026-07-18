@@ -30,12 +30,12 @@ instructions: |
   - If the fact belongs in documentation, update docs or propose a doc update, then remember a short pointer.
   - If the user asks to remember long content, convert it into a docs update plus a short pointer memory.
 settings:
-  temperature: 0.05
   max_turns: 12
 parameters:
   - key: action
     input_type: string
-    requirement: required
+    requirement: optional
+    default: ""
     description: >
       Memory operation to perform, e.g. "remember: use make test",
       "search validation", "recall validation-default".
@@ -64,6 +64,11 @@ extensions:
 prompt: |
   Beads memory action: {{ action }}
   Repo: {{ repo_path }}
+
+  ## Step 0 — Elicit action if missing
+  If the action line above is blank or empty, ask the user:
+  "What memory operation would you like to perform? (e.g. "remember: use make test", "search validation", "recall validation-default")"
+  Wait for their reply and use it as the action for all subsequent steps. Do not call any tool until you have it.
 
   First visible output before acting:
     Memory operation: [remember | search | recall | forget | advise]

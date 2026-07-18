@@ -39,12 +39,12 @@ instructions: |
   For each failing check: bd create "Verify fail: <description>" --assignee <agent> -p 2
   After fix: re-verify that specific check. Max 3 cycles before escalating.
 settings:
-  temperature: 0.1
   max_turns: 40
 parameters:
   - key: task
     input_type: string
-    requirement: required
+    requirement: optional
+    default: ""
     description: What to verify — URL, bead ID, API endpoint, CLI command, or test suite path.
   - key: target_type
     input_type: select
@@ -107,6 +107,11 @@ prompt: |
   Type: {{ target_type }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
+
+  ## Step 0 — Elicit task if missing
+  If the task line above is blank or empty, ask the user:
+  "What would you like me to verify? (URL, bead ID, API endpoint, CLI command, or test suite path)"
+  Wait for their reply and use it as the task for all subsequent steps. Do not call any tool until you have it.
 
   Step 1 — First visible output: state target, detected type, protocol before any tool call.
   Step 2 — Orient: bd prime, bd ready --json, read spec.md for [FEAT]-NN AC IDs.

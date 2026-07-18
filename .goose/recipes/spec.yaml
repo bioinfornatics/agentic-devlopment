@@ -65,12 +65,12 @@ instructions: |
   ## Memory checkpoint
   `bd remember "Spec for [feature]: canonical source is .specs/features/[feature]/spec.md" --key spec-[feature]-pointer`
 settings:
-  temperature: 0.1
   max_turns: 40
 parameters:
   - key: feature
     input_type: string
-    requirement: required
+    requirement: optional
+    default: ""
     description: Feature name or epic bead ID.
   - key: repo_path
     input_type: string
@@ -115,6 +115,11 @@ prompt: |
   Feature to specify: {{ feature }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
+
+  ## Step 0 — Elicit feature if missing
+  If the feature line above is blank or empty, ask the user:
+  "What feature would you like to spec out? (feature name or epic bead ID)"
+  Wait for their reply and use it as the feature for all subsequent steps. Do not call any tool until you have it.
 
   ## Step 1 — First visible output
   State: Spec scope, level (Micro/Full), input source.

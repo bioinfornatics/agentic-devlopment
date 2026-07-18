@@ -58,6 +58,14 @@ instructions: |
     | Dimension | Decision | N/A? |
   Then: `bd create "[feature]" --issue_type epic --description "..." -p 2 --json`
 
+  ## Memory integration
+  After creating the epic, call `remember_memory` to persist feature context:
+  ```
+  remember_memory product/features "<feature-name>: <status> | AC: <AC-IDs> | Bead: <bead-id>"
+  ```
+  Keep entries < 500 chars (auto-injected into each prompt). This enables cross-session
+  context recovery for ongoing features.
+
   ## Self-validation (before handoff)
   - [ ] First visible output declared (scope + complexity + approach)
   - [ ] bd prime run before any action
@@ -68,13 +76,13 @@ instructions: |
   - Store durable facts with `bd remember "<fact>" --key <stable-key>`.
   - For long-form knowledge, update docs and remember a short pointer.
 settings:
-  temperature: 0.2
   max_turns: 40
 parameters:
   - key: feature
     input_type: string
-    requirement: required
-    description: Feature, initiative, or problem to discover.
+    requirement: optional
+    default: ""
+    description: Feature, initiative, or problem to discover. If omitted, the recipe will ask interactively.
   - key: repo_path
     input_type: string
     requirement: optional
@@ -110,6 +118,11 @@ prompt: |
   Feature to discover: {{ feature }}
   Repo: {{ repo_path }}
   Context: {{ context }}
+
+  ## Step 0 — Elicit feature if missing
+  If "Feature to discover" is blank or empty, your very first action is to ask the user:
+  "What feature, initiative, or problem would you like to discover? Please describe it briefly."
+  Wait for their answer before proceeding to Step 1. Do not call any tool until you have a feature name.
 
   ## Step 1 — First visible output
   State your scope declaration (Micro/Small/Medium/Large/Complex) before any tool call.

@@ -1,0 +1,25 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Eval - Skills + Recipes (Parallel) + Post-Suite" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="python3 scripts/run-skill-ab-suite.py --continue-on-failure --ambient-goose --max-workers 5 --goose-cli &quot;/home/jmercier/Codes/third-parties/goose/target/debug/goose&quot; &amp;
+PID_SKILLS=$!
+python3 scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure --ambient-goose --goose-cli &quot;/home/jmercier/Codes/third-parties/goose/target/debug/goose&quot; &amp;
+PID_RECIPES=$!
+wait $PID_SKILLS $PID_RECIPES &amp;&amp;
+python3 scripts/analyze-skill-eval-results.py --check --negative-delta-gate --efficiency-gate &amp;&amp;
+python3 scripts/export-eval-history.py &amp;&amp;
+python3 scripts/build-eval-report.py &amp;&amp;
+xdg-open dist/evals/report/index.html &amp;&amp;
+xdg-open dist/evals/skills/analysis-index.html" />
+    <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+    <option name="SCRIPT_PATH" value="" />
+    <option name="SCRIPT_OPTIONS" value="" />
+    <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+    <option name="INTERPRETER_PATH" value="/bin/bash" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="EXECUTE_IN_TERMINAL" value="true" />
+    <option name="EXECUTE_SCRIPT_FILE" value="false" />
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Eval - Skills + Recipes (Parallel)" type="CompoundRunConfigurationType">
+    <toRun name="Eval - Full A/B Suite" type="ShConfigurationType" />
+    <toRun name="Eval - Recipes Full Suite" type="ShConfigurationType" />
+  </configuration>
+</component>

@@ -87,12 +87,12 @@ instructions: |
   - Do NOT mix write scopes — one assignee per file/module at implementation time.
   - Do NOT create more than one bead for the same AC ID.
 settings:
-  temperature: 0.1
   max_turns: 30
 parameters:
   - key: feature
     input_type: string
-    requirement: required
+    requirement: optional
+    default: ""
     description: Feature name or epic bead ID to plan. Used to locate spec.md.
   - key: repo_path
     input_type: string
@@ -137,6 +137,11 @@ prompt: |
   Feature to plan: {{ feature }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
+
+  ## Step 0 — Elicit feature if missing
+  If the feature line above is blank or empty, ask the user:
+  "What feature or epic would you like to plan? (feature name or bead ID)"
+  Wait for their reply and use it as the feature for all subsequent steps. Do not call any tool until you have it.
 
   ## Step 1 — First visible output
   State: Plan scope, spec source (spec.md found / bead / user description), estimated task count.

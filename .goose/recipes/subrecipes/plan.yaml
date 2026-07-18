@@ -43,7 +43,6 @@ instructions: |
   - Prefer pointer memories over content memories to reduce token use.
   - Never store secrets, tokens, credentials, or transient observations.
 settings:
-  temperature: 0.15
   max_turns: 18
 parameters:
   - key: repo_path
