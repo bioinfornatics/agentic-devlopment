@@ -106,6 +106,7 @@ flowchart TD
 | `plan`      | `/plan`      | Spec-anchored Beads task graph, AC-linked dependencies                        |
 | `implement` | `/implement` | TDD-first: RED → GREEN → REFACTOR, minimal blast radius                       |
 | `review`    | `/review`    | Adaptive code review: PR / feature / security / global / hotfix               |
+| `doc-review`| `/doc-review`| Read-only harness documentation review: skills, recipes, AGENTS.md, memory hygiene |
 | `verify`    | `/verify`    | Adaptive verification: API (Bruno) / web (Playwright) / CLI / library / UX-UI |
 | `design`    | `/design`    | UX research → UI design → WCAG 2.2 AA → browser evidence                      |
 | `sdd`       | `/sdd`       | SDD governance: full discover → spec → plan → TDD → implement → verify        |
@@ -114,7 +115,7 @@ flowchart TD
 
 **SDD on-ramp:** `/discover` → `/spec` → `/plan` → `/implement` → `/review` → `/verify` → `/release`
 
-## Skills (14)
+## Skills (18)
 
 | Skill                  | Purpose                                                    |
 |------------------------|------------------------------------------------------------|
@@ -132,6 +133,10 @@ flowchart TD
 | `atomic-design`        | Brad Frost Atoms → Molecules → Organisms → Templates       |
 | `design-systems-arch`  | W3C token architecture, governance, maturity model         |
 | `frontend-blueprint`   | Design consultation: discovery → direction → build         |
+| `knowledge-graph`      | KG CRUD, reasoning, SDD traceability                       |
+| `wcag-accessibility-audit` | WCAG 2.2 AA full audit protocol                       |
+| `atomic-design-fundamentals` | Foundational atomic design principles              |
+| `design-critique-case-studies` | Design critique with reference case studies      |
 
 ## Named agents (12)
 
@@ -167,7 +172,7 @@ PowerShell:
 ./scripts/install.ps1
 ```
 
-The installer also upserts slash commands (`/harness`, `/review`, `/sdd`, etc.) in `~/.config/goose/config.yaml` without duplicating existing managed entries.
+The installer also upserts slash commands (`/dev`, `/discover`, `/spec`, `/explore`, `/plan`, `/implement`, `/review`, `/doc-review`, `/verify`, `/design`, `/sdd`, `/release`, `/remember`) in `~/.config/goose/config.yaml` without duplicating existing managed entries.
 
 Or manually copy:
 

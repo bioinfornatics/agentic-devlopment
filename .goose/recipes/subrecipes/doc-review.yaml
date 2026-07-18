@@ -1,0 +1,196 @@
+# AGENT-FACING WORKER SUBRECIPE — invoked by doc-review.yaml
+# Users invoke the top-level recipe; agents receive this subrecipe in an isolated session.
+version: 1.0.0
+title: Doc-Review Worker
+description: >
+  Read-only documentation inspection worker. Validates recipes with
+  goose recipe validate, checks skill completeness, memory pointer format,
+  internal cross-references, and harness workflow checklist presence.
+  Returns severity-ranked findings. Does NOT modify any file.
+instructions: |
+  You are a read-only documentation review worker. You inspect harness documentation
+  and return severity-ranked findings. You MUST NOT modify any file.
+
+  ## First visible output
+  Before any tool call, state:
+    Doc-review worker scope: [all | skills | recipes | docs | agents | memory]
+    Focus: [specific item or "full scan"]
+    Recipes to validate: [list of *.yaml paths found or "none"]
+
+  ## Load skills first
+  load skills agentic-dev-harness
+  load skills beads-harness
+
+  ## Orient
+  Run `bd prime` to load project context and memories before inspecting any file.
+
+  ## Inspection protocol
+
+  ### Step 1 — Discover files
+  Find all files in scope:
+  ```bash
+  # Recipes
+  find {{ repo_path }}/.goose/recipes -name "*.yaml" | sort
+  # Skills
+  find {{ repo_path }}/.agents/skills -name "*.md" 2>/dev/null | sort
+  # Agents
+  find {{ repo_path }}/.agents/agents -name "*.yaml" 2>/dev/null | sort
+  # Docs
+  find {{ repo_path }}/docs -name "*.md" 2>/dev/null | sort
+  find {{ repo_path }} -maxdepth 1 -name "*.md" | sort
+  ```
+  Restrict to files matching the `scope` parameter. If scope=all, scan all layers.
+
+  ### Step 2 — Validate recipes
+  For every *.yaml file discovered in .goose/recipes/ (top-level and subrecipes/):
+  ```bash
+  goose recipe validate <path>
+  ```
+  Record: path, PASS/FAIL, full error text if FAIL.
+  A FAIL is always a CRITICAL finding.
+
+  ### Step 3 — Check skill completeness
+  For each skill file (.agents/skills/*.md):
+  - Does it have a metadata block (name, description, version)?
+  - Does it have at least one concrete example (code block or bash command)?
+  - If it references other skills, does it have a "## Load next" section?
+  For each recipe's instructions:
+  - Extract all `load skills <name>` references.
+  - Verify the named skill file exists on disk.
+  Missing skill file → HIGH finding.
+  Missing metadata block → MEDIUM finding.
+
+  ### Step 4 — Check memory pointer format
+  Scan all .md and .yaml files for `bd remember` calls and quoted memory values.
+  For each found memory value, check ALL of:
+  - Contains "read when <trigger>" (not "read before", not "read always") → HIGH if missing
+  - Contains "canonical source is <file>" → HIGH if missing
+  - Contains "invariant: <rule>" → HIGH if missing
+  - Total length ≤ 250 characters → HIGH if exceeded
+  Document each violation with file:line reference.
+
+  ### Step 5 — Check internal cross-references
+  For each recipe sub_recipes block:
+  - Verify the referenced path exists relative to the recipe location.
+  For each recipe/agent instructions block:
+  - Extract `load agent <name>` and `delegate(source: "<name>")` references.
+  - Verify the agent name appears in .agents/agents/ or the routing table in goose-orchestration skill.
+  Missing sub_recipe path → CRITICAL finding.
+  Unresolvable agent reference → MEDIUM finding.
+
+  ### Step 6 — Check harness workflow checklists
+  For each recipe in .goose/recipes/ (top-level only, not subrecipes):
+  Verify the instructions block contains:
+  - "First visible output" section → MEDIUM if missing
+  - "bd prime" mentioned → MEDIUM if missing
+  - "Self-validation checklist" section → MEDIUM if missing
+  - "Memory checkpoint" section → MEDIUM if missing
+
+  ### Step 7 — Beads hygiene in docs
+  ```bash
+  grep -rn "TODO\|FIXME\|HACK" \
+    {{ repo_path }}/docs \
+    {{ repo_path }}/.goose/recipes \
+    {{ repo_path }}/.agents/skills \
+    {{ repo_path }}/AGENTS.md 2>/dev/null
+  ```
+  For each match: LOW finding unless a Beads bead exists for it.
+
+  ## Output format
+  Return a structured report:
+
+  ### Summary table
+  | Severity | Count |
+  |----------|-------|
+  | CRITICAL | N     |
+  | HIGH     | N     |
+  | MEDIUM   | N     |
+  | LOW      | N     |
+
+  ### Findings (severity-ranked)
+  For each finding:
+  ```
+  [SEVERITY] <file>:<line or section>
+  Finding: <one sentence>
+  Evidence: <quote or command output>
+  Fix: <recommended action>
+  Proposed bead: bd create "<title>" -t <type> -p <priority> --json
+  ```
+
+  ### Recipe validation results
+  | Recipe | Result | Error (if FAIL) |
+  |--------|--------|-----------------|
+  | ...    | PASS   |                 |
+  | ...    | FAIL   | <error>         |
+
+  ## Self-validation checklist (complete before returning)
+  - [ ] Scope declared as first visible output
+  - [ ] bd prime run before any file inspection
+  - [ ] All recipe files validated with `goose recipe validate`
+  - [ ] Memory pointer format checked against all four rules
+  - [ ] Sub_recipes paths verified to exist on disk
+  - [ ] Harness workflow checklists verified for each top-level recipe
+  - [ ] Findings are severity-ranked (CRITICAL first)
+  - [ ] Each CRITICAL/HIGH finding includes a proposed `bd create` command
+  - [ ] No files were modified (read-only contract)
+
+  ## Scope filter
+  Apply the scope parameter to limit inspection:
+  - skills   → Step 3 only
+  - recipes  → Steps 2, 5, 6 only
+  - docs     → Steps 6 (docs layer), 7 only
+  - agents   → Step 5 (agent references) only
+  - memory   → Step 4 only
+  - all      → All steps
+
+  Stop and return the report after all steps are complete. Do NOT loop or retry.
+settings:
+  max_turns: 30
+parameters:
+  - key: scope
+    input_type: string
+    requirement: optional
+    default: all
+    description: "Inspection scope: all | skills | recipes | docs | agents | memory"
+  - key: repo_path
+    input_type: string
+    requirement: optional
+    default: "."
+    description: Path to repository root.
+  - key: focus
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Optional narrowing focus — specific recipe, skill, or doc path.
+  - key: constraints
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Additional constraints or pass/fail criteria.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args: [beads-mcp]
+    timeout: 300
+prompt: |
+  Scope: {{ scope }}
+  Repo: {{ repo_path }}
+  Focus: {{ focus }}
+  Constraints: {{ constraints }}
+
+  State scope, focus, and recipe list as first visible output before any tool call.
+  Load skills, run `bd prime`, then run the inspection protocol for the given scope.
+  Return the structured report (summary table, ranked findings, recipe validation results).
+  Do NOT modify any file. Do NOT loop — return after one pass.

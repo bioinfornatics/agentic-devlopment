@@ -9,7 +9,7 @@ which slash commands exist, when to invoke each one, and how they fit together.
 
 ```bash
 ./scripts/install.sh          # install recipes, skills, agents into ~/.config/goose/
-goose skills list             # verify 14+ skills visible
+goose skills list             # verify 18+ domain skills visible
 ```
 
 The installer registers all slash commands in `~/.config/goose/config.yaml`.
@@ -28,6 +28,7 @@ Restart Goose after installation.
 | `/plan` | After spec, to create the task graph | Beads dependency graph from spec ACs — ordered, parallel-safe |
 | `/implement` | A Beads task is ready to code | TDD: RED test → GREEN code → REFACTOR, minimal blast radius |
 | `/review` | After implementation, before closing | Adaptive code review: PR / feature / security / global / hotfix |
+| `/doc-review` | Audit harness documentation health | Read-only review of skills, recipes, docs, and memory pointer hygiene; severity-ranked findings |
 | `/verify` | After implementation, before release | Auto-detects type: api (Bruno) · web (Playwright) · cli · lib · ui |
 | `/design` | New UI or UX feature | Phase 1: UX research (`ux-quality`) → Phase 2: UI design (`ui-quality`) |
 | `/sdd` | Full SDD governance loop | Orchestrates the complete discover → spec → plan → implement → verify cycle |
@@ -115,6 +116,7 @@ bd remember "Auth: JWT preferred over sessions — see ADR-003" --key auth-decis
 | "I have ACs, I need to break them into tasks" | `/plan` |
 | "I have a task to implement" | `/implement` |
 | "I need someone to review my changes" | `/review` |
+| "I want to audit harness documentation health" | `/doc-review` |
 | "I need to check the feature works end to end" | `/verify` |
 | "I'm working on UX or UI" | `/design` |
 | "I'm ready to ship" | `/release` |

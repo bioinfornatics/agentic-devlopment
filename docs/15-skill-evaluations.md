@@ -1,4 +1,4 @@
-# 15 — Skill Evaluations
+# 15 — Skill, Agent, and Recipe Evaluations
 
 ## Why
 
@@ -9,6 +9,60 @@ This harness stores skill evals outside `.agents/skills/`:
 ```text
 evals/skills/<skill-name>.json
 ```
+
+## Harness layer model
+
+The harness treats skills, agents, and recipes as **stacked layers**. Each layer adds structure on top of the previous one:
+
+| Layer | Contents | What it adds |
+|-------|----------|-------------|
+| **0 — Nothing** | Plain Goose, no project content | Raw model capability |
+| **1 — Skills** | Skill `SKILL.md` text injected into the prompt | Reusable methodology |
+| **2 — Agents** | Agent spec + supporting skills | Persona, routing, workflow discipline |
+| **3 — Recipes** | Recipe YAML + agents + skills | Structured orchestration |
+
+### A/B comparison by layer (`--mode layer-delta`)
+
+Each eval kind measures the **marginal value** of its layer over the one below:
+
+| Kind | Comparison | `with_*` condition | `without_*` baseline |
+|------|-----------|-------------------|---------------------|
+| Skills | Layer 1 vs Layer 0 | skill text injected | nothing |
+| Agents | Layer 2 vs Layer 1 | agent spec + skill text | skill text only |
+| Recipes | Layer 3 vs Layer 2 | recipe + agents + skills | agents + skills only |
+
+`layer-delta` is the **default mode** for agents and recipes. It answers: *given the supporting layer is already present, does this artifact improve the outcome?*
+
+`--mode with-without` compares any subject directly against nothing (Layer 0). It remains available for all kinds and is the default for skills (where Layer 0 is the correct baseline).
+
+### Layer declarations in eval JSON
+
+Declare the supporting stack inside each eval scenario so the runner knows what to inject into the baseline condition:
+
+**Agent eval** — `"skills"` declares the Layer 1 stack beneath the agent:
+```json
+{
+  "skills": ["code-review"],
+  "query": "…"
+}
+```
+
+**Recipe eval** — `"agents"` + `"skills"` declare the Layer 2 stack beneath the recipe:
+```json
+{
+  "agents": ["review-critic"],
+  "skills": ["code-review"],
+  "query": "…"
+}
+```
+
+In `layer-delta` mode both conditions run with identical environments; only the injected content differs.
+
+### Isolation guarantee
+
+Globally installed skills (`~/.agents/skills/`) and recipes (`~/.config/goose/recipes/`) are hidden for the entire eval run via atomic directory rename — the same mechanism used by the skill runner. Both `with_*` and `without_*` conditions run in the same isolated environment; the supporting layer is injected **as text only**, not installed on disk.
+
+---
 
 ## Evaluation-driven development
 
@@ -205,56 +259,95 @@ Task runs use Goose `--output-format stream-json`; JSON events are stored in `ou
 
 ### Editor shortcuts
 
-VS Code tasks are defined in `.vscode/tasks.json`:
+VS Code tasks are defined in `.vscode/tasks.json` (run via **Terminal → Run Task…**):
 
-- **Eval Skills: Full A/B Suite** — runs the full suite;
-- **Eval Skills: Full A/B Suite + Open Review** — runs the full suite, then opens the generated suite review index;
-- **Eval Skills: A/B Suite Subset** — prompts for a skill subset;
-- **Eval Skills: A/B Suite Subset + Open Review** — runs a partial suite, then opens the generated suite review index;
-- **Eval Skills: Open Suite Results** — opens the latest generated suite review index;
-- **Eval Skills: Open Skill Review** — opens one generated per-skill `review.html`;
-- **Eval Skills: Definition Review** — renders and opens the eval-definition review.
+**Skills** — mode `with-without` (Layer 1 vs Layer 0):
 
-Run them from **Terminal → Run Task…**.
+| Task | What it does |
+|------|-------------|
+| `Eval: Skills — Full Suite` | Sequential, all skills |
+| `Eval: Skills — Full Suite (parallel)` | 5 workers |
+| `Eval: Skills — Subset` | Sequential, prompted skill list |
+| `Eval: Skills — Subset (parallel)` | 5 workers, prompted list |
+| `Eval: Skills — Full Suite (parallel) + Post-Suite` | Parallel suite → quality gate → export → trend report |
 
-JetBrains shared run configurations live in `.run/`:
+**Agents** — mode `layer-delta` (Layer 2 vs Layer 1):
 
-- **Eval Skills - Full A/B Suite**;
-- **Eval Skills - Full A/B Suite and Open Review**;
-- **Eval Skills - Subset A/B Suite and Open Review**;
-- **Eval Skills - Open Suite Results**;
-- **Eval Skills - Open Skill Review**;
-- **Eval Skills - Definition Review**.
+| Task | What it does |
+|------|-------------|
+| `Eval: Agents — Full Suite` | Sequential, all agents |
+| `Eval: Agents — Full Suite (parallel)` | 5 workers |
+| `Eval: Agents — Single` | One agent, prompted |
+| `Eval: Agents — Full Suite (parallel) + Post-Suite` | Parallel suite → export → trend report |
 
-They appear in the Run/Debug configuration selector after the project reloads.
+**Recipes** — mode `layer-delta` (Layer 3 vs Layer 2):
+
+| Task | What it does |
+|------|-------------|
+| `Eval: Recipes — Full Suite` | Sequential, all recipes |
+| `Eval: Recipes — Full Suite (parallel)` | 5 workers |
+| `Eval: Recipes — Single` | One recipe, prompted |
+| `Eval: Recipes — Subset (parallel)` | 5 workers, prompted list |
+| `Eval: Recipes — Full Suite (parallel) + Post-Suite` | Parallel suite → export → trend report |
+
+**Cross-kind:**
+
+| Task | What it does |
+|------|-------------|
+| `Eval: All Kinds — Full Suite` | Skills → Recipes → Agents, each 5 workers |
+| `Eval: All Kinds — Skills + Recipes (parallel)` | Skills and recipes simultaneously |
+| `Eval: All Kinds — Skills + Recipes (parallel) + Post-Suite` | Parallel → quality gate → export → trend |
+
+**Post-suite building blocks** (run independently after any suite):
+
+| Task | What it does |
+|------|-------------|
+| `Eval: Post-Suite — Analyze + Quality Gate` | Skills quality gate only |
+| `Eval: Post-Suite — Export History` | DB → `evals/history/runs.json` |
+| `Eval: Post-Suite — Build Trend Report` | Trend dashboard from DB |
+| `Eval: Post-Suite — Full Workflow` | Analyze + export + trend + open both views |
+
+JetBrains run configurations live in `.idea/runConfigurations/` and mirror every task above, organised into `Eval/Skills`, `Eval/Agents`, `Eval/Recipes`, `Eval/All Kinds`, `Eval/Post-Suite`, `Eval/Open`, `SDD`, `Harness`, and `KG` groups. They appear in the Run/Debug configuration selector after the project reloads. Prompted inputs (skill name, recipe name, etc.) are exposed as environment variables editable in the configuration dialog.
 
 
 ### Generic agents and recipes runner
 
-The skill runner remains the main path for `evals/skills/`, but the generic harness runner can execute the same A/B harness for named agents and Goose recipes:
+The skill runner is the main path for `evals/skills/`. The generic harness runner covers named agents and recipes using the same A/B framework but with `--mode layer-delta` as the default (see [Harness layer model](#harness-layer-model)).
 
 ```bash
-python scripts/run-harness-ab-eval.py   --kind agents   --subject beads-planner
+# single subject
+python scripts/run-harness-ab-eval.py --kind agents  --subject review-critic
+python scripts/run-harness-ab-eval.py --kind recipes --subject review
 
-python scripts/run-harness-ab-eval.py   --kind recipes   --subject review
+# full suite
+python scripts/run-harness-ab-suite.py --kind agents  --continue-on-failure
+python scripts/run-harness-ab-suite.py --kind recipes --continue-on-failure
 ```
 
-Suite form:
-
-```bash
-python scripts/run-harness-ab-suite.py   --kind agents   --continue-on-failure
-
-python scripts/run-harness-ab-suite.py   --kind recipes   --continue-on-failure
-```
-
-Default subject layouts are:
+Default output layouts:
 
 ```text
 dist/evals/agents/<agent-name>/<content-hash>/
 dist/evals/recipes/<recipe-name>/<content-hash>/
 ```
 
-Agent subjects resolve to `.agents/agents/<agent-name>.md`. Recipe subjects resolve to `.goose/recipes/<recipe-name>.yaml`; recipe evals also run `goose recipe validate` and a `--render-recipe` smoke before model execution, writing `recipe_checks.json` in the subject workspace. The generic runner supports `--mode old-new --baseline-git-ref <ref>` for skills, agents, and recipes.
+Agent subjects resolve to `.agents/agents/<agent-name>.md`. Recipe subjects resolve to `.goose/recipes/<recipe-name>.yaml`; recipe evals also run `goose recipe validate` and a `--render-recipe` smoke-check before model execution, writing `recipe_checks.json` in the workspace.
+
+**Modes available:**
+
+| Mode | Default for | What it tests |
+|------|------------|--------------|
+| `layer-delta` | agents, recipes | subject vs the layer below (see layer model) |
+| `with-without` | skills | subject vs nothing (Layer 0 baseline) |
+| `old-new` | all | candidate git ref vs baseline git ref |
+
+**Post-suite for agents and recipes** — no quality gate (that is skills-specific); export history and build the trend report:
+
+```bash
+python scripts/export-eval-history.py
+python scripts/build-eval-report.py
+xdg-open dist/evals/report/index.html
+```
 
 ### 4. Run the analysis and quality gate
 
@@ -338,17 +431,67 @@ If you create workspaces by hand instead of using the runner, the viewer expects
 - each run directory containing `outputs/`, `grading.json`, and optionally `timing.json`;
 - `grading.json.expectations[]` fields named exactly `text`, `passed`, and `evidence`.
 
-## Current skill eval map
+## Current eval map
+
+### Skills (mode: `with-without` — Layer 1 vs Layer 0)
 
 | Skill | Eval file |
 | --- | --- |
 | Agentic development harness | `evals/skills/agentic-dev-harness.json` |
+| Agentic UX | `evals/skills/agentic-ux.json` |
+| Atomic design | `evals/skills/atomic-design.json` |
+| Atomic design fundamentals | `evals/skills/atomic-design-fundamentals.json` |
 | Beads harness | `evals/skills/beads-harness.json` |
 | Code review | `evals/skills/code-review.json` |
+| Cognitive UX | `evals/skills/cognitive-ux.json` |
+| Design critique & case studies | `evals/skills/design-critique-case-studies.json` |
+| Design systems architecture | `evals/skills/design-systems-arch.json` |
+| Frontend blueprint | `evals/skills/frontend-blueprint.json` |
 | Goose orchestration | `evals/skills/goose-orchestration.json` |
+| Knowledge graph | `evals/skills/knowledge-graph.json` |
 | SDD | `evals/skills/sdd.json` |
-| UI/UX quality | `evals/skills/ux-quality.json` |
+| Systematic debugging | `evals/skills/systematic-debugging.json` |
+| UI quality | `evals/skills/ui-quality.json` |
+| UX quality | `evals/skills/ux-quality.json` |
+| WCAG accessibility audit | `evals/skills/wcag-accessibility-audit.json` |
 | Webapp testing | `evals/skills/webapp-testing.json` |
+
+### Agents (mode: `layer-delta` — Layer 2 vs Layer 1)
+
+| Agent | Eval file | Supporting skills (Layer 1 baseline) |
+| --- | --- | --- |
+| architect | `evals/agents/architect.json` | `sdd`, `agentic-dev-harness` |
+| beads-planner | `evals/agents/beads-planner.json` | `beads-harness` |
+| codebase-researcher | `evals/agents/codebase-researcher.json` | `agentic-dev-harness` |
+| harness-orchestrator | `evals/agents/harness-orchestrator.json` | `agentic-dev-harness`, `beads-harness` |
+| implementation-worker | `evals/agents/implementation-worker.json` | `beads-harness`, `sdd` |
+| principal-engineer | `evals/agents/principal-engineer.json` | `agentic-dev-harness`, `code-review` |
+| product-owner | `evals/agents/product-owner.json` | `sdd` |
+| qa-automation | `evals/agents/qa-automation.json` | `webapp-testing` |
+| review-critic | `evals/agents/review-critic.json` | `code-review` |
+| tdd-guide | `evals/agents/tdd-guide.json` | `sdd` |
+| ui-designer | `evals/agents/ui-designer.json` | `webapp-testing`, `ux-quality` |
+| ux-researcher | `evals/agents/ux-researcher.json` | `ux-quality` |
+
+### Recipes (mode: `layer-delta` — Layer 3 vs Layer 2)
+
+| Recipe | Eval file | In-session agents (Layer 2) | Skills (Layer 1) |
+| --- | --- | --- | --- |
+| design | `evals/recipes/design.json` | `ui-designer`, `ux-researcher` | `ui-quality`, `ux-quality`, `webapp-testing` |
+| dev | `evals/recipes/dev.json` | `harness-orchestrator` | `agentic-dev-harness`, `beads-harness` |
+| discover | `evals/recipes/discover.json` | `product-owner` | `agentic-dev-harness`, `sdd` |
+| doc-review | `evals/recipes/doc-review.json` | `review-critic` | `agentic-dev-harness`, `beads-harness` |
+| explore | `evals/recipes/explore.json` | `codebase-researcher` | `agentic-dev-harness` |
+| harness-review | `evals/recipes/harness-review.json` | `review-critic` | `code-review`, `agentic-dev-harness`, `beads-harness` |
+| implement | `evals/recipes/implement.json` | `implementation-worker` | `beads-harness`, `sdd` |
+| plan | `evals/recipes/plan.json` | `architect`, `beads-planner` | `beads-harness`, `sdd` |
+| release | `evals/recipes/release.json` | `principal-engineer` | `agentic-dev-harness` |
+| remember | `evals/recipes/remember.json` | — | `beads-harness` |
+| review | `evals/recipes/review.json` | `review-critic` | `code-review` |
+| sdd | `evals/recipes/sdd.json` | `harness-orchestrator` | `agentic-dev-harness`, `sdd` |
+| spec | `evals/recipes/spec.json` | `architect`, `tdd-guide` | `beads-harness`, `sdd` |
+| verify | `evals/recipes/verify.json` | `qa-automation` | `agentic-dev-harness`, `webapp-testing` |
+
 
 ## Done criteria
 

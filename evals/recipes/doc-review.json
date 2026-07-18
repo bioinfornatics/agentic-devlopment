@@ -1,0 +1,98 @@
+[
+  {
+    "agents": [
+      "review-critic"
+    ],
+    "skills": [
+      "agentic-dev-harness",
+      "beads-harness"
+    ],
+    "query": "Run a documentation review scoped to recipes only. Validate every *.yaml in .goose/recipes/ and subrecipes/, check that each top-level recipe has a First Visible Output section, and report findings by severity.",
+    "files": [
+      ".goose/recipes/",
+      ".goose/recipes/subrecipes/"
+    ],
+    "max_turns": 40,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The doc-review recipe should: declare scope and approach as first visible output before any tool call; run `goose recipe validate` on every *.yaml file; report each result as PASS or FAIL; check for the four harness workflow checklist items (First Visible Output, bd prime, Self-validation checklist, Memory checkpoint) in each top-level recipe; severity-rank findings; and propose `bd create` commands for CRITICAL/HIGH findings — without modifying any file.",
+    "baseline_gaps": [
+      "validates recipes but does not check harness workflow checklist sections — misses missing `bd prime` or `Memory checkpoint` blocks",
+      "no severity ranking — lists observations as a flat list without CRITICAL/HIGH/MEDIUM/LOW labels",
+      "no proposed Beads follow-up commands — ends with a summary paragraph rather than exact `bd create` commands"
+    ],
+    "expected_behavior": [
+      "declares scope (recipes), focus, and approach as first visible output before any tool call",
+      "runs `goose recipe validate` on every recipe file and reports each as PASS or FAIL with error text for FAIL",
+      "checks each top-level recipe for the four harness workflow checklist sections and reports missing sections as MEDIUM findings",
+      "severity-ranks all findings as CRITICAL / HIGH / MEDIUM / LOW with file references",
+      "proposes `bd create` commands for CRITICAL and HIGH findings",
+      "does not modify any file"
+    ]
+  },
+  {
+    "agents": [
+      "review-critic"
+    ],
+    "skills": [
+      "agentic-dev-harness",
+      "beads-harness"
+    ],
+    "query": "Run a documentation review scoped to skills and memory. Check every skill file in .agents/skills/ for required sections (metadata block, concrete example, Load next if it cross-references another skill). Also check all bd remember calls in docs/ and recipes for memory pointer format compliance (read-when trigger, canonical source, invariant, ≤250 chars). Report findings with severity and proposed Beads follow-ups.",
+    "files": [
+      ".agents/skills/",
+      "docs/",
+      ".goose/recipes/"
+    ],
+    "max_turns": 50,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The doc-review recipe should: scope to skills+memory as declared; check ALL four memory pointer format rules (read-when trigger, canonical source, invariant, length) non-discretionarily — not skip one due to confidence filtering; report missing skill sections as MEDIUM findings with exact file paths; report each memory format violation as HIGH with file:line; distinguish missing-on-disk skills from skills with format issues; and include exact `bd create` commands for all HIGH findings.",
+    "baseline_gaps": [
+      "applies confidence filtering to memory pointer format checks — treats 'canonical source' or 'invariant' violations as uncertain rather than flagging them unconditionally",
+      "checks skill files superficially — reports 'looks complete' without verifying all three required sections per skill",
+      "no file:line reference for memory pointer violations — reports the violation without quoting the offending value"
+    ],
+    "expected_behavior": [
+      "checks all four memory pointer format rules for every `bd remember` call found — no confidence gate on format rules",
+      "for each skill file checks: metadata block present, at least one concrete example, Load next section if cross-skill references exist",
+      "reports each missing section with exact file path as a MEDIUM finding",
+      "reports each memory pointer violation as HIGH with file:line and the offending quoted value",
+      "includes exact `bd create` commands for all HIGH findings",
+      "does not modify any file; completes in a single inspection pass"
+    ]
+  },
+  {
+    "agents": [
+      "review-critic"
+    ],
+    "skills": [
+      "agentic-dev-harness",
+      "beads-harness"
+    ],
+    "query": "Run a full documentation review of the harness (scope=all). Cover all layers: recipe validation, skill completeness, memory pointer format, internal cross-reference integrity (sub_recipes paths, load agent references, load skills references), harness workflow checklists, and Beads hygiene (TODO/FIXME/HACK). Produce a severity-ranked report with a summary table, per-finding evidence, and proposed bd create commands for CRITICAL/HIGH. At the end, propose one bd remember for any durable documentation fact discovered.",
+    "files": [
+      ".goose/recipes/",
+      ".agents/skills/",
+      ".agents/agents/",
+      "docs/",
+      "AGENTS.md"
+    ],
+    "max_turns": 60,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The doc-review recipe should orchestrate all seven inspection steps in one pass without looping: recipe validation, skill completeness, memory pointer format, cross-reference integrity, workflow checklist presence, Beads hygiene scan, and memory checkpoint. It must connect cross-layer findings (e.g., a recipe that references a skill that is missing on disk) rather than reporting each layer in isolation. It must distinguish CRITICAL (broken recipe, missing subrecipe path) from HIGH (missing skill, memory format violation) from MEDIUM (missing checklist section, stale cross-reference) from LOW (undocumented TODO), and propose exact `bd create` commands for CRITICAL/HIGH. The final output must include a summary table, not just a prose list.",
+    "baseline_gaps": [
+      "inspects each layer in isolation — does not connect a recipe's `load skills <name>` to whether that skill file exists",
+      "produces a prose narrative rather than a structured summary table with counts by severity",
+      "memory checkpoint section is omitted — no `bd remember` proposed even when a durable doc fact is identified",
+      "Beads hygiene step is skipped when no TODO is found in the first file scanned — does not scan all layers"
+    ],
+    "expected_behavior": [
+      "runs all seven inspection steps in a single pass without restarting or looping",
+      "connects cross-layer findings: detects when a recipe references a skill or agent that does not exist on disk",
+      "outputs a structured summary table (CRITICAL/HIGH/MEDIUM/LOW counts) before the detailed findings",
+      "for each CRITICAL or HIGH finding: exact file path, quoted evidence, proposed `bd create` command",
+      "scans every target directory for TODO/FIXME/HACK — does not stop at the first empty result",
+      "proposes one `bd remember` at the end if a durable documentation fact was found; skips it explicitly if none",
+      "does not modify any file"
+    ]
+  }
+]

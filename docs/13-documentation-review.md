@@ -11,8 +11,8 @@ Review documentation for onboarding, correctness, operational usefulness, and ag
 ### Method A — headless recipe
 
 ```bash
-goose run --recipe review \
-  --params task="documentation review" \
+goose run --recipe doc-review \
+  --params scope=docs \
   --params repo_path="$PWD" \
   --params constraints="Read-only. Focus on onboarding, command accuracy, missing prerequisites, and agent handoff quality."
 ```
@@ -20,13 +20,16 @@ goose run --recipe review \
 ### Method B — slash command in an interactive Goose session
 
 ```text
-/review documentation review; focus on onboarding, command accuracy, missing prerequisites, and agent handoff quality
+/doc-review scope=docs; focus on onboarding, command accuracy, missing prerequisites, and agent handoff quality
 ```
 
 ## Recommended command
 
 ```bash
-goose run --recipe review   --params task="documentation review"   --params repo_path="$PWD"   --params constraints="Read-only. Focus on onboarding, command accuracy, missing prerequisites, and agent handoff quality."
+goose run --recipe doc-review \
+  --params scope=docs \
+  --params repo_path="$PWD" \
+  --params constraints="Read-only. Focus on onboarding, command accuracy, missing prerequisites, and agent handoff quality."
 ```
 
 ## Review dimensions
