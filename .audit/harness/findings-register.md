@@ -1,180 +1,169 @@
-# Findings Register
+# Findings register
+
+## HA-F001 — Harness-audit recipe eval declares the isolated judge as in-session agent
 
 ```yaml
-id: F-CRIT-001
-title: 'Audit precondition blocker: Beads runtime evidence unavailable'
-category: BEADS_BLOCKER
-severity: critical
-confidence: high
-status: blocked
-affected_layer: work-control
-affected_files:
-- .beads/issues.jsonl
-expected_behavior: Audit examines Beads evidence without mutating work state.
-observed_behavior: bd prime/ready/blocked command was declined; .beads/issues.jsonl
-  is also modified in working tree.
-evidence:
-- 'shell bd prime attempt: user declined; git status shows M .beads/issues.jsonl'
-impact: Beads integration, task ownership, gates, and remediation task model cannot
-  be fully verified adversarially.
-root_cause: Tool execution authorization boundary plus dirty worktree.
-target_state: Allow read-only Beads inspection or provide exported Beads snapshot
-  for audit.
-acceptance_criteria:
-- bd prime, bd ready --json, bd blocked --json evidence recorded
-- No Beads mutation occurs
-verification: Recorded command output or supplied immutable snapshot hash.
+id: HA-F001
+title: Harness-audit recipe eval declares the isolated judge as in-session agent
+category: AD001_EVAL_WIRING_DRIFT
+severity: HIGH
+confidence: High
+status: OPEN
+affected_layer: L3 recipes/evals
+affected_files: ['.goose/recipes/harness-audit.yaml', 'evals/recipes/harness-audit.json']
+expected_behavior: Recipe eval JSON agents list only in-session agents per AD-001.
+observed_behavior: harness-audit instructions say main session loads orchestrator and judge only runs in isolated subrecipe, while eval declares harness-judge.
+evidence: ['.goose/recipes/harness-audit.yaml:95-99', 'evals/recipes/harness-audit.json:1-8', 'AGENTS.md:152-155']
+impact: Layer-delta scoring can measure the wrong layer and mask orchestration regressions.
+root_cause: Audit recipe was converted to orchestration pattern without corresponding eval layer declaration update.
+target_state: Eval declares orchestrator/goose-orchestration in-session and treats harness_judge as isolated subrecipe evidence.
+acceptance_criteria: check-consistency.py includes harness-audit AD-001 eval assertion; eval JSON lists only in-session agents.
+verification: python3 scripts/check-consistency.py; inspect evals/recipes/harness-audit.json.
 dependencies: []
-proposed_owner: orchestrator
-requires_separate_sdd_cycle: false
-blocking: true
+proposed_owner: review-critic
+requires_separate_sdd_cycle: true
+blocking: false
 deferred: false
-expected_quality_benefit: Complete work-control audit
-expected_performance_benefit: Avoid repeated blind scans
+expected_quality_benefit: improved traceability and executable gates
+expected_performance_benefit: fewer misrouted or repeated LLM checks
 ```
 
+## HA-F002 — Durable Beads memory contains stale agent roster and obsolete names
+
 ```yaml
-id: F-HIGH-001
-title: SPEC_DEVIATION scanner reports markers requiring triage
+id: HA-F002
+title: Durable Beads memory contains stale agent roster and obsolete names
 category: DRIFT
-severity: high
-confidence: medium
-status: open
-affected_layer: frameworks/agents/recipes/specs
-affected_files:
-- .agents/agents/implementation-worker.md
-- .agents/agents/review-critic.md
-- .goose/recipes/subrecipes/implement.yaml
-- .specs/features/spec-deviation-loop/spec.md
-expected_behavior: SPEC_DEVIATION markers represent actionable implementation drift
-  and are triaged to accept/reject/defer.
-observed_behavior: Scanner found 7 markers; several appear to be instructional examples
-  rather than actual source deviations, indicating possible false-positive handling
-  gap.
-evidence:
-- './scripts/find-spec-deviations.sh output: 7 marker(s) found — triage required'
-impact: Verification gate can fail on examples or leave true deviations unresolved.
-root_cause: Scanner pattern does not distinguish instructional quoted markers from
-  active deviation comments.
-target_state: Scanner supports example exclusions or marked fixtures while preserving
-  active drift detection.
-acceptance_criteria:
-- 0 untriaged active markers in normal audit
-- examples are either excluded or explicitly labeled as examples
-verification: ./scripts/find-spec-deviations.sh exits clean or produces only classified
-  examples.
-dependencies: []
-proposed_owner: tdd-guide/review-critic
-requires_separate_sdd_cycle: true
-blocking: false
-deferred: false
-expected_quality_benefit: Better drift signal integrity
-expected_performance_benefit: Less manual false-positive triage
-```
-
-```yaml
-id: F-HIGH-002
-title: Independent adversarial challenge agents unavailable during audit
-category: BROKEN_HANDOFF
-severity: high
-confidence: high
-status: blocked
-affected_layer: orchestration
-affected_files:
-- .agents/agents/review-critic.md
-- .agents/agents/principal-engineer.md
-expected_behavior: Critical/high findings and proposals are challenged by review-critic
-  and principal-engineer before judge freeze.
-observed_behavior: Delegated sessions returned provider/model deployment errors and
-  no substantive evidence.
-evidence:
-- 'delegate task results: 404 deployment claude-sonnet-4-5 not found; 400 temperature/thinking
-  error'
-impact: Audit lacks required independent adversarial challenge; findings are preserved
-  but confidence capped.
-root_cause: Runtime provider/model configuration mismatch for subagents.
-target_state: Subagent model policy validates before orchestration or falls back to
-  available model.
-acceptance_criteria:
-- review-critic and principal-engineer return evidence reports
-- provider errors become explicit preflight blockers
-verification: Successful delegated challenge outputs stored in adversarial-review.md.
-dependencies: []
-proposed_owner: principal-engineer
-requires_separate_sdd_cycle: true
-blocking: true
-deferred: false
-expected_quality_benefit: Restored maker/checker independence
-expected_performance_benefit: Avoid failed subagent calls
-```
-
-```yaml
-id: F-MED-001
-title: Working tree is dirty before audit, including tracked harness, Beads, and KG
-  files
-category: AUDITABILITY
-severity: medium
-confidence: high
-status: open
-affected_layer: cross
-affected_files:
-- git status --short
-expected_behavior: Audit baseline revision and source state are reproducible or dirty
-  state is explicitly frozen.
-observed_behavior: Many tracked files modified/deleted and many untracked files exist
-  before audit.
-evidence:
-- git status --short output recorded in preconditions
-impact: Cannot distinguish committed baseline from in-progress harness changes; line
-  evidence may not match HEAD for future reviewers.
-root_cause: Audit run on uncommitted working tree.
-target_state: Audit against clean commit or capture patch/diff hash in manifest.
-acceptance_criteria:
-- clean status or patch bundle hash included
-- all evidence references include revision and dirty-state caveat
-verification: git status --short clean or manifest includes diff hash.
+severity: MEDIUM
+confidence: High
+status: OPEN
+affected_layer: Work control / memory
+affected_files: ['Beads memory:harness-agents-pointer', '.agents/agents/', 'README.md']
+expected_behavior: Pointer memories used for routing reflect current agent names or defer to live discovery.
+observed_behavior: bd prime reports 11 agents and old names while filesystem/README list 13 current agents.
+evidence: ['bd prime output in command log', 'README.md:144-165', '.agents/agents directory inventory']
+impact: Agents relying on memory may route to nonexistent names or miss current specialists.
+root_cause: Structural roster changed without updating/deprecating durable pointer memory.
+target_state: Memory points to live load()/README roster rather than embedding stale list.
+acceptance_criteria: bd recall harness-agents-pointer references current source and no obsolete agent names.
+verification: bd recall harness-agents-pointer; load() roster comparison.
 dependencies: []
 proposed_owner: orchestrator
 requires_separate_sdd_cycle: false
 blocking: false
 deferred: false
-expected_quality_benefit: Reproducible audit baseline
-expected_performance_benefit: Less re-validation
+expected_quality_benefit: improved traceability and executable gates
+expected_performance_benefit: fewer misrouted or repeated LLM checks
 ```
 
+## HA-F003 — Slash-command documentation is inconsistent across README, AGENTS, and harness-core spec
+
 ```yaml
-id: F-MED-002
-title: Agentic-development skill name appears intentionally misspelled but remains
-  a cognitive/search hazard
-category: NAMING_INCONSISTENCY
-severity: medium
-confidence: high
-status: open
-affected_layer: skills/agents/recipes
-affected_files:
-- .agents/skills/agentic-devlopment/SKILL.md
-- AGENTS.md
-expected_behavior: Skill names are memorable and typo-resistant; intentional historical
-  misspellings have alias/migration guidance.
-observed_behavior: Required path and skill name are `agentic-devlopment` (missing
-  e); contract explicitly asks to verify if intentional.
-evidence:
-- .agents/skills/agentic-devlopment/SKILL.md name line; AGENTS.md maintenance table
-  references agentic-devlopment
-impact: Mis-triggering, missed loads, and user confusion.
-root_cause: Historical directory/name typo preserved for compatibility.
-target_state: Keep with documented alias or migrate to correctly spelled skill with
-  compatibility shim.
-acceptance_criteria:
-- alias or migration plan exists
-- recipes/agents updated consistently if renamed
-verification: goose skills list and consistency checks show both compatibility and
-  preferred spelling.
+id: HA-F003
+title: Slash-command documentation is inconsistent across README, AGENTS, and harness-core spec
+category: INCONSISTENCY
+severity: MEDIUM
+confidence: High
+status: OPEN
+affected_layer: Docs/specs/recipes
+affected_files: ['README.md', 'AGENTS.md', '.specs/features/harness-core/spec.md']
+expected_behavior: User-facing slash command list has one canonical generated source or explicit inclusion rules.
+observed_behavior: README table, installer sentence, AGENTS slash command line, and spec recipe table differ for clarify, constitution, and doc-review.
+evidence: ['README.md:101-114', 'README.md:181', 'AGENTS.md:211-213', '.specs/features/harness-core/spec.md:21-41']
+impact: Users and agents may invoke undocumented or missing commands; generated-doc consistency is undermined.
+root_cause: Multiple manually maintained slash-command lists with different scope semantics.
+target_state: Single generated slash-command table with clear top-level vs internal/harness-only classification.
+acceptance_criteria: check-consistency.py fails when slash command lists diverge or docs explicitly label differences.
+verification: python3 scripts/check-consistency.py plus grep slash command tables.
+dependencies: []
+proposed_owner: review-critic
+requires_separate_sdd_cycle: false
+blocking: false
+deferred: false
+expected_quality_benefit: improved traceability and executable gates
+expected_performance_benefit: fewer misrouted or repeated LLM checks
+```
+
+## HA-F004 — Subrecipe eval support is ambiguous for amend-spec
+
+```yaml
+id: HA-F004
+title: Subrecipe eval support is ambiguous for amend-spec
+category: BROKEN_TRACEABILITY
+severity: MEDIUM
+confidence: Medium
+status: OPEN
+affected_layer: Evals/recipes
+affected_files: ['evals/recipes/amend-spec.json', 'docs/15-skill-evaluations.md', '.goose/recipes/subrecipes/amend-spec.yaml']
+expected_behavior: Every eval subject resolution path is documented and executable for top-level recipes and subrecipes.
+observed_behavior: amend-spec eval targets a subrecipe, but docs state recipe subjects resolve to .goose/recipes/<name>.yaml.
+evidence: ['evals/recipes/amend-spec.json:9-11', 'docs/15-skill-evaluations.md:333-334', '.goose/recipes/subrecipes/amend-spec.yaml']
+impact: Eval runner may skip or fail the subrecipe eval, leaving SPEC_DEVIATION amendment workflow under-tested.
+root_cause: Subrecipe eval was added without documenting resolver semantics for subrecipe subjects.
+target_state: Eval runner/docs explicitly support subrecipe subjects or move amend-spec under an eval category with path override.
+acceptance_criteria: eval-hub dry run resolves amend-spec to subrecipes/amend-spec.yaml; docs describe behavior.
+verification: node apps/eval-hub/dist/index.js --run --layers recipes --subjects amend-spec --ambient-goose (or dry-run if available).
+dependencies: []
+proposed_owner: qa-automation
+requires_separate_sdd_cycle: false
+blocking: false
+deferred: false
+expected_quality_benefit: improved traceability and executable gates
+expected_performance_benefit: fewer misrouted or repeated LLM checks
+```
+
+## HA-F005 — dev recipe routing text contradicts live-discovery orchestration rule
+
+```yaml
+id: HA-F005
+title: dev recipe routing text contradicts live-discovery orchestration rule
+category: CONTRADICTION
+severity: MEDIUM
+confidence: High
+status: OPEN
+affected_layer: L3 recipes / orchestration skill
+affected_files: ['.goose/recipes/dev.yaml', '.agents/skills/goose-orchestration/SKILL.md']
+expected_behavior: Orchestration routes from live load() discovery before delegation.
+observed_behavior: dev.yaml says 'Do NOT rely on runtime discovery when the table below covers the intent' while goose-orchestration requires load() as primary source before delegation.
+evidence: ['.goose/recipes/dev.yaml:36-40', 'goose-orchestration skill loaded content: discovery protocol/load() primary source']
+impact: Agents may bypass live availability and stale routing tables can override current agent descriptions.
+root_cause: Recipe embeds routing methodology that belongs in the orchestration skill and diverged from it.
+target_state: dev.yaml delegates routing rules to goose-orchestration and keeps only short invocation reminder.
+acceptance_criteria: dev.yaml instructs load() before delegate and no longer forbids runtime discovery.
+verification: grep dev.yaml; recipe eval for orchestration decision/load() behavior.
 dependencies: []
 proposed_owner: architect
 requires_separate_sdd_cycle: true
 blocking: false
 deferred: false
-expected_quality_benefit: Lower routing friction
-expected_performance_benefit: Avoid failed skill loads
+expected_quality_benefit: improved traceability and executable gates
+expected_performance_benefit: fewer misrouted or repeated LLM checks
+```
+
+## HA-F006 — Core recipe paths still depend on conversational handoff more than enforceable artifact schemas
+
+```yaml
+id: HA-F006
+title: Core recipe paths still depend on conversational handoff more than enforceable artifact schemas
+category: BROKEN_HANDOFF
+severity: HIGH
+confidence: Medium
+status: OPEN
+affected_layer: L3 recipes / artifacts
+affected_files: ['.goose/recipes/sdd.yaml', '.specs/schemas/expert-contribution.schema.json', '.specs/schemas/decision-resolution.schema.json']
+expected_behavior: Collegial multi-agent contributions are persisted in shared schemas with validation and consumers.
+observed_behavior: sdd requires ExpertContribution/DecisionResolution records, but no deterministic validation command or storage location is enforced in recipe gates.
+evidence: ['.goose/recipes/sdd.yaml:75-76', '.specs/schemas/expert-contribution.schema.json:1-14', '.specs/schemas/decision-resolution.schema.json:1-14']
+impact: Multi-agent work can degrade into unstructured synthesis; dissent/provenance may be lost.
+root_cause: Schema artifacts exist but are not integrated into executable validation gates.
+target_state: Recipes define storage path and schema validation for contribution/resolution records, or remove mandatory schema claim.
+acceptance_criteria: sdd run produces schema-conformant records and validation command passes.
+verification: schema validation command over produced artifacts; recipe smoke scenario.
+dependencies: []
+proposed_owner: principal-engineer
+requires_separate_sdd_cycle: true
+blocking: false
+deferred: false
+expected_quality_benefit: improved traceability and executable gates
+expected_performance_benefit: fewer misrouted or repeated LLM checks
 ```

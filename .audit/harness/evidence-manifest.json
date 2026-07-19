@@ -1,139 +1,181 @@
 {
   "repository_path": ".",
-  "revision": "c030a42849f32e83e4d7bcb0a034016696aecc87",
-  "created_at": "2026-07-19T10:52:38Z",
-  "execution_mode": "AUDIT_ONLY",
+  "revision": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+  "created_at": "2026-07-19T16:58:47.760491+00:00",
+  "mode": "AUDIT_ONLY",
   "scope": "all",
   "focus": "none",
+  "output_dir": ".audit/harness",
   "graph_format": "jsonld",
-  "dirty_status": " M .agents/agents/architect.md\n M .agents/agents/codebase-researcher.md\n M .agents/agents/harness-judge.md\n M .agents/agents/implementation-worker.md\n M .agents/agents/orchestrator.md\n M .agents/agents/planner.md\n M .agents/agents/principal-engineer.md\n M .agents/agents/product-owner.md\n M .agents/agents/qa-automation.md\n M .agents/agents/review-critic.md\n M .agents/agents/tdd-guide.md\n M .agents/agents/ui-designer.md\n M .agents/agents/ux-researcher.md\n M .agents/skills/agentic-devlopment/SKILL.md\n M .agents/skills/agentic-ux/SKILL.md\n M .agents/skills/atomic-design/SKILL.md\n M .agents/skills/beads/SKILL.md\n M .agents/skills/code-review/SKILL.md\n M .agents/skills/cognitive-ux/SKILL.md\n M .agents/skills/design-critique-case-studies/SKILL.md\n M .agents/skills/design-systems-arch/SKILL.md\n M .agents/skills/frontend-blueprint/SKILL.md\n M .agents/skills/goose-orchestration/SKILL.md\n M .agents/skills/harness-judge/SKILL.md\n M .agents/skills/harness-judge/references/domain-a-prompt-context-loop.md\n M .agents/skills/harness-judge/references/domain-b-skills.md\n M .agents/skills/harness-judge/references/domain-d-recipes.md\n M .agents/skills/harness-judge/references/domain-f-orchestration.md\n M .agents/skills/knowledge-graph/SKILL.md\n M .agents/skills/sdd/SKILL.md\n M .agents/skills/skill-creator/SKILL.md\n M .agents/skills/systematic-debugging/SKILL.md\n D .agents/skills/systematic-debugging/condition-based-waiting-example.ts\n D .agents/skills/systematic-debugging/find-polluter.sh\n M .agents/skills/ui-quality/SKILL.md\n M .agents/skills/ux-quality/SKILL.md\n M .agents/skills/wcag-accessibility-audit/SKILL.md\n M .agents/skills/webapp-testing/SKILL.md\nM  .beads/issues.jsonl\n M .goose/recipes/design.yaml\n M .goose/recipes/dev.yaml\n M .goose/recipes/discover.yaml\n M .goose/recipes/doc-review.yaml\n M .goose/recipes/explore.yaml\n M .goose/recipes/harness-audit.yaml\n M .goose/recipes/harness-review.yaml\n M .goose/recipes/implement.yaml\n M .goose/recipes/plan.yaml\n M .goose/recipes/release.yaml\n M .goose/recipes/review.yaml\n M .goose/recipes/sdd.yaml\n M .goose/recipes/spec.yaml\n M .goose/recipes/verify.yaml\n D .goose/skills/atomic-design-fundamentals\n D .goose/skills/design-critique-case-studies\n D .goose/skills/wcag-accessibility-audit\n M .knowledge/derived.jsonl\n M .knowledge/memory.jsonl\n M .specs/STATE.md\n M .specs/architecture.md\n M .specs/features/eval-suite/spec.md\n M .specs/features/harness-core/spec.md\n D .specs/features/kg-integration/tasks-closed.md\n D .specs/features/security-review/plan.md\n M AGENTS.md\n M README.md\n M docs/15-skill-evaluations.md\n M docs/AGENTS.md\n D docs/agent-roster-overhaul-plan.md\n D docs/atomic-design-audit.md\n D docs/atomic-design-eval-report.md\n D docs/cognitive-audit-decision-table.md\n D docs/design-system-maturity-assessment.md\n M docs/getting-started.md\n D docs/refactor-brief.md\n M evals/recipes/design.json\n M evals/recipes/discover.json\n M evals/recipes/harness-audit.json\n M evals/recipes/implement.json\n M evals/recipes/verify.json\n M evals/skills/README.md\n M scripts/check-consistency.py\n M scripts/install.sh\n?? .agents/skills/cognitive-ux/references/\n?? .agents/skills/design-systems-arch/references/\n?? .agents/skills/gdd/\n?? .agents/skills/harness-judge/references/domain-c-agents-extended.md\n?? .agents/skills/harness-judge/references/domain-calibration.md\n?? .agents/skills/harness-judge/references/domain-cross-artifact.md\n?? .agents/skills/harness-judge/references/domain-g-ontology-graph.md\n?? .agents/skills/harness-judge/references/domain-red-flags.md\n?? .agents/skills/harness-judge/templates/\n?? .agents/skills/knowledge-graph/agents/\n?? .agents/skills/knowledge-graph/references/\n?? .agents/skills/knowledge-graph/scripts/\n?? .agents/skills/systematic-debugging/scripts/\n?? .agents/skills/wcag-accessibility-audit/references/\n?? .audit/\n?? .goose/recipes/clarify.yaml\n?? .goose/recipes/constitution.yaml\n?? .goose/recipes/harness-audit.yaml.ori\n?? .goose/recipes/subrecipes/amend-spec.yaml\n?? .goose/recipes/subrecipes/harness-judge-audit.yaml\n?? .goose/recipes/subrecipes/harness-judge-audit.yaml.ori\n?? .specs/audits/agent-roster-overhaul-plan.md\n?? .specs/audits/archived-harness-judge-audit.yaml\n?? .specs/audits/atomic-design-audit.md\n?? .specs/audits/atomic-design-eval-report.md\n?? .specs/audits/cognitive-audit-decision-table.md\n?? .specs/audits/context-token-budget.md\n?? .specs/audits/design-system-maturity-assessment.md\n?? .specs/audits/kg-integration-tasks-closed.md\n?? .specs/audits/refactor-brief.md\n?? .specs/audits/review-routing-decision.md\n?? .specs/audits/sdd-conformance-remediation-plan.md\n?? .specs/audits/security-review-plan.md\n?? .specs/audits/ui-ux-skill-loading-policy.md\n?? .specs/features/clarify-phase/\n?? .specs/features/design/\n?? .specs/features/spec-deviation-loop/\n?? .specs/features/verify-review-gate/\n?? .specs/features/wcag-skill-refactor/\n?? .specs/harness/\n?? .specs/schemas/\n?? Agentic_Development_Harness_audit.md\n?? evals/recipes/amend-spec.json\n?? evals/recipes/clarify.json\n?? evals/recipes/constitution.json\n?? evals/skills/gdd.json\n?? evals/skills/skill-creator.json\n?? scripts/check-recipe-metadata.py\n?? scripts/context-budget.py\n?? scripts/export-harness-graph.py\n?? scripts/find-spec-deviations.sh\n?? scripts/harness-audit-preflight.sh",
   "blockers": [
-    "Beads shell command declined by user/tool approval boundary",
-    "Specialist subagents failed due provider/model errors",
-    "External web sources not fetched due unavailable web tool"
+    "Tracked repository had pre-existing modifications; audit did not remediate them.",
+    "External web fetch captured headers only, not full article bodies.",
+    "Domain G graph is machine-readable but not fully instantiated for all contract node types."
+  ],
+  "uncertainties": [
+    "Eval-hub runtime semantics for recipe agents metadata not verified.",
+    "Schema records from real SDD runs not verified.",
+    "Slash-command differences may be intentional taxonomy or drift."
   ],
   "commands": [
     {
-      "command": "git rev-parse HEAD; git status --short",
-      "exit_code": 0,
-      "evidence": "revision c030a42849f32e83e4d7bcb0a034016696aecc87; working tree had many pre-existing modifications including .beads and .knowledge"
+      "artifact": ".audit/harness/command-outputs/check-consistency.txt"
     },
     {
-      "command": "git check-ignore -v .audit/harness .audit/harness/test",
-      "exit_code": 0,
-      "evidence": "no ignore match printed; output path explicitly authorized by user/contract"
+      "artifact": ".audit/harness/command-outputs/external-sources.txt"
     },
     {
-      "command": "find component counts",
-      "exit_code": 0,
-      "evidence": "20 skill dirs, 13 agents, 19 top-level recipes, 10 subrecipes"
+      "artifact": ".audit/harness/command-outputs/inventory-files.txt"
     },
     {
-      "command": "python3 YAML parse .goose/recipes/**/*.yaml",
-      "exit_code": 0,
-      "evidence": "all recipe YAML files parsed OK"
+      "artifact": ".audit/harness/command-outputs/kg-smoke.txt"
     },
     {
-      "command": "python3 scripts/check-consistency.py",
-      "exit_code": 0,
-      "evidence": "All consistency checks passed"
+      "artifact": ".audit/harness/command-outputs/preconditions-paths.txt"
     },
     {
-      "command": "python3 scripts/check-recipe-metadata.py",
-      "exit_code": 0,
-      "evidence": "PASS recipe metadata complete for 19 recipes"
+      "artifact": ".audit/harness/command-outputs/recipe-validate.txt"
     },
     {
-      "command": "node apps/kg/dist/cli.js bootstrap --dry-run",
-      "exit_code": 0,
-      "evidence": "Dry-run: 91 records"
+      "artifact": ".audit/harness/command-outputs/spec-deviations.txt"
     },
     {
-      "command": "find .goose/recipes -name *.yaml | goose recipe validate",
-      "exit_code": 0,
-      "evidence": "all 29 recipe/subrecipe YAML files valid"
+      "artifact": ".audit/harness/command-outputs/spec-kit-local.txt"
     },
     {
-      "command": "./scripts/find-spec-deviations.sh",
-      "exit_code": 7,
-      "evidence": "7 SPEC_DEVIATION markers found; script reports triage required"
-    },
-    {
-      "command": "bd prime / ready / blocked",
-      "exit_code": null,
-      "evidence": "blocked by user declining shell tool execution; no Beads runtime state inspected"
-    },
-    {
-      "command": "delegate codebase-researcher/review-critic/principal-engineer",
-      "exit_code": null,
-      "evidence": "blocked by provider/model errors; no independent adversarial specialist output obtained before judge"
+      "artifact": ".audit/harness/command-outputs/static-extract.json"
     }
   ],
   "artifacts": [
     {
+      "path": ".audit/harness/adversarial-review-rerun.md",
+      "sha256": "08f3c96edbee997f69d4d5676f2489df2d9325c8b30e51341a597e7cf86f6615",
+      "bytes": 396
+    },
+    {
       "path": ".audit/harness/adversarial-review.md",
-      "sha256": "824c877ec4168fb7f110c128d41ea32e947187ab6f6db090e7fa41f8f0d38130",
-      "bytes": 1148
+      "sha256": "7189f517c7f6ff98058c218bb465a0ebc7db8ad92536c35dbfe4c8ee0c2c0f3d",
+      "bytes": 4568
     },
     {
       "path": ".audit/harness/architecture-alternatives.md",
-      "sha256": "5f53288e659229ed28c2f3d0a79848aa83521a69d98d955af8e8491974739399",
-      "bytes": 1568
+      "sha256": "e3bf8896dfc9782e9b1a66cae2d567448b2696140f22c7c28988e750df0860be",
+      "bytes": 2057
     },
     {
       "path": ".audit/harness/artifact-handoff-map.md",
-      "sha256": "961ee9cebc66225ee1f90bcef461c4c9af905afe31cbe654abdb457d41fabad2",
-      "bytes": 1391
+      "sha256": "85ca58dae8f1bd4b0443affcd2d52bd57ecc463e164e7e3def1678902a085d0d",
+      "bytes": 1450
+    },
+    {
+      "path": ".audit/harness/audit-baseline-manifest.json",
+      "sha256": "763070b3aae60766777ddd51925c6ef3a35c919fb0362160a553632506c896d3",
+      "bytes": 12818
     },
     {
       "path": ".audit/harness/audit-checklist-status.md",
-      "sha256": "28c6dcf28ecb0a605f89c8f9f3d20de28b6f09090e2239316e4625cdb460f20c",
-      "bytes": 1714
+      "sha256": "c7909360f9e45354313f79919d73be4b80978d1f58329ad33f8cde28ad4448cd",
+      "bytes": 1232
+    },
+    {
+      "path": ".audit/harness/beads-evidence-snapshot.md",
+      "sha256": "0dd944acc29374f00f448fcfa461dacd254dd88f4a085e140fad53430495511f",
+      "bytes": 30678
+    },
+    {
+      "path": ".audit/harness/beads-evidence-snapshot.sha256",
+      "sha256": "80a6fe95766a29d963a870de07bdc1620557ef4c877b46169dfa64d4c0036b55",
+      "bytes": 108
+    },
+    {
+      "path": ".audit/harness/command-outputs/check-consistency.txt",
+      "sha256": "ff54975ef4344254ea5b5c78112ff3a72bf94f05d2375d32e15486c2815ac41b",
+      "bytes": 3848
+    },
+    {
+      "path": ".audit/harness/command-outputs/external-sources.txt",
+      "sha256": "3a38526bfdae942d3d0af6b45e734decba806c8d39e0d21f152e42a7faf1adb3",
+      "bytes": 3595
+    },
+    {
+      "path": ".audit/harness/command-outputs/inventory-files.txt",
+      "sha256": "90131609cc350738d73a355c0804923d37af7d791df01a1ed77dfbb69966e1b4",
+      "bytes": 5316
+    },
+    {
+      "path": ".audit/harness/command-outputs/kg-smoke.txt",
+      "sha256": "b313006b0d769c6e742473dc31c3312e3786558293a739dd6e2aef6580d51de6",
+      "bytes": 228
+    },
+    {
+      "path": ".audit/harness/command-outputs/preconditions-paths.txt",
+      "sha256": "31d800329ca22cf5e1da84c09d3c79cfc3295fe9cdf1c44029ad3ba08fda9df1",
+      "bytes": 336
+    },
+    {
+      "path": ".audit/harness/command-outputs/recipe-validate.txt",
+      "sha256": "a153eb644b670740680f8042094ee705e3fd2a59274932c8c1e1a9094da152ec",
+      "bytes": 2173
+    },
+    {
+      "path": ".audit/harness/command-outputs/spec-deviations.txt",
+      "sha256": "fc1d7f43576ed18fa5588f102d6d50a6e4b73ad91dfa1abe455c3ccfaa085ab7",
+      "bytes": 255
+    },
+    {
+      "path": ".audit/harness/command-outputs/spec-kit-local.txt",
+      "sha256": "a365dae6b96bd2cccbb0751780c06d8f771c01c4e8a409d361710d8a0d013f76",
+      "bytes": 20134
+    },
+    {
+      "path": ".audit/harness/command-outputs/static-extract.json",
+      "sha256": "d82b998ff8ff35ec8c4179078a1fa0b53993e85d7d1072d898a53c481c54de4d",
+      "bytes": 68232
+    },
+    {
+      "path": ".audit/harness/context-budget-report.json",
+      "sha256": "559075a5407dac7fb2f0a4c5bbc35d15987c2f7f25293408ab1a45da6627a71a",
+      "bytes": 5792
     },
     {
       "path": ".audit/harness/current-inventory.md",
-      "sha256": "db4d5f611f4e7202b583f7a50d631ff4f9a387ad5f9ce19b73f3210907903dfb",
-      "bytes": 1654
+      "sha256": "7416a319ba1c20eb38653cd63c7fec844181851f2709e4dd4d42a420e0180f60",
+      "bytes": 6172
     },
     {
       "path": ".audit/harness/current-state-graph.jsonld",
-      "sha256": "bac0dcdbc7fd6813250aceba5eb3717e06bffd7c9d981ad4f5256cd7e1a653cf",
-      "bytes": 81014
+      "sha256": "5bb227ed53297030016890e9edaefc31fe48046c59d7d294edb4ed7083b03664",
+      "bytes": 56113
     },
     {
       "path": ".audit/harness/evidence-manifest.json",
-      "sha256": "d946f814bdbbefa621b12f32debbe121e2fa27e0b9321a9cb942fff9d21b25c0",
-      "bytes": 11158
+      "sha256": "9c4e01c1c0eedbd3a8e7eb2e72462c8d873fa33c0ad36d9db977be1f02e77e44",
+      "bytes": 16807
     },
     {
       "path": ".audit/harness/evidence-register.md",
-      "sha256": "ac5b68e7ac165aef40d0c37cbb8440b4c65db10ac0807f5afc6323ed4b7f394c",
-      "bytes": 1713
+      "sha256": "a4ec0398bbf2dbc5f0d19afa1c9ca9101dd4c44e67801a8d2183e9e0dc4e7312",
+      "bytes": 1714
     },
     {
       "path": ".audit/harness/final-audit-report.md",
-      "sha256": "960eb069736f6ebc5fd116b2840c45be91d659505723faf1b608d09cc5b57b0c",
-      "bytes": 142
+      "sha256": "1555c6a840cd0fa2eba7d6f65a9463cf57858a7545d4e736c042d5a9d27892e9",
+      "bytes": 2840
     },
     {
       "path": ".audit/harness/findings-register.md",
-      "sha256": "cbe83af49f350a422e05b8da57c4962b1b1b59b5d2b66cbbdff5dfa2c534751e",
-      "bytes": 6814
+      "sha256": "58ce2cb0162eefecc0928adce43b67bbd4a2d7ce3e02c23a4be7b244413ce447",
+      "bytes": 9435
     },
     {
       "path": ".audit/harness/graph-diff.md",
-      "sha256": "c5de1291ac03e2fb06ac160b23fb7ebe2edd5a48b02eae67cd7e5d01876abeed",
-      "bytes": 571
+      "sha256": "0bb82ad778e879b89237e0e2a663a997cbffd32619a016e9fa9df8ec54d3efac",
+      "bytes": 1960
     },
     {
       "path": ".audit/harness/graph-query-results.md",
-      "sha256": "ff6ea45cf5bafffb96cbb7a1b9fd5586099dd68c3e6ebbd1c8f226fe2f930af0",
-      "bytes": 1095
-    },
-    {
-      "path": ".audit/harness/harness-judge-report.json",
-      "sha256": "1fb19eb3c577e6328bb8fe9adb6b0366e4c5e7877378f428e53a54afd6e8aa62",
-      "bytes": 2116
+      "sha256": "6da3eb140f94ddbd75379301ca7b15edde58b8d82960d34ea9771bd8b77d8d1e",
+      "bytes": 2069
     },
     {
       "path": ".audit/harness/preconditions.tmp",
@@ -142,41 +184,34 @@
     },
     {
       "path": ".audit/harness/recipe-invocation-map.md",
-      "sha256": "c5599b7fe8ca26965178d41ae267fed27123d826bef7f553875a29d7bb2cb673",
-      "bytes": 3583
+      "sha256": "7dda309a9837c92ae677ba6b4ff40e0d9f5e726a77b051e09f37a54ce7431587",
+      "bytes": 2414
     },
     {
       "path": ".audit/harness/remediation-proposal.md",
-      "sha256": "22742876f2a79e4a198db0afe608a5403ae34087816abaddde5e0fdfe87158d8",
-      "bytes": 1165
+      "sha256": "b16261c0422ec01d57a96aef075b068a04b2674dd8e70e405af496680d83771d",
+      "bytes": 2049
     },
     {
       "path": ".audit/harness/responsibility-matrix.md",
-      "sha256": "eb2670d1087ed2fb5551da7814cbdbbc2f9bb746e58ca857978cfc39278711a2",
-      "bytes": 3063
+      "sha256": "1ed9a487d8a85b31266a8c6c7ccd66458735f2799890d459b0f784afcf6c515b",
+      "bytes": 5239
     },
     {
       "path": ".audit/harness/sdd-reference-model.md",
-      "sha256": "1046bca39d3da5435630982f4d5de2e02f86afe31cd46bdda50decaa8bf42df5",
-      "bytes": 2439
+      "sha256": "99e81213897f1bb04624f01a318eb1f588f6e0628a9d662111739a5d6a72a151",
+      "bytes": 2812
+    },
+    {
+      "path": ".audit/harness/subagent-provider-preflight.txt",
+      "sha256": "3542e8811b50d22f6ab049bdbc6dc655a716ba863dcd73c751b8b37baf2998cd",
+      "bytes": 409
     },
     {
       "path": ".audit/harness/target-state-graph.jsonld",
-      "sha256": "9a0d30eb437a87619b9a6b448bcb2ad82652195dcdb366ea7619bbff826398cd",
-      "bytes": 82926
+      "sha256": "3a89b97d2c1c6e21cad32316629f75a9f76ed3b60112a8d685665e01de524a04",
+      "bytes": 57817
     }
   ],
-  "post_judge_updates": [
-    {
-      "path": ".audit/harness/harness-judge-report.json",
-      "reason": "transcribed independent judge delegate summary after invocation"
-    },
-    {
-      "path": ".audit/harness/final-audit-report.md",
-      "reason": "final closure synthesis after judge"
-    }
-  ],
-  "judge_received": true,
-  "judge_verdict": "FAIL",
-  "final_status": "AUDIT_COMPLETE_WITH_BLOCKERS"
+  "freeze_rule": "No audit artifact changes after judge invocation except harness-judge-report.json and final-audit-report.md closure synthesis."
 }

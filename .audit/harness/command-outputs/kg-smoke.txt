@@ -1,0 +1,11 @@
+COMMAND: kg smoke
+2026-07-19T18:51:17+02:00
+Dry-run: 96 records
+bootstrap_exit=0
+R1:ac-test-gap
+R2:feature-not-decomposed
+R3:feature-not-implemented
+R4:transitive-skill
+R5:epic-blocked
+R6:deprecated-impl-detection
+reason_exit=0

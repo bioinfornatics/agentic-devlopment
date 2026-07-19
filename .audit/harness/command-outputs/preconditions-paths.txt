@@ -1,0 +1,12 @@
+COMMAND: find required top-level paths
+2026-07-19T18:51:17+02:00
+PRESENT .agents/skills (dir)
+PRESENT .agents/agents (dir)
+PRESENT .goose/recipes (dir)
+PRESENT .specs (dir)
+PRESENT docs (dir)
+PRESENT evals (dir)
+PRESENT scripts (dir)
+PRESENT apps (dir)
+PRESENT .knowledge (dir)
+PRESENT /home/jmercier/Codes/third-parties/spec-kit (dir)

@@ -1,167 +1,94 @@
-# Final Harness Audit Report
+# Final audit report
 
-## Executive Summary
+## Executive summary
 
-Execution mode: `AUDIT_ONLY`  
-Repository: `.`  
-Scope: `all`  
-Focus: `none`  
-Graph format: `jsonld`  
-Output directory: `.audit/harness`
+Repository `.` was audited in AUDIT_ONLY mode against `harness-judge/templates/audit-contract.md` at revision `2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e`. The audit inspected L1 skills, L2 agents, L3 recipes/subrecipes, eval declarations, SDD/Beads flow, deterministic validation, and JSON-LD current/target graphs.
 
-The audit completed with blockers. The repository contains a substantial Goose/Beads/SDD harness: 20 skill directories, 13 agents, 19 top-level recipes, and 10 subrecipes. Deterministic checks are strong at the syntax/metadata layer: recipe YAML parsing passed, all Goose recipe validations passed, `scripts/check-consistency.py` passed, recipe metadata validation passed, and KG bootstrap dry-run passed.
+Deterministic validators are strong: all Goose recipes validated, consistency checks passed, KG smoke passed, and SPEC_DEVIATION scan was clean. The independent judge scored the harness **78/100 (ACCEPTABLE, PARTIAL)** and returned **AUDIT_COMPLETE_WITH_BLOCKERS** because two high findings remain open and Domain G is materially incomplete.
 
-However, the independent `harness_judge` returned `FAIL`. The blocking issues are operational and semantic rather than simple YAML syntax: Beads runtime evidence was unavailable, adversarial challenge subagents failed due provider/model configuration, Domain D has harness-audit/eval AD-001 drift according to judge, Domain F is only partially proven, and Domain G is not yet a provenance-rich, fully query-validated ontology graph.
+## Scope and mode
 
-Final status: `AUDIT_COMPLETE_WITH_BLOCKERS`.
+- Execution mode: AUDIT_ONLY
+- Repository: `.`
+- Scope: all
+- Focus: none
+- Evidence budget: full
+- Output directory: `.audit/harness`
+- Graph format: JSON-LD
 
-## Preconditions Report
+## Preconditions
 
-| Precondition | Status | Evidence |
-|---|---|---|
-| Repository revision recorded | Completed | `c030a42849f32e83e4d7bcb0a034016696aecc87` in `evidence-manifest.json` |
-| Execution mode recorded | Completed | `AUDIT_ONLY` |
-| Output location authorized | Completed | User and contract explicitly authorized `.audit/harness`; no tracked source modifications outside audit output were made by audit synthesis |
-| Tool availability checked | Completed | `goose`, `node`, `pnpm`, `python3`, `jq` available |
-| Dirty tree recorded | Completed with caveat | extensive pre-existing tracked/untracked changes in `git status --short` |
-| Beads evidence | Blocked | `bd prime` command was declined by tool approval boundary |
-| External web SDD sources | Blocked | no web-fetch/browser tool available in this session |
-| Specialist adversarial challenge | Blocked | delegated agents failed due provider/model errors |
+- Repository revision: `2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e`
+- Output path: `.audit/harness` explicitly authorized by user request; audit artifacts were restricted there.
+- Tools available: git, python3, node, pnpm, goose, bd, jq, sha256sum; `rg` unavailable in precondition output.
+- Beads read-only state: `bd ready --json` returned `[]`; `bd blocked --json` returned `[]`.
+- Existing tracked modifications were present before/while auditing; no tracked source remediation was attempted.
 
-## Deterministic Validation Summary
+## Deterministic validation
 
-| Command | Result |
-|---|---|
-| Python YAML parse for `.goose/recipes/**/*.yaml` | PASS |
-| `python3 scripts/check-consistency.py` | PASS — All consistency checks passed |
-| `python3 scripts/check-recipe-metadata.py` | PASS — recipe metadata complete for 19 recipes |
-| `node apps/kg/dist/cli.js bootstrap --dry-run` | PASS — Dry-run: 91 records |
-| `goose recipe validate` for all recipes/subrecipes | PASS — all 29 valid |
-| `./scripts/find-spec-deviations.sh` | BLOCKING/WARN — 7 markers found, triage required |
-| Beads `bd prime/ready/blocked` | BLOCKED — command declined |
+- `goose recipe validate` passed for all top-level and subrecipe YAML files.
+- `python3 scripts/check-consistency.py` exited 0 and reported all consistency checks passed.
+- `node apps/kg/dist/cli.js bootstrap --dry-run` reported 96 records; `reason --rules` listed R1-R6.
+- `scripts/find-spec-deviations.sh` reported 0 active markers and 7 classified example/instruction markers.
+- Required Microsoft SDD URLs returned HTTP 200 headers.
 
-See `.audit/harness/evidence-register.md` for command evidence.
+## Findings summary
 
-## Inventory
+- Critical: 0
+- High: 2
+- Medium: 4
+- Low: 0
 
-- Skills: 20 directories, including 19 counted domain skills plus `README.md` file.
-- Agents: 13 agent files.
-- Recipes: 19 top-level recipes.
-- Subrecipes: 10 subrecipes.
+High findings:
 
-Detailed inventory: `.audit/harness/current-inventory.md`.
+- HA-F001: harness-audit eval declares isolated judge as in-session agent.
+- HA-F006: multi-agent aggregation schemas are required by recipe text but lack enforceable storage/validation integration.
 
-## Core Findings
+Medium findings:
 
-| Severity | Count | IDs |
-|---|---:|---|
-| Critical | 1 | F-CRIT-001 |
-| High | 2 | F-HIGH-001, F-HIGH-002 |
-| Medium | 2 | F-MED-001, F-MED-002 |
-| Low | 0 | — |
+- HA-F002: stale Beads memory contains obsolete agent roster.
+- HA-F003: slash-command documentation is inconsistent across README, AGENTS, and harness-core spec.
+- HA-F004: subrecipe eval support is ambiguous for `amend-spec`.
+- HA-F005: `dev.yaml` routing text contradicts live-discovery orchestration rule.
 
-### Critical
+## Domain G and graph outputs
 
-- `F-CRIT-001` — Beads runtime evidence unavailable. Work-control graph, gates, and task readiness could not be fully verified.
+JSON-LD current and target graphs were produced:
 
-### High
+- `.audit/harness/current-state-graph.jsonld`
+- `.audit/harness/target-state-graph.jsonld`
+- `.audit/harness/graph-diff.md`
+- `.audit/harness/graph-query-results.md`
 
-- `F-HIGH-001` — SPEC_DEVIATION scanner reports 7 markers requiring triage; some may be instructional examples, indicating false-positive classification risk.
-- `F-HIGH-002` — Independent adversarial challenge agents were unavailable due provider/model errors.
+Domain G score from independent judge: **5/12 PARTIAL**. The graph is machine-readable and queryable, but cannot score HIGH because first-class Artifact, Gate, Evidence, TargetStateDecision, and contradiction nodes are incomplete relative to the contract TBox/ABox expectations.
 
-### Medium
-
-- `F-MED-001` — Dirty working tree before audit reduces reproducibility.
-- `F-MED-002` — `agentic-devlopment` appears intentionally misspelled but remains a cognitive/search hazard requiring alias or migration decision.
-
-Full details: `.audit/harness/findings-register.md`.
-
-## Domain Results from Independent Judge
-
-| Domain | Result |
-|---|---|
-| A — Prompt/context/loop | PASS_WITH_WARNINGS |
-| B — Skills | PASS_PARTIAL |
-| C — Agents | PASS |
-| D — Recipes | FAIL |
-| E — SDD/TDD/GDD frameworks | PASS_PARTIAL |
-| F — Orchestration | PARTIAL_FAIL |
-| G — Ontology graph | PARTIAL |
-
-Judge verdict: `FAIL`; score: `null` / not numeric.  
-Judge report summary: `.audit/harness/harness-judge-report.json`.
-
-## SDD / Spec Kit Reference Model
-
-The canonical model includes Constitution, Discover/Intent, Clarify, Specify, Plan/Tasks, Implement, Verify, Review, Release, SPEC_DEVIATION handling, and Learn/memory feedback. The local harness adapts Spec Kit by using Beads instead of `tasks.md` as the work-control graph.
-
-Detailed model: `.audit/harness/sdd-reference-model.md`.
-
-## Flow and Handoff Artifacts
-
-- Agent responsibility matrix: `.audit/harness/responsibility-matrix.md`
-- Recipe invocation map: `.audit/harness/recipe-invocation-map.md`
-- Artifact handoff map: `.audit/harness/artifact-handoff-map.md`
-
-Core flow is conceptually present, but runtime proof is incomplete because Beads and delegated adversarial workers were blocked.
-
-## Graph Outputs
-
-- Current-state graph: `.audit/harness/current-state-graph.jsonld`
-- Target-state graph: `.audit/harness/target-state-graph.jsonld`
-- Graph diff: `.audit/harness/graph-diff.md`
-- Query results: `.audit/harness/graph-query-results.md`
-
-Domain G is partial: machine-readable JSON-LD exists, but TBox/ABox validation, provenance-rich critical edges, executable query catalogue, graph metrics, and Beads-backed end-to-end path validation remain incomplete.
-
-## Target Architecture
+## Selected target architecture
 
 Selected architecture: **Balanced**.
 
-Rationale: the harness already has useful SDD/Beads/Goose structure and passing deterministic validators. Minimal architecture would discard expertise before usage evidence is available. High-assurance architecture is appropriate for release/audit/regulated flows but too costly as the default.
+Rationale: preserve the coherent SDD lifecycle and independent review while reducing default mandatory calls by making UX/UI/QA/principal-engineer and high-assurance gates conditional by risk. Adversarial review requires remediation to enumerate exact core/conditional rosters and quantify token/runtime cost before adoption.
 
-Architecture alternatives and migration phases: `.audit/harness/architecture-alternatives.md`.
+## Independent judge
 
-## Remediation Proposal
+- Verdict: PARTIAL
+- Score: 78/100
+- Rating band: ACCEPTABLE
+- Confidence: Medium-High
+- Final judge status: AUDIT_COMPLETE_WITH_BLOCKERS
+- Report artifact: `.audit/harness/harness-judge-report.json`
 
-AUDIT_ONLY mode did not create or modify Beads. Proposed remediation tasks are documented only in `.audit/harness/remediation-proposal.md`:
+## Closure checklist summary
 
-1. Provide read-only Beads snapshot or approve bounded Beads audit commands.
-2. Add subagent/provider preflight validator.
-3. Refine SPEC_DEVIATION scanner active-vs-example classification.
-4. Add audit baseline manifest step capturing clean HEAD or patch hash.
-5. Decide alias/migration for `agentic-devlopment`.
+Completed: required loads, contract read, preconditions, inventory, deterministic validation, current/target graph export, flow analysis, findings, adversarial challenge, evidence freeze, independent judge invocation.
 
-## Blockers and Uncertainties
+Blocked / partial:
 
-- Beads state could not be read with `bd prime`, `bd ready --json`, or `bd blocked --json`.
-- Required external Microsoft SDD web sources were not fetched due unavailable web tooling.
-- Required review-critic and principal-engineer challenge outputs were blocked by provider/model errors.
-- Dirty working tree means evidence reflects the working tree, not a clean commit.
-- Judge reported Domain D drift around `harness-audit` and eval declarations even though current deterministic consistency output passed; this current/frozen drift must be resolved in a follow-up.
+- Domain G is partial due incomplete first-class ontology instances.
+- Eval-hub runtime semantics for recipe `agents` metadata were not verified.
+- Real SDD production of ExpertContribution / DecisionResolution artifacts was not verified.
+- External SDD source fetch captured HTTP headers only, not full body analysis.
+- Existing tracked modifications mean repository state was not clean before audit.
 
-## Closure Checklist
-
-| Item | Status |
-|---|---|
-| Contract loaded before scoring/delegation | Completed |
-| Required paths classified | Completed |
-| Deterministic validators run | Completed |
-| Beads examined | Blocked |
-| Current/target graphs written | Completed, partial quality |
-| Findings evidence-backed | Completed |
-| Critical/high challenged by specialists | Blocked |
-| Evidence frozen before judge | Completed |
-| Independent judge invoked exactly once | Completed |
-| Judge verdict incorporated without silent override | Completed |
-| Final audit status emitted | Completed |
-
-## Final Status
+## Final status
 
 AUDIT_COMPLETE_WITH_BLOCKERS
-
----
-
-## Remediation Closure Addendum — 2026-07-19
-
-Added Beads evidence snapshot, audit baseline manifest, provider preflight, SPEC_DEVIATION active/example classification, AD-003 alias policy, context/UIUX/review routing docs, contribution/decision schemas, graph enrichment, and judge closure update. Closure status: completed with residual provider availability handled by preflight/fallback policy.

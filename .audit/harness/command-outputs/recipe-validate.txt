@@ -1,0 +1,89 @@
+COMMAND: recipe validation
+2026-07-19T18:51:17+02:00
+=== .goose/recipes/clarify.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/constitution.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/design.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/dev.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/discover.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/doc-review.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/explore.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/harness-audit.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/harness-doc-review.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/harness-master.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/harness-review.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/implement.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/plan.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/release.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/remember.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/review.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/sdd.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/spec.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/subrecipes/amend-spec.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/subrecipes/doc-review.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/subrecipes/explore.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/subrecipes/harness-judge-audit.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/subrecipes/implement.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/subrecipes/plan.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/subrecipes/release.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/subrecipes/review.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/subrecipes/spec.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/subrecipes/verify.yaml ===
+✓ recipe file is valid
+exit=0
+=== .goose/recipes/verify.yaml ===
+✓ recipe file is valid
+exit=0

@@ -1,17 +1,18 @@
-# SDD Reference Model
+# Canonical SDD reference model
 
-Sources: bundled contract, project AGENTS.md, local Spec Kit templates under `/home/jmercier/Codes/third-parties/spec-kit`, and local SDD skill. External Microsoft web sources were required by the contract but blocked by lack of web-fetch tooling; this is a blocker.
+Sources: Microsoft SDD blog URLs (HTTP 200 evidence), local Spec Kit files (presence and grep evidence), project `sdd` skill, `.specs/features/harness-core/spec.md`, `.specs/features/spec-deviation-loop/spec.md`.
 
 | Phase | Purpose | Inputs | Outputs | Owner | Supporting agents | Entry gate | Exit gate | Recipe | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| Constitution | establish non-negotiable principles | project context | `.specs/constitution.md` | architect | principal-engineer | project initialized | principles accepted | constitution | ADAPTED |
-| Discover/Intent | capture problem/user stories | user intent | discovery artifact/epic | product-owner | ux-researcher when needed | intent provided | open questions known | discover | ADOPTED |
-| Clarify | resolve gray areas before spec | discovery.md/questions | clarified answers | product-owner | architect/tdd-guide | ambiguity present | no critical unknowns | clarify | ADAPTED |
-| Specify | write testable ACs | discovery/answers | `.specs/features/*/spec.md` | product-owner | tdd-guide | problem defined | ACs stable and IDed | spec | ADOPTED |
-| Plan/Tasks | create dependency-aware work | spec | Beads graph | planner | architect | spec exists | ready tasks/gates | plan | ADAPTED (Beads replaces tasks.md) |
-| Implement | TDD implementation | claimed Bead/spec | code/tests/handoff | implementation-worker | tdd-guide | task ready/claimed | tests pass | implement | ADOPTED |
-| Verify | run deterministic/browser/API checks | implementation | evidence report | qa-automation | ui-quality/webapp-testing | implementation complete | verification evidence | verify | ADOPTED |
-| Review | independent critique | diff/evidence | approve/block findings | review-critic | principal-engineer escalation | evidence present | verdict recorded | review | ADOPTED |
-| Release | readiness and gates | verified changes | release report | principal-engineer/release workflow | review-critic | approvals met | release/rollback ready | release | ADOPTED |
-| SPEC_DEVIATION | manage drift | marker/diff | accept/reject/defer | review-critic | product-owner | deviation detected | triaged | amend-spec subrecipe | EXTENDED |
-| Learn | store durable pointer memory | completed work | Beads memory pointer | orchestrator | all | closure evidence | memory/task created as needed | remember | ADOPTED |
+| Constitution | Establish non-negotiable project principles | repository context | `.specs/constitution.md` / ADRs | architect | principal-engineer | project lacks/changes principles | principles accepted | constitution | ADAPTED |
+| Discover / Intent | Capture user problem, personas, success metrics | user intent | discovery.md + epic proposal | product-owner | ux-researcher | clear initiative | discovery artifact exists | discover | ADOPTED |
+| Clarify | Resolve ambiguities before spec | discovery.md | clarify.md with resolved questions | product-owner | architect | ambiguity present / Medium+ | clarify artifact exists | clarify | ADOPTED |
+| Specify | Write WHEN/THEN/SHALL ACs with stable IDs | discovery/clarify | spec.md + stories | architect | tdd-guide | source artifact exists | ACs are testable | spec | ADOPTED |
+| Plan / Tasks | Convert ACs to Beads graph | spec.md | dependency graph / Beads tasks | planner | architect | spec.md exists | ready tasks with AC refs | plan | ADAPTED (Beads replaces tasks.md) |
+| TDD | Define RED tests before implementation | AC IDs | failing test evidence | tdd-guide | implementation-worker | task claimed | RED observed | implement/subrecipe | PARTIAL: mostly procedural |
+| Implement | Minimal change for claimed bead | RED + AC | code/doc change + handoff | implementation-worker | tdd-guide | bead claimed | tests pass / handoff | implement | ADOPTED |
+| Review | Independent critique before closure | diff + tests + Beads | verdict + findings | review-critic | principal-engineer on escalation | diff exists | APPROVE/BLOCK and labels | review | ADOPTED |
+| Verify / Validate | Run deterministic and adaptive checks | reviewed artifact | verification evidence | qa-automation | ui-designer for UI | env:reviewed | env:verified | verify | ADOPTED |
+| Release | Gate production readiness | env:verified | release decision / env:prod | principal-engineer | qa-automation | verification passed | release complete | release | ADOPTED |
+| Spec deviation | Detect and triage implementation/spec drift | source scan | accept amendment or SPEC_REVERT | review-critic | product-owner/architect | scan result | all markers triaged | review + amend-spec | EXTENDED |
+| Learn / Memory | Store durable pointers | completed work | bd remember pointer / follow-up beads | orchestrator | all | closed/verifiable outcome | memory/follow-up created | dev/sdd | ADAPTED |

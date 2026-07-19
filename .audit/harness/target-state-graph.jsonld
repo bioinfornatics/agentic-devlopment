@@ -1,2695 +1,1825 @@
 {
   "@context": {
-    "type": "@type",
-    "id": "@id"
-  },
-  "metadata": {
-    "revision": "c030a42849f32e83e4d7bcb0a034016696aecc87",
-    "created_at": "2026-07-19T10:52:38Z",
-    "view": "target",
-    "format": "jsonld"
-  },
-  "tbox": {
-    "node_types": [
-      "Skill",
-      "SkillTopic",
-      "Agent",
-      "AgentResponsibility",
-      "Recipe",
-      "Subrecipe",
-      "DelegatedTask",
-      "Artifact",
-      "LifecyclePhase",
-      "Gate",
-      "Finding",
-      "RepositoryFile"
-    ],
-    "relationship_types": [
-      "LOADS_SKILL",
-      "INVOLVES_AGENT",
-      "INVOKES_SUBRECIPE",
-      "PRECEDES",
-      "AFFECTS"
-    ],
-    "integrity_constraints": [
-      "Every active Agent should have responsibilities",
-      "Every active Recipe should implement a phase or cross-cutting function",
-      "Every finding must have evidence",
-      "Every inferred relation needs confidence"
-    ]
+    "@vocab": "https://agentic-harness.local/ontology#",
+    "name": "http://schema.org/name",
+    "type": "@type"
   },
   "@graph": [
     {
-      "id": "skill:agentic-devlopment",
+      "@id": "skill:agentic-devlopment",
       "type": "Skill",
       "name": "agentic-devlopment",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/agentic-devlopment"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/agentic-devlopment/SKILL.md",
+      "lines": 215,
+      "graph_view": "target"
     },
     {
-      "id": "skill:agentic-ux",
+      "@id": "skill:agentic-ux",
       "type": "Skill",
       "name": "agentic-ux",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/agentic-ux"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/agentic-ux/SKILL.md",
+      "lines": 141,
+      "graph_view": "target"
     },
     {
-      "id": "skill:atomic-design",
+      "@id": "skill:atomic-design",
       "type": "Skill",
       "name": "atomic-design",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/atomic-design"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/atomic-design/SKILL.md",
+      "lines": 162,
+      "graph_view": "target"
     },
     {
-      "id": "skill:beads",
+      "@id": "skill:beads",
       "type": "Skill",
       "name": "beads",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/beads"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/beads/SKILL.md",
+      "lines": 267,
+      "graph_view": "target"
     },
     {
-      "id": "skill:code-review",
+      "@id": "skill:code-review",
       "type": "Skill",
       "name": "code-review",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/code-review"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/code-review/SKILL.md",
+      "lines": 171,
+      "graph_view": "target"
     },
     {
-      "id": "skill:cognitive-ux",
+      "@id": "skill:cognitive-ux",
       "type": "Skill",
       "name": "cognitive-ux",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/cognitive-ux"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/cognitive-ux/SKILL.md",
+      "lines": 82,
+      "graph_view": "target"
     },
     {
-      "id": "skill:design-critique-case-studies",
+      "@id": "skill:design-critique-case-studies",
       "type": "Skill",
       "name": "design-critique-case-studies",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/design-critique-case-studies"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/design-critique-case-studies/SKILL.md",
+      "lines": 143,
+      "graph_view": "target"
     },
     {
-      "id": "skill:design-systems-arch",
+      "@id": "skill:design-systems-arch",
       "type": "Skill",
       "name": "design-systems-arch",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/design-systems-arch"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/design-systems-arch/SKILL.md",
+      "lines": 103,
+      "graph_view": "target"
     },
     {
-      "id": "skill:frontend-blueprint",
+      "@id": "skill:frontend-blueprint",
       "type": "Skill",
       "name": "frontend-blueprint",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/frontend-blueprint"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/frontend-blueprint/SKILL.md",
+      "lines": 106,
+      "graph_view": "target"
     },
     {
-      "id": "skill:gdd",
+      "@id": "skill:gdd",
       "type": "Skill",
       "name": "gdd",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/gdd"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/gdd/SKILL.md",
+      "lines": 177,
+      "graph_view": "target"
     },
     {
-      "id": "skill:goose-orchestration",
+      "@id": "skill:goose-orchestration",
       "type": "Skill",
       "name": "goose-orchestration",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/goose-orchestration"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/goose-orchestration/SKILL.md",
+      "lines": 401,
+      "graph_view": "target"
     },
     {
-      "id": "skill:harness-judge",
+      "@id": "skill:harness-judge",
       "type": "Skill",
       "name": "harness-judge",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/harness-judge"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/harness-judge/SKILL.md",
+      "lines": 494,
+      "graph_view": "target"
     },
     {
-      "id": "skill:knowledge-graph",
+      "@id": "skill:knowledge-graph",
       "type": "Skill",
       "name": "knowledge-graph",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/knowledge-graph"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/knowledge-graph/SKILL.md",
+      "lines": 182,
+      "graph_view": "target"
     },
     {
-      "id": "skill:sdd",
+      "@id": "skill:sdd",
       "type": "Skill",
       "name": "sdd",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/sdd"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/sdd/SKILL.md",
+      "lines": 265,
+      "graph_view": "target"
     },
     {
-      "id": "skill:skill-creator",
+      "@id": "skill:skill-creator",
       "type": "Skill",
       "name": "skill-creator",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/skill-creator"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/skill-creator/SKILL.md",
+      "lines": 504,
+      "graph_view": "target"
     },
     {
-      "id": "skill:systematic-debugging",
+      "@id": "skill:systematic-debugging",
       "type": "Skill",
       "name": "systematic-debugging",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/systematic-debugging"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/systematic-debugging/SKILL.md",
+      "lines": 333,
+      "graph_view": "target"
     },
     {
-      "id": "skill:ui-quality",
+      "@id": "skill:ui-quality",
       "type": "Skill",
       "name": "ui-quality",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/ui-quality"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/ui-quality/SKILL.md",
+      "lines": 154,
+      "graph_view": "target"
     },
     {
-      "id": "skill:ux-quality",
+      "@id": "skill:ux-quality",
       "type": "Skill",
       "name": "ux-quality",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/ux-quality"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/ux-quality/SKILL.md",
+      "lines": 118,
+      "graph_view": "target"
     },
     {
-      "id": "skill:wcag-accessibility-audit",
+      "@id": "skill:wcag-accessibility-audit",
       "type": "Skill",
       "name": "wcag-accessibility-audit",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/wcag-accessibility-audit"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/wcag-accessibility-audit/SKILL.md",
+      "lines": 202,
+      "graph_view": "target"
     },
     {
-      "id": "skill:webapp-testing",
+      "@id": "skill:webapp-testing",
       "type": "Skill",
       "name": "webapp-testing",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/skills/webapp-testing"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".agents/skills/webapp-testing/SKILL.md",
+      "lines": 119,
+      "graph_view": "target"
     },
     {
-      "id": "agent:architect",
+      "@id": "agent:architect",
       "type": "Agent",
       "name": "architect",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/architect.md",
-      "model": "claude-opus-4-5"
+      "model": "gpt-5.5",
+      "description": "Use PROACTIVELY when planning a new feature, making a technology choice, or touching a system boundary. Produces ADRs, design proposals, and trade-off analyses. Read-only.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:codebase-researcher",
+      "@id": "agent:codebase-researcher",
       "type": "Agent",
       "name": "codebase-researcher",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/codebase-researcher.md",
-      "model": "claude-sonnet-4-5"
+      "model": "gpt-5.5",
+      "description": "Read-only codebase researcher. Use to map architecture, trace blast radius, and gather evidence before planning or implementation. Safe to run in parallel. Produces file-level evidence reports.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:harness-judge",
+      "@id": "agent:harness-judge",
       "type": "Agent",
       "name": "harness-judge",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/harness-judge.md",
-      "model": "claude-sonnet-4-5"
+      "model": "gpt-5.5",
+      "description": "Evidence-first LLM-as-judge for the Goose agentic development harness. Audits completed sessions and harness artifacts across prompt, context, loop, skills, agents, recipes, frameworks, orchestration, ontology/knowledge-graph integrity, and layer-delta value. Invoke for read-only grading and pre-merge harness audits; do not invoke for implementation.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:implementation-worker",
+      "@id": "agent:implementation-worker",
       "type": "Agent",
       "name": "implementation-worker",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/implementation-worker.md",
-      "model": "claude-sonnet-4-5"
+      "model": "gpt-5.5",
+      "description": "Implementation specialist for scoped Beads issues. Invoke when a bead is claimed and ready for coding. Enforces TDD (tests first), minimal blast radius, and complete handoff.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:orchestrator",
+      "@id": "agent:orchestrator",
       "type": "Agent",
       "name": "orchestrator",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/orchestrator.md",
-      "model": "claude-opus-4-5"
+      "model": "gpt-5.5",
+      "description": "Lead orchestrator for the SDD+TDD loop. Calls load() to discover available specialists and routes to the best match by description. Owns scope partitioning, delegation, and synthesis across all SDD phases. Invoke for work spanning two or more specialist agents or phases.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:planner",
+      "@id": "agent:planner",
       "type": "Agent",
       "name": "planner",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/planner.md",
-      "model": "claude-sonnet-4-5"
+      "model": "gpt-5.5",
+      "description": "Beads dependency graph specialist. Invoked BY product-owner or architect when a product goal requires ordered Beads with dependency chains across more than 5 interdependent issues or multiple files, agents, and sessions.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:principal-engineer",
+      "@id": "agent:principal-engineer",
       "type": "Agent",
       "name": "principal-engineer",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/principal-engineer.md",
-      "model": "claude-opus-4-5"
+      "model": "gpt-5.5",
+      "description": "Use when a change touches shared infrastructure, public APIs, breaking changes, or architectural boundaries. Escalation path after 2+ BLOCK verdicts from review-critic. Read-only.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:product-owner",
+      "@id": "agent:product-owner",
       "type": "Agent",
       "name": "product-owner",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/product-owner.md",
-      "model": "claude-opus-4-5"
+      "model": "gpt-5.5",
+      "description": "Product Owner \u2014 owns the full backlog lifecycle: user story definition, PRD quality gate (\u226585/100), Beads epic/story creation, priority and assignee management. Invoke at the start of any new feature, for backlog refinement, or to assign work to specialist agents.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:qa-automation",
+      "@id": "agent:qa-automation",
       "type": "Agent",
       "name": "qa-automation",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/qa-automation.md",
-      "model": "claude-sonnet-4-5"
+      "model": "gpt-5.5",
+      "description": "QA automation engineer. Invoked after implementation to design and execute the automated test strategy: unit, integration, E2E. Manages flaky test quarantine, CI integration, and coverage reporting.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:review-critic",
+      "@id": "agent:review-critic",
       "type": "Agent",
       "name": "review-critic",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/review-critic.md",
-      "model": "claude-sonnet-4-5"
+      "model": "gpt-5.5",
+      "description": "Critical code and Beads handoff reviewer. Invoke after any implementation, before closing a bead or merging. Returns severity-ranked findings with proof and a verdict: APPROVE, PASS-WITH-NITS, or BLOCK.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:tdd-guide",
+      "@id": "agent:tdd-guide",
       "type": "Agent",
       "name": "tdd-guide",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/tdd-guide.md",
-      "model": "claude-sonnet-4-5"
+      "model": "gpt-5.5",
+      "description": "Use PROACTIVELY before any new feature implementation or bug fix. Enforces write-tests-first with 80%+ coverage gates. Invoke before implementation-worker to establish the failing RED test first.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:ui-designer",
+      "@id": "agent:ui-designer",
       "type": "Agent",
       "name": "ui-designer",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/ui-designer.md",
-      "model": "claude-sonnet-4-5"
+      "model": "gpt-5.5",
+      "description": "User interface designer. Invoke after UX research validates the direction: for component design, design system consistency, WCAG 2.2 AA compliance, and visual implementation review.",
+      "graph_view": "target"
     },
     {
-      "id": "agent:ux-researcher",
+      "@id": "agent:ux-researcher",
       "type": "Agent",
       "name": "ux-researcher",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
       "source_path": ".agents/agents/ux-researcher.md",
-      "model": "claude-sonnet-4-5"
+      "model": "gpt-5.5",
+      "description": "User experience researcher. Invoke when understanding user needs, defining personas, mapping user journeys, planning usability tests, or validating product decisions with user evidence.",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:clarify",
+      "@id": "recipe:clarify",
       "type": "Recipe",
       "name": "clarify",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/clarify.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/clarify.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:constitution",
+      "@id": "recipe:constitution",
       "type": "Recipe",
       "name": "constitution",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/constitution.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/constitution.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:design",
+      "@id": "recipe:design",
       "type": "Recipe",
       "name": "design",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/design.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/design.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:dev",
+      "@id": "recipe:dev",
       "type": "Recipe",
       "name": "dev",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/dev.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/dev.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:discover",
+      "@id": "recipe:discover",
       "type": "Recipe",
       "name": "discover",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/discover.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/discover.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:doc-review",
+      "@id": "recipe:doc-review",
       "type": "Recipe",
       "name": "doc-review",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/doc-review.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/doc-review.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:explore",
+      "@id": "recipe:explore",
       "type": "Recipe",
       "name": "explore",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/explore.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/explore.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:harness-audit",
+      "@id": "recipe:harness-audit",
       "type": "Recipe",
       "name": "harness-audit",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-audit.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/harness-audit.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:harness-doc-review",
+      "@id": "recipe:harness-doc-review",
       "type": "Recipe",
       "name": "harness-doc-review",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-doc-review.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/harness-doc-review.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:harness-master",
+      "@id": "recipe:harness-master",
       "type": "Recipe",
       "name": "harness-master",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-master.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/harness-master.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:harness-review",
+      "@id": "recipe:harness-review",
       "type": "Recipe",
       "name": "harness-review",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-review.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/harness-review.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:implement",
+      "@id": "recipe:implement",
       "type": "Recipe",
       "name": "implement",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/implement.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/implement.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:plan",
+      "@id": "recipe:plan",
       "type": "Recipe",
       "name": "plan",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/plan.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/plan.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:release",
+      "@id": "recipe:release",
       "type": "Recipe",
       "name": "release",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/release.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/release.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:remember",
+      "@id": "recipe:remember",
       "type": "Recipe",
       "name": "remember",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/remember.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/remember.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:review",
+      "@id": "recipe:review",
       "type": "Recipe",
       "name": "review",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/review.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/review.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:sdd",
+      "@id": "recipe:sdd",
       "type": "Recipe",
       "name": "sdd",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/sdd.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/sdd.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:spec",
+      "@id": "recipe:spec",
       "type": "Recipe",
       "name": "spec",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/spec.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/spec.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "subrecipe:amend-spec:subrecipes",
+      "@id": "recipe:verify",
+      "type": "Recipe",
+      "name": "verify",
+      "status": "current",
+      "source_kind": "explicit",
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/verify.yaml",
+      "graph_view": "target"
+    },
+    {
+      "@id": "subrecipe:amend-spec",
       "type": "Subrecipe",
       "name": "amend-spec",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/amend-spec.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/subrecipes/amend-spec.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "subrecipe:doc-review:subrecipes",
+      "@id": "subrecipe:doc-review",
       "type": "Subrecipe",
       "name": "doc-review",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/doc-review.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/subrecipes/doc-review.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "subrecipe:explore:subrecipes",
+      "@id": "subrecipe:explore",
       "type": "Subrecipe",
       "name": "explore",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/explore.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/subrecipes/explore.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "subrecipe:harness-judge-audit:subrecipes",
+      "@id": "subrecipe:harness-judge-audit",
       "type": "Subrecipe",
       "name": "harness-judge-audit",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/harness-judge-audit.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/subrecipes/harness-judge-audit.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "subrecipe:implement:subrecipes",
+      "@id": "subrecipe:implement",
       "type": "Subrecipe",
       "name": "implement",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/implement.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/subrecipes/implement.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "subrecipe:plan:subrecipes",
+      "@id": "subrecipe:plan",
       "type": "Subrecipe",
       "name": "plan",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/plan.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/subrecipes/plan.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "subrecipe:release:subrecipes",
+      "@id": "subrecipe:release",
       "type": "Subrecipe",
       "name": "release",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/release.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/subrecipes/release.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "subrecipe:review:subrecipes",
+      "@id": "subrecipe:review",
       "type": "Subrecipe",
       "name": "review",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/review.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/subrecipes/review.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "subrecipe:spec:subrecipes",
+      "@id": "subrecipe:spec",
       "type": "Subrecipe",
       "name": "spec",
-      "confidence": 1.0,
       "status": "current",
       "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/spec.yaml"
+      "confidence": 1.0,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/subrecipes/spec.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "subrecipe:verify:subrecipes",
+      "@id": "subrecipe:verify",
       "type": "Subrecipe",
       "name": "verify",
+      "status": "current",
+      "source_kind": "explicit",
       "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/verify.yaml"
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "source_path": ".goose/recipes/subrecipes/verify.yaml",
+      "graph_view": "target"
     },
     {
-      "id": "recipe:verify",
-      "type": "Recipe",
-      "name": "verify",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/verify.yaml"
-    },
-    {
-      "id": "finding:F-CRIT-001",
-      "type": "Finding",
-      "name": "Audit precondition blocker: Beads runtime evidence unavailable",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "severity": "critical"
-    },
-    {
-      "id": "file:.beads/issues.jsonl",
-      "type": "RepositoryFile",
-      "name": ".beads/issues.jsonl",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".beads/issues.jsonl"
-    },
-    {
-      "id": "finding:F-HIGH-001",
-      "type": "Finding",
-      "name": "SPEC_DEVIATION scanner reports markers requiring triage",
-      "confidence": 0.7,
-      "status": "current",
-      "source_kind": "explicit",
-      "severity": "high"
-    },
-    {
-      "id": "file:.agents/agents/implementation-worker.md",
-      "type": "RepositoryFile",
-      "name": ".agents/agents/implementation-worker.md",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".agents/agents/implementation-worker.md"
-    },
-    {
-      "id": "file:.agents/agents/review-critic.md",
-      "type": "RepositoryFile",
-      "name": ".agents/agents/review-critic.md",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".agents/agents/review-critic.md"
-    },
-    {
-      "id": "file:.goose/recipes/subrecipes/implement.yaml",
-      "type": "RepositoryFile",
-      "name": ".goose/recipes/subrecipes/implement.yaml",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/subrecipes/implement.yaml"
-    },
-    {
-      "id": "file:.specs/features/spec-deviation-loop/spec.md",
-      "type": "RepositoryFile",
-      "name": ".specs/features/spec-deviation-loop/spec.md",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".specs/features/spec-deviation-loop/spec.md"
-    },
-    {
-      "id": "finding:F-HIGH-002",
-      "type": "Finding",
-      "name": "Independent adversarial challenge agents unavailable during audit",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "severity": "high"
-    },
-    {
-      "id": "file:.agents/agents/review-critic.md",
-      "type": "RepositoryFile",
-      "name": ".agents/agents/review-critic.md",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".agents/agents/review-critic.md"
-    },
-    {
-      "id": "file:.agents/agents/principal-engineer.md",
-      "type": "RepositoryFile",
-      "name": ".agents/agents/principal-engineer.md",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".agents/agents/principal-engineer.md"
-    },
-    {
-      "id": "finding:F-MED-001",
-      "type": "Finding",
-      "name": "Working tree is dirty before audit, including tracked harness, Beads, and KG files",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "severity": "medium"
-    },
-    {
-      "id": "file:git status --short",
-      "type": "RepositoryFile",
-      "name": "git status --short",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": "git status --short"
-    },
-    {
-      "id": "finding:F-MED-002",
-      "type": "Finding",
-      "name": "Agentic-development skill name appears intentionally misspelled but remains a cognitive/search hazard",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "severity": "medium"
-    },
-    {
-      "id": "file:.agents/skills/agentic-devlopment/SKILL.md",
-      "type": "RepositoryFile",
-      "name": ".agents/skills/agentic-devlopment/SKILL.md",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".agents/skills/agentic-devlopment/SKILL.md"
-    },
-    {
-      "id": "file:AGENTS.md",
-      "type": "RepositoryFile",
-      "name": "AGENTS.md",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": "AGENTS.md"
-    },
-    {
-      "id": "phase:constitution",
+      "@id": "phase:constitution",
       "type": "LifecyclePhase",
       "name": "Constitution",
-      "confidence": 0.8,
       "status": "current",
-      "source_kind": "inferred"
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
     },
     {
-      "id": "phase:discover",
+      "@id": "phase:discover",
       "type": "LifecyclePhase",
       "name": "Discover",
-      "confidence": 0.8,
       "status": "current",
-      "source_kind": "inferred"
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
     },
     {
-      "id": "phase:clarify",
+      "@id": "phase:clarify",
       "type": "LifecyclePhase",
       "name": "Clarify",
-      "confidence": 0.8,
       "status": "current",
-      "source_kind": "inferred"
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
     },
     {
-      "id": "phase:specify",
+      "@id": "phase:specify",
       "type": "LifecyclePhase",
       "name": "Specify",
-      "confidence": 0.8,
       "status": "current",
-      "source_kind": "inferred"
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
     },
     {
-      "id": "phase:plan",
+      "@id": "phase:plan",
       "type": "LifecyclePhase",
       "name": "Plan",
-      "confidence": 0.8,
       "status": "current",
-      "source_kind": "inferred"
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
     },
     {
-      "id": "phase:implement",
+      "@id": "phase:tdd",
+      "type": "LifecyclePhase",
+      "name": "TDD",
+      "status": "current",
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
+    },
+    {
+      "@id": "phase:implement",
       "type": "LifecyclePhase",
       "name": "Implement",
-      "confidence": 0.8,
       "status": "current",
-      "source_kind": "inferred"
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
     },
     {
-      "id": "phase:verify",
-      "type": "LifecyclePhase",
-      "name": "Verify",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "phase:review",
+      "@id": "phase:review",
       "type": "LifecyclePhase",
       "name": "Review",
-      "confidence": 0.8,
       "status": "current",
-      "source_kind": "inferred"
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
     },
     {
-      "id": "phase:release",
+      "@id": "phase:verify",
+      "type": "LifecyclePhase",
+      "name": "Verify",
+      "status": "current",
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
+    },
+    {
+      "@id": "phase:release",
       "type": "LifecyclePhase",
       "name": "Release",
-      "confidence": 0.8,
       "status": "current",
-      "source_kind": "inferred"
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
     },
     {
-      "id": "phase:learn",
+      "@id": "phase:specdeviation",
+      "type": "LifecyclePhase",
+      "name": "SpecDeviation",
+      "status": "current",
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
+    },
+    {
+      "@id": "phase:learn",
       "type": "LifecyclePhase",
       "name": "Learn",
-      "confidence": 0.8,
       "status": "current",
-      "source_kind": "inferred"
+      "source_kind": "inferred",
+      "confidence": 0.85,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "graph_view": "target"
     },
     {
-      "id": "agent:architect-LOADS_SKILL-skill:agentic-devlopment",
+      "@id": "finding:HA-F001",
+      "type": "Finding",
+      "name": "Harness-audit recipe eval declares the isolated judge as in-session agent",
+      "status": "current",
+      "source_kind": "inferred",
+      "confidence": 0.8,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "severity": "HIGH",
+      "graph_view": "target"
+    },
+    {
+      "@id": "finding:HA-F002",
+      "type": "Finding",
+      "name": "Durable Beads memory contains stale agent roster and obsolete names",
+      "status": "current",
+      "source_kind": "inferred",
+      "confidence": 0.8,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "severity": "MEDIUM",
+      "graph_view": "target"
+    },
+    {
+      "@id": "finding:HA-F003",
+      "type": "Finding",
+      "name": "Slash-command documentation is inconsistent across README, AGENTS, and harness-core spec",
+      "status": "current",
+      "source_kind": "inferred",
+      "confidence": 0.8,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "severity": "MEDIUM",
+      "graph_view": "target"
+    },
+    {
+      "@id": "finding:HA-F004",
+      "type": "Finding",
+      "name": "Subrecipe eval support is ambiguous for amend-spec",
+      "status": "current",
+      "source_kind": "inferred",
+      "confidence": 0.8,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "severity": "MEDIUM",
+      "graph_view": "target"
+    },
+    {
+      "@id": "finding:HA-F005",
+      "type": "Finding",
+      "name": "dev recipe routing text contradicts live-discovery orchestration rule",
+      "status": "current",
+      "source_kind": "inferred",
+      "confidence": 0.8,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "severity": "MEDIUM",
+      "graph_view": "target"
+    },
+    {
+      "@id": "finding:HA-F006",
+      "type": "Finding",
+      "name": "Core recipe paths still depend on conversational handoff more than enforceable artifact schemas",
+      "status": "current",
+      "source_kind": "inferred",
+      "confidence": 0.8,
+      "version": "2ab4bc987eb24fd153e50e0b5b39c1a4274d9e5e",
+      "updated_at": "2026-07-19T16:55:04.125694+00:00",
+      "severity": "HIGH",
+      "graph_view": "target"
+    }
+  ],
+  "relations": [
+    {
+      "@id": "rel:1",
+      "type": "IMPLEMENTS_PHASE",
+      "source": "recipe:clarify",
+      "target": "phase:clarify",
+      "source_kind": "inferred",
+      "confidence": 0.75,
+      "evidence": [
+        ".goose/recipes/clarify.yaml"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:2",
+      "type": "IMPLEMENTS_PHASE",
+      "source": "recipe:constitution",
+      "target": "phase:constitution",
+      "source_kind": "inferred",
+      "confidence": 0.75,
+      "evidence": [
+        ".goose/recipes/constitution.yaml"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:3",
+      "type": "IMPLEMENTS_PHASE",
+      "source": "recipe:dev",
+      "target": "phase:implement",
+      "source_kind": "inferred",
+      "confidence": 0.75,
+      "evidence": [
+        ".goose/recipes/dev.yaml"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:4",
+      "type": "IMPLEMENTS_PHASE",
+      "source": "recipe:discover",
+      "target": "phase:discover",
+      "source_kind": "inferred",
+      "confidence": 0.75,
+      "evidence": [
+        ".goose/recipes/discover.yaml"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:5",
+      "type": "IMPLEMENTS_PHASE",
+      "source": "recipe:implement",
+      "target": "phase:implement",
+      "source_kind": "inferred",
+      "confidence": 0.75,
+      "evidence": [
+        ".goose/recipes/implement.yaml"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:6",
+      "type": "IMPLEMENTS_PHASE",
+      "source": "recipe:plan",
+      "target": "phase:plan",
+      "source_kind": "inferred",
+      "confidence": 0.75,
+      "evidence": [
+        ".goose/recipes/plan.yaml"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:7",
+      "type": "IMPLEMENTS_PHASE",
+      "source": "recipe:release",
+      "target": "phase:release",
+      "source_kind": "inferred",
+      "confidence": 0.75,
+      "evidence": [
+        ".goose/recipes/release.yaml"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:8",
+      "type": "IMPLEMENTS_PHASE",
+      "source": "recipe:review",
+      "target": "phase:review",
+      "source_kind": "inferred",
+      "confidence": 0.75,
+      "evidence": [
+        ".goose/recipes/review.yaml"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:9",
+      "type": "IMPLEMENTS_PHASE",
+      "source": "recipe:sdd",
+      "target": "phase:discover",
+      "source_kind": "inferred",
+      "confidence": 0.75,
+      "evidence": [
+        ".goose/recipes/sdd.yaml"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:10",
+      "type": "IMPLEMENTS_PHASE",
+      "source": "recipe:spec",
+      "target": "phase:specify",
+      "source_kind": "inferred",
+      "confidence": 0.75,
+      "evidence": [
+        ".goose/recipes/spec.yaml"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:11",
+      "type": "IMPLEMENTS_PHASE",
+      "source": "recipe:verify",
+      "target": "phase:verify",
+      "source_kind": "inferred",
+      "confidence": 0.75,
+      "evidence": [
+        ".goose/recipes/verify.yaml"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:12",
+      "type": "INVOKES_SUBRECIPE",
+      "source": "recipe:dev",
+      "target": "subrecipe:explore",
+      "source_kind": "explicit",
+      "confidence": 0.9,
+      "evidence": [
+        ".goose/recipes/dev.yaml:142-180"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:13",
+      "type": "INVOKES_SUBRECIPE",
+      "source": "recipe:dev",
+      "target": "subrecipe:plan",
+      "source_kind": "explicit",
+      "confidence": 0.9,
+      "evidence": [
+        ".goose/recipes/dev.yaml:142-180"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:14",
+      "type": "INVOKES_SUBRECIPE",
+      "source": "recipe:dev",
+      "target": "subrecipe:implement",
+      "source_kind": "explicit",
+      "confidence": 0.9,
+      "evidence": [
+        ".goose/recipes/dev.yaml:142-180"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:15",
+      "type": "INVOKES_SUBRECIPE",
+      "source": "recipe:dev",
+      "target": "subrecipe:review",
+      "source_kind": "explicit",
+      "confidence": 0.9,
+      "evidence": [
+        ".goose/recipes/dev.yaml:142-180"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:16",
+      "type": "INVOKES_SUBRECIPE",
+      "source": "recipe:dev",
+      "target": "subrecipe:verify",
+      "source_kind": "explicit",
+      "confidence": 0.9,
+      "evidence": [
+        ".goose/recipes/dev.yaml:142-180"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:17",
+      "type": "INVOKES_SUBRECIPE",
+      "source": "recipe:dev",
+      "target": "subrecipe:release",
+      "source_kind": "explicit",
+      "confidence": 0.9,
+      "evidence": [
+        ".goose/recipes/dev.yaml:142-180"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:18",
+      "type": "INVOKES_SUBRECIPE",
+      "source": "recipe:harness-audit",
+      "target": "subrecipe:harness-judge-audit",
+      "source_kind": "explicit",
+      "confidence": 0.95,
+      "evidence": [
+        ".goose/recipes/harness-audit.yaml:44-47"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    },
+    {
+      "@id": "rel:19",
       "type": "LOADS_SKILL",
       "source": "agent:architect",
       "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/architect.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/architect.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:architect-LOADS_SKILL-skill:design-systems-arch",
+      "@id": "rel:20",
       "type": "LOADS_SKILL",
       "source": "agent:architect",
       "target": "skill:design-systems-arch",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/architect.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/architect.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:architect-LOADS_SKILL-skill:sdd",
+      "@id": "rel:21",
       "type": "LOADS_SKILL",
       "source": "agent:architect",
       "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/architect.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/architect.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:codebase-researcher-LOADS_SKILL-skill:agentic-devlopment",
+      "@id": "rel:22",
       "type": "LOADS_SKILL",
       "source": "agent:codebase-researcher",
       "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/codebase-researcher.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/codebase-researcher.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:codebase-researcher-LOADS_SKILL-skill:goose-orchestration",
+      "@id": "rel:23",
       "type": "LOADS_SKILL",
       "source": "agent:codebase-researcher",
       "target": "skill:goose-orchestration",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/codebase-researcher.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/codebase-researcher.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:harness-judge-LOADS_SKILL-skill:harness-judge",
+      "@id": "rel:24",
       "type": "LOADS_SKILL",
       "source": "agent:harness-judge",
       "target": "skill:harness-judge",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/harness-judge.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/harness-judge.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:implementation-worker-LOADS_SKILL-skill:agentic-devlopment",
+      "@id": "rel:25",
       "type": "LOADS_SKILL",
       "source": "agent:implementation-worker",
       "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/implementation-worker.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/implementation-worker.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:implementation-worker-LOADS_SKILL-skill:beads",
+      "@id": "rel:26",
       "type": "LOADS_SKILL",
       "source": "agent:implementation-worker",
       "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/implementation-worker.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/implementation-worker.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:implementation-worker-LOADS_SKILL-skill:knowledge-graph",
+      "@id": "rel:27",
       "type": "LOADS_SKILL",
       "source": "agent:implementation-worker",
       "target": "skill:knowledge-graph",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/implementation-worker.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/implementation-worker.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:implementation-worker-LOADS_SKILL-skill:sdd",
+      "@id": "rel:28",
       "type": "LOADS_SKILL",
       "source": "agent:implementation-worker",
       "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/implementation-worker.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/implementation-worker.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:orchestrator-LOADS_SKILL-skill:agentic-devlopment",
+      "@id": "rel:29",
       "type": "LOADS_SKILL",
       "source": "agent:orchestrator",
       "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/orchestrator.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/orchestrator.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:orchestrator-LOADS_SKILL-skill:beads",
+      "@id": "rel:30",
       "type": "LOADS_SKILL",
       "source": "agent:orchestrator",
       "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/orchestrator.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/orchestrator.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:orchestrator-LOADS_SKILL-skill:goose-orchestration",
+      "@id": "rel:31",
       "type": "LOADS_SKILL",
       "source": "agent:orchestrator",
       "target": "skill:goose-orchestration",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/orchestrator.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/orchestrator.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:planner-LOADS_SKILL-skill:beads",
+      "@id": "rel:32",
       "type": "LOADS_SKILL",
       "source": "agent:planner",
       "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/planner.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/planner.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:principal-engineer-LOADS_SKILL-skill:agentic-devlopment",
+      "@id": "rel:33",
       "type": "LOADS_SKILL",
       "source": "agent:principal-engineer",
       "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/principal-engineer.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/principal-engineer.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:principal-engineer-LOADS_SKILL-skill:code-review",
+      "@id": "rel:34",
       "type": "LOADS_SKILL",
       "source": "agent:principal-engineer",
       "target": "skill:code-review",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/principal-engineer.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/principal-engineer.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:product-owner-LOADS_SKILL-skill:agentic-devlopment",
+      "@id": "rel:35",
       "type": "LOADS_SKILL",
       "source": "agent:product-owner",
       "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/product-owner.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/product-owner.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:product-owner-LOADS_SKILL-skill:agentic-ux",
+      "@id": "rel:36",
       "type": "LOADS_SKILL",
       "source": "agent:product-owner",
       "target": "skill:agentic-ux",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/product-owner.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/product-owner.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:product-owner-LOADS_SKILL-skill:sdd",
+      "@id": "rel:37",
       "type": "LOADS_SKILL",
       "source": "agent:product-owner",
       "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/product-owner.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/product-owner.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:qa-automation-LOADS_SKILL-skill:agentic-devlopment",
+      "@id": "rel:38",
       "type": "LOADS_SKILL",
       "source": "agent:qa-automation",
       "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/qa-automation.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/qa-automation.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:qa-automation-LOADS_SKILL-skill:systematic-debugging",
+      "@id": "rel:39",
       "type": "LOADS_SKILL",
       "source": "agent:qa-automation",
       "target": "skill:systematic-debugging",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/qa-automation.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/qa-automation.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:qa-automation-LOADS_SKILL-skill:webapp-testing",
+      "@id": "rel:40",
       "type": "LOADS_SKILL",
       "source": "agent:qa-automation",
       "target": "skill:webapp-testing",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/qa-automation.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/qa-automation.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:review-critic-LOADS_SKILL-skill:code-review",
+      "@id": "rel:41",
       "type": "LOADS_SKILL",
       "source": "agent:review-critic",
       "target": "skill:code-review",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/review-critic.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/review-critic.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:review-critic-LOADS_SKILL-skill:knowledge-graph",
+      "@id": "rel:42",
       "type": "LOADS_SKILL",
       "source": "agent:review-critic",
       "target": "skill:knowledge-graph",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/review-critic.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/review-critic.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:tdd-guide-LOADS_SKILL-skill:agentic-devlopment",
+      "@id": "rel:43",
       "type": "LOADS_SKILL",
       "source": "agent:tdd-guide",
       "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/tdd-guide.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/tdd-guide.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:tdd-guide-LOADS_SKILL-skill:sdd",
+      "@id": "rel:44",
       "type": "LOADS_SKILL",
       "source": "agent:tdd-guide",
       "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/tdd-guide.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/tdd-guide.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:tdd-guide-LOADS_SKILL-skill:systematic-debugging",
+      "@id": "rel:45",
       "type": "LOADS_SKILL",
       "source": "agent:tdd-guide",
       "target": "skill:systematic-debugging",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/tdd-guide.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/tdd-guide.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:ui-designer-LOADS_SKILL-skill:atomic-design",
+      "@id": "rel:46",
       "type": "LOADS_SKILL",
       "source": "agent:ui-designer",
       "target": "skill:atomic-design",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/ui-designer.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/ui-designer.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:ui-designer-LOADS_SKILL-skill:cognitive-ux",
+      "@id": "rel:47",
       "type": "LOADS_SKILL",
       "source": "agent:ui-designer",
       "target": "skill:cognitive-ux",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/ui-designer.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/ui-designer.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:ui-designer-LOADS_SKILL-skill:design-systems-arch",
+      "@id": "rel:48",
       "type": "LOADS_SKILL",
       "source": "agent:ui-designer",
       "target": "skill:design-systems-arch",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/ui-designer.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/ui-designer.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:ui-designer-LOADS_SKILL-skill:frontend-blueprint",
+      "@id": "rel:49",
       "type": "LOADS_SKILL",
       "source": "agent:ui-designer",
       "target": "skill:frontend-blueprint",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/ui-designer.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/ui-designer.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:ui-designer-LOADS_SKILL-skill:ui-quality",
+      "@id": "rel:50",
       "type": "LOADS_SKILL",
       "source": "agent:ui-designer",
       "target": "skill:ui-quality",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/ui-designer.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/ui-designer.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:ui-designer-LOADS_SKILL-skill:ux-quality",
+      "@id": "rel:51",
       "type": "LOADS_SKILL",
       "source": "agent:ui-designer",
       "target": "skill:ux-quality",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/ui-designer.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/ui-designer.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:ui-designer-LOADS_SKILL-skill:webapp-testing",
-      "type": "LOADS_SKILL",
-      "source": "agent:ui-designer",
-      "target": "skill:webapp-testing",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".agents/agents/ui-designer.md"
-    },
-    {
-      "id": "agent:ux-researcher-LOADS_SKILL-skill:agentic-ux",
+      "@id": "rel:52",
       "type": "LOADS_SKILL",
       "source": "agent:ux-researcher",
       "target": "skill:agentic-ux",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/ux-researcher.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/ux-researcher.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:ux-researcher-LOADS_SKILL-skill:cognitive-ux",
+      "@id": "rel:53",
       "type": "LOADS_SKILL",
       "source": "agent:ux-researcher",
       "target": "skill:cognitive-ux",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/ux-researcher.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/ux-researcher.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:ux-researcher-LOADS_SKILL-skill:ux-quality",
+      "@id": "rel:54",
       "type": "LOADS_SKILL",
       "source": "agent:ux-researcher",
       "target": "skill:ux-quality",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
       "source_kind": "explicit",
-      "source_path": ".agents/agents/ux-researcher.md"
+      "confidence": 0.7,
+      "evidence": [
+        ".agents/agents/ux-researcher.md"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "agent:ux-researcher-LOADS_SKILL-skill:webapp-testing",
-      "type": "LOADS_SKILL",
-      "source": "agent:ux-researcher",
-      "target": "skill:webapp-testing",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".agents/agents/ux-researcher.md"
-    },
-    {
-      "id": "recipe:clarify-INVOLVES_AGENT-agent:product-owner",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:clarify",
-      "target": "agent:product-owner",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/clarify.yaml"
-    },
-    {
-      "id": "recipe:clarify-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:clarify",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/clarify.yaml"
-    },
-    {
-      "id": "recipe:clarify-LOADS_SKILL-skill:sdd",
-      "type": "LOADS_SKILL",
-      "source": "recipe:clarify",
-      "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/clarify.yaml"
-    },
-    {
-      "id": "recipe:constitution-INVOLVES_AGENT-agent:architect",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:constitution",
-      "target": "agent:architect",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/constitution.yaml"
-    },
-    {
-      "id": "recipe:constitution-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:constitution",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/constitution.yaml"
-    },
-    {
-      "id": "recipe:constitution-LOADS_SKILL-skill:sdd",
-      "type": "LOADS_SKILL",
-      "source": "recipe:constitution",
-      "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/constitution.yaml"
-    },
-    {
-      "id": "recipe:design-INVOLVES_AGENT-agent:ui-designer",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:design",
-      "target": "agent:ui-designer",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/design.yaml"
-    },
-    {
-      "id": "recipe:design-INVOLVES_AGENT-agent:ux-researcher",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:design",
-      "target": "agent:ux-researcher",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/design.yaml"
-    },
-    {
-      "id": "recipe:design-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:design",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/design.yaml"
-    },
-    {
-      "id": "recipe:design-LOADS_SKILL-skill:agentic-ux",
-      "type": "LOADS_SKILL",
-      "source": "recipe:design",
-      "target": "skill:agentic-ux",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/design.yaml"
-    },
-    {
-      "id": "recipe:design-LOADS_SKILL-skill:atomic-design",
-      "type": "LOADS_SKILL",
-      "source": "recipe:design",
-      "target": "skill:atomic-design",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/design.yaml"
-    },
-    {
-      "id": "recipe:design-LOADS_SKILL-skill:cognitive-ux",
-      "type": "LOADS_SKILL",
-      "source": "recipe:design",
-      "target": "skill:cognitive-ux",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/design.yaml"
-    },
-    {
-      "id": "recipe:design-LOADS_SKILL-skill:design-systems-arch",
-      "type": "LOADS_SKILL",
-      "source": "recipe:design",
-      "target": "skill:design-systems-arch",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/design.yaml"
-    },
-    {
-      "id": "recipe:design-LOADS_SKILL-skill:ui-quality",
-      "type": "LOADS_SKILL",
-      "source": "recipe:design",
-      "target": "skill:ui-quality",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/design.yaml"
-    },
-    {
-      "id": "recipe:design-LOADS_SKILL-skill:ux-quality",
-      "type": "LOADS_SKILL",
-      "source": "recipe:design",
-      "target": "skill:ux-quality",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/design.yaml"
-    },
-    {
-      "id": "recipe:design-LOADS_SKILL-skill:webapp-testing",
-      "type": "LOADS_SKILL",
-      "source": "recipe:design",
-      "target": "skill:webapp-testing",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/design.yaml"
-    },
-    {
-      "id": "recipe:design-INVOKES_SUBRECIPE-subrecipe:verify:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:design",
-      "target": "subrecipe:verify:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/design.yaml"
-    },
-    {
-      "id": "recipe:dev-INVOLVES_AGENT-agent:orchestrator",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:dev",
-      "target": "agent:orchestrator",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/dev.yaml"
-    },
-    {
-      "id": "recipe:dev-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:dev",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/dev.yaml"
-    },
-    {
-      "id": "recipe:dev-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "recipe:dev",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/dev.yaml"
-    },
-    {
-      "id": "recipe:dev-LOADS_SKILL-skill:goose-orchestration",
-      "type": "LOADS_SKILL",
-      "source": "recipe:dev",
-      "target": "skill:goose-orchestration",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/dev.yaml"
-    },
-    {
-      "id": "recipe:dev-INVOKES_SUBRECIPE-subrecipe:explore:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:dev",
-      "target": "subrecipe:explore:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/dev.yaml"
-    },
-    {
-      "id": "recipe:dev-INVOKES_SUBRECIPE-subrecipe:plan:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:dev",
-      "target": "subrecipe:plan:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/dev.yaml"
-    },
-    {
-      "id": "recipe:dev-INVOKES_SUBRECIPE-subrecipe:implement:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:dev",
-      "target": "subrecipe:implement:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/dev.yaml"
-    },
-    {
-      "id": "recipe:dev-INVOKES_SUBRECIPE-subrecipe:review:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:dev",
-      "target": "subrecipe:review:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/dev.yaml"
-    },
-    {
-      "id": "recipe:dev-INVOKES_SUBRECIPE-subrecipe:verify:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:dev",
-      "target": "subrecipe:verify:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/dev.yaml"
-    },
-    {
-      "id": "recipe:dev-INVOKES_SUBRECIPE-subrecipe:release:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:dev",
-      "target": "subrecipe:release:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/dev.yaml"
-    },
-    {
-      "id": "recipe:discover-INVOLVES_AGENT-agent:product-owner",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:discover",
-      "target": "agent:product-owner",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/discover.yaml"
-    },
-    {
-      "id": "recipe:discover-INVOLVES_AGENT-agent:ux-researcher",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:discover",
-      "target": "agent:ux-researcher",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/discover.yaml"
-    },
-    {
-      "id": "recipe:discover-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:discover",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/discover.yaml"
-    },
-    {
-      "id": "recipe:discover-LOADS_SKILL-skill:sdd",
-      "type": "LOADS_SKILL",
-      "source": "recipe:discover",
-      "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/discover.yaml"
-    },
-    {
-      "id": "recipe:doc-review-INVOLVES_AGENT-agent:review-critic",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:doc-review",
-      "target": "agent:review-critic",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/doc-review.yaml"
-    },
-    {
-      "id": "recipe:doc-review-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:doc-review",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/doc-review.yaml"
-    },
-    {
-      "id": "recipe:doc-review-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "recipe:doc-review",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/doc-review.yaml"
-    },
-    {
-      "id": "recipe:doc-review-INVOKES_SUBRECIPE-subrecipe:doc-review:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:doc-review",
-      "target": "subrecipe:doc-review:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/doc-review.yaml"
-    },
-    {
-      "id": "recipe:explore-INVOLVES_AGENT-agent:codebase-researcher",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:explore",
-      "target": "agent:codebase-researcher",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/explore.yaml"
-    },
-    {
-      "id": "recipe:explore-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:explore",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/explore.yaml"
-    },
-    {
-      "id": "recipe:explore-INVOKES_SUBRECIPE-subrecipe:explore:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:explore",
-      "target": "subrecipe:explore:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/explore.yaml"
-    },
-    {
-      "id": "recipe:harness-audit-INVOLVES_AGENT-agent:harness-judge",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:harness-audit",
-      "target": "agent:harness-judge",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-audit.yaml"
-    },
-    {
-      "id": "recipe:harness-audit-LOADS_SKILL-skill:harness-judge",
-      "type": "LOADS_SKILL",
-      "source": "recipe:harness-audit",
-      "target": "skill:harness-judge",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-audit.yaml"
-    },
-    {
-      "id": "recipe:harness-audit-INVOKES_SUBRECIPE-subrecipe:harness_judge:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:harness-audit",
-      "target": "subrecipe:harness_judge:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/harness-audit.yaml"
-    },
-    {
-      "id": "recipe:harness-doc-review-INVOLVES_AGENT-agent:review-critic",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:harness-doc-review",
-      "target": "agent:review-critic",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-doc-review.yaml"
-    },
-    {
-      "id": "recipe:harness-doc-review-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:harness-doc-review",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-doc-review.yaml"
-    },
-    {
-      "id": "recipe:harness-doc-review-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "recipe:harness-doc-review",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-doc-review.yaml"
-    },
-    {
-      "id": "recipe:harness-doc-review-INVOKES_SUBRECIPE-subrecipe:doc-review:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:harness-doc-review",
-      "target": "subrecipe:doc-review:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/harness-doc-review.yaml"
-    },
-    {
-      "id": "recipe:harness-master-INVOLVES_AGENT-agent:orchestrator",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:harness-master",
-      "target": "agent:orchestrator",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-master.yaml"
-    },
-    {
-      "id": "recipe:harness-master-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:harness-master",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-master.yaml"
-    },
-    {
-      "id": "recipe:harness-master-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "recipe:harness-master",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-master.yaml"
-    },
-    {
-      "id": "recipe:harness-master-LOADS_SKILL-skill:goose-orchestration",
-      "type": "LOADS_SKILL",
-      "source": "recipe:harness-master",
-      "target": "skill:goose-orchestration",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-master.yaml"
-    },
-    {
-      "id": "recipe:harness-master-INVOKES_SUBRECIPE-subrecipe:harness-review:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:harness-master",
-      "target": "subrecipe:harness-review:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/harness-master.yaml"
-    },
-    {
-      "id": "recipe:harness-master-INVOKES_SUBRECIPE-subrecipe:harness-doc-review:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:harness-master",
-      "target": "subrecipe:harness-doc-review:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/harness-master.yaml"
-    },
-    {
-      "id": "recipe:harness-review-INVOLVES_AGENT-agent:review-critic",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:harness-review",
-      "target": "agent:review-critic",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-review.yaml"
-    },
-    {
-      "id": "recipe:harness-review-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:harness-review",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-review.yaml"
-    },
-    {
-      "id": "recipe:harness-review-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "recipe:harness-review",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-review.yaml"
-    },
-    {
-      "id": "recipe:harness-review-LOADS_SKILL-skill:code-review",
-      "type": "LOADS_SKILL",
-      "source": "recipe:harness-review",
-      "target": "skill:code-review",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/harness-review.yaml"
-    },
-    {
-      "id": "recipe:harness-review-INVOKES_SUBRECIPE-subrecipe:review:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:harness-review",
-      "target": "subrecipe:review:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/harness-review.yaml"
-    },
-    {
-      "id": "recipe:harness-review-INVOKES_SUBRECIPE-subrecipe:doc-review:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:harness-review",
-      "target": "subrecipe:doc-review:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/harness-review.yaml"
-    },
-    {
-      "id": "recipe:implement-INVOLVES_AGENT-agent:implementation-worker",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:implement",
-      "target": "agent:implementation-worker",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/implement.yaml"
-    },
-    {
-      "id": "recipe:implement-INVOLVES_AGENT-agent:tdd-guide",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:implement",
-      "target": "agent:tdd-guide",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/implement.yaml"
-    },
-    {
-      "id": "recipe:implement-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:implement",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/implement.yaml"
-    },
-    {
-      "id": "recipe:implement-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "recipe:implement",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/implement.yaml"
-    },
-    {
-      "id": "recipe:implement-LOADS_SKILL-skill:sdd",
-      "type": "LOADS_SKILL",
-      "source": "recipe:implement",
-      "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/implement.yaml"
-    },
-    {
-      "id": "recipe:implement-INVOKES_SUBRECIPE-subrecipe:implement:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:implement",
-      "target": "subrecipe:implement:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/implement.yaml"
-    },
-    {
-      "id": "recipe:plan-INVOLVES_AGENT-agent:architect",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:plan",
-      "target": "agent:architect",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/plan.yaml"
-    },
-    {
-      "id": "recipe:plan-INVOLVES_AGENT-agent:planner",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:plan",
-      "target": "agent:planner",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/plan.yaml"
-    },
-    {
-      "id": "recipe:plan-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "recipe:plan",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/plan.yaml"
-    },
-    {
-      "id": "recipe:plan-LOADS_SKILL-skill:sdd",
-      "type": "LOADS_SKILL",
-      "source": "recipe:plan",
-      "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/plan.yaml"
-    },
-    {
-      "id": "recipe:plan-INVOKES_SUBRECIPE-subrecipe:plan-worker:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:plan",
-      "target": "subrecipe:plan-worker:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/plan.yaml"
-    },
-    {
-      "id": "recipe:release-INVOLVES_AGENT-agent:principal-engineer",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:release",
-      "target": "agent:principal-engineer",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/release.yaml"
-    },
-    {
-      "id": "recipe:release-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:release",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/release.yaml"
-    },
-    {
-      "id": "recipe:release-INVOKES_SUBRECIPE-subrecipe:release:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:release",
-      "target": "subrecipe:release:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/release.yaml"
-    },
-    {
-      "id": "recipe:remember-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "recipe:remember",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/remember.yaml"
-    },
-    {
-      "id": "recipe:review-INVOLVES_AGENT-agent:review-critic",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:review",
-      "target": "agent:review-critic",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/review.yaml"
-    },
-    {
-      "id": "recipe:review-LOADS_SKILL-skill:code-review",
-      "type": "LOADS_SKILL",
-      "source": "recipe:review",
-      "target": "skill:code-review",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/review.yaml"
-    },
-    {
-      "id": "recipe:review-INVOKES_SUBRECIPE-subrecipe:review:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:review",
-      "target": "subrecipe:review:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/review.yaml"
-    },
-    {
-      "id": "recipe:sdd-INVOLVES_AGENT-agent:orchestrator",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:sdd",
-      "target": "agent:orchestrator",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/sdd.yaml"
-    },
-    {
-      "id": "recipe:sdd-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:sdd",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/sdd.yaml"
-    },
-    {
-      "id": "recipe:sdd-LOADS_SKILL-skill:sdd",
-      "type": "LOADS_SKILL",
-      "source": "recipe:sdd",
-      "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/sdd.yaml"
-    },
-    {
-      "id": "recipe:spec-INVOLVES_AGENT-agent:architect",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:spec",
-      "target": "agent:architect",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/spec.yaml"
-    },
-    {
-      "id": "recipe:spec-INVOLVES_AGENT-agent:tdd-guide",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:spec",
-      "target": "agent:tdd-guide",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/spec.yaml"
-    },
-    {
-      "id": "recipe:spec-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "recipe:spec",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/spec.yaml"
-    },
-    {
-      "id": "recipe:spec-LOADS_SKILL-skill:sdd",
-      "type": "LOADS_SKILL",
-      "source": "recipe:spec",
-      "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/spec.yaml"
-    },
-    {
-      "id": "recipe:spec-INVOKES_SUBRECIPE-subrecipe:spec-worker:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:spec",
-      "target": "subrecipe:spec-worker:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/spec.yaml"
-    },
-    {
-      "id": "subrecipe:amend-spec:subrecipes-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:amend-spec:subrecipes",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/amend-spec.yaml"
-    },
-    {
-      "id": "subrecipe:amend-spec:subrecipes-LOADS_SKILL-skill:sdd",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:amend-spec:subrecipes",
-      "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/amend-spec.yaml"
-    },
-    {
-      "id": "subrecipe:doc-review:subrecipes-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:doc-review:subrecipes",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/doc-review.yaml"
-    },
-    {
-      "id": "subrecipe:doc-review:subrecipes-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:doc-review:subrecipes",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/doc-review.yaml"
-    },
-    {
-      "id": "subrecipe:explore:subrecipes-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:explore:subrecipes",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/explore.yaml"
-    },
-    {
-      "id": "subrecipe:harness-judge-audit:subrecipes-INVOLVES_AGENT-agent:harness-judge",
-      "type": "INVOLVES_AGENT",
-      "source": "subrecipe:harness-judge-audit:subrecipes",
-      "target": "agent:harness-judge",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/harness-judge-audit.yaml"
-    },
-    {
-      "id": "subrecipe:harness-judge-audit:subrecipes-LOADS_SKILL-skill:harness-judge",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:harness-judge-audit:subrecipes",
-      "target": "skill:harness-judge",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/harness-judge-audit.yaml"
-    },
-    {
-      "id": "subrecipe:implement:subrecipes-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:implement:subrecipes",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/implement.yaml"
-    },
-    {
-      "id": "subrecipe:implement:subrecipes-LOADS_SKILL-skill:knowledge-graph",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:implement:subrecipes",
-      "target": "skill:knowledge-graph",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/implement.yaml"
-    },
-    {
-      "id": "subrecipe:implement:subrecipes-LOADS_SKILL-skill:sdd",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:implement:subrecipes",
-      "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/implement.yaml"
-    },
-    {
-      "id": "subrecipe:plan:subrecipes-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:plan:subrecipes",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/plan.yaml"
-    },
-    {
-      "id": "subrecipe:plan:subrecipes-LOADS_SKILL-skill:sdd",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:plan:subrecipes",
-      "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/plan.yaml"
-    },
-    {
-      "id": "subrecipe:release:subrecipes-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:release:subrecipes",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/release.yaml"
-    },
-    {
-      "id": "subrecipe:review:subrecipes-LOADS_SKILL-skill:code-review",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:review:subrecipes",
-      "target": "skill:code-review",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/review.yaml"
-    },
-    {
-      "id": "subrecipe:review:subrecipes-LOADS_SKILL-skill:knowledge-graph",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:review:subrecipes",
-      "target": "skill:knowledge-graph",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/review.yaml"
-    },
-    {
-      "id": "subrecipe:spec:subrecipes-LOADS_SKILL-skill:beads",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:spec:subrecipes",
-      "target": "skill:beads",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/spec.yaml"
-    },
-    {
-      "id": "subrecipe:spec:subrecipes-LOADS_SKILL-skill:sdd",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:spec:subrecipes",
-      "target": "skill:sdd",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/spec.yaml"
-    },
-    {
-      "id": "subrecipe:verify:subrecipes-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:verify:subrecipes",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/verify.yaml"
-    },
-    {
-      "id": "subrecipe:verify:subrecipes-LOADS_SKILL-skill:atomic-design",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:verify:subrecipes",
-      "target": "skill:atomic-design",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/verify.yaml"
-    },
-    {
-      "id": "subrecipe:verify:subrecipes-LOADS_SKILL-skill:ui-quality",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:verify:subrecipes",
-      "target": "skill:ui-quality",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/verify.yaml"
-    },
-    {
-      "id": "subrecipe:verify:subrecipes-LOADS_SKILL-skill:webapp-testing",
-      "type": "LOADS_SKILL",
-      "source": "subrecipe:verify:subrecipes",
-      "target": "skill:webapp-testing",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/subrecipes/verify.yaml"
-    },
-    {
-      "id": "recipe:verify-INVOLVES_AGENT-agent:qa-automation",
-      "type": "INVOLVES_AGENT",
-      "source": "recipe:verify",
-      "target": "agent:qa-automation",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/verify.yaml"
-    },
-    {
-      "id": "recipe:verify-LOADS_SKILL-skill:agentic-devlopment",
-      "type": "LOADS_SKILL",
-      "source": "recipe:verify",
-      "target": "skill:agentic-devlopment",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/verify.yaml"
-    },
-    {
-      "id": "recipe:verify-LOADS_SKILL-skill:ui-quality",
-      "type": "LOADS_SKILL",
-      "source": "recipe:verify",
-      "target": "skill:ui-quality",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/verify.yaml"
-    },
-    {
-      "id": "recipe:verify-LOADS_SKILL-skill:webapp-testing",
-      "type": "LOADS_SKILL",
-      "source": "recipe:verify",
-      "target": "skill:webapp-testing",
-      "direction": "directed",
-      "confidence": 1.0,
-      "status": "current",
-      "source_kind": "explicit",
-      "source_path": ".goose/recipes/verify.yaml"
-    },
-    {
-      "id": "recipe:verify-INVOKES_SUBRECIPE-subrecipe:verify:subrecipes",
-      "type": "INVOKES_SUBRECIPE",
-      "source": "recipe:verify",
-      "target": "subrecipe:verify:subrecipes",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred",
-      "source_path": ".goose/recipes/verify.yaml"
-    },
-    {
-      "id": "finding:F-CRIT-001-AFFECTS-file:.beads/issues.jsonl",
+      "@id": "rel:55",
       "type": "AFFECTS",
-      "source": "finding:F-CRIT-001",
-      "target": "file:.beads/issues.jsonl",
-      "direction": "directed",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred"
+      "source": "finding:HA-F001",
+      "target": "recipe:harness-audit",
+      "source_kind": "inferred",
+      "confidence": 0.8,
+      "evidence": [
+        ".goose/recipes/harness-audit.yaml:95-99",
+        "evals/recipes/harness-audit.json:1-8",
+        "AGENTS.md:152-155"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "finding:F-HIGH-001-AFFECTS-file:.agents/agents/implementation-worker.md",
+      "@id": "rel:56",
       "type": "AFFECTS",
-      "source": "finding:F-HIGH-001",
-      "target": "file:.agents/agents/implementation-worker.md",
-      "direction": "directed",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred"
+      "source": "finding:HA-F001",
+      "target": "recipe:harness-audit",
+      "source_kind": "inferred",
+      "confidence": 0.8,
+      "evidence": [
+        ".goose/recipes/harness-audit.yaml:95-99",
+        "evals/recipes/harness-audit.json:1-8",
+        "AGENTS.md:152-155"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "finding:F-HIGH-001-AFFECTS-file:.agents/agents/review-critic.md",
+      "@id": "rel:57",
       "type": "AFFECTS",
-      "source": "finding:F-HIGH-001",
-      "target": "file:.agents/agents/review-critic.md",
-      "direction": "directed",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred"
+      "source": "finding:HA-F005",
+      "target": "recipe:dev",
+      "source_kind": "inferred",
+      "confidence": 0.8,
+      "evidence": [
+        ".goose/recipes/dev.yaml:36-40",
+        "goose-orchestration skill loaded content: discovery protocol/load() primary source"
+      ],
+      "graph_view": "target",
+      "status": "current"
     },
     {
-      "id": "finding:F-HIGH-001-AFFECTS-file:.goose/recipes/subrecipes/implement.yaml",
+      "@id": "rel:58",
       "type": "AFFECTS",
-      "source": "finding:F-HIGH-001",
-      "target": "file:.goose/recipes/subrecipes/implement.yaml",
-      "direction": "directed",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "finding:F-HIGH-001-AFFECTS-file:.specs/features/spec-deviation-loop/spec.md",
-      "type": "AFFECTS",
-      "source": "finding:F-HIGH-001",
-      "target": "file:.specs/features/spec-deviation-loop/spec.md",
-      "direction": "directed",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "finding:F-HIGH-002-AFFECTS-file:.agents/agents/review-critic.md",
-      "type": "AFFECTS",
-      "source": "finding:F-HIGH-002",
-      "target": "file:.agents/agents/review-critic.md",
-      "direction": "directed",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "finding:F-HIGH-002-AFFECTS-file:.agents/agents/principal-engineer.md",
-      "type": "AFFECTS",
-      "source": "finding:F-HIGH-002",
-      "target": "file:.agents/agents/principal-engineer.md",
-      "direction": "directed",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "finding:F-MED-001-AFFECTS-file:git status --short",
-      "type": "AFFECTS",
-      "source": "finding:F-MED-001",
-      "target": "file:git status --short",
-      "direction": "directed",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "finding:F-MED-002-AFFECTS-file:.agents/skills/agentic-devlopment/SKILL.md",
-      "type": "AFFECTS",
-      "source": "finding:F-MED-002",
-      "target": "file:.agents/skills/agentic-devlopment/SKILL.md",
-      "direction": "directed",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "finding:F-MED-002-AFFECTS-file:AGENTS.md",
-      "type": "AFFECTS",
-      "source": "finding:F-MED-002",
-      "target": "file:AGENTS.md",
-      "direction": "directed",
-      "confidence": 0.9,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "phase:constitution-PRECEDES-phase:discover",
-      "type": "PRECEDES",
-      "source": "phase:constitution",
-      "target": "phase:discover",
-      "direction": "directed",
+      "source": "finding:HA-F006",
+      "target": "recipe:sdd",
+      "source_kind": "inferred",
       "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred"
+      "evidence": [
+        ".goose/recipes/sdd.yaml:75-76",
+        ".specs/schemas/expert-contribution.schema.json:1-14",
+        ".specs/schemas/decision-resolution.schema.json:1-14"
+      ],
+      "graph_view": "target",
+      "status": "current"
+    }
+  ],
+  "tbox": {
+    "node_types": [
+      "Skill",
+      "Agent",
+      "Recipe",
+      "Subrecipe",
+      "LifecyclePhase",
+      "Artifact",
+      "Finding",
+      "Gate",
+      "Evidence"
+    ],
+    "relation_types": [
+      "LOADS_SKILL",
+      "IMPLEMENTS_PHASE",
+      "INVOKES_SUBRECIPE",
+      "AFFECTS",
+      "SUPPORTED_BY"
+    ],
+    "integrity_constraints": "# Integrity constraints\n\nValidate at least these rules:\n\n1. Every active agent has at least one responsibility.\n2. Every active responsibility has exactly one accountable owner unless justified.\n3. Every agent involved in a recipe receives or produces an artifact, decision, or verification result.\n4. Every active agent loads a relevant skill or documents why none is required.\n5. Every active skill is consumed by an agent or recipe, or has a justified cross-cutting role.\n6. Every active recipe implements a lifecycle phase or documents a cross-cutting role.\n7. Every active recipe has entry and exit criteria.\n8. Every delegated task has an assigned agent, inputs, outputs, acceptance criteria, verification, and downstream consumer.\n9. Every mandatory artifact has a producer and consumer.\n10. Every mandatory gate has a verification method that produces evidence.\n11. Prohibited self-review and self-approval paths do not exist.\n12. Every work task belongs to an epic or has an explicit exception.\n13. Every target-state recommendation links to a finding and decision.\n14. Every inferred assertion has confidence.\n15. Every file-backed buildtime entity links to a file node.\n16. Every contradiction remains represented explicitly.\n17. Current-state and target-state assertions are not conflated.\n18. Core orchestration paths terminate or reach bounded retry, failure, or escalation states.\n\nA structural change is incomplete until the exported graph passes validation and critical violations are resolved or recorded as blockers.\n"
+  },
+  "target_decisions": [
+    {
+      "finding": "HA-F001",
+      "decision": "CHANGE",
+      "target": "Eval declares orchestrator/goose-orchestration in-session and treats harness_judge as isolated subrecipe evidence.",
+      "verification": "python3 scripts/check-consistency.py; inspect evals/recipes/harness-audit.json."
     },
     {
-      "id": "phase:discover-PRECEDES-phase:clarify",
-      "type": "PRECEDES",
-      "source": "phase:discover",
-      "target": "phase:clarify",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred"
+      "finding": "HA-F002",
+      "decision": "KEEP_AND_IMPROVE",
+      "target": "Memory points to live load()/README roster rather than embedding stale list.",
+      "verification": "bd recall harness-agents-pointer; load() roster comparison."
     },
     {
-      "id": "phase:clarify-PRECEDES-phase:specify",
-      "type": "PRECEDES",
-      "source": "phase:clarify",
-      "target": "phase:specify",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred"
+      "finding": "HA-F003",
+      "decision": "KEEP_AND_IMPROVE",
+      "target": "Single generated slash-command table with clear top-level vs internal/harness-only classification.",
+      "verification": "python3 scripts/check-consistency.py plus grep slash command tables."
     },
     {
-      "id": "phase:specify-PRECEDES-phase:plan",
-      "type": "PRECEDES",
-      "source": "phase:specify",
-      "target": "phase:plan",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred"
+      "finding": "HA-F004",
+      "decision": "KEEP_AND_IMPROVE",
+      "target": "Eval runner/docs explicitly support subrecipe subjects or move amend-spec under an eval category with path override.",
+      "verification": "node apps/eval-hub/dist/index.js --run --layers recipes --subjects amend-spec --ambient-goose (or dry-run if available)."
     },
     {
-      "id": "phase:plan-PRECEDES-phase:implement",
-      "type": "PRECEDES",
-      "source": "phase:plan",
-      "target": "phase:implement",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred"
+      "finding": "HA-F005",
+      "decision": "KEEP_AND_IMPROVE",
+      "target": "dev.yaml delegates routing rules to goose-orchestration and keeps only short invocation reminder.",
+      "verification": "grep dev.yaml; recipe eval for orchestration decision/load() behavior."
     },
     {
-      "id": "phase:implement-PRECEDES-phase:verify",
-      "type": "PRECEDES",
-      "source": "phase:implement",
-      "target": "phase:verify",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "phase:verify-PRECEDES-phase:review",
-      "type": "PRECEDES",
-      "source": "phase:verify",
-      "target": "phase:review",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "phase:review-PRECEDES-phase:release",
-      "type": "PRECEDES",
-      "source": "phase:review",
-      "target": "phase:release",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "phase:release-PRECEDES-phase:learn",
-      "type": "PRECEDES",
-      "source": "phase:release",
-      "target": "phase:learn",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "current",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "decision:balanced-architecture",
-      "type": "TargetStateDecision",
-      "name": "Balanced target architecture",
-      "description": "Keep core SDD lifecycle with fewer default calls, stronger deterministic preflight, and schema-backed handoffs",
-      "confidence": 0.8,
-      "status": "proposed",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "decision:balanced-architecture-ADDRESSES-F-CRIT-001",
-      "type": "ADDRESSES",
-      "source": "decision:balanced-architecture",
-      "target": "finding:F-CRIT-001",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "proposed",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "decision:balanced-architecture-ADDRESSES-F-HIGH-001",
-      "type": "ADDRESSES",
-      "source": "decision:balanced-architecture",
-      "target": "finding:F-HIGH-001",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "proposed",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "decision:balanced-architecture-ADDRESSES-F-HIGH-002",
-      "type": "ADDRESSES",
-      "source": "decision:balanced-architecture",
-      "target": "finding:F-HIGH-002",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "proposed",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "decision:balanced-architecture-ADDRESSES-F-MED-001",
-      "type": "ADDRESSES",
-      "source": "decision:balanced-architecture",
-      "target": "finding:F-MED-001",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "proposed",
-      "source_kind": "inferred"
-    },
-    {
-      "id": "decision:balanced-architecture-ADDRESSES-F-MED-002",
-      "type": "ADDRESSES",
-      "source": "decision:balanced-architecture",
-      "target": "finding:F-MED-002",
-      "direction": "directed",
-      "confidence": 0.8,
-      "status": "proposed",
-      "source_kind": "inferred"
+      "finding": "HA-F006",
+      "decision": "CHANGE",
+      "target": "Recipes define storage path and schema validation for contribution/resolution records, or remove mandatory schema claim.",
+      "verification": "schema validation command over produced artifacts; recipe smoke scenario."
     }
   ]
 }

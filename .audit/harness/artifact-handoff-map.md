@@ -1,14 +1,14 @@
-# Artifact and Handoff Map
+# Artifact and handoff map
 
-| Artifact | Producer | Consumer | Storage | Validation | Status |
+| Artifact | Producer | Consumer | Storage/schema | Gate / validation | Status |
 |---|---|---|---|---|---|
-| discovery.md / discovery artifact | discover/product-owner | clarify/spec | `.specs/features/*` or recipe output | human/product quality gate | partially explicit |
-| spec.md | spec/product-owner | plan/tdd/implement/review | `.specs/features/*/spec.md` | AC IDs + consistency/KG pipeline | explicit |
-| Beads tasks | plan/planner | implement/verify/review | `.beads` | bd ready/blocked/gates | blocked in this audit |
-| code/tests | implementation-worker | qa-automation/review-critic | repo source | test commands | not audited as feature diff |
-| verification report | verify/qa-automation | review/release | session/artifact | command output | explicit in recipes |
-| review verdict | review-critic | orchestrator/release | session/handoff | severity table | explicit |
-| audit artifacts | harness-audit orchestrator | harness_judge/final report | `.audit/harness` | manifest hashes + judge | explicit |
-| KG memory/derived facts | KG pipeline | graph audit/visualizer | `.knowledge` | bootstrap/reason/validate scripts | dry-run OK; tracked files dirty |
-
-Dead-end risk: audit and review artifacts are often conversational unless written to explicit paths or Beads evidence; target state should require schema-backed artifact paths for every multi-agent handoff.
+| discovery.md | discover/product-owner | clarify/spec | `.specs/features/[feature]/discovery.md` | presence before clarify/spec | current |
+| clarify.md | clarify/product-owner | spec | `.specs/features/[feature]/clarify.md` | Medium+ stop gate | current |
+| spec.md | spec/architect | plan/tdd/review | `.specs/features/[feature]/spec.md` | AC IDs, spec-anchored outcome | current |
+| Beads task graph | plan/planner | implement/review/release | Beads | dependencies/readiness | current |
+| RED test evidence | tdd-guide | implementation-worker/review | test output / handoff | RED before GREEN | partially enforceable |
+| ExpertContribution | specialist agents | orchestrator/sdd | `.specs/schemas/expert-contribution.schema.json` | schema exists, storage not enforced | gap HA-F006 |
+| DecisionResolution | orchestrator | downstream phases | `.specs/schemas/decision-resolution.schema.json` | schema exists, validation not enforced | gap HA-F006 |
+| review verdict | review-critic | verify/release | review output + env:reviewed label | label gate | current |
+| verification evidence | qa-automation | release | command outputs + env:verified label | validation commands | current |
+| audit artifacts | audit orchestrator | harness_judge/final report | `.audit/harness/*` | evidence manifest hashes | current |

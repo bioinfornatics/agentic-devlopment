@@ -1,27 +1,26 @@
-# Architecture Alternatives
+# Target architecture alternatives
 
 | Dimension | Minimal | Balanced | High assurance |
 |---|---:|---:|---:|
-| Number of agents | 5-7 | 10-13 | 13+specialists |
-| Number of core skills | 6-8 | 12-16 | 19+ |
-| Number of core recipes | 6 | 10-14 | 19+subrecipes |
-| Mandatory gates | spec, tests, review | spec, plan, verify, review, release | plus judge, security, WCAG/human approvals |
+| Number of agents | 5 | 9 | 13 |
+| Number of core skills | 6 | 12 | 19 domain + tooling |
+| Number of core recipes | 7 | 13 | 19 + subrecipes |
+| Mandatory gates | spec, review, verify | discover/spec/plan/review/verify/release | full gated SDD + independent audit |
 | Expected LLM calls | low | medium | high |
-| Token cost | low | medium | high |
+| Token cost | low | controlled | high but justified |
 | Runtime | fastest | moderate | slowest |
-| Execution complexity | low | medium | high |
-| Assurance level | basic | recommended | regulated/high-risk |
-| Recommended usage | small changes | normal harness work | release/audit/critical systems |
+| Execution complexity | low | moderate | high |
+| Assurance level | moderate | high | very high |
+| Recommended usage | small internal repos | default harness | regulated/high-risk repos |
 
-## Selected: Balanced
+## Minimal
+Retain orchestrator, product-owner, architect, implementation-worker, review-critic. Merge QA/TDD into review modes. Keep sdd, beads, goose-orchestration, code-review, systematic-debugging, webapp-testing. Risk: weaker independent QA/UX/security.
 
-Balanced is preferred because the repository already has a mature SDD/Beads/Goose structure and deterministic validators pass, but current audit evidence shows runtime/provider and Beads-access blockers. Minimal would discard useful domain expertise before usage data is available. High-assurance is appropriate for release/audit but too costly as the default.
+## Balanced (selected)
+Retain current core specialists but make optional UX/UI/QA/principal-engineer conditional. Keep recipes discover→clarify→spec→plan→implement→review→verify→release plus dev/sdd/remember/harness-audit. Enforce contribution schemas only when multiple specialists participate. Best trade-off between assurance and cost.
 
-## Migration phases
+## High assurance
+Retain all current agents/skills/recipes; require independent principal-engineer and harness_judge gates for major flows, schema-validated contribution records, complete KG updates, and human approval gates. Appropriate for critical systems; higher token/runtime cost.
 
-1. Add preflight gates: model/provider availability, clean/dirty baseline capture, Beads read-only snapshot.
-2. Classify SPEC_DEVIATION examples versus active drift.
-3. Schema-normalize handoff artifacts for discover/spec/plan/verify/review/audit.
-4. Re-run full audit on clean or frozen snapshot, then decide merges/removals using actual usage.
-
-Rollback: keep current recipes and add gates as opt-in first; remove only after eval and usage evidence.
+## Selected architecture
+Balanced architecture. It preserves the SDD flow and independent review while reducing default mandatory calls. Migration phases: (1) fix eval/memory/doc drift, (2) enforce schema validation for multi-agent aggregation, (3) add deterministic CI checks, (4) reserve high-assurance gates for labeled high-risk work. Rollback: keep existing recipes and only tighten eval/validation checks behind consistency scripts first.
