@@ -428,7 +428,8 @@ Use this template verbatim for every evaluation output. Copy it into your respon
 ## Score Table
 
 | ID | Domain | Criterion | Type | Score | Evidence | Recommendation |
-|---|---|---|---|---|---|---|
+|----|--------|-----------|------|-------|----------|----------------|
+| 01 |   A    |  XX       | XX   |  8.80 |  XXXX    | XX XXX         |
 
 ## Domain Findings
 
