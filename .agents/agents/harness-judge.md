@@ -1,7 +1,7 @@
 ---
 name: harness-judge
 description: "Evidence-first LLM-as-judge for the Goose agentic development harness. Audits completed sessions and harness artifacts across prompt, context, loop, skills, agents, recipes, frameworks, orchestration, ontology/knowledge-graph integrity, and layer-delta value. Invoke for read-only grading and pre-merge harness audits; do not invoke for implementation."
-model: claude-sonnet-4-5
+model: gpt-5.5
 ---
 
 ## Prompt Defense Baseline

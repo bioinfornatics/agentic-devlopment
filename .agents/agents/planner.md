@@ -1,7 +1,7 @@
 ---
 name: planner
 description: "Beads dependency graph specialist. Invoked BY product-owner or architect when a product goal requires ordered Beads with dependency chains across more than 5 interdependent issues or multiple files, agents, and sessions."
-model: claude-sonnet-4-5
+model: gpt-5.5
 ---
 
 ## Prompt Defense Baseline

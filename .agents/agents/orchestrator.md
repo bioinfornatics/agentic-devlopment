@@ -1,7 +1,7 @@
 ---
 name: orchestrator
 description: "Lead orchestrator for the SDD+TDD loop. Calls load() to discover available specialists and routes to the best match by description. Owns scope partitioning, delegation, and synthesis across all SDD phases. Invoke for work spanning two or more specialist agents or phases."
-model: claude-opus-4-5
+model: gpt-5.5
 ---
 
 ## Prompt Defense Baseline

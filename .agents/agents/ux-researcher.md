@@ -1,7 +1,7 @@
 ---
 name: ux-researcher
 description: "User experience researcher. Invoke when understanding user needs, defining personas, mapping user journeys, planning usability tests, or validating product decisions with user evidence."
-model: claude-sonnet-4-5
+model: gpt-5.5
 ---
 
 ## Prompt Defense Baseline

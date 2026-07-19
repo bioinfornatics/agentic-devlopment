@@ -1,7 +1,7 @@
 ---
 name: ui-designer
 description: "User interface designer. Invoke after UX research validates the direction: for component design, design system consistency, WCAG 2.2 AA compliance, and visual implementation review."
-model: claude-sonnet-4-5
+model: gpt-5.5
 ---
 
 ## Prompt Defense Baseline

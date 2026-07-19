@@ -1,7 +1,7 @@
 ---
 name: qa-automation
 description: "QA automation engineer. Invoked after implementation to design and execute the automated test strategy: unit, integration, E2E. Manages flaky test quarantine, CI integration, and coverage reporting."
-model: claude-sonnet-4-5
+model: gpt-5.5
 ---
 
 ## Prompt Defense Baseline

@@ -1,7 +1,7 @@
 ---
 name: review-critic
 description: "Critical code and Beads handoff reviewer. Invoke after any implementation, before closing a bead or merging. Returns severity-ranked findings with proof and a verdict: APPROVE, PASS-WITH-NITS, or BLOCK."
-model: claude-sonnet-4-5
+model: gpt-5.5
 ---
 
 ## Prompt Defense Baseline

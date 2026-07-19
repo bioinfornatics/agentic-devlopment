@@ -1,7 +1,7 @@
 ---
 name: architect
 description: "Use PROACTIVELY when planning a new feature, making a technology choice, or touching a system boundary. Produces ADRs, design proposals, and trade-off analyses. Read-only."
-model: claude-opus-4-5
+model: gpt-5.5
 ---
 
 ## Prompt Defense Baseline
