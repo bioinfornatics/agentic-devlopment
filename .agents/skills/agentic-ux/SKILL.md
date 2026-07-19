@@ -6,6 +6,7 @@ description: >
   graceful degradation, and the three-era progression (Tool → Copilot → Agent).
   Use when reviewing any UI where AI takes autonomous actions, or when deciding how
   to communicate agent state, progress, confidence, and handoff to users.
+  Do NOT use for traditional non-AI-facing interfaces, backend-only code review, or sessions without an agentic or generative UI to evaluate.
 metadata:
   author: phazurlabs (adapted for harness)
   upstream: https://github.com/phazurlabs/ux-ui-mastery/tree/main/skills/agentic-ai-generative-ux
@@ -80,6 +81,11 @@ Our agents (orchestrator, implementation-worker, review-critic) ARE
 the agentic system. Design decisions about output format, escalation triggers,
 and user confirmation gates directly affect user trust and adoption.
 
+## When to load references
+
+- Safety-critical AI actions, content moderation, or high-stakes agentic decisions → load `references/ai-safety-guardrails.md`
+- Designing UX for multi-agent coordination, orchestrator interfaces, or agent delegation flows → load `references/multi-agent-orchestration-patterns.md`
+
 ## Beads follow-ups
 ```bash
 bd create "Agentic UX: add confirmation gate for <action>" --assignee ux-researcher -p 2
@@ -117,6 +123,14 @@ GDD decision:
 - Validation evidence:
 - Escalation needed: yes/no
 ~~~
+
+## Gotchas
+
+- **Trust calibration without evidence is guessing** — always ground trust-level recommendations in user testing or observed failure patterns, not intuition alone.
+- **Designing a gate that doesn't block creates false safety** — an interruption point that looks confirmatory but doesn't actually pause the agent provides no protection and erodes user trust faster than full automation.
+- **Agent-era patterns applied to tool-era products confuse users** — match the interaction model to the actual automation level, not the aspirational roadmap.
+- **GDD output contract must be completed** — stopping at "generate options" without comparing against explicit criteria and selecting with a written trade-off rationale is incomplete; the loop must reach "Validate" or it produces rationalization, not design.
+- **Graduated autonomy is not a linear slider** — moving right on the trust spectrum requires demonstrated reliability on each tier, not a product decision; baking autonomy into the first release without earned trust causes high-visibility failures.
 
 ## Self-validation checklist
 

@@ -161,6 +161,8 @@ sub_recipes:
       focus: "{{ focus }}"
       constraints: "{{ constraints }}"
 prompt: |
+  ## AD-001 pattern: Specialist/worker-hybrid. Use doc-review subrecipe for isolated scanning and review-critic only for escalation.
+
   Scope: {{ scope }}
   Repo: {{ repo_path }}
   Focus: {{ focus }}

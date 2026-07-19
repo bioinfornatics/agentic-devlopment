@@ -1,0 +1,253 @@
+{
+  "budgets": {
+    "agent_warn_lines": 400,
+    "skill_warn_lines": 500
+  },
+  "rows": [
+    {
+      "lines": 215,
+      "name": "agentic-devlopment",
+      "path": ".agents/skills/agentic-devlopment/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 141,
+      "name": "agentic-ux",
+      "path": ".agents/skills/agentic-ux/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 162,
+      "name": "atomic-design",
+      "path": ".agents/skills/atomic-design/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 267,
+      "name": "beads",
+      "path": ".agents/skills/beads/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 171,
+      "name": "code-review",
+      "path": ".agents/skills/code-review/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 82,
+      "name": "cognitive-ux",
+      "path": ".agents/skills/cognitive-ux/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 143,
+      "name": "design-critique-case-studies",
+      "path": ".agents/skills/design-critique-case-studies/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 103,
+      "name": "design-systems-arch",
+      "path": ".agents/skills/design-systems-arch/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 106,
+      "name": "frontend-blueprint",
+      "path": ".agents/skills/frontend-blueprint/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 177,
+      "name": "gdd",
+      "path": ".agents/skills/gdd/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 401,
+      "name": "goose-orchestration",
+      "path": ".agents/skills/goose-orchestration/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 493,
+      "name": "harness-judge",
+      "path": ".agents/skills/harness-judge/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 182,
+      "name": "knowledge-graph",
+      "path": ".agents/skills/knowledge-graph/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 265,
+      "name": "sdd",
+      "path": ".agents/skills/sdd/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 504,
+      "name": "skill-creator",
+      "path": ".agents/skills/skill-creator/SKILL.md",
+      "status": "warn",
+      "type": "skill"
+    },
+    {
+      "lines": 333,
+      "name": "systematic-debugging",
+      "path": ".agents/skills/systematic-debugging/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 154,
+      "name": "ui-quality",
+      "path": ".agents/skills/ui-quality/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 118,
+      "name": "ux-quality",
+      "path": ".agents/skills/ux-quality/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 202,
+      "name": "wcag-accessibility-audit",
+      "path": ".agents/skills/wcag-accessibility-audit/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 119,
+      "name": "webapp-testing",
+      "path": ".agents/skills/webapp-testing/SKILL.md",
+      "status": "ok",
+      "type": "skill"
+    },
+    {
+      "lines": 204,
+      "name": "architect",
+      "path": ".agents/agents/architect.md",
+      "skill_loads": 6,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 178,
+      "name": "codebase-researcher",
+      "path": ".agents/agents/codebase-researcher.md",
+      "skill_loads": 4,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 171,
+      "name": "harness-judge",
+      "path": ".agents/agents/harness-judge.md",
+      "skill_loads": 2,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 238,
+      "name": "implementation-worker",
+      "path": ".agents/agents/implementation-worker.md",
+      "skill_loads": 9,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 204,
+      "name": "orchestrator",
+      "path": ".agents/agents/orchestrator.md",
+      "skill_loads": 8,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 132,
+      "name": "planner",
+      "path": ".agents/agents/planner.md",
+      "skill_loads": 2,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 168,
+      "name": "principal-engineer",
+      "path": ".agents/agents/principal-engineer.md",
+      "skill_loads": 4,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 250,
+      "name": "product-owner",
+      "path": ".agents/agents/product-owner.md",
+      "skill_loads": 8,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 196,
+      "name": "qa-automation",
+      "path": ".agents/agents/qa-automation.md",
+      "skill_loads": 6,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 257,
+      "name": "review-critic",
+      "path": ".agents/agents/review-critic.md",
+      "skill_loads": 5,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 209,
+      "name": "tdd-guide",
+      "path": ".agents/agents/tdd-guide.md",
+      "skill_loads": 6,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 140,
+      "name": "ui-designer",
+      "path": ".agents/agents/ui-designer.md",
+      "skill_loads": 13,
+      "status": "ok",
+      "type": "agent"
+    },
+    {
+      "lines": 134,
+      "name": "ux-researcher",
+      "path": ".agents/agents/ux-researcher.md",
+      "skill_loads": 7,
+      "status": "ok",
+      "type": "agent"
+    }
+  ],
+  "schema": "harness-context-budget-v1"
+}

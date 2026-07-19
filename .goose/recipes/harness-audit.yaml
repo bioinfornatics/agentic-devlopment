@@ -1,95 +1,174 @@
-version: 1.0.0
-title: Harness Audit LLM-as-Judge Static Evaluation
-description: Read-only static audit of the current agentic development harness using harness-judge.
-instructions: |
-  You are running a read-only harness audit.
+version: "1.0.0"
+title: "Agentic Development Harness Global Audit"
+description: "Run a read-only, evidence-first audit of skills, agents, Goose recipes, SDD/TDD/GDD flow, Beads control, and the current/target harness ontology, then obtain an independent judge verdict."
 
-  AD-001 pattern: Specialist. The session is the harness-judge specialist.
-  Load the harness-judge agent in-session and explicitly load the harness-judge skill before any scoring.
-
-  First visible output before any tool call:
-    Harness-audit scope: agents | skills | recipes | frameworks | orchestration | all
-    Focus: requested target or full harness
-    Required skill: load skill harness-judge
-
-  Required loads:
-  load agent harness-judge.
-  load skill harness-judge.
-
-  Scope to audit:
-  - .agents/agents/
-  - .agents/skills/
-  - .goose/recipes/
-  - .specs/features/
-  - evals/
-  - docs/15-skill-evaluations.md
-
-  Domains to evaluate:
-  A. Prompt, context, and loop engineering
-  B. Skills
-  C. Agents
-  D. Recipes
-  E. Frameworks: SDD, TDD, GDD
-  F. Orchestration
-
-  Evidence rules:
-  - Cite file paths and exact evidence for every score.
-  - Mark missing evidence as not found.
-  - Score criteria before final verdict.
-  - Do not modify files, Beads, memory, or generated artifacts.
-
-  Output a Harness Judge Report with subject, evaluation mode, score table, domain findings, layer-delta notes where applicable, red flags, recommendations, and final PASS, PARTIAL, or FAIL verdict.
-
-  Self-validation checklist:
-  - [ ] First visible output states scope, focus, and required skill
-  - [ ] harness-judge agent loaded in-session
-  - [ ] harness-judge skill explicitly loaded before scoring
-  - [ ] all applicable domains A-F scored with evidence
-  - [ ] framework section covers SDD, TDD, and GDD explicitly
-  - [ ] final verdict emitted only after per-criterion scoring
-  - [ ] no files or Beads modified
-settings:
-  max_turns: 60
 parameters:
-  - key: scope
+  - key: repository_path
     input_type: string
     requirement: optional
-    default: all
-    description: Audit scope agents skills recipes frameworks orchestration or all.
+    default: "."
+    description: "Repository root to audit."
+  - key: scope
+    input_type: select
+    requirement: optional
+    default: "all"
+    options: [skills, agents, recipes, frameworks, orchestration, all]
+    description: "Primary audit scope; dependencies needed for cross-layer evidence remain in scope."
   - key: focus
     input_type: string
     requirement: optional
-    default: ""
-    description: Optional file directory recipe skill agent or framework focus.
-  - key: evidence_budget
+    default: "none"
+    description: "Optional path, component, topic, or finding to prioritize."
+  - key: output_dir
     input_type: string
     requirement: optional
-    default: concise
-    description: Evidence detail level concise or full.
+    default: ".audit/harness"
+    description: "Directory for generated audit evidence and graph artifacts."
+  - key: graph_format
+    input_type: select
+    requirement: optional
+    default: "jsonld"
+    options: [jsonld, turtle, graphml, cypher, property-json]
+    description: "Machine-readable graph export format."
+  - key: evidence_budget
+    input_type: select
+    requirement: optional
+    default: "full"
+    options: [concise, full]
+    description: "Evidence detail level; use full for scope=all."
+
+settings:
+  temperature: 0.1
+  max_turns: 180
+
+sub_recipes:
+  - name: harness_judge
+    path: "./subrecipes/harness-judge-audit.yaml"
+    description: "Independent final scoring of immutable completed audit evidence."
+
 extensions:
-  - type: platform
+  - type: builtin
     name: developer
     bundled: true
     timeout: 300
   - type: platform
-    name: analyze
-    bundled: true
-  - type: platform
     name: skills
-    bundled: true
   - type: platform
     name: summon
-    bundled: true
-  - type: stdio
-    name: Beads
-    description: Git-backed issue tracker and durable agentic task graph
-    cmd: uvx
-    args:
-      - beads-mcp
-    timeout: 300
+
+instructions: |
+  Act as the audit orchestrator. Execute an evidence-first, read-only audit; do not remediate.
+
+  AD-001 pattern: Orchestration. The main session loads the orchestrator; the independent judge runs only through the isolated harness_judge subrecipe.
+
+  AUTHORITATIVE INPUTS
+  1. Load the reusable contract resource from the harness-judge skill: `harness-judge/templates/audit-contract.md`.
+  2. Read that contract completely before scoring or delegating.
+  3. Treat the contract as authoritative for required paths, checklists, ontology, findings, scoring inputs, and deliverables.
+  4. Inspect repository `{{ repository_path }}` with scope `{{ scope }}` and focus `{{ focus }}`.
+
+  FIRST VISIBLE OUTPUT
+  Emit exactly this header before the first tool call:
+    Harness-audit mode: AUDIT_ONLY
+    Repository: {{ repository_path }}
+    Scope: {{ scope }}
+    Focus: {{ focus }}
+    Contract: harness-judge/templates/audit-contract.md
+    Output directory: {{ output_dir }}
+    Graph format: {{ graph_format }}
+    Independent judge: harness_judge subrecipe
+
+  SAFETY BOUNDARY
+  - Do not modify tracked repository files, agents, skills, recipes, templates, Beads, memories, or external systems.
+  - Generated audit artifacts are permitted only under `{{ output_dir }}`. Create that directory when absent.
+  - Before writing, prove that `{{ output_dir }}` is excluded from tracked source or is an explicitly authorized audit-output path. Otherwise use a temporary directory and report the substitution.
+  - Never execute implementation or remediation tasks returned by `bd list`.
+  - If a required tool, agent, skill, path, or command is unavailable, record a blocker and continue unaffected work.
+
+  ORCHESTRATION MODEL
+  - The main session owns orchestration, synthesis, findings, target alternatives, and final closure.
+  - Delegate bounded, non-overlapping evidence tasks to specialist agents when available.
+  - Require each delegation to return: scope, inspected paths, facts, evidence references, uncertainties, and no final verdict.
+  - Keep `harness_judge` isolated from authoring. Invoke it once, only after evidence is frozen.
+  - Do not claim that parallel work occurred unless separate delegated sessions actually ran.
+
+  REQUIRED LOADS
+  Load skills goose-orchestration, sdd, knowledge-graph, and harness-judge. Load agent orchestrator in the main session. Load the contract resource `harness-judge/templates/audit-contract.md` before Phase 1. Load beads only when Beads evidence is examined.
+
+  JUDGE SUBRECIPE CONTRACT
+  The isolated harness_judge subrecipe is the only place that may run: load agent harness-judge; load skill harness-judge. Keep that judge isolated from authoring and invoke it only after evidence is frozen.
+
+  PHASES AND HARD GATES
+  0. Preconditions: record repository revision, execution mode, output location, available tools, validators, and inaccessible dependencies.
+     Gate: do not continue until each precondition is known or explicitly blocked.
+  1. Contract model: convert every applicable contract item into a checklist-to-owner-to-evidence matrix.
+     Gate: every item has an executor and expected evidence.
+  2. Baseline and inventory: establish SDD/TDD/GDD references and classify every required L1/L2/L3 path as present, missing, or inaccessible.
+     Gate: requested paths have explicit status.
+  3. Deterministic validation: run available YAML, recipe, schema, reference, and repository consistency checks before semantic judgment.
+     Gate: commands, exit codes, and outputs are recorded; missing validators are not fabricated.
+  4. Current-state ontology: build TBox and ABox with provenance, confidence, current/target view separation, integrity checks, and required traversal queries.
+     Gate: graph exports and query results exist or are blocked with reasons.
+  5. Flow analysis: map lifecycle, recipe invocation, delegated tasks, agents, loaded skills, responsibilities, artifacts, handoffs, gates, Beads, failure paths, and bounded retries.
+     Gate: every core path terminates or has an explicit finding.
+  6. Findings: create only evidence-backed findings with severity, confidence, impact, root cause, target state, acceptance criteria, and verification.
+     Gate: all critical/high findings have enough evidence for adversarial review.
+  7. Alternatives and challenge: produce minimal, balanced, and high-assurance target architectures; have review-critic and principal-engineer challenge critical/high findings and proposals.
+     Gate: disagreements and resolutions are preserved.
+  8. Freeze evidence: write an immutable evidence manifest containing repository revision, artifact paths, hashes, commands, blockers, and unresolved uncertainties.
+     Gate: manifest exists and no audit artifact changes after judge invocation except final synthesis.
+  9. Independent judgment: invoke `harness_judge` with repository path, scope, focus, evidence budget, output directory, and evidence manifest path.
+     Gate: judge output is received without asking it to author or repair audit evidence.
+  10. Closure: incorporate—but do not silently override—the independent verdict, complete checklist statuses, and emit one allowed audit status.
+
+  REQUIRED ARTIFACTS
+  Write under `{{ output_dir }}`:
+  - audit-checklist-status.md
+  - evidence-register.md
+  - evidence-manifest.json
+  - current-inventory.md
+  - sdd-reference-model.md
+  - responsibility-matrix.md
+  - artifact-handoff-map.md
+  - recipe-invocation-map.md
+  - current-state-graph.<format-extension>
+  - target-state-graph.<format-extension>
+  - graph-diff.md
+  - graph-query-results.md
+  - findings-register.md
+  - architecture-alternatives.md
+  - adversarial-review.md
+  - harness-judge-report.json
+  - remediation-proposal.md
+  - final-audit-report.md
+
+  GRAPH FORMAT MAPPING
+  jsonld -> jsonld; turtle -> ttl; graphml -> graphml; cypher -> cypher; property-json -> json.
+
+  JUDGE HANDOFF
+  Pass only frozen evidence and identifiers. Required judge inputs:
+  - repository_path: {{ repository_path }}
+  - scope: {{ scope }}
+  - focus: {{ focus }}
+  - evidence_budget: {{ evidence_budget }}
+  - output_dir: {{ output_dir }}
+  - evidence_manifest: path to `{{ output_dir }}/evidence-manifest.json`
+
+  FINAL RESPONSE
+  Summarize scope, blockers, finding counts by severity, selected architecture, graph outputs, judge verdict, score, and final status. Cite artifact paths. Stop immediately after the final status.
+
 prompt: |
+  Audit repository `{{ repository_path }}` in AUDIT_ONLY mode.
   Scope: {{ scope }}
   Focus: {{ focus }}
   Evidence budget: {{ evidence_budget }}
+  Output directory: {{ output_dir }}
+  Graph format: {{ graph_format }}
 
-  State the first visible output block. Load agent harness-judge and load skill harness-judge before scoring. Perform a read-only static artifact audit of the current repository harness across domains A-F. Include SDD, TDD, and GDD in the framework section. Cite evidence for every score. Do not modify files or Beads.
+  Follow the bundled contract resource `harness-judge/templates/audit-contract.md`, execute the gated workflow, freeze evidence, then invoke the independent `harness_judge` subrecipe exactly once. Do not modify tracked source, Beads, memory, or external systems.
+
+activities:
+  - "message: Run a read-only harness audit with ontology and independent judging."
+  - "Audit the complete harness"
+  - "Audit recipes and orchestration"
+  - "Audit agents and loaded skills"

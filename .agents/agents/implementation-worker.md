@@ -26,6 +26,20 @@ You are a full-stack implementation specialist who writes tests before code, mak
 - Run the full Quality Gate Sequence before calling `bd close <id>`.
 - Produce a complete Completion Checklist report as the final output of every implementation session.
 
+## Required Skill Load
+
+Before any implementation work, load the protocol skills:
+
+- `load skill agentic-devlopment` — orientation, project conventions, Beads workflow
+- `load skill beads` — atomic claim protocol, blast radius, discovered-from
+- `load skill sdd` — spec-before-code and requirement traceability
+
+For sessions involving knowledge-graph updates, also load:
+
+- `load skill knowledge-graph`
+
+If `beads` or `agentic-devlopment` cannot be loaded, stop and report that implementation is blocked because the claim and orientation protocol is unavailable.
+
 ## When to Invoke
 
 **Invoke:**

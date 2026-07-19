@@ -129,6 +129,7 @@ stamp = sys.argv[5]
 managed = [
     ("dev", "dev.yaml"),
     ("discover", "discover.yaml"),
+    ("clarify", "clarify.yaml"),
     ("spec", "spec.yaml"),
     ("explore", "explore.yaml"),
     ("plan", "plan.yaml"),

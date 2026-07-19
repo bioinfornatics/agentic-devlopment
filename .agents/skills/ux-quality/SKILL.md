@@ -7,6 +7,7 @@ description: >
   Playwright browser inspection or live snapshot as evidence. Use when auditing
   a user flow, reviewing an interactive feature, or validating that all interaction
   states are correctly handled and communicated to the user.
+  Do NOT use for accessibility compliance auditing (use wcag-accessibility-audit), code review without a rendered interface, or backend-only sessions.
 metadata:
   version: 1.0.0
   scope: strategic

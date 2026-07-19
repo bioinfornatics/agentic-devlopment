@@ -12,6 +12,27 @@ instructions: |
   load skills agentic-devlopment first, then run the `release` subrecipe.
   Stop on first gate FAIL — do not proceed past a failed gate.
 
+  ## Cross-recipe ordering gate — check BEFORE release (GATE-07, GATE-08)
+
+  Release REQUIRES prior verify PASS. Check the gate before any release action:
+  ```bash
+  bd show <bead-id>   # confirm env:verified label is present
+  ```
+  If `env:verified` label is ABSENT:
+  ```
+  ❌ Release gate: bead <id> missing label env:verified.
+     Run /verify first, then re-run /release.
+  ```
+  STOP immediately. Do not run any release steps.
+
+  If `env:verified` is PRESENT: proceed with release workflow.
+
+  On successful release:
+  ```bash
+  bd update <bead-id> --add-label "env:prod"
+  ```
+  This closes the full label state machine: env:dev → env:reviewed → env:verified → env:prod.
+
   Loop cycle: run `bd prime` to orient before any work, `bd ready --json` to triage,
   claim beads before writes, close on completion, store memories at handoff.
   Stop after validation and handoff — do not keep exploring.
@@ -71,6 +92,8 @@ sub_recipes:
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
+  ## AD-001 pattern: Specialist. Load principal-engineer in-session for gated release.
+
   Release: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
@@ -81,8 +104,11 @@ prompt: |
   Wait for their reply and use it as the task for all subsequent steps. Do not call any tool until you have it.
 
   Step 1 — First visible output: state release target, current git status, gate plan.
-  Step 2 — Orient: load skill agentic-devlopment. Run bd prime and bd ready --json.
-  Step 3 — Pre-release gate: verify all beads closed, tests pass, git clean, version bumped.
-  Step 4 — Execute release: use release subrecipe.
-  Step 5 — Post-release: verify deployed artifact, run smoke test, close release bead.
+  Step 2 — Ordering gate check: run `bd show <bead-id>` or `bd list --label env:verified`.
+           STOP if env:verified label absent — output gate error message.
+  Step 3 — Orient: load skill agentic-devlopment. Run bd prime and bd ready --json.
+  Step 4 — Pre-release gate: verify all beads closed, tests pass, git clean, version bumped.
+  Step 5 — Execute release: use release subrecipe.
+  Step 6 — Gate stamp: on success → `bd update <bead-id> --add-label env:prod`.
+  Step 7 — Post-release: verify deployed artifact, run smoke test, close release bead.
   STOP on first gate FAIL — do not proceed past a failed gate.

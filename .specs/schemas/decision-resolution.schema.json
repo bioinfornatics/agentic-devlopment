@@ -1,0 +1,14 @@
+{
+  "schema": "harness.decision-resolution.v1",
+  "required": [
+    "id",
+    "decision",
+    "resolved_by",
+    "inputs_considered",
+    "conflicts_resolved",
+    "override_justification",
+    "accepted_contributions",
+    "rejected_contributions",
+    "verification"
+  ]
+}

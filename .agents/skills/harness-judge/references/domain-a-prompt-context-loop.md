@@ -47,6 +47,15 @@ PARTIAL session due to model variance.
 
 ---
 
+## Contents
+
+- [Section A1 — Prompt Engineering](#section-a1--prompt-engineering)
+- [Section A2 — Context Engineering](#section-a2--context-engineering)
+- [Section A3 — Loop Engineering](#section-a3--loop-engineering)
+- [Section A4 — Exit / Stop / Success Criteria](#a4-exit--stop--success-criteria)
+- [Section A5 — Instruction Quality Gradient](#a5-instruction-quality-gradient-hj048)
+- [Section A6 — Instruction Anti-pattern Detection](#a6-instruction-anti-pattern-detection-hj049)
+
 ## Section A1 — Prompt Engineering
 
 **What this section measures**: Whether the instructional text in an agent spec, skill
@@ -1140,3 +1149,57 @@ After scoring all three sections (A1, A2, A3):
 | Layer delta evaluation protocol | `harness-judge` SKILL.md → Section 7 |
 | A/B eval scenarios for skills/agents | `evals/skills/`, `evals/agents/`, `evals/recipes/` |
 | KG pipeline (run after structural changes) | `apps/kg/dist/cli.js pipeline` |
+
+---
+
+### A4. Exit / Stop / Success Criteria
+
+For every artifact or session, explicitly judge whether completion is well defined.
+
+Questions:
+
+- What observable state means the work is successful?
+- What exact output, artifact, validation result, or handoff proves success?
+- When should the agent stop because the task is complete?
+- When should the agent stop because continuing would be unsafe, out of scope, too costly, or low confidence?
+- When should the agent escalate to a human or another specialist instead of continuing?
+- Are success criteria, stop criteria, and escalation criteria separate and non-conflicting?
+- Are criteria measurable enough for another judge to verify them from transcript or file evidence?
+
+Red flags:
+
+- Success is phrased as vague intent such as "do a good job" or "improve quality".
+- Stop condition is only "when done" with no observable done state.
+- Loop has retries but no max attempts, budget, kill switch, or escalation.
+- Agent continues exploring after final handoff or after validation is sufficient.
+- Agent treats failure, blocked state, and success as the same final outcome.
+
+
+### A5. Instruction Quality Gradient (HJ048)
+
+Score each artifact's instructions on a 0–4 scale. Apply to the full instruction block, not per sentence.
+
+| Score | Label | Criteria |
+|---|---|---|
+| 0 | Vague aspiration | Instructions state a goal without any procedural guidance. Example: "do a thorough job", "be helpful and accurate". |
+| 1 | Goal with intent | Instructions state what to do but not how. Steps are implied, not explicit. No ordering or gates. |
+| 2 | Unordered steps | Procedural steps exist but can be executed in any order. No explicit dependencies between steps. No examples. |
+| 3 | Ordered steps with gates | Steps are numbered, ordered, and gate conditions exist (e.g., "Do NOT proceed to Step N until…"). No calibration examples. |
+| 4 | Full technique stack | Ordered steps, gate conditions, GKP orientation, negative prompts for failure modes, and calibration examples or anchors for judgment-heavy criteria. |
+
+Score the instruction block as a whole: a score of 3 or 4 is acceptable for harness artifacts. A score of 0 or 1 is a FAIL. A score of 2 is PARTIAL.
+
+
+### A6. Instruction Anti-pattern Detection (HJ049)
+
+For every artifact, scan for these anti-patterns before scoring:
+
+- **Internal contradiction:** Instruction A says "always load skill X first" and instruction B says "load agent before skills". Both cannot be true — one must dominate or one must be removed.
+- **Front-loading violation:** A constraint that applies to Step 3 is stated for the first time in Step 5. Important constraints must appear before the steps that need them.
+- **Ambiguous reference:** An instruction uses "it", "this", or "the output" with no clear antecedent. The referent must be named explicitly.
+- **Over-loading:** A single instruction block contains more than 7 independent directives without grouping. Over-loaded blocks degrade recall at inference time — split into numbered phases.
+- **Aspirational hedge:** Wording like "try to", "where possible", "as much as you can" on a constraint that must be non-negotiable. Replace with "must" or "SHALL".
+- **All-caps imperative without reasoning:** "MUST do X" or "NEVER do Y" with no explanation of why. The model follows the letter but cannot generalise to edge cases the author did not anticipate. Always pair a rule with its rationale: "Do X — because Y" beats "MUST do X" on novel situations.
+- **Unqualified universal:** "Always do X" with no exception clause when exceptions are known to exist.
+
+Score HJ049 as PASS if none of the above are found, PARTIAL if one minor instance is found, FAIL if a contradiction or front-loading violation is present.

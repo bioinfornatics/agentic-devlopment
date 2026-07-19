@@ -1,0 +1,15 @@
+{
+  "schema": "harness.expert-contribution.v1",
+  "required": [
+    "id",
+    "producer_agent",
+    "lifecycle_phase",
+    "input_artifacts",
+    "output_artifact",
+    "claims",
+    "evidence",
+    "downstream_consumer",
+    "conflicts",
+    "confidence"
+  ]
+}

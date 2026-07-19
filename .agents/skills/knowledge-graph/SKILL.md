@@ -1,212 +1,182 @@
 ---
 name: knowledge-graph
-description: >
-  Load when creating, querying, or updating the project knowledge graph during
-  Spec-Driven Development. Covers two namespaces (harness: for agents/skills/recipes;
-  product: for features/components/specs), entity types, full relation vocabulary,
-  CRUD protocol by SDD phase (discover/spec/plan/implement/review/verify), and
-  traversal query patterns. Use after any structural change to agents, skills, or
-  recipes, when implementing a feature with SDD, or when querying project
-  architecture relationships. Always search before creating to avoid duplicates.
-metadata:
-  version: 1.0.0
+description: Create, query, validate, and update the project knowledge graph for Spec-Driven Development and agentic-harness audits. Use for product traceability; agents, skills, recipes, topics, responsibilities, delegated tasks, artifacts, gates, and Beads orchestration analysis; TBox/ABox construction; current-versus-target graph comparison; blast-radius queries; integrity checks; or structural changes recorded in `.knowledge/memory.jsonl`. Always search before creating entities. Do not use when no graph query, update, or structural knowledge change is required.
 ---
 
-# Knowledge Graph — SDD Semantic Memory
+# Knowledge Graph — SDD and Harness Ontology
 
-Load this skill when you need to read or write the project KG (`.knowledge/memory.jsonl`).
-The KG MCP server exposes 9 tools: `create_entities`, `create_relations`, `add_observations`,
-`delete_entities`, `delete_relations`, `delete_observations`, `read_graph`, `search_nodes`, `open_nodes`.
+Use `.knowledge/memory.jsonl` as the typed project knowledge graph. Treat Goose builtin memory as contextual notes, never as a substitute for graph relations.
 
----
+## Core protocol
 
-## 1. Orient first
+1. Orient with `search_nodes("<domain keyword>")` before creating anything.
+2. Open likely matches and reuse stable entities and aliases.
+3. Select the `product:`, `harness:`, or `work:` ontology profile.
+4. Create or enrich ABox instances using the TBox and relation catalogue.
+5. Record provenance, graph view, status, and confidence.
+6. Preserve contradictions as explicit findings; never overwrite them silently.
+7. Validate the graph after every structural change.
 
-Before reading or writing:
-```
-search_nodes("<domain keyword>")   # find existing entities
-```
-Never create duplicate entities. If an entity exists, use `add_observations` to enrich it.
+Never create duplicate entities. Enrich existing entities with observations when they already exist.
 
----
+## Namespaces
 
-## 2. Two namespaces
+- `product:` — epics, features, stories, acceptance criteria, components, APIs, data models, tests, code, and specifications.
+- `harness:` — skills, skill topics, agents, agent topics, responsibilities, recipes, recipe topics, delegated tasks, artifacts, phases, gates, findings, decisions, and execution evidence.
+- `work:` — Beads epics, tasks, dependencies, assignees, gates, acceptance criteria, verification methods, and completion evidence.
 
-| Namespace | entityType prefix | What it models |
-|---|---|---|
-| **harness:** | `harness:recipe`, `harness:skill`, `harness:agent`, `harness:doc` | The SDD toolchain |
-| **product** | `epic`, `feature`, `user_story`, `acceptance_criterion`, `component`, `api_endpoint`, `data_model`, `test`, `code_file`… | What you are building |
+## Buildtime and runtime boundary
 
----
+Create structural nodes only for buildtime knowledge: specifications, source files, contracts, tests, agents, skills, recipes, responsibilities, topics, gates, and work-control structures.
 
-## 3. Buildtime vs runtime
+Do not create raw runtime logs, sessions, requests, responses, credentials, tokens, or database rows as structural nodes. Record audit-grade executions as `harness:execution_evidence` nodes or observations containing command, timestamp, exit code, repository revision, and output hash.
 
-Only **buildtime** entities belong in the KG (specs, code, contracts, tests).
-**Never** add runtime entities (log lines, HTTP responses, DB rows, user sessions).
+## Mandatory metadata
 
-| Buildtime ✅ | Runtime ❌ |
-|---|---|
-| spec.md, code file, test, schema | Log entry, session token, HTTP call |
-| acceptance criterion | Test execution result (→ add observation only) |
-| api_endpoint contract (OpenAPI) | Live HTTP request |
+Store these observations when applicable:
 
----
-
-## 4. Entity types and mandatory observations
-
-```
-epic              observations: scope, status, description
-feature           observations: scope, layer (frontend|api|backend|data), status
-user_story        observations: scope, "as a … I want … so that …"
-acceptance_criterion  observations: scope, "criterion: WHEN … THEN …", status
-component         observations: scope=buildtime, layer=frontend, "atomic_level: Atom|Molecule|Organism|Template", file
-api_endpoint      observations: scope=buildtime, layer=api, method, path, file
-data_model        observations: scope=buildtime, layer=backend|data, file
-test              observations: scope=buildtime, file, "covers: [FEAT]-NN"
-code_file         observations: scope=buildtime, "path: src/…"
-spec_file         observations: scope=buildtime, "path: .specs/features/…/spec.md"
-harness:recipe    observations: scope=buildtime, namespace=harness, file, slash
-harness:skill     observations: scope=buildtime, namespace=harness, file
-harness:agent     observations: scope=buildtime, namespace=harness, file
+```text
+scope:buildtime
+source_kind:explicit|inferred|external|runtime_evidence
+source_path:<repository-relative path>
+source_lines:<start-end>
+confidence:<0.0-1.0>
+status:current|deprecated|proposed|contradictory
+graph_view:current|target
+version:<version or repository revision>
 ```
 
-**Rule R9** (mandatory): every buildtime entity with a file MUST have
-`IMPLEMENTED_IN` | `LOCATED_IN` | `DEFINED_IN` pointing to a `code_file` or `spec_file`.
+Rules:
 
----
+- Use stable, unique identifiers.
+- Distinguish explicit, inferred, external, and runtime-evidence assertions.
+- Add confidence to every inferred assertion.
+- Keep current-state and target-state assertions separate.
+- Preserve deprecated and renamed entities when history matters.
+- Link every file-backed buildtime entity to a `code_file`, `spec_file`, or `repository_file` node.
 
-## 5. Relations (active voice)
+## Select the profile
 
-```
-epic              DECOMPOSES_INTO     feature
-feature           REFINED_INTO        user_story
-user_story        HAS_CRITERION       acceptance_criterion
-acceptance_criterion ANCHORS          test           ← spec-anchored rule
-test              VALIDATES           acceptance_criterion
-component         IMPLEMENTS          user_story
-api_endpoint      IMPLEMENTS          user_story
-api_endpoint      RETURNS             data_model
-component         EXTENDS             component      ← Atomic Design hierarchy
-component         IMPLEMENTED_IN      code_file      ← chain closure
-api_endpoint      IMPLEMENTED_IN      code_file
-test              LOCATED_IN          code_file
-user_story        TRACED_IN           spec_file
-decision          GOVERNS             component
-bead              TRACKS              user_story
-harness:recipe    USES_SKILL          harness:skill
-harness:recipe    DELEGATES_TO        harness:agent
-harness:agent     LOADS               harness:skill
-harness:doc       DESCRIBES           harness:recipe
-```
+Read only the references needed for the task:
 
----
+- Product SDD traceability: `references/product-ontology.md`
+- Harness agents, skills, recipes, topics, responsibilities, and orchestration: `references/harness-ontology.md`
+- Relation direction, domain, range, and cardinality: `references/relation-catalogue.md`
+- Integrity validation and completion gates: `references/integrity-constraints.md`
+- Traversal, gap, blast-radius, and current/target queries: `references/query-cookbook.md`
+- Full global orchestration audit procedure: `references/domain-g-audit.md`
 
-## 6. CRUD protocol by SDD phase
+For a structural harness audit, read the harness ontology, relation catalogue, integrity constraints, query cookbook, and Domain G procedure before concluding.
 
-### discover
-```
-create_entities([{name:"<epic-slug>",entityType:"epic",observations:["scope:buildtime","status:planning"]}])
-create_entities([{name:"<feature-slug>",entityType:"feature",observations:["scope:buildtime","layer:…","status:todo"]}])
-create_relations([{from:"<feature>",to:"<epic>",relationType:"DECOMPOSES_INTO"}])
+## MCP operations
+
+The external knowledge-graph MCP commonly exposes:
+
+```text
+create_entities
+create_relations
+add_observations
+delete_entities
+delete_relations
+delete_observations
+read_graph
+search_nodes
+open_nodes
 ```
 
-### spec
-```
-create_entities([{name:"[FEAT]-01",entityType:"acceptance_criterion",
-  observations:["scope:buildtime","criterion:WHEN … THEN system SHALL …","status:pending"]}])
-create_relations([{from:"<user_story>",to:"[FEAT]-01",relationType:"HAS_CRITERION"}])
-create_relations([{from:"[FEAT]-01",to:"<spec_file>",relationType:"LOCATED_IN"}])
-```
+If relation properties are unsupported, represent a sourced relationship as a `harness:relation_assertion` entity with observations for subject, predicate, object, provenance, confidence, status, and graph view.
 
-### plan
-```
-create_entities([{name:"<bead-id>",entityType:"bead",observations:["scope:buildtime","bead_id:<id>"]}])
-create_relations([{from:"<bead-id>",to:"<user_story>",relationType:"TRACKS"}])
-```
+## Product SDD protocol
 
-### implement
-```
-create_entities([{name:"<component>",entityType:"component",
-  observations:["scope:buildtime","layer:frontend","atomic_level:Molecule","file:src/…"]}])
-create_entities([{name:"src/…/file.tsx",entityType:"code_file",observations:["scope:buildtime","path:src/…/file.tsx"]}])
-create_relations([{from:"<component>",to:"src/…/file.tsx",relationType:"IMPLEMENTED_IN"}])
-create_relations([{from:"<component>",to:"<user_story>",relationType:"IMPLEMENTS"}])
-```
+### Discover
 
-### review — gap queries
-```
-search_nodes("acceptance_criterion")   # find all ACs
-# filter manually: those without ANCHORS relation = missing tests
-search_nodes("[FEAT]-")                # find ACs by feature prefix
-open_nodes(["[FEAT]-01","test_FEAT_01_desc"])  # verify spec-anchored link
-```
+Create or reuse `product:epic` and `product:feature` entities, then connect the epic to its features.
 
-### verify
-```
-add_observations([{entityName:"test_FEAT_01_desc",observations:["status:passing","ci_run:2026-07-09"]}])
-```
+### Specify
 
----
+Create user stories and acceptance criteria. Use stable criterion identifiers such as `[FEAT]-01`. Link criteria to their specification file.
 
-## 7. Traversal patterns (query cookbook)
+### Plan
 
-| Goal | Query |
-|---|---|
-| Blast radius of a feature change | `open_nodes(["<feature>"])` → follow DECOMPOSES_INTO + IMPLEMENTS + IMPLEMENTED_IN |
-| File list to edit for data model change | `open_nodes(["<data_model>"])` → MAPS_TO → IMPLEMENTED_IN → code_file |
-| ACs without tests (TDD gap) | `search_nodes("acceptance_criterion")` → filter: no entity whose name is in an ANCHORS relation |
-| Features without user stories | `search_nodes("feature")` → filter: no REFINED_INTO outgoing |
-| Harness blast radius (recipe renamed) | `search_nodes("<recipe-name>")` → DESCRIBES from harness:doc |
-| Context before coding | `open_nodes(["[FEAT]-NN"])` → criterion + spec + existing tests |
+Create or reuse `work:beads_task` entities and connect them to the stories or criteria they track.
 
----
+### Implement
 
-## 8. Gotchas
+Create components, API endpoints, data models, tests, and code-file entities. Link implementations to stories and file locations.
 
-- **Never create runtime entities** — logs, sessions, HTTP calls, DB rows
-- **Duplicate check first** — `search_nodes` before `create_entities`
-- **R9 mandatory** — every code entity needs `IMPLEMENTED_IN` or `LOCATED_IN`
-- **Active voice relations** — IMPLEMENTS not implemented_by
-- **[FEAT]-NN format** — acceptance criteria must follow `[A-Z]+-\d+` naming
-- **Visualize** — drag `.knowledge/memory.jsonl` onto https://memviz.herich.tech
+### Review and verify
 
-## Beads loop
-For Beads workflow commands, load skill: `beads`.
+Query for missing criteria, tests, file links, producers, consumers, and validation evidence. Record test execution as evidence or observations, not as raw runtime entities.
 
----
+## Harness update protocol
 
-## Correction — Goose `memory` builtin vs KG externe
+After changing a skill, agent, recipe, responsibility, topic, artifact, or gate:
 
-Le **memory builtin Goose** (`enabled: true` dans config) expose :
-```
-remember_memory(category, data, tags, is_global)  # écrire
-retrieve_memories(category, is_global)             # lire  
-remove_memory_category(category, is_global)        # supprimer catégorie
-remove_specific_memory(category, memory_content, is_global)
+1. Search for the current entity and aliases.
+2. Update file, topics, responsibilities, loaded skills, inputs, outputs, and lifecycle phases.
+3. Update delegated-task, artifact, handoff, gate, and work-control relations.
+4. Mark obsolete relations deprecated; delete only when history is unnecessary.
+5. Update current and proposed target views independently.
+6. Run `scripts/validate_graph.py` against the exported JSONL graph.
+
+## Minimum traversable orchestration path
+
+The harness graph must support:
+
+```text
+User intent
+→ lifecycle phase
+→ recipe
+→ delegated task
+→ agent
+→ responsibility
+→ required or loaded skill
+→ topic
+→ produced artifact
+→ consumer
+→ verification method
+→ gate
+→ work-task completion
+→ next lifecycle phase
 ```
 
-Stockage : `.goose/memory/<category>.txt` (local) — chargé automatiquement en session.
+Every mandatory path must terminate or reach an explicit bounded failure, retry, or escalation state.
 
-**Ce n'est PAS un graphe** — aucune relation, aucun traversal. Utiliser pour:
-- Mémoire de session SDD (phase courante, AC IDs, decisions)
-- Préférences projet (runners de tests, conventions de nommage)
-- Résumés des entités clés (agents → rôle, recipes → slash)
+## Evidence and contradiction policy
 
-**Le graphe propre** (`.knowledge/memory.jsonl` + `create_entities` / `search_nodes`) reste disponible via `knowledgegraphmemory` si activé, mais n'est PAS natif Goose.
+For every substantial assertion, record file and line evidence when available. Separate facts, inference, external principles, recommendations, and uncertainty.
 
-### Catégories recommandées pour SDD
+Represent contradictions explicitly with `harness:finding`, `harness:conflict`, or `harness:relation_assertion` nodes. Do not silently choose one assertion and discard the other.
 
-```
-remember_memory("harness/agents",  "review-critic: ...",  ["agent"],   false)
-remember_memory("harness/recipes", "review: /review ...", ["recipe"],  false)
-remember_memory("product/features","AUTH-login: status=spec-done ...",["feature"],false)
-remember_memory("sdd/phase",       "current=implement, bead=proj-abc",["sdd"],   false)
-remember_memory("sdd/gaps",        "AC AUTH-03: no test yet",          ["gap"],   false)
-```
-## Self-validation checklist
+## Goose memory boundary
 
-Before completing the task:
-- [ ] Findings are based on evidence, not assumptions
-- [ ] Each recommendation is actionable with a concrete next step
-- [ ] Findings reference specific file/line/component
-- [ ] Beads follow-up created for anything out of scope
+Goose builtin memory is flat contextual memory. Use it only for compact summaries such as the current SDD phase, active Beads task IDs, project conventions, and short component summaries.
+
+Keep structural truth, typed relations, traversal, blast-radius analysis, and current/target comparison in the external graph.
+
+## Completion checklist
+
+- [ ] Search before creating.
+- [ ] Use the correct namespace and entity type.
+- [ ] Validate relation direction, domain, range, and cardinality.
+- [ ] Add source path and lines where available.
+- [ ] Distinguish explicit and inferred assertions.
+- [ ] Add confidence to inferred assertions.
+- [ ] Keep current and target views distinct.
+- [ ] Link file-backed entities to file nodes.
+- [ ] Link mandatory artifacts to producers and consumers.
+- [ ] Link delegated tasks to recipes, agents, responsibilities, and required skills.
+- [ ] Preserve contradictions as findings or relation assertions.
+- [ ] Validate the graph after structural changes.
+- [ ] Create Beads follow-up only when remediation is outside the authorized scope.
+
+## When to load references
+
+Load supporting reference files only when deeper implementation detail is required:
+
+- load references/domain-g-audit.md — use when the task needs detailed domain g audit guidance.
+- load references/harness-ontology.md — use when the task needs detailed harness ontology guidance.
+- load references/integrity-constraints.md — use when the task needs detailed integrity constraints guidance.
+- load references/product-ontology.md — use when the task needs detailed product ontology guidance.
+- load references/query-cookbook.md — use when the task needs detailed query cookbook guidance.
+- load references/relation-catalogue.md — use when the task needs detailed relation catalogue guidance.

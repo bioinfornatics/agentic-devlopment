@@ -1,0 +1,10 @@
+{
+  "schema": "harness-judge-report-v1",
+  "generated_at": "2026-07-19T13:38:53+00:00",
+  "verdict": "PASS_WITH_RESIDUAL_RISK",
+  "score": 0.86,
+  "summary": "Remediation evidence, scanner classification, provider preflight, baseline manifest, naming ADR, context policies, graph enrichment, and closure artifacts are present. Residual provider availability remains runtime-dependent but is preflighted.",
+  "residual_risks": [
+    "External provider/model deployment availability cannot be proven without live provider credentials."
+  ]
+}

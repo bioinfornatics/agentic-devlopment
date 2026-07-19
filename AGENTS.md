@@ -6,7 +6,7 @@ README for agents working on this project. Child `AGENTS.md` files override thes
 
 ```bash
 ./scripts/install.sh          # install recipes/skills/agents into ~/.config/goose/
-goose skills list             # verify 17+ domain skills visible
+goose skills list             # verify 18+ domain skills visible
 goose recipe validate .goose/recipes/dev.yaml  # spot-check a recipe
 ```
 
@@ -90,9 +90,8 @@ These rules encode every drift discovered in the project history.
 ```
 .agents/skills/<name>/SKILL.md                        ← the skill itself
 → python3 scripts/generate-tables.py                  regenerates README + eval map (AD-002)
-→ docs/getting-started.md                             skill count in setup block  (manual)
-→ .specs/architecture.md                              skill count in System Map   (manual)
 → .specs/features/harness-core/spec.md               AC-SKILL-01 table row       (manual)
+→ .specs/features/<name>/spec.md                      1–3 ACs if skill is non-trivial (new spec)
 → evals/skills/<name>.json                            3 eval scenarios (normal/difficult/very_difficult)
 → node apps/kg/dist/cli.js pipeline
 ```
@@ -105,6 +104,7 @@ If referenced by agents, also update those agents' `load skill:` lines and their
 .agents/agents/<name>.md                              ← the agent itself
 → python3 scripts/generate-tables.py                  regenerates README + eval map (AD-002)
 → .specs/features/harness-core/spec.md               AC-AGENT-01 table row       (manual)
+→ .specs/features/<name>/spec.md                      1–3 ACs defining agent behavioral contract (new spec)
 → evals/agents/<name>.json                            eval file with "skills" field (Layer 1 baseline)
 → node apps/kg/dist/cli.js pipeline
 ```
@@ -141,7 +141,7 @@ Every recipe **MUST** follow one of three patterns (full decision record: `.spec
 
 | Pattern | Recipes | Rule |
 |---------|---------|------|
-| **Specialist** | `review`, `implement`, `explore`, `plan`, `spec`, `design`, `discover`, `release`, `verify` | `load agent <specialist>` in-session. The session **is** the specialist. |
+| **Specialist** | `constitution`, `review`, `implement`, `explore`, `plan`, `spec`, `design`, `discover`, `release`, `verify` | `load agent <specialist>` in-session. The session **is** the specialist. |
 | **Orchestration** | `dev`, `sdd` | `load agent orchestrator` in-session. ALL specialists are summoned as isolated sub-sessions via `delegate`. |
 | **Skill-only** | `remember` | Load skills only. No `load agent`. |
 
@@ -177,9 +177,9 @@ node apps/kg/dist/cli.js reason --rules
 ## Repository structure
 
 ```
-.agents/agents/      # 12 named Goose agents (Summon + load agent)
-.agents/skills/      # 18 domain skills + skill-creator tooling
-.goose/recipes/      # 12 top-level recipes + 7 subrecipes
+.agents/agents/      # named Goose agents — see README.md for current roster
+.agents/skills/      # domain skills + skill-creator tooling — see README.md
+.goose/recipes/      # top-level recipes + subrecipes — see README.md
 .specs/features/     # SDD specs — one spec.md per feature
 .specs/STATE.md      # Architecture Decision Records (AD-NNN)
 .knowledge/          # KG memory (memory.jsonl + derived.jsonl)
@@ -210,7 +210,7 @@ evals/               # A/B eval scenarios (skills/, agents/, recipes/)
 
 ## Slash commands
 
-`/dev` `/discover` `/spec` `/explore` `/plan` `/implement` `/review` `/verify` `/design` `/sdd` `/release` `/remember`
+`/constitution` `/dev` `/discover` `/spec` `/explore` `/plan` `/implement` `/review` `/verify` `/design` `/sdd` `/release` `/remember`
 
 ## Validation checklist (before committing)
 

@@ -56,6 +56,14 @@ response:
 
 ---
 
+## Contents
+
+- [Section D1 — Validation and Format](#section-d1--validation-and-format)
+- [Section D2 — AD-001 Pattern Compliance](#section-d2--ad-001-pattern-compliance)
+- [Section D3 — Quality and Workflow](#section-d3--quality-and-workflow)
+- [Section D7 — Sequential Flow Gates (HJ035-HJ037)](#section-d7--sequential-flow-gates)
+- [Section D8 — Cross-Recipe Overlap (HJ041)](#section-d8--cross-recipe-overlap)
+
 ## Section D1 — Structural Validation
 
 **Mode:** Binary (PASS / FAIL per item)  
@@ -449,6 +457,137 @@ D2.5 FAIL — eval JSON `agents` field includes summoned agents (violates AD-001
 
 ---
 
+## Section D7 — Sequential Flow Gates
+
+**Mode:** Binary (PASS / FAIL per item) + Gradient (0–3 for D7.3)
+**Purpose:** Verify that multi-phase recipes declare explicit ordering dependencies between phases,
+including cross-recipe dependencies. Phases that silently accept any input state violate HJ035 and
+allow users to bypass mandatory steps (e.g., running verify before review).
+
+**References:** HJ035, HJ036, HJ037 (see harness-judge SKILL.md summary table)
+
+### D7.1 — Phase N→N+1 Explicit Hard Gate (HJ035)
+
+**Mode:** Binary — PASS / FAIL
+
+A recipe or agent declares each Phase N → Phase N+1 dependency with an explicit hard gate.
+
+- [ ] PASS — Every transition between numbered phases or steps in the instructions contains an
+  explicit stop condition: "Do not proceed to Step N+1 until [observable artifact or label] is present"
+- [ ] FAIL — One or more phase transitions in the instructions have no stop condition; the recipe
+  implicitly assumes the prior phase completed successfully
+
+**What to look for:**
+- "Do NOT proceed to Step 3 until tdd-guide confirms at least one test is RED" → PASS
+- "Step 2: run tests. Step 3: implement." (no gate between steps) → FAIL
+- Cross-recipe gate: `bd update <id> --add-label env:reviewed` after approval, checked by verify → PASS
+- Review produces APPROVE/BLOCK verdict but downstream recipe never checks the verdict → FAIL
+
+**Failure evidence format:**
+```
+D7.1 FAIL — Phase 3 (Verify) starts without checking Phase 2 (Review) outcome
+  File: .goose/recipes/verify.yaml
+  Transition: instructions Step 2 → Step 3
+  Found: no gate condition between "bd prime" and "detect type"
+  Expected: check for env:reviewed label (or equivalent) before any verification steps
+```
+
+### D7.2 — Conditional Routing with Observable Conditions (HJ036)
+
+**Mode:** Binary — PASS / FAIL
+
+Conditional routing branches state observable, testable conditions and name a default path.
+
+- [ ] PASS — Every `if/when/for` branch in the instructions names a specific observable condition
+  (label presence, file existence, command exit code) and one branch is explicitly the default
+- [ ] FAIL — Branches are described in vague terms ("if appropriate", "when needed") without
+  naming the observable signal that triggers them
+
+**What to look for:**
+- "If `bd show <id>` shows `env:reviewed` label: proceed. If absent: STOP with message." → PASS
+- "If the review is done, proceed to verify." → FAIL (how does the recipe know?)
+- Auto-sizing scale: "If >5 tasks visible: escalate to Medium. Default: Small." → PASS
+- "Adjust depth based on complexity." → FAIL (no observable condition named)
+
+**Failure evidence format:**
+```
+D7.2 FAIL — Branch condition in Step 4 is not observable
+  File: .goose/recipes/sdd.yaml
+  Lines: Step 4 instructions
+  Found: "If the feature is large, run full discovery"
+  Expected: "If SLOC count > X or task list exceeds 5 items, classify as Large"
+```
+
+### D7.3 — Predecessor Output Declaration (HJ037) — Gradient (0–3)
+
+Each recipe step or phase declares what output it requires from the preceding step before it may start.
+
+- [ ] **3** — Every step/phase in the recipe has an explicit prerequisite artifact or gate label:
+  "Step N requires: [artifact path | bead label | command output] from Step N-1"
+- [ ] **2** — Most steps declare prerequisites; 1–2 transitions are implicit
+- [ ] **1** — Prerequisites mentioned in documentation but not enforced as stop conditions in
+  instructions or prompt
+- [ ] **0** — No step/phase declares prerequisites; all steps are assumed to run sequentially
+  without checking prior output
+
+**Scoring:**
+
+| Score | Band |
+|-------|------|
+| D7.1 PASS + D7.2 PASS + D7.3 ≥ 2 | PASS |
+| D7.1 PASS + D7.2 FAIL + D7.3 ≥ 1 | PARTIAL |
+| D7.1 FAIL OR D7.3 = 0 | FAIL |
+
+---
+
+## Section D8 — Cross-Recipe Overlap
+
+**Mode:** Binary (PASS / FAIL)
+**Purpose:** Verify that no two recipes serve the same user intent without a clear routing rule.
+Cross-recipe overlap causes callers to choose arbitrarily, leading to inconsistent workflow execution.
+
+**Reference:** HJ041 (see harness-judge SKILL.md summary table)
+
+### D8.1 — Entry Condition Differentiation (HJ041)
+
+**Mode:** Binary — PASS / FAIL
+
+Recipe entry conditions are differentiated — no two recipes serve the same user intent without
+a clear routing rule.
+
+- [ ] PASS — Each recipe in the harness has a distinct entry condition; where two recipes share
+  a trigger domain (e.g., both review code), at least one recipe declares an explicit "Do NOT use
+  when [other recipe] applies" anti-condition
+- [ ] FAIL — Two or more recipes share the same entry condition without differentiating themselves;
+  a caller cannot determine which to use without reading both recipes in full
+
+**Known cross-recipe overlap candidates** (check these pairs first):
+
+| Pair | Overlap domain | Expected differentiation |
+|------|---------------|--------------------------|
+| `review` / `harness-review` | Code review | `harness-review` is harness-artifact-only; `review` is general codebase |
+| `sdd` / `dev` | Full SDD cycle | `sdd` = multi-phase governance; `dev` = single-task routing |
+| `doc-review` / `harness-doc-review` | Documentation review | `harness-doc-review` is harness-only; `doc-review` is project docs |
+| `verify` / `review` | Quality gate | `verify` = test execution; `review` = code correctness verdict |
+| `explore` / `discover` | Feature analysis | `explore` = read-only blast-radius; `discover` = problem statement + user stories |
+
+**Methodology:**
+1. For each pair in the table above: read both recipes' `description` and `instructions`.
+2. Confirm that at least one recipe names the other in a "Do NOT use when X applies" clause.
+3. If no cross-reference exists between two recipes with shared trigger domain: FAIL.
+
+**Failure evidence format:**
+```
+D8.1 FAIL — review.yaml and harness-review.yaml both accept "review code" intent without differentiation
+  File A: .goose/recipes/review.yaml — description: "Review code and Beads handoff quality"
+  File B: .goose/recipes/harness-review.yaml — description: "Review harness artifacts..."
+  Overlap: both activate on "review" intent from a user in the repo context
+  Found in A: no "Do NOT use for harness artifact review — use /harness-review" clause
+  Expected: A references B (or B references A) as the correct alternative for harness reviews
+```
+
+---
+
 ## Aggregate Scoring Rubric
 
 ### Section Weights
@@ -457,18 +596,22 @@ D2.5 FAIL — eval JSON `agents` field includes summoned agents (violates AD-001
 |---------|--------|---------|-------|
 | D1 Structural Validation | binary gate | N/A | Yes |
 | D2 AD-001 Pattern Compliance | binary gate | N/A | Yes |
-| D3 Instructions Quality | 30% | 18 | No |
-| D4 Parameter Quality | 20% | 12 | No |
-| D5 Wiring Quality | 25% | 12 | No |
-| D6 Eval JSON Quality | 25% | 15 | No |
+| D3 Instructions Quality | 25% | 18 | No |
+| D4 Parameter Quality | 15% | 12 | No |
+| D5 Wiring Quality | 20% | 12 | No |
+| D6 Eval JSON Quality | 20% | 15 | No |
+| D7 Sequential Flow Gates | binary gate + gradient | N/A | Yes (D7.1 FAIL = cap PARTIAL) |
+| D8 Cross-Recipe Overlap | binary gate | N/A | Yes (D8.1 FAIL = cap PARTIAL) |
+
+> D3–D6 weights reduced from original to accommodate D7 and D8 while keeping total at 100%.
 
 ### Final Verdict
 
 | Verdict | Condition |
 |---------|-----------|
-| **PASS** | D1 all pass AND D2 all pass AND weighted score ≥ 75% |
-| **PARTIAL** | D1 all pass AND D2 all pass AND weighted score 50–74% |
-| **FAIL** | Any D1 failure OR any D2 failure OR weighted score < 50% |
+| **PASS** | D1 all pass AND D2 all pass AND D7 PASS AND D8 PASS AND weighted score ≥ 75% |
+| **PARTIAL** | D1 all pass AND D2 all pass AND (D7 or D8 FAIL caps here) AND weighted score 50–74% |
+| **FAIL** | Any D1 failure OR any D2 failure OR D7.1 FAIL OR weighted score < 50% |
 
 ### Override Rules
 

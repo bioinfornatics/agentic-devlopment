@@ -2,6 +2,16 @@ version: 1.0.0
 title: "Design Quality — UX Research · UI Audit · Accessibility"
 description: Unified UX research, design taste, design system, frontend implementation, accessibility, and web testing.
 instructions: |
+  ## AD-001 Pattern: Specialist (sequential dual-phase)
+  ## In-session agents: ux-researcher (Phase 1); ui-designer (Phase 2)
+  ## AD-001 pattern: Specialist. Load UX/UI specialists in-session sequentially; do not use Summon sub-sessions.
+  ## Pattern rationale: two sequential specialist phases with explicit handoff.
+  ## Phase 2 depends on Phase 1 output — they must NOT run simultaneously.
+  ## Stop/escalation: if Phase 1 produces no findings or fails to identify a target,
+  ## stop before Phase 2 and report the Phase 1 blocker. If browser evidence cannot
+  ## be captured after 2 attempts, report findings as code-inspection-only with a
+  ## WCAG-confidence caveat.
+
   Explicit routing — TWO specialist phases, run in sequence:
 
   Phase 1 — UX Research (validate user needs before visual evaluation):
@@ -25,6 +35,10 @@ instructions: |
   Do NOT run both phases simultaneously — UI design depends on UX research output.
   Evaluate product UI across: user intent, visual taste, information architecture,
   design tokens/components, frontend states/performance, accessibility, and browser evidence.
+
+  ## UI/UX optional deep-load policy (F-007/F-009)
+  Default UX research loads ux-quality plus cognitive-ux. Default UI review loads ui-quality plus atomic-design plus design-systems-arch. Load wcag-accessibility-audit only for UI/accessibility risk, frontend-blueprint only for new frontend creation, and design-critique-case-studies only for taste calibration/comparative critique. Record every optional-load trigger in the final report.
+
 settings:
   max_turns: 35
 parameters:

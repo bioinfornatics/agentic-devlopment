@@ -1,0 +1,616 @@
+{
+  "recipes": {
+    "clarify": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "## Precondition gate (CLARIFY-03)",
+        "- [ ] discovery.md presence checked (gate passed or halted)",
+        "## Step 2 \u2014 Precondition gate",
+        "List them before attempting resolution (transparency gate)."
+      ],
+      "involved_agents": [
+        "product-owner"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "sdd"
+      ],
+      "phase": "Clarify",
+      "source_path": ".goose/recipes/clarify.yaml"
+    },
+    "constitution": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "architecture guardrails, and quality gates. All plan.yaml runs are grounded by this.",
+        "### III. Quality Gates (non-negotiable)",
+        "## III. Quality Gates (non-negotiable)",
+        "- [ ] Quality gates have measurable thresholds (numbers, not prose)"
+      ],
+      "involved_agents": [
+        "architect"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "sdd"
+      ],
+      "phase": "Constitution",
+      "source_path": ".goose/recipes/constitution.yaml"
+    },
+    "design": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [],
+      "involved_agents": [
+        "ui-designer",
+        "ux-researcher"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "agentic-ux",
+        "atomic-design",
+        "cognitive-ux",
+        "design-systems-arch",
+        "ui-quality",
+        "ux-quality",
+        "webapp-testing"
+      ],
+      "phase": "Design",
+      "source_path": ".goose/recipes/design.yaml"
+    },
+    "dev": {
+      "ad001_pattern": "orchestration",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "- Beads is the durable control plane: every durable task, discovery, dependency, gate,",
+        "7. Async waits: use `bd gate` for CI/human/timer waits instead of sleeping in the main loop.",
+        "8. Finish: close completed beads, run relevant quality gates, report git status and exact handoff.",
+        "For each task, load the matching skill, then delegate explicitly.",
+        "load agent <agent>  # with Beads: delegate task bd-xxx and into those task load agent <agent>",
+        "- \"Implement the claimed bead and run quality gates\"",
+        "description: Release, CI, gates, and verification flow.",
+        "## AD-001 pattern: Orchestration. Load orchestrator in-session only; delegate specialist recipe runs or agents from the orchestrator context.",
+        "**Phase gate rule**: each phase may only start after its prerequisite output exists.",
+        "If mode=discover: delegate to discover.yaml (`goose run --recipe ./.goose/recipes/discover.yaml --params feature=\"{{ task }}\"`)",
+        "If mode=spec:     STOP if discovery.md absent (see gate above); else delegate to spec.yaml (`goose run --recipe ./.goose/recipes/spec.yaml --params feature=\"{{ task }}\"`)",
+        "If mode=plan:     STOP if spec.md absent (see gate above); else delegate to plan.yaml (`goose run --recipe ./.goose/recipes/plan.yaml --params feature=\"{{ task }}\"`)"
+      ],
+      "involved_agents": [
+        "orchestrator"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "beads",
+        "goose-orchestration"
+      ],
+      "phase": "LifecycleRouter",
+      "source_path": ".goose/recipes/dev.yaml"
+    },
+    "discover": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "- Delegate to `product-owner`: write user stories + PRD quality gate (>=85/100)",
+        "- For UI features: delegate to `ux-researcher`: personas + user journeys (BEFORE product-owner)",
+        "- Delegate to `ux-researcher` if this feature has user-facing UI:",
+        "- Delegate to `product-owner`:"
+      ],
+      "involved_agents": [
+        "product-owner",
+        "ux-researcher"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "sdd"
+      ],
+      "phase": "Discover",
+      "source_path": ".goose/recipes/discover.yaml"
+    },
+    "doc-review": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "Approach: [direct inspection | delegated to doc-review subrecipe]",
+        "- Delegate doc-review subrecipe     (isolated scan worker)",
+        "State the scope, focus, and approach (direct inspection or delegated subrecipe)",
+        "Delegate the inspection to the doc-review subrecipe for an isolated context window."
+      ],
+      "involved_agents": [
+        "review-critic"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "beads"
+      ],
+      "phase": "DocumentationReview",
+      "source_path": ".goose/recipes/doc-review.yaml"
+    },
+    "explore": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [],
+      "involved_agents": [
+        "codebase-researcher"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment"
+      ],
+      "phase": "Explore",
+      "source_path": ".goose/recipes/explore.yaml"
+    },
+    "harness-audit": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "The in-session agent is the orchestrator. The orchestrator delegates bounded evidence work to specialists and reserves final scoring for the independent harness-judge.",
+        "4. architect: map lifecycle, component boundaries, artifacts, handoffs, gates, current-state architecture and target alternatives.",
+        "Phase gates:",
+        "- Model skills, skill topics, agents, agent topics, responsibilities, loaded skills, recipes, recipe topics, delegated tasks, involved agents, lifecycle phases, artifacts, gates, B",
+        "- [ ] All phase gates satisfied or explicitly blocked.",
+        "Load the orchestrator agent and required methodology skills. Read the complete audit contract before scoring. Execute the gated global audit, ontology graph construction, adversari"
+      ],
+      "involved_agents": [
+        "harness-judge",
+        "orchestrator"
+      ],
+      "loaded_skills": [
+        "beads",
+        "goose-orchestration",
+        "harness-judge",
+        "knowledge-graph",
+        "sdd"
+      ],
+      "phase": "HarnessAudit",
+      "source_path": ".goose/recipes/harness-audit.yaml"
+    },
+    "harness-doc-review": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "State the first visible output block, load the required skills and review-critic agent, run bd prime, delegate inspection to doc-review, then synthesize JSON only. Do not modify fi"
+      ],
+      "involved_agents": [
+        "review-critic"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "and",
+        "beads"
+      ],
+      "phase": "HarnessDocReview",
+      "source_path": ".goose/recipes/harness-doc-review.yaml"
+    },
+    "harness-master": {
+      "ad001_pattern": "orchestration",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [],
+      "involved_agents": [
+        "orchestrator"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "and",
+        "beads",
+        "goose-orchestration"
+      ],
+      "phase": "HarnessControlPlane",
+      "source_path": ".goose/recipes/harness-master.yaml"
+    },
+    "harness-review": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [],
+      "involved_agents": [
+        "review-critic"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "beads",
+        "code-review"
+      ],
+      "phase": "HarnessReview",
+      "source_path": ".goose/recipes/harness-review.yaml"
+    },
+    "implement": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "Delegate to `tdd-guide` to write the failing test(s) BEFORE any implementation:",
+        "Run the full quality gate. Close the bead."
+      ],
+      "involved_agents": [
+        "implementation-worker",
+        "tdd-guide"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "beads",
+        "sdd"
+      ],
+      "phase": "Implement",
+      "source_path": ".goose/recipes/implement.yaml"
+    },
+    "plan": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "- Delegate architecture decomposition to `architect`:",
+        "- Delegate graph validation to `planner`:",
+        "Its approved stack, quality gates, and architecture guardrails constrain ALL task decomposition.",
+        "Delegate to `planner` if the graph has >10 nodes or any cycles are found:",
+        "### Step 5 \u2014 Gate (Large/Complex scope only)",
+        "For Large/Complex scope, create a human-review gate before implementation begins:",
+        "bd gate create \"Plan approved: [feature]\" --blocks <first-implementation-task-id>",
+        "description: Delegate graph-building work to the isolated plan worker subrecipe.",
+        "Optionally delegate deep graph building to the plan-worker subrecipe:",
+        "## Step 3 \u2014 Delegate architecture decomposition",
+        "Delegate to `architect`:",
+        "If >10 nodes or cycles found: delegate to `planner`."
+      ],
+      "involved_agents": [
+        "architect",
+        "planner"
+      ],
+      "loaded_skills": [
+        "beads",
+        "sdd"
+      ],
+      "phase": "Plan",
+      "source_path": ".goose/recipes/plan.yaml"
+    },
+    "release": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "title: Gated Release",
+        "description: Gated release workflow.",
+        "You orchestrate gated release with CI waits and rollback documentation.",
+        "- load skills agentic-devlopment  (quality gates, Beads gate protocol)",
+        "- Durable assignment: `bd create \"Release gate: <version>\" --assignee principal-engineer -p 1 --json`",
+        "Stop on first gate FAIL \u2014 do not proceed past a failed gate.",
+        "## Cross-recipe ordering gate \u2014 check BEFORE release (GATE-07, GATE-08)",
+        "Release REQUIRES prior verify PASS. Check the gate before any release action:",
+        "bd show <bead-id>   # confirm env:verified label is present",
+        "If `env:verified` label is ABSENT:",
+        "\u274c Release gate: bead <id> missing label env:verified.",
+        "If `env:verified` is PRESENT: proceed with release workflow."
+      ],
+      "involved_agents": [
+        "principal-engineer"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment"
+      ],
+      "phase": "Release",
+      "source_path": ".goose/recipes/release.yaml"
+    },
+    "remember": {
+      "ad001_pattern": "skill-only",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [],
+      "involved_agents": [],
+      "loaded_skills": [
+        "beads"
+      ],
+      "phase": "Memory",
+      "source_path": ".goose/recipes/remember.yaml"
+    },
+    "review": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "## Cross-recipe ordering gate (HJ035, HJ037 \u2014 GATE-01, GATE-02)",
+        "bd update <bead-id> --add-label \"env:reviewed\"",
+        "bd remember \"Review gate: APPROVE | Bead: <bead-id> | Feature: <feature>\" --key \"review-gate-<feature>\"",
+        "- Do NOT add env:reviewed label.",
+        "- [ ] env:reviewed label stamped on bead (APPROVE/PASS-WITH-NITS only)",
+        "- [ ] Memory pointer stored with key review-gate-<feature>",
+        "## Step 3 \u2014 Gate stamp (after verdict)",
+        "- Run: `bd update <bead-id> --add-label \"env:reviewed\"` (substitute real bead ID)",
+        "- Run: `bd remember \"Review gate: APPROVE | Bead: <bead-id> | Feature: <feature>\" --key \"review-gate-<feature>\"`",
+        "- Do NOT stamp env:reviewed. Report that verify is blocked until review passes."
+      ],
+      "involved_agents": [
+        "review-critic"
+      ],
+      "loaded_skills": [
+        "code-review"
+      ],
+      "phase": "Review",
+      "source_path": ".goose/recipes/review.yaml"
+    },
+    "sdd": {
+      "ad001_pattern": "orchestration",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "| Phase        | Load skill             | Delegate to agent       | Beads --assignee      |",
+        "- Delegate `ux-researcher`: personas, user journeys, accessibility requirements.",
+        "- Delegate `ui-designer`: wireframes, design-system tokens, WCAG 2.2 AA audit.",
+        "`delegate(source: \"<agent>\", instructions: \"<SDD phase context + AC IDs>\")`",
+        "via `delegate()` \u2014 NEVER loaded in-session alongside the orchestrator.",
+        "## AD-001 pattern: Orchestration. Load orchestrator in-session only; delegate specialists per AD-001.",
+        "## Step 3 \u2014 Spec-anchored routing with explicit phase gates",
+        "**Hard gate rule**: no phase may start until its predecessor's output artifact exists.",
+        "## Label state machine \u2014 cross-recipe ordering gates (HJ035, HJ037)",
+        "env:dev  \u2192  env:reviewed  \u2192  env:verified  \u2192  env:prod",
+        "Use `bd show <bead-id>` to inspect a bead's current gate state.",
+        "Use `bd list --label \"env:reviewed\"` to find reviewed beads ready for verify."
+      ],
+      "involved_agents": [
+        "orchestrator"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "sdd"
+      ],
+      "phase": "LifecycleOrchestration",
+      "source_path": ".goose/recipes/sdd.yaml"
+    },
+    "spec": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "- Delegate feasibility check to `architect`:",
+        "- Delegate testability check to `tdd-guide`:",
+        "## Spec closure gate (before confirming)",
+        "If any item fails: fix inline. Do not present spec until gate passes.",
+        "description: Delegate detailed spec writing to the isolated worker subrecipe.",
+        "Assign [FEAT]-NN IDs. Run the spec closure gate (3 checks) before finalising.",
+        "For Medium/Large/Complex scope: delegate to the spec-worker subrecipe for isolated writing:",
+        "Delegate to `architect`:",
+        "Delegate to `tdd-guide`:"
+      ],
+      "involved_agents": [
+        "architect",
+        "tdd-guide"
+      ],
+      "loaded_skills": [
+        "beads",
+        "sdd"
+      ],
+      "phase": "Specify",
+      "source_path": ".goose/recipes/spec.yaml"
+    },
+    "verify": {
+      "ad001_pattern": "specialist",
+      "artifacts": [
+        "recipe output report",
+        "Beads update or memory pointer when durable state changes"
+      ],
+      "entry_criteria": [
+        "inputs declared",
+        "required artifacts or Beads state checked"
+      ],
+      "exit_criteria": [
+        "output or verdict produced",
+        "validation or gate evidence reported"
+      ],
+      "gate_evidence_lines": [
+        "- api:     load skills agentic-devlopment; delegate qa-automation",
+        "- web:     load skills webapp-testing + ui-quality; delegate qa-automation + ui-designer",
+        "- cli:     load skills agentic-devlopment; delegate qa-automation",
+        "- library: load skills agentic-devlopment; delegate qa-automation",
+        "- ui:     load skills ui-quality and design-systems-arch and atomic-design; delegate ui-designer",
+        "## Cross-recipe ordering gate \u2014 check BEFORE verification (GATE-03, GATE-04)",
+        "Verify REQUIRES a prior review APPROVE. Check the gate before running any tests:",
+        "bd show <bead-id>   # confirm env:reviewed label is present",
+        "If `env:reviewed` label is ABSENT:",
+        "\u274c Verify gate: bead <id> missing label env:reviewed.",
+        "If `env:reviewed` is PRESENT: proceed with verification.",
+        "If no specific bead ID is available: run `bd list --label \"env:reviewed\"` to find"
+      ],
+      "involved_agents": [
+        "qa-automation"
+      ],
+      "loaded_skills": [
+        "agentic-devlopment",
+        "for",
+        "ui-quality",
+        "webapp-testing"
+      ],
+      "phase": "Verify",
+      "source_path": ".goose/recipes/verify.yaml"
+    }
+  },
+  "schema": "harness-recipe-workflow-metadata-v1",
+  "updated_at": "regenerated-final"
+}

@@ -1,0 +1,12 @@
+{
+  "schema": "documented in metadata",
+  "required_recipe_fields": [
+    "source_path",
+    "phase",
+    "ad001_pattern",
+    "entry_criteria",
+    "exit_criteria",
+    "loaded_skills",
+    "involved_agents"
+  ]
+}

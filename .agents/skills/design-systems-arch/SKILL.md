@@ -8,6 +8,7 @@ description: >
   policy), and the L0–L5 design system maturity model. Use when establishing token
   structure, planning component APIs, assessing design system health, or deciding
   how to govern a shared component library across teams.
+  Do NOT use for feature-level UX decisions, routine code review, or sessions without a design token architecture or component library to assess.
 metadata:
   author: phazurlabs (adapted for harness)
   upstream: https://github.com/phazurlabs/ux-ui-mastery/tree/main/skills/design-systems-architecture
@@ -86,6 +87,14 @@ Theming and multi-brand = swap the semantic layer; primitives and components unc
 bd create "Design system: migrate hardcoded values to semantic tokens in <component>" --assignee ui-designer -p 3
 bd create "Design system: define governance process for component contributions" --assignee architect -p 3
 ```
+## Gotchas
+
+- **Adding component tokens before semantic tokens exist creates unmaintainable mappings** — always build the three-layer architecture bottom-up: primitives first, semantic aliases second, component tokens last.
+- **"Design system" without adoption is a component gallery** — measure adoption rate across teams, not component count; a system no team uses is a documentation project.
+- **Semver without a migration guide still breaks adopters** — a breaking change in a major version must ship with a migration path, not just a changelog entry.
+- **Headless components that offload all accessibility to consumers are incomplete** — keyboard interaction patterns, ARIA roles, and focus management must be baked into the headless layer; consumers should not have to re-implement them.
+- **Maturity model levels are not goals in themselves** — moving from L2 to L3 is only valuable if it solves a real adoption or consistency problem; avoid level-chasing without a user problem to solve.
+
 ## Knowledge generation — orient first
 
 Before applying this skill, generate context:

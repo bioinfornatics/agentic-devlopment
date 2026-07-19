@@ -2,6 +2,16 @@ version: 1.0.0
 title: Implement — TDD-first scoped Beads execution
 description: Claim a Beads issue and implement it with tests-first (RED→GREEN→REFACTOR). Minimal blast radius.
 instructions: |
+  ## AD-001 Pattern: Specialist (dual in-session)
+  ## In-session agents: implementation-worker (GREEN/REFACTOR phases); tdd-guide (RED phase)
+  ## AD-001 pattern: Specialist. Load implementation-worker in-session; tdd-guide may be loaded in-session for RED test authoring.
+  ## Pattern rationale: tdd-guide enforces the RED phase (failing tests first);
+  ## implementation-worker drives GREEN and REFACTOR. Loading both in-session ensures
+  ## TDD discipline is maintained without a round-trip delegation overhead.
+  ## Stop/escalation: if RED phase cannot be confirmed after tdd-guide runs (0 tests
+  ## collected or tdd-guide errors), stop before any implementation code is written.
+  ## If GREEN fails after 3 fix iterations, escalate to user.
+
   You orchestrate scoped Beads-backed implementation with TDD.
 
   Explicit routing for this recipe:

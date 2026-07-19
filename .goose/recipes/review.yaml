@@ -16,11 +16,27 @@ instructions: |
   claim beads before writes, close on completion, store memories at handoff.
   Stop after validation and handoff — do not keep exploring.
 
+  ## Cross-recipe ordering gate (HJ035, HJ037 — GATE-01, GATE-02)
+  After producing the review verdict, stamp the Beads bead to signal downstream recipes:
+
+  If verdict is APPROVE or PASS-WITH-NITS:
+  ```bash
+  bd update <bead-id> --add-label "env:reviewed"
+  bd remember "Review gate: APPROVE | Bead: <bead-id> | Feature: <feature>" --key "review-gate-<feature>"
+  ```
+  This allows `verify.yaml` to confirm review passed before running.
+
+  If verdict is BLOCK:
+  - Do NOT add env:reviewed label.
+  - The bead stays unreviewed until a subsequent review passes.
+
   ## Self-validation checklist (before returning)
   - [ ] First visible output declared (review type + scope)
   - [ ] load skills code-review executed first
   - [ ] bd prime run to orient
   - [ ] Verdict stated: APPROVE | PASS-WITH-NITS | BLOCK
+  - [ ] env:reviewed label stamped on bead (APPROVE/PASS-WITH-NITS only)
+  - [ ] Memory pointer stored with key review-gate-<feature>
 
   ## Gap detection — AC without test
   If the review detects acceptance criteria without corresponding tests, call `remember_memory`:
@@ -83,6 +99,8 @@ sub_recipes:
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
+  ## AD-001 pattern: Specialist. Load review-critic in-session for independent review.
+
   ## Step 0 — Elicit task if missing
   If the task line above is blank or empty, ask the user:
   "What would you like me to review? (describe the task, paste a bead ID, or a file/PR path)"
@@ -91,6 +109,25 @@ prompt: |
   First visible output — state the review type detected (PR / feature / security / global / release / hotfix)
   and the scope being reviewed before delegating or loading any skill.
 
+  ## Step 1 — SPEC_DEVIATION scan (run before review checklist)
+  If `scripts/find-spec-deviations.sh` exists in the repo:
+  ```bash
+  # Scope to changed files when a diff is available:
+  git diff --name-only HEAD~1 HEAD 2>/dev/null | xargs -I{} ./scripts/find-spec-deviations.sh {} 2>/dev/null \
+    || ./scripts/find-spec-deviations.sh .
+  ```
+  Report results before the review checklist:
+  - Zero markers → print "SPEC_DEVIATION scan: clean ✓" and continue.
+  - Markers found → list each with file:line:deviation:reason; flag for Amendment Proposal in findings table.
+  - Do NOT issue APPROVE verdict while any SPEC_DEVIATION remains unresolved.
+
   Run `review` subrecipe for: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
+
+  ## Step 3 — Gate stamp (after verdict)
+  If verdict is APPROVE or PASS-WITH-NITS:
+  - Run: `bd update <bead-id> --add-label "env:reviewed"` (substitute real bead ID)
+  - Run: `bd remember "Review gate: APPROVE | Bead: <bead-id> | Feature: <feature>" --key "review-gate-<feature>"`
+  If verdict is BLOCK:
+  - Do NOT stamp env:reviewed. Report that verify is blocked until review passes.

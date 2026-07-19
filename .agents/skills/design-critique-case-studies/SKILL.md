@@ -8,6 +8,7 @@ description: >
   studies for Stripe, Linear, Notion, Airbnb, Figma, and Arc. Use when facilitating
   a design review, critiquing a design artifact, or grounding a design decision in
   exemplary product precedents.
+  Do NOT use for code review, performance analysis, or sessions where no design artifact or product decision is under evaluation.
 triggers:
   - design critique
   - case study
@@ -29,7 +30,8 @@ triggers:
   - product deep dive
   - design principles
   - feedback framework
-version: "1.0.0"
+metadata:
+  version: 1.0.0
 ---
 
 # Design Critique & Case Studies — Learning from the Best (and Worst) Product Design
@@ -126,6 +128,14 @@ When asked to conduct a design critique or analyze a product, use the reference 
 3. **For learning from redesign mistakes**: Consult `references/redesign-failure-analysis.md` for detailed post-mortems of major product redesign failures including Snapchat, Windows 8, Digg, Twitter/X, Google Plus, Sonos, Healthcare.gov, Reddit API changes, YouTube dislikes removal, and Skype.
 
 Always ground critique feedback in specific principles, heuristics, or evidence. Never offer unanchored opinions. When principles conflict, name the tradeoff explicitly and recommend how to resolve it — through user testing, business priority alignment, or design principle hierarchy.
+## Gotchas
+
+- **Case studies describe outcomes, not prescriptions** — Stripe's typography choices emerged from their specific brand and technical context; copying the output without analysing the rationale produces cargo-cult design.
+- **Critique quality degrades when participants haven't used the product** — second-hand analysis of a case study is not equivalent to direct usability observation; label confidence accordingly.
+- **Anti-pattern labels can shut down legitimate discussion** — calling feedback "HiPPO" or "bike-shedding" is a pattern label for observable behaviors, not a personal accusation; apply to the behavior, not the person.
+- **The 30/60/90 framework fails when fidelity gates aren't enforced** — if 90%-level polish feedback appears during a 30%-fidelity session, the facilitator failed to scope the critique correctly before it started.
+- **Critical Response Process step order is not optional** — jumping to Step 4 (opinions) before Statements of Meaning and Artist's Questions collapses the process into a standard critique and loses the psychological safety mechanism.
+
 ## Self-Validation Checklist
 
 - [ ] Cite at least one concrete case-study reference or observed design pattern before judging.

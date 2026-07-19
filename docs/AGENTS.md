@@ -10,7 +10,7 @@
 
 ## Conventions
 
-- **Recipe names** — always workflow verbs: `dev`, `explore`, `plan`, `implement`, `review`, `verify`, `design`, `sdd`, `release`, `remember`, `discover`, `spec`. Never `harness-*`.
+- **Recipe names** — always workflow verbs: `dev`, `explore`, `plan`, `implement`, `review`, `verify`, `design`, `sdd`, `release`, `remember`, `discover`, `spec`, `doc-review`. Never `harness-*`.
 - **Slash commands** — `/dev`, `/review`, `/implement` etc.
 - **Mermaid diagrams** — use ```mermaid``` fenced blocks. Validate by rendering.
 - **Skill references** — use backtick `skill-name` format. Load with `load skills <name>`.

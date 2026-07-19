@@ -116,7 +116,7 @@ flowchart TD
 **SDD on-ramp:** `/discover` → `/spec` → `/plan` → `/implement` → `/review` → `/verify` → `/release`
 
 <!-- BEGIN GENERATED: skills-table -->
-## Skills (18)
+## Skills (19)
 
 | Skill | Purpose |
 |-------|---------|
@@ -129,9 +129,10 @@ flowchart TD
 | `design-critique-case-studies` | Load when running or participating in a structured design critique, or when drawing on rea |
 | `design-systems-arch` | Load when architecting, auditing, or evolving a design system at scale. |
 | `frontend-blueprint` | Load when starting or reviewing any frontend implementation task where visual fidelity and |
+| `gdd` | Load when a design or product decision benefits from structured exploration before committ |
 | `goose-orchestration` | Load before any call to delegate(), or when deciding which specialist to summon. |
-| `harness-judge` | Load before any LLM-as-judge evaluation of the agentic development harness. |
-| `knowledge-graph` | Load when creating, querying, or updating the project knowledge graph during Spec-Driven D |
+| `harness-judge` | Evidence-first, read-only evaluation methodology for auditing completed agentic-developmen |
+| `knowledge-graph` | Create, query, validate, and update the project knowledge graph for Spec-Driven Developmen |
 | `sdd` | Load when implementing features using Spec-Driven Development: spec before code, requireme |
 | `systematic-debugging` | Load at the first sign of any bug, test failure, unexpected behavior, or failing hypothesi |
 | `ui-quality` | Load when evaluating the visual and technical quality of a rendered UI: design system toke |

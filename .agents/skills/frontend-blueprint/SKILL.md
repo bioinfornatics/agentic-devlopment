@@ -8,6 +8,7 @@ description: >
   REFERENCES → DESIGN DIRECTION → EXECUTION PLAN → ATOMIC BUILD → REVIEW.
   Use for new UI features, component builds, or any frontend task where you need
   a disciplined implementation process with explicit design quality checkpoints.
+  Do NOT use for backend implementation, API design, or sessions where no user-facing UI is being built or reviewed.
 license: CC-BY-4.0
 metadata:
   author: Felipe Rodrigues (TLC) — adapted for harness
@@ -89,6 +90,14 @@ Implement and review each piece before proceeding.
 bd create "UI: define design direction for <feature>" --assignee ui-designer -p 2
 bd create "UI: collect visual references before <component> implementation" --assignee ux-researcher -p 2
 ```
+## Gotchas
+
+- **Visual references from a mismatched domain produce category-wrong aesthetics** — a fintech reference applied to a gaming UI, or vice versa, creates surface coherence with wrong emotional resonance; always confirm the reference domain matches the target context before committing to a design direction.
+- **Atomic delivery fails when approval gates are skipped** — building the next component before the prior one is approved causes rework to cascade; each phase must complete before the next begins.
+- **"References first" applies even to simple components** — skipping the reference phase for "just a button" leads to inconsistency with the broader design system; every component has visual context.
+- **Design direction confirmation is not just aesthetic buy-in** — it locks the spacing scale, color palette, and typography pair for all subsequent components; changes after this gate restart the execution plan, not just the affected component.
+- **Opinionated guidance does not mean ignoring constraints** — when good design practice conflicts with user requirements, name the tradeoff explicitly and let the user decide with full information; don't silently compromise.
+
 ## Knowledge generation — orient first
 
 Before applying this skill, generate context:

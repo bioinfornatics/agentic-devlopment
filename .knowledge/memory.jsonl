@@ -444,3 +444,11 @@
 {"type":"relation","from":"recipe:plan","to":"agent:planner","relationType":"DELEGATES_TO"}
 {"type":"entity","name":"recipe:harness-doc-review","entityType":"harness:recipe","observations":["file:.goose/recipes/harness-doc-review.yaml","slash:/harness-doc-review","scope:buildtime","namespace:harness"]}
 {"type":"entity","name":"recipe:harness-audit","entityType":"harness:recipe","observations":["file:.goose/recipes/harness-audit.yaml","slash:/harness-audit","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"skill:gdd","entityType":"harness:skill","observations":["file:.agents/skills/gdd/SKILL.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"recipe:clarify","entityType":"harness:recipe","observations":["file:.goose/recipes/clarify.yaml","slash:/clarify","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"recipe:constitution","entityType":"harness:recipe","observations":["file:.goose/recipes/constitution.yaml","slash:/constitution","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:agentic-development-skill-alias.md","entityType":"harness:doc","observations":["file:docs/agentic-development-skill-alias.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:artifact-contribution-schema.md","entityType":"harness:doc","observations":["file:docs/artifact-contribution-schema.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:context-budget-policy.md","entityType":"harness:doc","observations":["file:docs/context-budget-policy.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:review-recipe-routing.md","entityType":"harness:doc","observations":["file:docs/review-recipe-routing.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:ui-ux-skill-loading-policy.md","entityType":"harness:doc","observations":["file:docs/ui-ux-skill-loading-policy.md","scope:buildtime","namespace:harness"]}

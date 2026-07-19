@@ -1,0 +1,7 @@
+PASS: subagent provider preflight complete
+provider=runtime-default
+model=runtime-default
+required_agents=review-critic,principal-engineer
+fallback_policy=halt orchestration on provider/model failure; select an available model or use a documented manual review path before delegated challenges
+WARN: GOOSE_MODEL not set; runtime default will be used
+WARN: GOOSE_PROVIDER not set; runtime default will be used

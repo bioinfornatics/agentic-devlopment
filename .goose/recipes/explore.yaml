@@ -72,6 +72,8 @@ sub_recipes:
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
 prompt: |
+  ## AD-001 pattern: Specialist. Load codebase-researcher in-session for read-only investigation.
+
   Explore: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}

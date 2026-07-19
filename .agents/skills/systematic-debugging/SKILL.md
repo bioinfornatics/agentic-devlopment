@@ -8,7 +8,9 @@ description: >
   flags (fixing symptoms, skipping root cause, applying the same fix twice). Use
   immediately when an error occurs, when a fix did not work, or when the cause of
   unexpected behavior is unknown.
-version: "1.0.0"
+  Do NOT use for feature planning, design reviews, or sessions where no bug, test failure, or unexpected behavior is present.
+metadata:
+  version: 1.0.0
 ---
 
 # Systematic Debugging
@@ -307,6 +309,14 @@ When a bug is diagnosed and a fix is planned:
     bd close <id> --reason "Fixed: <root cause>. Regression test added at <file:line>."
 
 File a separate bead for each distinct root cause — do not bundle unrelated fixes.
+
+## Gotchas
+
+- **"I think I know the cause" is not a completed Phase 1** — root cause investigation requires reproducible evidence (exact error message, confirmed reproduction steps, git diff); a plausible hypothesis is the starting point for Phase 3, not a substitute for investigation.
+- **Three failed fix attempts signal an architecture problem, not a deeper search** — applying fix #4 to the same symptom is the definition of insanity; stop and question the pattern, not the implementation.
+- **Adding diagnostic instrumentation is not optional for multi-component systems** — guessing which layer fails without evidence from each component boundary is unstructured thrashing; instrument first, fix after.
+- **A test that passes after the fix but was never confirmed to fail before it is not a regression test** — the confirmed RED state before any fix is mandatory; the test must be shown to fail before it can be trusted to protect against regression.
+- **"Simple bugs" still have root causes** — the temptation to skip Phase 1 for "obvious" issues is highest when time pressure is highest, which is exactly when systematic process matters most.
 
 ## Self-validation (before reporting a fix)
 

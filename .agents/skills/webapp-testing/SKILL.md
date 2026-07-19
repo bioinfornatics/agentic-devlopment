@@ -9,6 +9,7 @@ description: >
   form inputs / landmarks), and server lifecycle management. Use when asked to write
   end-to-end tests, browser automation tests, or browser-verified accessibility
   checks for any web application.
+  Do NOT use for unit testing without a browser, backend API testing without a web UI, or sessions without a running web server to navigate.
 metadata:
   version: 3.0.0
 ---
@@ -100,6 +101,14 @@ Browser tests follow the same maker/checker split as code:
 - **Evidence reviewer (checker):** a second pass confirms evidence is [VERIFIED — browser-tested], not inferred from code inspection.
 
 Do not self-approve accessibility or layout findings — cross-check with at least one browser-based tool output (screenshot, axe snapshot, console log).
+
+## Gotchas
+
+- **HTML inspection is not keyboard testing** — Tab navigation must be tested in a live browser with Playwright; reading `<a>` tags in HTML source tells you nothing about actual tab order or whether focus is reachable.
+- **`waitForTimeout()` creates flaky tests** — every wait must use a condition: `waitForSelector`, `waitForResponse`, `waitForLoadState`, or `waitForURL`; time-based waits are a test reliability anti-pattern.
+- **Screenshots without viewport dimensions are not reproducible evidence** — always report the exact pixel dimensions (`width: N, height: N`) alongside any screenshot used as a finding.
+- **Testing only the happy path misses interaction state requirements** — empty states, loading states, error states, and disabled states all have accessibility requirements; trigger each one explicitly in the browser.
+- **Server lifecycle must be fully reported** — missing the stop command in the server lifecycle report means the next test run may fail due to port conflicts; always include start, test, and stop as three explicit steps.
 
 ## Beads loop
 

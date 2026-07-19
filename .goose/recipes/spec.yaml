@@ -5,6 +5,16 @@ description: >
   Creates a spec-anchored file at .specs/features/[feature]/spec.md.
   Run after discover.yaml. The spec survives implementation and guides maintenance.
 instructions: |
+  ## AD-001 Pattern: Specialist
+  ## In-session agents: architect (Phase 3 — design feasibility); tdd-guide (Phase 4 — testability, sequential)
+  ## AD-001 pattern: Specialist. Load architect and tdd-guide in-session for feasibility and testability checks; optional worker subrecipe for larger specs.
+  ## Pattern rationale: spec is a Specialist recipe that produces a feature spec.md
+  ## using the SDD method. architect and tdd-guide are loaded in-session sequentially:
+  ## architect validates feasibility first; tdd-guide validates testability second.
+  ## Stop/escalation: if no discovery.md or feature name is available, stop and direct
+  ## user to run /discover first. If spec cannot be validated after 2 revision cycles,
+  ## escalate to user with specific unresolved requirements.
+
   You write a formal, testable specification. Your output IS the spec-anchored artifact
   that future agents (tdd-guide, implementation-worker, review-critic) will reference.
 
@@ -131,8 +141,9 @@ prompt: |
   ## Step 3 — Write spec
   Produce acceptance criteria in WHEN/THEN/SHALL format with precise outcomes.
   Assign [FEAT]-NN IDs. Run the spec closure gate (3 checks) before finalising.
-  Optionally delegate to the spec-worker subrecipe for isolated writing:
+  For Medium/Large/Complex scope: delegate to the spec-worker subrecipe for isolated writing:
     `use sub_recipe: spec-worker`
+  For Micro/Small scope: write the spec inline in the current session.
 
   ## Step 4 — Validate feasibility and testability
   Delegate to `architect`:

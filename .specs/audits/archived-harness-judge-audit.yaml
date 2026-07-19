@@ -1,0 +1,164 @@
+version: 1.0.0
+title: Harness Judge Static Evaluation
+description: Independent read-only static evaluation of completed harness artifacts using the harness-judge agent and skill.
+instructions: |
+  You are running a read-only harness audit.
+
+  AD-001 pattern: Specialist. The session is the harness-judge specialist.
+  Load the harness-judge agent in-session and explicitly load the harness-judge skill before any scoring.
+
+  First visible output before any tool call:
+    Harness-audit scope: agents | skills | recipes | frameworks | orchestration | all
+    Focus: requested target or full harness
+    Required skill: load skill harness-judge
+
+  Required loads:
+  load agent harness-judge.
+  load skill harness-judge.
+
+  Scope to audit:
+  - .agents/agents/
+  - .agents/skills/
+  - .goose/recipes/
+  - .specs/features/
+  - evals/
+  - docs/15-skill-evaluations.md
+
+  Domains to evaluate:
+  A. Prompt, context, and loop engineering
+  B. Skills
+  C. Agents
+  D. Recipes
+  E. Frameworks: SDD, TDD, GDD
+  F. Orchestration
+  G. Ontology and global orchestration graph
+
+  Artifact size calibration — score HJ052-HJ054 for every artifact in scope:
+  Run python3 scripts/check-consistency.py — the HJ052-HJ054 section reports
+  line counts and flags stubs (too short) and bloated files (too long). A FAIL
+  on any size check blocks Domain B/C/D from scoring PASS.
+  Thresholds: SKILL.md 50-500 lines healthy, >700 FAIL; agent 80-400 lines
+  healthy, >500 FAIL; recipe instructions+prompt 40-300 lines healthy, >400 FAIL.
+  WARNs (500-700 / 400-500) require a manual audit for methodology embedded
+  instead of delegated to skills or offloaded to references/.
+
+  Mandatory evidence step — run before scoring Domain B (Skills):
+    python3 scripts/check-consistency.py
+  Its AC-SKILL-02 section verifies that every file referenced by every skill via
+  load `references/...`, load `scripts/...`, or load skill: <name>/path exists on
+  disk. A FAIL exit means at least one skill has a broken reference (HJ051).
+  Also check WARNs — they flag script files placed in the skill root instead of
+  the scripts/ subdirectory.
+
+  Mandatory evidence step — run before scoring Domain C (Agents):
+    python3 scripts/check-consistency.py
+  Its AC-AGENT-02 section checks every agent for '## Required Skill Load' and
+  stop-if-missing guard. A clean run (exit 0, no FAIL lines) is required evidence
+  before Domain C can score PASS. Never spot-check a sample of agents; the script
+  covers all of them mechanically.
+
+  Sequential flow evidence — check for every multi-phase recipe and agent:
+  - Does each phase declare its hard gate condition before Phase N+1 may start?
+  - Are conditional routing branches (e.g., 'only for UI features') stated with
+    observable, testable conditions and a named default path?
+  - Does each phase name the output it produces and the input it requires from
+    the previous phase?
+  Score HJ035-HJ038 as binary PASS/FAIL per artifact. Missing gate = FAIL.
+
+  Skill frontmatter spec pass — run before scoring Domain B (HJ056-HJ060):
+  python3 scripts/check-consistency.py — AC-SKILL-05 section validates name and
+  description constraints from Anthropic's official spec: name ≤64 chars,
+  lowercase-hyphens-only, no reserved words; description ≤1024 chars, third person,
+  no XML tags. WARNs flag missing exclusion clauses (HJ057). Also check:
+  - HJ058: does each skill have a Gotchas section with concrete failure modes?
+  - HJ059: is the reference graph one hop? do large refs have a ToC?
+  - HJ060: do read-only/audit skills declare allowed-tools in frontmatter?
+  A FAIL on any AC-SKILL-05 item blocks Domain B from scoring PASS.
+
+  Instruction quality pass — run for every artifact in scope (§9 Domain A):
+  Identify which named prompt engineering techniques are used (GKP, CoT, negative
+  prompting, role specificity, few-shot anchors, self-consistency). Score each
+  artifact's instruction block 0-4 using the gradient in §A5. Scan for anti-patterns
+  in §A6 (contradictions, front-loading, aspirational hedges). Score HJ047-HJ050.
+  A score of 0 or 1 on HJ048 is a FAIL. An internal contradiction on HJ049 is a FAIL.
+
+  Persona-flow fit pass — run when scope=all or scope=agents (§11.5 of harness-judge skill):
+  For each agent: verify model assignment matches phase stakes (Opus=orchestration/
+  architecture/escalation, Sonnet=execution/research/review). Verify persona description
+  is consistent with operating process steps. Verify each Required Skill Load entry is
+  justifiable from the persona description. Score HJ042-HJ046.
+  Use the SDD/TDD/GDD flow reference map in §11.5 as the authoritative position table.
+
+  Cross-artifact overlap pass — run when scope=all, after individual domain scores:
+  Apply §12.5 of the harness-judge skill. For each artifact type, list trigger
+  conditions side by side, identify overlap candidates, read both artifacts, and
+  classify each overlap as complementary / redundant / conflicting.
+  Score HJ039 (skills), HJ040 (agents), HJ041 (recipes) as binary PASS/FAIL.
+  Cite both file paths and the overlapping passage as evidence for every finding.
+
+  Evidence rules:
+  - Cite file paths and exact evidence for every score.
+  - Mark missing evidence as not found.
+  - Score criteria before final verdict.
+  - Do not modify files, Beads, memory, or generated artifacts.
+
+  Output a Harness Judge Report with subject, evaluation mode, score table, domain findings, layer-delta notes where applicable, red flags, recommendations, and final PASS, PARTIAL, or FAIL verdict.
+
+  Success criteria (audit is complete when ALL are met):
+  - All applicable domains A-G have been scored with evidence citations.
+  - A final verdict (PASS / PARTIAL / FAIL) has been emitted.
+  - The framework section explicitly covers SDD, TDD, and GDD.
+  - python3 scripts/check-consistency.py has been run and its output cited.
+  - No files, Beads issues, or memory entries have been modified.
+
+  Stop condition: emit the final verdict and stop. Do not continue exploring after
+  the verdict is written. If max_turns is reached before all domains are scored,
+  emit a PARTIAL verdict with completed domains listed and remaining domains marked
+  "not scored — turn budget exhausted".
+
+  Self-validation checklist:
+  - [ ] First visible output states scope, focus, and required skill
+  - [ ] harness-judge agent loaded in-session
+  - [ ] harness-judge skill explicitly loaded before scoring
+  - [ ] all applicable domains A-G scored with evidence
+  - [ ] framework section covers SDD, TDD, and GDD explicitly
+  - [ ] final verdict emitted only after per-criterion scoring
+  - [ ] no files or Beads modified
+settings:
+  max_turns: 60
+parameters:
+  - key: scope
+    input_type: string
+    requirement: optional
+    default: all
+    description: Audit scope agents skills recipes frameworks orchestration or all.
+  - key: focus
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Optional file directory recipe skill agent or framework focus.
+  - key: evidence_budget
+    input_type: string
+    requirement: optional
+    default: concise
+    description: Evidence detail level concise or full.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: platform
+    name: summon
+    bundled: true
+prompt: |
+  Scope: {{ scope }}
+  Focus: {{ focus }}
+  Evidence budget: {{ evidence_budget }}
+
+  State the first visible output block. Load agent harness-judge and load skill harness-judge before scoring. Perform a read-only static artifact audit of the current repository harness across domains A-G. Include SDD, TDD, and GDD in the framework section. When graph artifacts are in scope, score Domain G using the ontology rubric and query evidence. Cite evidence for every score. Do not modify files or Beads.

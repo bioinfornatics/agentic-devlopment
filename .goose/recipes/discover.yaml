@@ -5,6 +5,15 @@ description: >
   and problem statement. Produces a discovery document and a Beads epic.
   Run before spec.yaml or sdd.yaml.
 instructions: |
+  ## AD-001 Pattern: Specialist (conditional multi-specialist)
+  ## In-session agents: product-owner (always); ux-researcher (only for UI features)
+  ## AD-001 pattern: Specialist. Product-owner is primary in-session specialist; ux-researcher may be loaded in-session for UI features.
+  ## Pattern rationale: product-owner is the discovery specialist; ux-researcher is loaded
+  ## conditionally in-session when the feature has a user-facing UI component.
+  ## Stop/escalation: if bd prime fails or no feature name is provided after 1 elicitation
+  ## attempt, stop and ask the user directly. If discovery doc cannot be written after
+  ## 3 attempts, escalate to user with specific blocker.
+
   You orchestrate the discovery phase for a new feature or initiative.
 
   ## First visible output (required before any tool call)
@@ -65,6 +74,14 @@ instructions: |
   ```
   Keep entries < 500 chars (auto-injected into each prompt). This enables cross-session
   context recovery for ongoing features.
+
+  ## KG pipeline (run after writing discovery.md)
+  After `.specs/features/[feature]/discovery.md` is written and the Beads epic is created:
+  ```bash
+  node apps/kg/dist/cli.js pipeline
+  ```
+  This updates the knowledge graph with the new spec_file and discovery entities.
+  If the KG CLI is unavailable, log a warning but do not block handoff.
 
   ## Self-validation (before handoff)
   - [ ] First visible output declared (scope + complexity + approach)

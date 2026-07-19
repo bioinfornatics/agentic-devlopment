@@ -9,7 +9,7 @@ which slash commands exist, when to invoke each one, and how they fit together.
 
 ```bash
 ./scripts/install.sh          # install recipes, skills, agents into ~/.config/goose/
-goose skills list             # verify 18+ domain skills visible
+goose skills list             # verify 19+ domain skills visible
 ```
 
 The installer registers all slash commands in `~/.config/goose/config.yaml`.
@@ -22,8 +22,9 @@ Restart Goose after installation.
 | Command | When to use | What it does |
 |---|---|---|
 | `/dev` | Any task — when unsure which command to use | Master entry point: analyses intent, routes to the right specialist |
-| `/discover` | Starting a new feature or initiative | Interview-style discovery → `.specs/features/[feature]/spec.md` + Beads epic |
-| `/spec` | After discovery, before planning | Formal spec: WHEN/THEN/SHALL format, `[FEAT]-NN` IDs → spec.md + Beads stories |
+| `/discover` | Starting a new feature or initiative | Interview-style discovery → `.specs/features/[feature]/discovery.md` + Beads epic |
+| `/clarify` | After discover (Medium+), before spec | Resolves ambiguities from discovery.md → `clarify.md` with `[FEAT]-CLR-NN` decisions |
+| `/spec` | After clarify (or discover for Micro/Small) | Formal spec: WHEN/THEN/SHALL format, `[FEAT]-NN` IDs → spec.md + Beads stories |
 | `/explore` | Unfamiliar codebase, blast-radius analysis | Read-only investigation → structured JSON report (no writes) |
 | `/plan` | After spec, to create the task graph | Beads dependency graph from spec ACs — ordered, parallel-safe |
 | `/implement` | A Beads task is ready to code | TDD: RED test → GREEN code → REFACTOR, minimal blast radius |
@@ -43,8 +44,12 @@ The recommended sequence for any new feature:
 
 ```
 /discover "user authentication with Google OAuth"
-      │  → .specs/features/auth-google/spec.md
+      │  → .specs/features/auth-google/discovery.md
       │  → Beads epic + user stories
+      ▼
+/clarify "auth-google"           ← Medium+ scope only; skip for Micro/Small
+      │  → .specs/features/auth-google/clarify.md
+      │  → [FEAT]-CLR-NN decisions (ambiguities resolved)
       ▼
 /spec "auth-google"
       │  → AC-AUTH-01..05 with WHEN/THEN/SHALL
@@ -111,6 +116,7 @@ bd remember "Auth: JWT preferred over sessions — see ADR-003" --key auth-decis
 | Situation | Command |
 |---|---|
 | "I have a vague idea, where do I start?" | `/discover` |
+| "My discovery has open questions before writing the spec" | `/clarify` |
 | "I need to write formal acceptance criteria" | `/spec` |
 | "I need to understand existing code before touching it" | `/explore` |
 | "I have ACs, I need to break them into tasks" | `/plan` |

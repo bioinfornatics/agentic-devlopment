@@ -70,10 +70,11 @@ else:
     ok("docs/getting-started.md skill count")
 
 arch = (ROOT / ".specs/architecture.md").read_text()
-if str(n) not in arch:
+# architecture.md intentionally uses generate-tables.py pointer instead of hard counts (AD-002)
+if "generate-tables" in arch or "README.md" in arch:
+    ok(".specs/architecture.md defers to generated counts (AD-002)")
+elif str(n) not in arch:
     warn(f".specs/architecture.md may have stale skill count (expected {n})")
-else:
-    ok(".specs/architecture.md skill count")
 
 spec_core = (ROOT / ".specs/features/harness-core/spec.md").read_text()
 spec_count_m = re.search(r"following (\d+) domain skills", spec_core)
@@ -124,6 +125,194 @@ else:
 for agent in agents:
     if f"`{agent}.md`" not in spec_core and f"`{agent}`" not in spec_core:
         warn(f"AC-AGENT-01 missing agent: {agent}")
+
+# ── 5b. AGENT SKILL CONTRACTS (AC-AGENT-02) ───────────────────────────────────
+print("\n── Agent skill contracts (AC-AGENT-02) ──────────────────────────────")
+_contract_ok = True
+for agent in agents:
+    body = (ROOT / ".agents/agents" / f"{agent}.md").read_text()
+    if "## Required Skill Load" not in body:
+        fail(f"AC-AGENT-02: {agent}.md missing '## Required Skill Load' section")
+        _contract_ok = False
+    elif "stop and report" not in body:
+        fail(f"AC-AGENT-02: {agent}.md has '## Required Skill Load' but no stop-if-missing guard ('stop and report')")
+        _contract_ok = False
+if _contract_ok:
+    ok(f"Agent skill contracts present and guarded ({na} agents)")
+
+# ── 5c. SKILL SUPPORTING FILE INTEGRITY (AC-SKILL-02) ────────────────────────
+print("\n── Skill supporting file integrity (AC-SKILL-02) ────────────────────")
+import re as _re
+_files_ok = True
+for skill_name in actual_skills():
+    skill_dir = ROOT / ".agents" / "skills" / skill_name
+    skill_md  = skill_dir / "SKILL.md"
+    if not skill_md.exists():
+        continue
+    body = skill_md.read_text()
+
+    # Pattern A: load `references/<file>` / `scripts/<file>` / `assets/<file>`
+    # These are relative references that must resolve inside the skill directory.
+    # Exclude placeholder patterns containing < > (documentation examples, not real paths).
+    for ref in _re.findall(r'load\s+`((?:references|scripts|assets)/[^`<>]+)`', body):
+        if not (skill_dir / ref).exists():
+            fail(f"AC-SKILL-02: {skill_name}/SKILL.md references '{ref}' "
+                 f"but .agents/skills/{skill_name}/{ref} does not exist")
+            _files_ok = False
+
+    # Pattern B: load skill: <skill-name>/references|scripts|assets/<file>
+    # Cross-skill sub-path references with explicit skill prefix.
+    for full_ref in _re.findall(
+        r'load\s+skill[:\s]+`?([a-z][a-z0-9-]+/(?:references|scripts|assets)/[^\s`|\'\"]+)`?', body
+    ):
+        target_skill, sub_path = full_ref.split("/", 1)
+        target = ROOT / ".agents" / "skills" / target_skill / sub_path
+        if not target.exists():
+            fail(f"AC-SKILL-02: {skill_name}/SKILL.md references "
+                 f"'{full_ref}' but .agents/skills/{target_skill}/{sub_path} does not exist")
+            _files_ok = False
+
+    # Layout check: executable files in skill root instead of scripts/ subdir.
+    for f in skill_dir.iterdir():
+        if f.is_file() and f.suffix in (".sh", ".py", ".ts", ".js") and f.name != "SKILL.md":
+            warn(f"AC-SKILL-02: {skill_name}: '{f.name}' is in the skill root "
+                 f"— move to {skill_name}/scripts/")
+
+if _files_ok:
+    ok("Skill supporting file references all resolve on disk")
+
+# ── 5d. ARTIFACT SIZE CALIBRATION (AC-SKILL-03 / AC-AGENT-03) ────────────────
+print("\n── Artifact size calibration (HJ052-HJ054) ──────────────────────────")
+
+# Skills: SKILL.md body (excluding YAML frontmatter between first two --- lines)
+for skill_name in actual_skills():
+    skill_md = ROOT / ".agents" / "skills" / skill_name / "SKILL.md"
+    if not skill_md.exists():
+        continue
+    lines = skill_md.read_text().splitlines()
+    # Strip YAML frontmatter (content between opening --- and closing ---)
+    body_start = 0
+    if lines and lines[0].strip() == "---":
+        for i, ln in enumerate(lines[1:], 1):
+            if ln.strip() == "---":
+                body_start = i + 1
+                break
+    body_lines = len(lines) - body_start
+    if body_lines < 50:
+        fail(f"HJ052: {skill_name}/SKILL.md body is {body_lines} lines — too short (< 50); real methodology cannot fit")
+    elif body_lines > 700:
+        fail(f"HJ052: {skill_name}/SKILL.md body is {body_lines} lines — too long (> 700); offload to references/")
+    elif body_lines > 500:
+        warn(f"HJ052: {skill_name}/SKILL.md body is {body_lines} lines — approaching bloat (> 500); consider references/")
+
+# Agents: full .md file
+for agent in agents:
+    agent_md = ROOT / ".agents" / "agents" / f"{agent}.md"
+    n = len(agent_md.read_text().splitlines())
+    if n < 80:
+        fail(f"HJ053: {agent}.md is {n} lines — too short (< 80); required sections cannot fit")
+    elif n > 500:
+        fail(f"HJ053: {agent}.md is {n} lines — too long (> 500); methodology should be in skills")
+    elif n > 400:
+        warn(f"HJ053: {agent}.md is {n} lines — approaching bloat (> 400); audit for embedded methodology")
+
+ok("Artifact size calibration checked (skills + agents)")
+
+# ── 5e. SKILL CONDITIONAL LOAD SECTIONS (AC-SKILL-04 / HJ055) ────────────────
+print("\n── Skill conditional-load sections (AC-SKILL-04 / HJ055) ───────────")
+_cond_ok = True
+for skill_name in actual_skills():
+    skill_dir = ROOT / ".agents" / "skills" / skill_name
+    ref_dir   = skill_dir / "references"
+    skill_md  = skill_dir / "SKILL.md"
+    if not ref_dir.is_dir() or not skill_md.exists():
+        continue
+    ref_files = [f.name for f in ref_dir.glob("*.md")]
+    if not ref_files:
+        continue
+    body = skill_md.read_text()
+    # Check 1: a named conditional-load section exists
+    has_section = bool(_re.search(
+        r'(?im)'
+        r'(^##.*when to load'                          # ## When to load references
+        r'|^##.*progressive disclosure'                # ## Progressive disclosure
+        r'|→\s*load\s*`(?:references|scripts)/'       # → load `references/file`
+        r'|load\s+skill:\s*[a-z][a-z0-9-]+/references/'  # load skill: name/references/
+        r'|Consult\s*`references/)',                   # Consult `references/file`
+        body
+    ))
+    if not has_section:
+        fail(f"AC-SKILL-04: {skill_name}/SKILL.md has references/ but no "
+             f"'When to load references' section (HJ055)")
+        _cond_ok = False
+        continue
+    # Check 2: every reference file has a trigger line mentioning it
+    for ref_file in ref_files:
+        stem = ref_file.replace(".md", "")
+        # Accept both → load and prose mention with the filename
+        if stem not in body and ref_file not in body:
+            fail(f"AC-SKILL-04: {skill_name}/SKILL.md has references/{ref_file} "
+                 f"but no trigger for it in the conditional-load section (HJ055)")
+            _cond_ok = False
+if _cond_ok:
+    ok("Skill conditional-load sections present and complete (HJ055)")
+
+# ── 5f. SKILL FRONTMATTER SPEC (AC-SKILL-05) ──────────────────────────────────
+print("\n── Skill frontmatter spec (AC-SKILL-05 / HJ056-HJ057) ──────────────")
+_fm_ok = True
+for skill_name in actual_skills():
+    skill_md = ROOT / ".agents" / "skills" / skill_name / "SKILL.md"
+    if not skill_md.exists():
+        continue
+    body = skill_md.read_text()
+    fm_match = _re.match(r'^---\n(.*?)\n---', body, _re.DOTALL)
+    if not fm_match:
+        continue
+    fm = fm_match.group(1)
+
+    # name field
+    name_m = _re.search(r"^name:\s*['\"]?([^'\"\n]+)['\"]?", fm, _re.M)
+    if name_m:
+        nm = name_m.group(1).strip()
+        if len(nm) > 64:
+            fail(f"AC-SKILL-05: {skill_name}/SKILL.md name '{nm}' exceeds 64 chars ({len(nm)})")
+            _fm_ok = False
+        if not _re.match(r'^[a-z0-9-]+$', nm):
+            fail(f"AC-SKILL-05: {skill_name}/SKILL.md name '{nm}' contains invalid chars (only a-z, 0-9, hyphens)")
+            _fm_ok = False
+        for rw in ('anthropic', 'claude'):
+            if rw in nm:
+                warn(f"AC-SKILL-05: {skill_name}/SKILL.md name contains reserved word '{rw}'")
+
+    # description field — collect multi-line > block
+    desc_m = _re.search(r'^description:\s*(>-?|[^\n]+)', fm, _re.M)
+    if desc_m:
+        # grab everything after description: up to the next non-indented key
+        after = fm[desc_m.start():]
+        lines = after.split('\n')
+        desc_lines = [lines[0].replace('description:', '').replace('>', '').strip()]
+        for ln in lines[1:]:
+            if ln and not ln[0].isspace():
+                break
+            desc_lines.append(ln.strip())
+        desc_val = ' '.join(l for l in desc_lines if l).strip()
+
+        if len(desc_val) > 1024:
+            fail(f"AC-SKILL-05: {skill_name}/SKILL.md description exceeds 1024 chars ({len(desc_val)})")
+            _fm_ok = False
+        if _re.match(r'^(I |You )', desc_val):
+            fail(f"AC-SKILL-05: {skill_name}/SKILL.md description must be third person (not starting with 'I ' or 'You ')")
+            _fm_ok = False
+        if _re.search(r'<[a-zA-Z]', desc_val):
+            fail(f"AC-SKILL-05: {skill_name}/SKILL.md description contains XML tags")
+            _fm_ok = False
+        # exclusion clause check (HJ057)
+        has_excl = bool(_re.search(r'(?i)(do not use|do not trigger|avoid when|not for|never use for|except when)', desc_val))
+        if not has_excl:
+            warn(f"HJ057: {skill_name}/SKILL.md description has no exclusion clause ('Do NOT use for...')")
+
+if _fm_ok:
+    ok("Skill frontmatter spec valid (AC-SKILL-05)")
 
 # ── 6. AGENT EVAL JSON: "skills" field ────────────────────────────────────────
 print("\n── Agent eval JSON layer declarations ────────────────────────────────")
@@ -192,6 +381,40 @@ for recipe in recipes:
 ok("AC-RECIPE-02 wiring table presence checked")
 
 # ── 10. USE_CASES.MD ──────────────────────────────────────────────────────────
+
+print("\n── Recipe semantic lint (AD-001 / delegation prose) ─────────────────")
+contradictions = 0
+for recipe in recipes:
+    recipe_path = ROOT / ".goose/recipes" / f"{recipe}.yaml"
+    recipe_body = recipe_path.read_text()
+    lower = recipe_body.lower()
+    has_none = "delegated/summoned: none" in lower
+    has_agent_or_delegate = bool(AGENT_RE.search(recipe_body) or re.search(r"\bdelegate\s+(to|[a-z-]+)|delegate\(source", recipe_body, re.IGNORECASE))
+    if has_none and has_agent_or_delegate:
+        fail(f"AD-001: {recipe}.yaml says 'Delegated/summoned: none' but also loads/delegates agents")
+        contradictions += 1
+    if "ad-001 pattern:" not in lower and recipe not in ("remember",):
+        warn(f"AD-001: {recipe}.yaml has no explicit 'AD-001 pattern:' marker")
+if contradictions == 0:
+    ok("Recipe semantic lint found no 'Delegated/summoned: none' contradictions")
+
+
+print("\n── Recipe workflow metadata validation ───────────────────────────────")
+meta_path = ROOT / ".specs/harness/recipe-workflow-metadata.json"
+if not meta_path.exists():
+    fail("Missing .specs/harness/recipe-workflow-metadata.json")
+else:
+    meta = json.loads(meta_path.read_text())
+    for recipe in recipes:
+        m = meta.get("recipes", {}).get(recipe)
+        if not m:
+            fail(f"Recipe workflow metadata missing recipe: {recipe}")
+            continue
+        for key in ("phase", "ad001_pattern", "entry_criteria", "exit_criteria", "source_path"):
+            if not m.get(key):
+                fail(f"Recipe workflow metadata {recipe} missing {key}")
+    ok("Recipe workflow metadata checked")
+
 print("\n── USE_CASES.md stale recipe names ───────────────────────────────────")
 use_cases = (ROOT / "USE_CASES.md").read_text()
 stale = ["harness-master", "sdd-master", "harness-review", "harness-implement",

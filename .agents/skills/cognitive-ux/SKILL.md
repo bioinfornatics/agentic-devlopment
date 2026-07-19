@@ -7,6 +7,7 @@ description: >
   Doherty) and cognitive bias analysis (anchoring, choice overload, framing, loss
   aversion). Use when auditing UX quality, making design decisions that affect
   cognitive load, or justifying design choices with research-backed principles.
+  Do NOT use for technical code review, performance benchmarking, or sessions without UX or interface design decisions to evaluate.
 metadata:
   author: phazurlabs (adapted for harness)
   upstream: https://github.com/phazurlabs/ux-ui-mastery/tree/main/skills/cognitive-psychology-ux
@@ -64,6 +65,14 @@ Before applying this skill, generate context:
 1. Read the relevant files (use `analyze` or `read` tools)
 2. Identify the specific scope (component, feature, endpoint)
 3. Only then apply the methodology in this skill
+## Gotchas
+
+- **Citing a law without applying it is theater** — "this violates Hick's Law" requires a count of choices and a specific reduction recommendation, not just the label.
+- **Miller's 7±2 applies to working memory chunks, not list items** — a list of 12 grouped items may impose less cognitive load than 7 ungrouped items; grouping strategy matters as much as count.
+- **Fitts's Law is about motor time, not click precision** — a small target surrounded by empty space still violates Fitts even if users don't miss it; measure distance and size together.
+- **Peak-End Rule does not excuse a poor middle experience** — a memorable peak cannot compensate for sustained friction in a core workflow; optimize both.
+- **Loss aversion framing is a persuasion tool, not a neutral design decision** — using "don't miss X" instead of "get X" is an ethical choice with real user impact; apply with intent.
+
 ## Self-validation checklist
 
 Before completing the task:

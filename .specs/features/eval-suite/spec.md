@@ -16,7 +16,7 @@ THEN every skill shows with_skill pass_rate ≥ without_skill pass_rate (no nega
 
 ### AC-EVAL-02 — Recipe eval coverage
 WHEN recipe evals are listed
-THEN all 17 top-level recipes have a corresponding eval JSON with 3 scenarios
+THEN every top-level recipe file in `.goose/recipes/*.yaml` has a corresponding eval JSON with 3 scenarios
 
 ### AC-EVAL-03 — Grader full coverage
 WHEN grader runs

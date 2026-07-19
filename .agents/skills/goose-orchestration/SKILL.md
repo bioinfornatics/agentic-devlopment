@@ -6,7 +6,7 @@ description: >
   and descriptions), the mandatory Orchestration decision block template, subagent
   isolation rules, write-scope partitioning, and Beads assignee routing patterns.
   Covers the Orchestration, Specialist, and Skill-only recipe patterns (AD-001).
-  Do not load for single-agent tasks that require no delegation.
+  Do NOT use for single-agent tasks that require no delegation or subagent coordination, or when the routing decision is already settled.
 metadata:
   version: 1.0.0
 ---

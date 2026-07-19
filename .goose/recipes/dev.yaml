@@ -43,14 +43,13 @@ instructions: |
   | Feature discovery      | `sdd`                   | `product-owner`         | product-owner           |
   | UX research / personas | `ux-quality`            | `ux-researcher`         | ux-researcher           |
   | Formal spec (ACs)      | `sdd`                   | `architect`             | architect               |
-  | Dependency graph       | `beads`         | `planner`         | planner           |
   | Code / PR review       | `code-review`           | `review-critic`         | review-critic           |
-  | Architecture / ADR     | `agentic-devlopment`   | `architect`             | architect               |
+  | Architecture / ADR     | `sdd`                   | `architect`             | architect               |
   | Feature spec / PRD     | `sdd`                   | `product-owner`         | product-owner           |
-  | Beads graph / planning | `beads`         | `planner`         | planner           |
-  | Research / blast-radius| `agentic-devlopment`   | `codebase-researcher`   | codebase-researcher     |
-  | Implementation (TDD)   | `beads`         | `implementation-worker` | implementation-worker   |
-  | Test-first cycle       | `agentic-devlopment`   | `tdd-guide`             | tdd-guide               |
+  | Beads graph / planning | `beads`                 | `planner`               | planner                 |
+  | Research / blast-radius| `agentic-devlopment`    | `codebase-researcher`   | codebase-researcher     |
+  | Implementation (TDD)   | `sdd`                   | `implementation-worker` | implementation-worker   |
+  | Test-first cycle       | `sdd`                   | `tdd-guide`             | tdd-guide               |
   | Full test pipeline / CI| `webapp-testing`        | `qa-automation`         | qa-automation           |
   | UX research + personas | `ux-quality`            | `ux-researcher`         | ux-researcher           |
   | UI design + a11y audit | `ui-quality`            | `ui-designer`           | ui-designer             |
@@ -59,7 +58,7 @@ instructions: |
   | Design system audit    | `design-systems-arch`   | `ui-designer`           | ui-designer             |
   | Agentic AI UX          | `agentic-ux`            | `ux-researcher`         | ux-researcher           |
   | Breaking-change review | `code-review`           | `principal-engineer`    | principal-engineer      |
-  | Multi-step orchestration| `goose-orchestration`  | `orchestrator`  | orchestrator    |
+  | Multi-step orchestration| `goose-orchestration`  | `orchestrator`          | —                       |
 
   ### In-session delegation (free-form, carries parent context)
   ```
@@ -184,6 +183,8 @@ sub_recipes:
       task: "{{ task }}"
       constraints: "{{ constraints }}"
 prompt: |
+  ## AD-001 pattern: Orchestration. Load orchestrator in-session only; delegate specialist recipe runs or agents from the orchestrator context.
+
   Task: {{ task }}
   Repo: {{ repo_path }}
   Mode: {{ mode }}
@@ -215,9 +216,17 @@ prompt: |
   - Large/Complex (multi-component, ambiguous) → full orchestration with dependency graph
 
   ## Step 1c — SDD on-ramp check (mode=discover|spec|plan or new feature)
+
+  **Phase gate rule**: each phase may only start after its prerequisite output exists.
+  - `spec` phase requires `.specs/features/[feature]/discovery.md` — STOP and run discover first if absent.
+  - `plan` phase requires `.specs/features/[feature]/spec.md` — STOP and run spec first if absent.
+  - `implement` / `tdd` phases require open Beads tasks with AC IDs — STOP and run plan first if absent.
+  - `review` phase requires a committed diff — STOP and request implementation if absent.
+  - **Default for unrecognized mode**: prompt the user — "Mode '{{ mode }}' is not recognised. Valid modes: auto, discover, spec, plan, explore, implement, review, verify, release, design, sdd, remember. Which would you like?"
+
   If mode=discover: delegate to discover.yaml (`goose run --recipe ./.goose/recipes/discover.yaml --params feature="{{ task }}"`)
-  If mode=spec:     delegate to spec.yaml    (`goose run --recipe ./.goose/recipes/spec.yaml --params feature="{{ task }}"`)
-  If mode=plan:     delegate to plan.yaml    (`goose run --recipe ./.goose/recipes/plan.yaml --params feature="{{ task }}"`)
+  If mode=spec:     STOP if discovery.md absent (see gate above); else delegate to spec.yaml (`goose run --recipe ./.goose/recipes/spec.yaml --params feature="{{ task }}"`)
+  If mode=plan:     STOP if spec.md absent (see gate above); else delegate to plan.yaml (`goose run --recipe ./.goose/recipes/plan.yaml --params feature="{{ task }}"`)
   For any new feature (Medium+) with no spec.md: recommend the on-ramp before implementing.
 
   ## Step 2 — Discover available agents

@@ -78,11 +78,23 @@ Editor shortcuts:
 ## Files
 
 - `agentic-devlopment.json`
+- `agentic-ux.json`
+- `atomic-design.json`
 - `beads.json`
 - `code-review.json`
+- `cognitive-ux.json`
+- `design-critique-case-studies.json`
+- `design-systems-arch.json`
+- `frontend-blueprint.json`
 - `goose-orchestration.json`
+- `harness-judge.json`
+- `knowledge-graph.json`
 - `sdd.json`
+- `skill-creator.json`
+- `systematic-debugging.json`
+- `ui-quality.json`
 - `ux-quality.json`
+- `wcag-accessibility-audit.json`
 - `webapp-testing.json`
 
 

@@ -8,6 +8,7 @@ description: >
   vs [ASSUMPTION — code-inspection] evidence labelling and an accessibility gate
   checklist. Use when conducting a UI quality review, QA pass, or preparing an
   accessibility evidence report for a rendered interface.
+  Do NOT use for code review without a rendered interface, backend-only changes, or sessions where no browser or Playwright evidence is available.
 metadata:
   version: 1.0.0
   scope: tactical
@@ -109,6 +110,10 @@ ui-quality evaluation is verified by:
 
 ## PASS / FAIL
 [PASS — UI quality gate clear | FAIL — N findings, BLOCK items: X]
+
+## When to load references
+
+- Technical code-level UI audit, component implementation review, or WCAG compliance in depth → load `references/ui-technical.md`
 
 ## Beads follow-ups
 bd create "UI: <finding>" --assignee ui-designer -p 2 --json

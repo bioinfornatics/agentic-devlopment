@@ -20,23 +20,25 @@ WHEN `goose recipe validate` runs on each of the following top-level recipes:
 
 | Order | Recipe file                          | Slash command  |
 |------:|--------------------------------------|----------------|
-| 1     | `.goose/recipes/discover.yaml`       | `/discover`    |
-| 2     | `.goose/recipes/explore.yaml`        | `/explore`     |
-| 3     | `.goose/recipes/spec.yaml`           | `/spec`        |
-| 4     | `.goose/recipes/design.yaml`         | `/design`      |
-| 5     | `.goose/recipes/sdd.yaml`            | `/sdd`         |
-| 6     | `.goose/recipes/plan.yaml`           | `/plan`        |
-| 7     | `.goose/recipes/dev.yaml`            | `/dev`         |
-| 8     | `.goose/recipes/implement.yaml`      | `/implement`   |
-| 9     | `.goose/recipes/review.yaml`         | `/review`      |
-| 10    | `.goose/recipes/verify.yaml`         | `/verify`      |
-| 11    | `.goose/recipes/release.yaml`        | `/release`     |
-| 12    | `.goose/recipes/remember.yaml`       | `/remember`    |
-| 13    | `.goose/recipes/doc-review.yaml`     | `/doc-review`  |
-| 14    | `.goose/recipes/harness-review.yaml` | —              |
-| 15    | `.goose/recipes/harness-doc-review.yaml` | —            |
-| 16    | `.goose/recipes/harness-master.yaml` | —                |
-| 17    | `.goose/recipes/harness-audit.yaml` | —                 |
+| 1     | `.goose/recipes/constitution.yaml`   | `/constitution`|
+| 2     | `.goose/recipes/discover.yaml`       | `/discover`    |
+| 3     | `.goose/recipes/clarify.yaml`        | `/clarify`     |
+| 4     | `.goose/recipes/explore.yaml`        | `/explore`     |
+| 5     | `.goose/recipes/spec.yaml`           | `/spec`        |
+| 6     | `.goose/recipes/design.yaml`         | `/design`      |
+| 7     | `.goose/recipes/sdd.yaml`            | `/sdd`         |
+| 8     | `.goose/recipes/plan.yaml`           | `/plan`        |
+| 9     | `.goose/recipes/dev.yaml`            | `/dev`         |
+| 10    | `.goose/recipes/implement.yaml`      | `/implement`   |
+| 11    | `.goose/recipes/review.yaml`         | `/review`      |
+| 12    | `.goose/recipes/verify.yaml`         | `/verify`      |
+| 13    | `.goose/recipes/release.yaml`        | `/release`     |
+| 14    | `.goose/recipes/remember.yaml`       | `/remember`    |
+| 15    | `.goose/recipes/doc-review.yaml`     | `/doc-review`  |
+| 16    | `.goose/recipes/harness-review.yaml` | —              |
+| 17    | `.goose/recipes/harness-doc-review.yaml` | —            |
+| 18    | `.goose/recipes/harness-master.yaml` | —                |
+| 19    | `.goose/recipes/harness-audit.yaml` | —                 |
 
 THEN every recipe returns "valid" with 0 failures.
 
@@ -51,6 +53,8 @@ AND it delegates to the correct agent(s) per the following wiring table:
 
 | Recipe          | Skills loaded                                                                                         | Agents delegated to                                            |
 |-----------------|-------------------------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| clarify         | sdd, agentic-devlopment                                                                               | product-owner                                                  |
+| constitution    | sdd, agentic-devlopment                                                                               | architect                                                      |
 | design          | ux-quality, cognitive-ux, ui-quality, atomic-design, design-systems-arch, webapp-testing, agentic-ux  | ux-researcher, ui-designer                                     |
 | dev             | agentic-devlopment, beads                                                                             | orchestrator (in-session, then delegates by task type)         |
 | discover        | sdd, agentic-devlopment                                                                               | ux-researcher, product-owner                                   |
@@ -60,7 +64,7 @@ AND it delegates to the correct agent(s) per the following wiring table:
 | harness-doc-review | agentic-devlopment, beads                                                                          | review-critic                                                  |
 | harness-master  | agentic-devlopment, goose-orchestration, beads                                                        | orchestrator (in-session; routes to harness subrecipes)        |
 | harness-audit | harness-judge                                                                                       | harness-judge                                                 |
-| implement       | beads, sdd, agentic-devlopment                                                                        | implementation-worker                                          |
+| implement       | beads, sdd, agentic-devlopment                                                                        | implementation-worker, tdd-guide                               |
 | plan            | beads, sdd                                                                                            | planner, architect                                       |
 | release         | agentic-devlopment                                                                                    | principal-engineer                                             |
 | remember        | beads                                                                                                 | (direct bd calls — no agent)                                   |
@@ -77,7 +81,7 @@ WHEN `./scripts/install.sh` runs
 THEN all 13 slash commands are registered in `~/.config/goose/config.yaml`:
 
 ```
-/design   /dev   /discover   /doc-review   /explore   /implement   /plan
+/clarify  /design   /dev   /discover   /doc-review   /explore   /implement   /plan
 /release  /remember   /review   /sdd   /spec   /verify
 ```
 
@@ -88,7 +92,7 @@ AND each maps to its corresponding recipe file in `~/.config/goose/recipes/`.
 ### AC-SKILL-01 — Skill discoverability
 
 WHEN `goose skills list` runs
-THEN all of the following 18 domain skills are visible (plus `skill-creator` tooling):
+THEN all of the following 19 domain skills are visible (plus `skill-creator` tooling):
 
 | Skill name                     | Domain                              |
 |--------------------------------|-------------------------------------|
@@ -101,6 +105,7 @@ THEN all of the following 18 domain skills are visible (plus `skill-creator` too
 | `design-critique-case-studies` | Design critique with case studies   |
 | `design-systems-arch`          | Design system architecture          |
 | `frontend-blueprint`           | Frontend architecture               |
+| `gdd`                          | Generative-Driven Design framework  |
 | `goose-orchestration`          | Multi-agent orchestration           |
 | `harness-judge`                | LLM-as-judge harness evaluation     |
 | `knowledge-graph`              | KG CRUD & reasoning                 |
@@ -119,7 +124,7 @@ WHEN a recipe is invoked
 THEN it follows exactly one of:
 
   a) **Specialist** — loads ≥1 specialist agent(s) in-session via `load agent X`
-     (design, discover, doc-review, explore, implement, plan, release, review, spec, verify)
+     (clarify, design, discover, doc-review, explore, implement, plan, release, review, spec, verify)
 
   b) **Orchestration** — loads `orchestrator` in-session; ALL specialists are
      summoned as isolated sub-sessions; no specialist is loaded in-session
@@ -130,6 +135,26 @@ THEN it follows exactly one of:
 
 AND the in-session agent(s) SHALL match the `"agents"` field in the recipe's eval JSON
 AND no recipe SHALL mix `orchestrator` with a specialist agent in the same session
+
+---
+
+### AC-RECIPE-05 — Cross-recipe ordering gates (→ D7)
+
+WHEN `review.yaml` produces an APPROVE or PASS-WITH-NITS verdict
+THEN it executes `bd update <bead-id> --add-label env:reviewed`
+
+WHEN `verify.yaml` is invoked
+THEN it checks for `env:reviewed` label before running any verification step
+AND halts with a gate error message if the label is absent
+
+WHEN `verify.yaml` completes with all checks PASS
+THEN it executes `bd update <bead-id> --add-label env:verified`
+
+WHEN `release.yaml` is invoked
+THEN it checks for `env:verified` label before running any release step
+AND halts with a gate error message if the label is absent
+
+The label state machine is: `env:dev → env:reviewed → env:verified → env:prod`
 
 ---
 
@@ -144,8 +169,8 @@ AND the skill includes a Knowledge Generation step (orient before acting).
 ### AC-AGENT-01 — Agent format compliance
 
 WHEN agents are loaded from `.agents/agents/`
-THEN each of the following 13 agents has all four required sections
-     (Prompt Defense Baseline · Operating Process · Output Format · Remember mantra):
+THEN each of the following 13 agents has all five required sections
+     (Prompt Defense Baseline · Required Skill Load · When to Invoke · Operating Process · Output Format):
 
 | Agent file                 | Persona                  |
 |----------------------------|--------------------------|
@@ -162,6 +187,18 @@ THEN each of the following 13 agents has all four required sections
 | `tdd-guide.md`             | Test-Driven Development  |
 | `ui-designer.md`           | UI design & components   |
 | `ux-researcher.md`         | UX research & personas   |
+
+---
+
+### AC-AGENT-02 — Agent skill contract completeness
+
+WHEN an agent file exists in `.agents/agents/`
+THEN it MUST contain a `## Required Skill Load` section
+AND  the section MUST include a stop-if-missing guard of the form:
+     "If `<skill>` cannot be loaded, stop and report that [role] is blocked…"
+AND  `python3 scripts/check-consistency.py` MUST exit 0 with no FAIL lines
+
+This AC is verified mechanically by `check-consistency.py` (section: Agent skill contracts).
 
 ---
 

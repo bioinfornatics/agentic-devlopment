@@ -49,6 +49,15 @@ engineering quality, context engineering quality, and loop engineering quality.
 
 ---
 
+## Contents
+
+- [Section B1 — Structural Well-formedness](#section-b1--structural-well-formedness)
+- [Section B2 — Description Quality](#section-b2--description-quality)
+- [Section B3 — Methodology Quality](#section-b3--methodology-quality)
+- [Section B4 — Prompt Engineering in Skills](#section-b4--prompt-engineering-in-skills)
+- [Section B5 — Context Engineering in Skills](#section-b5--context-engineering-in-skills)
+- [Section B6 — Loop Engineering in Skills](#section-b6--loop-engineering-in-skills)
+
 ## Section B1 — Structural Well-formedness
 
 **What this section measures**: Whether the file exists in the correct location,

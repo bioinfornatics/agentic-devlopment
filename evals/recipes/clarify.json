@@ -1,0 +1,93 @@
+[
+  {
+    "agents": [
+      "product-owner"
+    ],
+    "skills": [
+      "sdd",
+      "agentic-devlopment"
+    ],
+    "query": "Clarify the 'Bruno API test support in verify recipe' feature. Read its discovery.md, surface all open questions, and produce a clarify.md with at least 2 DECISION entries.",
+    "files": [
+      ".specs/features/clarify-phase/spec.md",
+      ".goose/recipes/clarify.yaml",
+      ".goose/recipes/discover.yaml"
+    ],
+    "max_turns": 500,
+    "difficulty": "normal",
+    "expected_skill_contribution": "The clarify recipe should emit First Visible Output, check discovery.md precondition, scan for ambiguities, produce a clarify.md with [FEAT]-CLR-NN entries in QUESTION/DECISION/RATIONALE/SPEC-IMPACT format, store a memory pointer, and report spec-ready AC hints.",
+    "fixture_intent": "Validates the basic clarify workflow: precondition gate, ambiguity extraction, structured clarify.md output, and memory pointer storage.",
+    "baseline_gaps": [
+      "jumps to writing spec.md without producing a clarify.md first",
+      "produces prose summaries instead of structured QUESTION/DECISION/RATIONALE/SPEC-IMPACT entries",
+      "skips the precondition gate and does not check for discovery.md existence"
+    ],
+    "expected_behavior": [
+      "emits First Visible Output block (scope + discovery source + open items count) before any tool call",
+      "checks for `.specs/features/[feature]/discovery.md` existence before proceeding",
+      "produces a clarify.md with at least 2 entries using [FEAT]-CLR-NN IDs",
+      "every DECISION field contains a concrete testable value (no 'TBD' or 'depends')",
+      "stores a memory pointer with key `clarify-[feature]-pointer`"
+    ]
+  },
+  {
+    "agents": [
+      "product-owner"
+    ],
+    "skills": [
+      "sdd",
+      "agentic-devlopment"
+    ],
+    "query": "Clarify the 'parallel eval runner' feature which has a discovery.md with 6 unresolved 9-dimension items and 2 explicit TBD markers. Resolve all items or mark Blocked with specific blockers.",
+    "files": [
+      ".specs/features/clarify-phase/spec.md",
+      ".goose/recipes/clarify.yaml",
+      "docs/adr/ADR-001-eval-suite-parallelism.md"
+    ],
+    "max_turns": 500,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "The clarify recipe must handle a feature with many unresolved implicit dimensions: scan all 9 dimensions, attempt resolution from context, ask targeted user questions for the unresolvable ones, and mark genuine blockers rather than guessing.",
+    "fixture_intent": "A feature with multiple ambiguous implicit-requirement dimensions; the recipe must distinguish resolvable items (from existing docs) from items requiring user input, and escalate the latter with precise questions.",
+    "baseline_gaps": [
+      "marks all 9 dimensions as N/A without attempting resolution from existing context",
+      "invents decisions without basis ('assume standard 5-second timeout') without flagging as assumption",
+      "does not separate resolved items from blocked items in the clarify.md output"
+    ],
+    "expected_behavior": [
+      "scans all 9 implicit-requirement dimensions from discovery.md or applies the sweep independently",
+      "resolves at least 4 dimensions from existing project context (AGENTS.md, ADR, existing code)",
+      "formulates at most 1 precise question per unresolvable item before marking Blocked",
+      "produces a clarify.md with clearly separated Resolved Clarifications and Unresolved Items sections"
+    ]
+  },
+  {
+    "agents": [
+      "product-owner"
+    ],
+    "skills": [
+      "sdd",
+      "agentic-devlopment"
+    ],
+    "query": "Run clarify on a feature where discovery.md does NOT exist. Verify the recipe halts correctly with a clear blocker message, then clarify the 'verify recipe split' feature which has an existing discovery.md with conflicting user stories and scope boundary ambiguities.",
+    "files": [
+      ".specs/features/clarify-phase/spec.md",
+      ".goose/recipes/clarify.yaml",
+      ".goose/recipes/verify.yaml"
+    ],
+    "max_turns": 500,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The clarify recipe must: (1) correctly halt with a blocker message when discovery.md is absent (CLARIFY-03 gate), then (2) successfully process a complex feature with contradicting user stories — identifying contradictions as ambiguities and resolving them explicitly in clarify.md.",
+    "fixture_intent": "Tests both the precondition gate (negative path) and complex clarification with conflicting requirements. The recipe must not silently skip the gate check and must surface contradictions as first-class clarification items, not ignore them.",
+    "baseline_gaps": [
+      "proceeds to write clarify.md even when discovery.md is absent (gate failure)",
+      "ignores contradictions between user stories — only extracts TBD markers",
+      "produces a clarify.md with vague DECISION fields like 'will be determined during implementation'"
+    ],
+    "expected_behavior": [
+      "halts with clear error message when discovery.md is absent, naming the expected path and the command to fix it",
+      "identifies story contradictions as explicit CLR entries (not just TBD markers)",
+      "resolves contradictions by producing a DECISION with a tie-breaking rule or explicit priority ordering",
+      "produces a SPEC IMPACT field for each resolved contradiction that is directly usable as a WHEN/THEN/SHALL clause"
+    ]
+  }
+]

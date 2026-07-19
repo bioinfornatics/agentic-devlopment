@@ -1,7 +1,12 @@
 ---
 name: skill-creator
-description: Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.
-version: "1.0.0"
+description: >
+  Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to
+  create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill
+  performance with variance analysis, or optimize a skill's description for better triggering accuracy.
+  Do NOT use for running or consuming existing skills, code review, or sessions where no skill authoring or improvement is needed.
+metadata:
+  version: 1.0.0
 ---
 
 # Skill Creator
@@ -484,6 +489,14 @@ Repeating one more time the core loop here for emphasis:
 Please add steps to your TodoList, if you have such a thing, to make sure you don't forget. If you're in Cowork, please specifically put "Create evals JSON and run `eval-viewer/generate_review.py` so human can review test cases" in your TodoList to make sure it happens.
 
 Good luck!
+## Gotchas
+
+- **Never write assertions before reading transcripts** — assertions drafted from the skill description alone test intent, not behavior; always run the skill on real prompts first and read the full transcript before writing assertions.
+- **A description that triggers too broadly defeats specificity** — overly aggressive "pushy" descriptions cause mis-triggering on unrelated sessions; the optimization loop (`run_loop.py`) exists to find the right balance empirically, not by gut feel.
+- **Do not grade outputs in the same session that created the skill** — the agent that wrote the skill will rationalize ambiguous outputs; always use an independent grader subagent so the grader has no context about authoring intent.
+- **Feedback on a single iteration is insufficient to confirm improvement** — real skill quality requires 2+ iterations with varied eval prompts to distinguish genuine improvement from overfitting to the test set.
+- **Package after optimization, not before** — running `package_skill.py` before the description optimization loop is complete produces a package with a suboptimal trigger description; always optimize first.
+
 ## Self-Validation Checklist
 
 - [ ] Orient on existing skills and project knowledge before proposing a new skill.

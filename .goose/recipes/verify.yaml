@@ -5,6 +5,15 @@ description: >
   and applies the appropriate protocol. API -> Bruno/curl; web -> Playwright/a11y;
   CLI -> shell; library -> test suite; UX/UI -> WCAG + design system.
 instructions: |
+  ## AD-001 Pattern: Specialist (adaptive type dispatch)
+  ## In-session agents: qa-automation (always); ui-designer (for web/ui types)
+  ## AD-001 pattern: Specialist. Load qa-automation in-session; ui-designer may be loaded in-session for UI verification.
+  ## Pattern rationale: qa-automation is the verification specialist; type detection
+  ## controls which additional skills are loaded in-session.
+  ## Stop/escalation: if type cannot be detected after examining context, default to
+  ## 'web' and state the assumption. Max 3 verify-fix cycles per failing check before
+  ## escalating the failure to user with reproduction steps.
+
   You orchestrate verification adapted to the target type.
 
   ## First visible output (required before any tool call)
@@ -30,15 +39,56 @@ instructions: |
   - library: load skills agentic-devlopment; delegate qa-automation
   - ui:     load skills ui-quality and design-systems-arch and atomic-design; delegate ui-designer
 
+  ## Cross-recipe ordering gate — check BEFORE verification (GATE-03, GATE-04)
+
+  Verify REQUIRES a prior review APPROVE. Check the gate before running any tests:
+
+  If a bead ID is available (from task parameter or bd ready):
+  ```bash
+  bd show <bead-id>   # confirm env:reviewed label is present
+  ```
+  If `env:reviewed` label is ABSENT:
+  ```
+  ❌ Verify gate: bead <id> missing label env:reviewed.
+     Run /review first, then re-run /verify.
+  ```
+  STOP. Do not run any verification steps.
+
+  If `env:reviewed` is PRESENT: proceed with verification.
+
+  If no specific bead ID is available: run `bd list --label "env:reviewed"` to find
+  reviewed beads, and proceed with verification for those. If no reviewed beads found,
+  report the gate state and recommend running /review.
+
   ## Orient (bd prime FIRST)
   load agent qa-automation.
   1. Run bd prime — load known defects, test memories, quality gates.
   2. Run bd ready --json — check for open verification beads.
   3. Read spec.md if present to extract [FEAT]-NN AC IDs to verify.
 
+  ## Spec AC coverage gate (run BEFORE any test execution)
+  If `.specs/features/*/spec.md` exists:
+  - Extract all [FEAT]-NN IDs from the spec.
+  - For each ID, verify at least one test file contains a reference to that ID
+    (grep the test directory for `[FEAT]-NN` or the AC description string).
+  - Report uncovered ACs as **SPEC-COVERAGE-GAP** findings BEFORE running the test suite.
+  - A SPEC-COVERAGE-GAP is a blocker: do not mark verify as PASS if any AC has zero test coverage.
+  If no spec.md is present, note it and proceed with structural verification only.
+
   ## Loop on failure (observe -> retry)
   For each failing check: bd create "Verify fail: <description>" --assignee <agent> -p 2
   After fix: re-verify that specific check. Max 3 cycles before escalating.
+
+  ## Gate stamp on PASS (GATE-05, GATE-06)
+  When all verification checks PASS:
+  ```bash
+  bd update <bead-id> --add-label "env:verified"
+  ```
+  This allows `release.yaml` to confirm verification passed before running.
+
+  When any verification check FAILS:
+  - Do NOT stamp env:verified.
+  - The bead stays unverified until all checks pass in a subsequent run.
 settings:
   max_turns: 40
 parameters:
@@ -115,7 +165,10 @@ prompt: |
   Wait for their reply and use it as the task for all subsequent steps. Do not call any tool until you have it.
 
   Step 1 — First visible output: state target, detected type, protocol before any tool call.
-  Step 2 — Orient: bd prime, bd ready --json, read spec.md for [FEAT]-NN AC IDs.
-  Step 3 — Detect type if auto: inspect file extensions, repo structure, task description.
-  Step 4 — Load skills for detected type and use sub_recipe: verify.
-  Step 5 — Observe result: PASS -> close bead. FAIL -> file Beads issue -> re-verify (max 3).
+  Step 2 — Ordering gate check: run `bd show <bead-id>` or `bd list --label env:reviewed`.
+           STOP if env:reviewed label absent — output gate error message.
+  Step 3 — Orient: bd prime, bd ready --json, read spec.md for [FEAT]-NN AC IDs.
+  Step 4 — Detect type if auto: inspect file extensions, repo structure, task description.
+  Step 5 — Load skills for detected type and use sub_recipe: verify.
+  Step 6 — Gate stamp: if all PASS → `bd update <bead-id> --add-label env:verified`.
+           If any FAIL → do NOT stamp; file Beads issue → re-verify (max 3).

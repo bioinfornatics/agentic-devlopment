@@ -9,8 +9,13 @@ description: >
   constraints (no sudo, no sleep, no kill -9), and verbatim templates for Scoped plan
   and Handoff blocks that graders pattern-match. Load whenever Beads task management,
   subagent coordination, or the standard agentic development operating loop is needed.
+  Do NOT use for pure read-only research sessions with no file writes, Beads mutations, or agent orchestration required.
 metadata:
   version: 1.0.0
+  aliases:
+    - agentic-development
+  preferred_spelling: agentic-development
+  compatibility_name: agentic-devlopment
 ---
 
 # Agentic Development Harness
@@ -200,6 +205,10 @@ about the SDD process — those go in skill Gotchas, updated by the maintainer.
 - Use `bd remember --key` for durable facts; keep facts atomic and update stale memories.
 - Use pointer memories to route future agents to canonical files/sections instead of injecting long content.
 - Use beads comments/notes/acceptance fields rather than burying decisions in chat.
+
+## When to load references
+
+- End-of-session close, multi-session handoff, or full Beads+Goose lifecycle review → load `references/beads-goose-lifecycle.md`
 
 ## Load next
 

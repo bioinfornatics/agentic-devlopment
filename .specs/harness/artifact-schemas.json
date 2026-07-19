@@ -1,0 +1,28 @@
+{
+  "schema": "harness-artifact-schemas-v1",
+  "ExpertContribution": {
+    "required": [
+      "producer",
+      "consumer",
+      "artifact",
+      "claim",
+      "evidence",
+      "confidence",
+      "conflict_status",
+      "decision_impact",
+      "provenance"
+    ]
+  },
+  "DecisionResolution": {
+    "required": [
+      "decision",
+      "resolver",
+      "inputs",
+      "selected_option",
+      "rejected_options",
+      "rationale",
+      "follow_up_beads",
+      "timestamp"
+    ]
+  }
+}

@@ -9,6 +9,7 @@ description: >
   and the brownfield retro-spec pattern for existing code. Use when asked to implement
   any non-trivial feature, write a formal spec, or establish verifiable acceptance
   criteria for a change.
+  Do NOT use for documentation-only changes, read-only research, or sessions where no spec or implementation artifact will be produced.
 metadata:
   version: 3.0.0
 ---
@@ -181,21 +182,75 @@ Each SDD phase has a designated checker — never advance a phase using the same
 
 ## Brownfield / retro-spec pattern
 
-Quand le code précède la spec (brownfield ou harnais existant) :
+When code precedes the spec (brownfield or existing harness):
 
-- **Micro/Small** : les descriptions Beads + acceptance criteria SONT la spec légère.
-  Pas besoin de `.specs/features/*/spec.md` pour des changements < 3 fichiers.
+- **Micro/Small**: Beads descriptions + acceptance criteria ARE the lightweight spec.
+  No `.specs/features/*/spec.md` needed for changes < 3 files.
 
-- **Medium/Large** : créer le fichier spec `.specs/features/[feature]/spec.md`
-  avec les ACs WHEN/THEN/SHALL et les `[FEAT]-NN` IDs.
-  Stocker le pointeur : `bd remember "Spec for [feature]: canonical source is .specs/features/[feature]/spec.md" --key spec-[feature]-pointer`
+- **Medium/Large**: Create the spec file at `.specs/features/[feature]/spec.md`
+  with WHEN/THEN/SHALL ACs and `[FEAT]-NN` IDs.
+  Store the pointer: `bd remember "Spec for [feature]: canonical source is .specs/features/[feature]/spec.md" --key spec-[feature]-pointer`
 
-- **Retro-spec** : si implémentation existante sans spec, créer la spec depuis le code.
-  Marquer `Status: Retro-spec (brownfield)` en tête du fichier.
-  C'est la dette SDD révélée par R1 (ACs sans test) et R3 (features sans implémentation KG).
+- **Retro-spec**: If implementation exists without a spec, create the spec from the code.
+  Mark `Status: Retro-spec (brownfield)` at the top of the file.
+  This is SDD debt revealed by R1 (ACs without tests) and R3 (features without KG implementation).
 ---
 
-## Beads remplace tasks.md et plan.md
+## 8. Spec Health Audit — SPEC_DEVIATION triage loop
+
+Run this audit at the Verify phase and after any multi-file implementation session.
+
+### 8.1 Detect
+
+```bash
+./scripts/find-spec-deviations.sh          # scan entire repo
+./scripts/find-spec-deviations.sh src/     # scope to changed directory
+```
+
+Output shows: `FILE | LINE | DEVIATION: <text> | REASON: <reason> | AC-REF: <ID>`.
+Zero markers → "SPEC_DEVIATION scan: clean" → proceed.
+
+### 8.2 Triage each marker
+
+For every marker found, make an explicit decision:
+
+| Decision | Meaning | Action |
+|---|---|---|
+| **Accept** | The deviation is correct; the spec was wrong or incomplete | Amend the spec AC to match the implementation |
+| **Reject** | The implementation should have followed the spec | Create a SPEC_REVERT task in Beads |
+| **Defer** | Decision requires human input | Create a DECISION bead and block the current bead on it |
+
+### 8.3 Accept path — amend spec.md
+
+1. Locate the affected spec file at `.specs/features/[feature]/spec.md`.
+2. Find the AC by its `[FEAT]-NN` ID.
+3. Draft a revised WHEN/THEN/SHALL statement that reflects the actual implementation.
+4. Confirm the amendment is internally consistent (no contradiction with other ACs).
+5. Update `spec.md` in place; note the amendment date in the file header.
+6. Remove or annotate the `SPEC_DEVIATION` comment in the source: `// SPEC_DEVIATION resolved — see spec amendment [FEAT]-NN v2`.
+7. Store memory: `bd remember "SPDEV accepted: [feature] [AC-ID] — [reason]" --key spdev-[feature]-[ac-id]`
+
+### 8.4 Reject path — SPEC_REVERT task
+
+```bash
+bd create "SPEC_REVERT: [feature] [AC-ID] — restore implementation to spec" \
+  --type task -p 2 \
+  --deps "discovered-from:<current-bead-id>" \
+  --acceptance "[FEAT]-NN AC restored: implementation returns [spec-defined-value]" \
+  --description "Source: SPEC_DEVIATION at [file]:[line]. Deviation: [text]. Reason given: [reason]. The spec AC remains authoritative; this task brings implementation back."
+```
+
+### 8.5 Self-validation checklist (add to Verify phase)
+
+- [ ] `find-spec-deviations.sh` run on all changed files
+- [ ] Every detected marker triaged: no unresolved SPEC_DEVIATION remains
+- [ ] Accept path: spec.md amended + source comment annotated
+- [ ] Reject path: SPEC_REVERT bead created with `--deps discovered-from`
+- [ ] Defer path: DECISION bead created; current bead blocked on it
+
+---
+
+## Beads replaces tasks.md and plan.md
 
 Beads is the canonical task tracker:
 
@@ -203,8 +258,8 @@ Beads is the canonical task tracker:
 bd create "Task: [description]" --issue_type task    # task
 bd create "US: [description]"   --issue_type story   # user story
 bd create "Epic: [description]" --issue_type epic    # epic
-bd dep add <child> <parent>                          # dépendances
+bd dep add <child> <parent>                          # dependencies
 ```
 
-.specs/ = artefacts de connaissance (QUOI/POURQUOI/COMMENT)
-Beads  = artefacts d'exécution (QUI/QUAND/SUIVI)
+.specs/ = knowledge artifacts (WHAT/WHY/HOW)
+Beads  = execution artifacts (WHO/WHEN/TRACKING)

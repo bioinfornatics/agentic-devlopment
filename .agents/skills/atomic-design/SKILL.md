@@ -9,6 +9,7 @@ description: >
   Use when deciding where a component belongs in the hierarchy, evaluating component
   size violations, structuring a component library, or applying composition rules.
   Applies to any UI framework (React, Vue, Svelte, etc.).
+  Do NOT use for backend services, API design, or sessions with no UI component hierarchy to evaluate.
 license: CC0-1.0
 metadata:
   author: jwilger + thebushidocollective (adapted for harness)

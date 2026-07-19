@@ -1,0 +1,170 @@
+# AGENT-FACING WORKER SUBRECIPE — invoked by review.yaml or sdd.yaml for spec amendment triage.
+# Users invoke the parent recipe; agents receive this subrecipe in an isolated session.
+version: 1.0.0
+title: Amend Spec — SPEC_DEVIATION triage and spec amendment
+description: >
+  Processes one SPEC_DEVIATION marker: locates the affected spec AC, proposes a WHEN/THEN/SHALL
+  amendment if accepted, or creates a SPEC_REVERT bead if rejected.
+  Invoked after review-critic flags a SPEC_DEVIATION finding.
+instructions: |
+  ## Load skills first
+  load skills sdd        — Spec Health Audit protocol (Section 8), AC format, amendment rules.
+  load skills beads      — Beads commands for SPEC_REVERT task creation and memory storage.
+
+  ## Purpose
+  You are the spec amendment specialist. You triage a single SPEC_DEVIATION:
+  either the spec was wrong (Accept → amend spec.md) or the code was wrong (Reject → SPEC_REVERT bead).
+  You NEVER make this decision autonomously — you present a recommendation and wait for explicit Accept/Reject.
+
+  ## First visible output
+  Before any tool call:
+    Amendment scope: [feature/AC-ID or "unknown — will infer"]
+    Deviation: [text]
+    Reason: [reason]
+    Spec file: [path or "searching..."]
+
+  ## Process
+
+  ### Step 1 — Orient
+  1. `bd prime` — load context.
+  2. Read the deviation details from the input parameters.
+  3. Locate the spec file: check `--spec_file` param first; else search `.specs/features/*/spec.md` for the `[FEAT]-NN` ID; else ask.
+
+  ### Step 2 — Read spec AC
+  1. Read the full spec.md file.
+  2. Find the AC identified by `--ac_id` (or infer from deviation context).
+  3. Print the current AC text and the deviation side-by-side for comparison.
+
+  ### Step 3 — Draft recommendation
+  Based on the deviation and reason, draft one of:
+
+  **If Accept** (spec should match implementation):
+  ```
+  Proposed amendment to [FEAT]-NN:
+  WHEN [trigger — unchanged or updated]
+  THEN system SHALL [updated outcome matching actual implementation]
+  AND  [any additional constraint — unchanged or updated]
+
+  Rationale: [why the implementation is correct and the spec was incomplete/wrong]
+  ```
+
+  **If Reject** (implementation should match spec):
+  ```
+  Proposed SPEC_REVERT task:
+  bd create "SPEC_REVERT: [feature] [AC-ID] — restore [what]" \
+    --type task -p 2 \
+    --deps "discovered-from:<bead-id>" \
+    --acceptance "[FEAT]-NN: [precise outcome from current spec]" \
+    --description "Deviation at [file]:[line]: [deviation text]. Reason given: [reason]. Restore implementation to spec."
+  ```
+
+  ### Step 4 — Wait for explicit decision
+  Present the recommendation. Ask: "Accept (amend spec) or Reject (create SPEC_REVERT bead)?"
+  Do NOT write any file or create any bead until the user responds with Accept or Reject.
+
+  ### Step 5a — Accept path
+  1. Update spec.md: replace the current AC text with the proposed amendment.
+  2. Update the spec header: add "Last amended: YYYY-MM-DD" line.
+  3. Annotate the source SPEC_DEVIATION comment:
+     `// SPEC_DEVIATION resolved — spec amended [AC-ID] on YYYY-MM-DD`
+  4. Store memory: `bd remember "SPDEV accepted: [feature] [AC-ID] — [one-line reason]" --key spdev-[feature]-[ac-id]`
+  5. Run KG pipeline: `node apps/kg/dist/cli.js pipeline` (if available).
+
+  ### Step 5b — Reject path
+  1. Run the SPEC_REVERT bd create command.
+  2. Note the new bead ID.
+  3. Store memory: `bd remember "SPDEV rejected: [feature] [AC-ID] — SPEC_REVERT bead: [id]" --key spdev-reject-[feature]-[ac-id]`
+
+  ## Self-validation before returning
+  - [ ] Decision was explicitly Accept or Reject (not assumed)
+  - [ ] Accept: spec.md updated, source annotated, memory stored
+  - [ ] Reject: SPEC_REVERT bead created with --deps discovered-from, memory stored
+  - [ ] No SPEC_DEVIATION left unresolved in the scope of this invocation
+
+settings:
+  max_turns: 20
+parameters:
+  - key: deviation
+    input_type: string
+    requirement: required
+    description: The full SPEC_DEVIATION text from the source comment.
+  - key: reason
+    input_type: string
+    requirement: optional
+    default: "(not specified)"
+    description: The reason given in the SPEC_DEVIATION comment.
+  - key: source_file
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Path to the source file containing the SPEC_DEVIATION comment.
+  - key: source_line
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Line number of the SPEC_DEVIATION comment.
+  - key: ac_id
+    input_type: string
+    requirement: optional
+    default: ""
+    description: The [FEAT]-NN AC ID affected (leave blank to infer from context).
+  - key: spec_file
+    input_type: string
+    requirement: optional
+    default: ""
+    description: Path to the spec.md file. Leave blank to auto-discover from .specs/features/.
+  - key: bead_id
+    input_type: string
+    requirement: optional
+    default: ""
+    description: The Beads issue ID of the implementation that introduced the deviation.
+extensions:
+  - type: platform
+    name: developer
+    bundled: true
+    timeout: 300
+  - type: platform
+    name: analyze
+    bundled: true
+  - type: platform
+    name: summon
+    bundled: true
+  - type: platform
+    name: skills
+    bundled: true
+  - type: stdio
+    name: Beads
+    description: Git-backed issue tracker and durable agentic task graph
+    cmd: uvx
+    args:
+      - beads-mcp
+    timeout: 300
+prompt: |
+  Deviation  : {{ deviation }}
+  Reason     : {{ reason }}
+  Source file: {{ source_file }}{% if source_line %} line {{ source_line }}{% endif %}
+  AC ID      : {{ ac_id }}
+  Spec file  : {{ spec_file }}
+  Bead ID    : {{ bead_id }}
+
+  ## Step 1 — First visible output + Orient
+  State: amendment scope, deviation summary, spec file (found or searching).
+  load skills sdd. load skills beads.
+  Run `bd prime`. Locate spec file.
+
+  ## Step 2 — Read and compare
+  Read spec.md. Print current AC text vs deviation side-by-side.
+
+  ## Step 3 — Draft recommendation
+  Produce either an Accept (amendment text) or Reject (SPEC_REVERT command) recommendation.
+  Be specific: the amendment must be a complete WHEN/THEN/SHALL AC.
+
+  ## Step 4 — Wait for explicit Accept/Reject decision
+  Do NOT write files or create beads until the user responds.
+
+  ## Step 5 — Execute decision
+  Accept → amend spec.md + annotate source + bd remember.
+  Reject → bd create SPEC_REVERT bead + bd remember.
+
+  ## Step 6 — Handoff
+  Report: decision made, files changed (if any), bead created (if any), memory stored.

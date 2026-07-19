@@ -8,6 +8,7 @@ description: >
   (cross-session memory with pointer format). Use whenever starting a non-trivial
   task, orchestrating multi-step work, needing to track durable state, or recording
   discoveries for future sessions. The canonical task tracker for all harness work.
+  Do NOT use for sessions with no durable task tracking needed, or in projects that have not adopted the Beads task tracker.
 metadata:
   version: 1.0.0
 ---
@@ -245,6 +246,7 @@ This skill's core commands are always in context. Load deeper references only wh
 - Memory pointer format → already in `## Memory` above with verbatim template
 - Planning protocol → already in `## Planning` above
 - Molecules/wisps/gates → already in `## Molecules` and `## Gates` above
+- End-of-session close protocol, `bd close` with full handoff, or session checkpoint → load `references/session-close.md`
 
 For Loop Engineering context (scheduling, circuit breakers, multi-loop coordination):
 - Load `docs/sota-knowledge-base.md#12` — Beads as Loop Engineering state layer

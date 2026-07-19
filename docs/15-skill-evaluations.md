@@ -449,6 +449,7 @@ If you create workspaces by hand instead of using the runner, the viewer expects
 | `design-critique-case-studies` | `evals/skills/design-critique-case-studies.json` |
 | `design-systems-arch` | `evals/skills/design-systems-arch.json` |
 | `frontend-blueprint` | `evals/skills/frontend-blueprint.json` |
+| `gdd` | `evals/skills/gdd.json` |
 | `goose-orchestration` | `evals/skills/goose-orchestration.json` |
 | `harness-judge` | `evals/skills/harness-judge.json` |
 | `knowledge-graph` | `evals/skills/knowledge-graph.json` |
@@ -489,7 +490,9 @@ If you create workspaces by hand instead of using the runner, the viewer expects
 <!-- BEGIN GENERATED: eval-recipes -->
 | Recipe | Eval file | In-session agents (Layer 2) | Skills (Layer 1) |
 | --- | --- | --- | --- |
-| `design` | `evals/recipes/design.json` | `ux-researcher`, `ui-designer` | `ux-quality`, `ui-quality`, `webapp-testing` |
+| `clarify` | `evals/recipes/clarify.json` | `product-owner` | `sdd`, `agentic-devlopment` |
+| `constitution` | `evals/recipes/constitution.json` | `architect` | `sdd`, `agentic-devlopment` |
+| `design` | `evals/recipes/design.json` | `ux-researcher`, `ui-designer` | `ux-quality`, `cognitive-ux`, `ui-quality`, `atomic-design`, `design-systems-arch`, `webapp-testing` |
 | `dev` | `evals/recipes/dev.json` | `orchestrator` | `agentic-devlopment`, `beads`, `goose-orchestration` |
 | `discover` | `evals/recipes/discover.json` | `product-owner` | `sdd`, `agentic-devlopment` |
 | `doc-review` | `evals/recipes/doc-review.json` | `review-critic` | `agentic-devlopment`, `beads` |
@@ -498,14 +501,14 @@ If you create workspaces by hand instead of using the runner, the viewer expects
 | `harness-doc-review` | `evals/recipes/harness-doc-review.json` | `review-critic` | `agentic-devlopment`, `beads` |
 | `harness-master` | `evals/recipes/harness-master.json` | `orchestrator` | `agentic-devlopment`, `goose-orchestration`, `beads` |
 | `harness-review` | `evals/recipes/harness-review.json` | `review-critic` | `code-review`, `agentic-devlopment`, `beads` |
-| `implement` | `evals/recipes/implement.json` | `implementation-worker` | `beads`, `sdd` |
+| `implement` | `evals/recipes/implement.json` | `implementation-worker`, `tdd-guide` | `beads`, `sdd` |
 | `plan` | `evals/recipes/plan.json` | `planner`, `architect` | `beads`, `sdd` |
 | `release` | `evals/recipes/release.json` | `principal-engineer` | `agentic-devlopment` |
 | `remember` | `evals/recipes/remember.json` | — | `beads` |
 | `review` | `evals/recipes/review.json` | `review-critic` | `code-review` |
 | `sdd` | `evals/recipes/sdd.json` | `orchestrator` | `sdd`, `agentic-devlopment` |
 | `spec` | `evals/recipes/spec.json` | `architect`, `tdd-guide` | `sdd`, `beads` |
-| `verify` | `evals/recipes/verify.json` | `qa-automation` | `webapp-testing`, `agentic-devlopment` |
+| `verify` | `evals/recipes/verify.json` | `qa-automation` | `webapp-testing`, `ui-quality`, `agentic-devlopment` |
 <!-- END GENERATED: eval-recipes -->
 
 

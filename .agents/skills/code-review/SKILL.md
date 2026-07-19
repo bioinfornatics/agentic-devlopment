@@ -7,6 +7,7 @@ description: >
   produce a Verdict table with an explicit BLOCK / APPROVE / COMMENT recommendation,
   cite exact file and line numbers for every finding. Zero findings is a valid and
   correct output. Use when asked to review, audit, or critique any code change.
+  Do NOT use for planning, architecture decisions, or sessions where no reviewable diff, code, or YAML artifact exists.
 metadata:
   version: 4.0.0
 ---

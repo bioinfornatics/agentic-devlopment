@@ -134,6 +134,8 @@ sub_recipes:
       focus: "{{ task }}"
       constraints: "{{ constraints }}"
 prompt: |
+  ## AD-001 pattern: Specialist. Load review-critic in-session for harness quality review.
+
   Task: {{ task }}
   Repo: {{ repo_path }}
   Scope: {{ scope }}

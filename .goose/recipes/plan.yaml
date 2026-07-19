@@ -6,6 +6,14 @@ description: >
   Third phase of the SDD on-ramp: discover.yaml -> spec.yaml -> plan.yaml.
   Run after spec.yaml, before implementation with dev.yaml or sdd.yaml.
 instructions: |
+  ## AD-001 Pattern: Specialist
+  ## In-session agents: architect (for architectural decomposition); planner (for graph validation, sequential)
+  ## AD-001 pattern: Specialist. Load architect/planner in-session for plan decomposition and graph validation; no Summon sub-sessions by default.
+  ## Pattern rationale: plan is a Specialist recipe; architect decomposes spec ACs into
+  ## tasks; planner validates the resulting dependency graph for cycles and unreachable nodes.
+  ## Stop/escalation: if no spec or bead exists to plan against, stop and direct user
+  ## to run /discover or /spec first.
+
   You are the Beads planning orchestrator for the SDD cycle.
 
   ## First visible output (required before any tool call)
@@ -29,6 +37,10 @@ instructions: |
   2. Run `bd ready --json` — identify claimed/open work to avoid duplicates.
   3. Read `.specs/features/[feature]/spec.md` — extract [FEAT]-NN AC IDs and user stories.
   4. If an epic bead ID is provided: run `bd show <epic-id>` for full context.
+  5. **Constitution check**: if `.specs/constitution.md` exists, read it now.
+     Its approved stack, quality gates, and architecture guardrails constrain ALL task decomposition.
+     If a technology choice in spec.md conflicts with the constitution, flag it before creating any bead.
+     If `.specs/constitution.md` is absent, note it in output: "No constitution found — run /constitution to establish project non-negotiables."
 
   ### Step 2 — Decompose by SDD phase and AC ID
   Map each P1 story (MVP) to 1-4 implementation tasks linked to their [FEAT]-NN ID:
@@ -86,6 +98,10 @@ instructions: |
   - Do NOT skip the bd graph validation step.
   - Do NOT mix write scopes — one assignee per file/module at implementation time.
   - Do NOT create more than one bead for the same AC ID.
+
+  ## Collegial aggregation artifact requirement (F-005)
+  When this recipe uses more than one specialist contribution, produce ExpertContribution records conforming to .specs/schemas/expert-contribution.schema.json and DecisionResolution records conforming to .specs/schemas/decision-resolution.schema.json. Each final decision SHALL reference accepted/rejected contributions, conflict resolution, override justification, and downstream consumer.
+
 settings:
   max_turns: 30
 parameters:

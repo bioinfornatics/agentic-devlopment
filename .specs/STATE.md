@@ -26,7 +26,7 @@ Specialists collaborate within the shared session context.
 Applies to: `design`, `discover`, `explore`, `implement`, `plan`, `release`, `review`, `spec`, `verify`.
 
 **Orchestration pattern** — the recipe session *is* the orchestrator.
-Load `harness-orchestrator` as the single in-session agent.
+Load `orchestrator` as the single in-session agent.
 ALL specialist work is delegated via Summon (isolated sub-sessions).
 No specialist agent is ever loaded in-session alongside the orchestrator.
 Applies to: `dev`, `sdd`.
@@ -36,7 +36,7 @@ Applies to: `remember`.
 
 ### Invariants
 
-- A recipe that loads `harness-orchestrator` in-session **SHALL NOT** also load any specialist agent in-session.
+- A recipe that loads `orchestrator` in-session **SHALL NOT** also load any specialist agent in-session.
 - The orchestrator summons specialists; it never inherits specialist methodology via `load agent`.
 - A recipe's `"agents"` field in its eval JSON **SHALL** list only in-session agents — summoned sub-agents are **not** included.
 - Every new recipe **SHALL** declare one of the three patterns above before merging.
@@ -106,3 +106,22 @@ eliminate that entire class of bug.
 Nothing. Initial formalization of a pattern introduced 2026-07-18.
 
 ---
+---
+
+## AD-003 — Agentic development skill compatibility spelling
+
+**Date:** 2026-07-19 | **Status:** Active | **Applies to:** .agents/skills/agentic-devlopment/, recipes, agents, docs
+
+### Decision
+
+The historical on-disk skill identifier remains agentic-devlopment for compatibility with existing recipes, evals, Beads, and generated documentation. The preferred human spelling is agentic-development; skill frontmatter records this as an alias/compatibility policy.
+
+### Rules
+
+- Existing machine references MAY continue to use agentic-devlopment until a coordinated structural rename is scheduled.
+- User-facing prose SHOULD mention agentic-development as the preferred spelling and agentic-devlopment as the compatibility identifier.
+- A future rename SHALL include a compatibility shim, eval updates, generated tables, consistency checks, and KG pipeline run.
+
+### Rationale
+
+This removes the cognitive/search hazard without breaking current recipe and Beads wiring during audit remediation.

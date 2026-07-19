@@ -19,7 +19,7 @@
     "fixture_intent": "Validates that discover correctly auto-sizes, produces a problem statement with user stories rather than jumping to implementation, and creates a Beads epic with --issue_type epic.",
     "baseline_gaps": [
       "jumps to implementation or recipe YAML without a problem statement first",
-      "skips auto-sizing — treats all features as the same complexity",
+      "skips auto-sizing \u2014 treats all features as the same complexity",
       "produces no Beads epic and no user stories in the output"
     ],
     "expected_behavior": [
