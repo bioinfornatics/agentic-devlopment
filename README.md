@@ -1,17 +1,32 @@
 # Agentic Development Harness
 
-> **A layered orchestration framework for LLM-powered software development**
+## Why
+
+AI agents can already write code, but reliable software development requires more than code generation: they must understand context, preserve intent, write specifications, prove behavior with tests, verify results, and remember durable lessons. This harness exists to make that loop explicit, auditable, and repeatable.
+
+## What
+
+Agentic Development Harness is a layered Goose framework for autonomous software development. Recipes define workflows, agents perform specialist phases, skills provide methodology, Beads records durable state, and the knowledge graph preserves traceability.
+
+## How
+
+The default development path is:
+
+```text
+Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Verification -> Memory
+```
 
 ```mermaid
 flowchart LR
     YOU((You)) --> DEV["/dev"]
-    DEV --> |"build"| BUILD[Implement]
-    DEV --> |"review"| CHECK[Review]
-    DEV --> |"explore"| EXPLORE[Explore]
-    
-    BUILD --> CODE["Code + Tests"]
-    CHECK --> VERDICT["Approve/Block"]
-    EXPLORE --> INSIGHT["Understanding"]
+    DEV --> |"explore"| EXPLORE["Source + Web Research"]
+    EXPLORE --> SPEC["Spec + AC"]
+    SPEC --> BEAD["Beads Graph"]
+    BEAD --> TEST["RED Test"]
+    TEST --> CODE["Code"]
+    CODE --> VERIFY["Verification"]
+    VERIFY --> |"medium or lower"| SPEC
+    VERIFY --> |"pass"| MEMORY["Memory + Handoff"]
 ```
 
 ## Quick Start

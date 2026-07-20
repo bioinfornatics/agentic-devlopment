@@ -1,0 +1,164 @@
+=== docs build script ===
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+if ! command -v pandoc >/dev/null 2>&1; then
+  echo "error: pandoc is required" >&2
+  echo "Fedora: sudo dnf install pandoc texlive-xetex" >&2
+  exit 127
+fi
+
+DIST_DIR="dist"
+DOCS_DIST_DIR="$DIST_DIR/docs"
+HTML_DIR="$DOCS_DIST_DIR/html"
+PDF_DIR="$DOCS_DIST_DIR/pdf"
+ASSETS_DIR="$HTML_DIR/assets"
+HTML_OUT="$HTML_DIR/agentic-development-harness.html"
+HTML_INDEX="$HTML_DIR/index.html"
+PDF_OUT="$PDF_DIR/agentic-development-harness.pdf"
+
+mkdir -p "$ASSETS_DIR" "$PDF_DIR"
+
+# Remove legacy generated documentation paths so dist/ has one clear docs layout.
+rm -f \
+  "$DIST_DIR/agentic-development-harness.html" \
+  "$DIST_DIR/agentic-development-harness.pdf" \
+  "$DIST_DIR/index.html"
+rm -rf "$DIST_DIR/assets"
+
+cp docs/assets/site.css "$ASSETS_DIR/site.css"
+
+DOCS=(
+  README.md
+  INSTALL.md
+  USE_CASES.md
+  docs/00-index.md
+  docs/01-init-project.md
+  docs/02-code-review.md
+  docs/03-security-review.md
+  docs/04-uxr-simulation.md
+  docs/05-ui-review.md
+  docs/06-test-review.md
+  docs/07-spec-review.md
+  docs/08-project-judge-score.md
+  docs/09-implementation-loop.md
+  docs/10-release-readiness.md
+  docs/11-incident-sre.md
+  docs/12-multi-agent-research.md
+  docs/13-documentation-review.md
+  docs/14-memory.md
+  docs/15-skill-evaluations.md
+  AGENTS.md
+)
+
+pandoc "${DOCS[@]}" \
+  --from gfm \
+  --toc \
+  --toc-depth=2 \
+  --standalone \
+  --metadata title="Agentic Development Harness" \
+  --metadata lang=fr \
+  --css assets/site.css \
+  -o "$HTML_OUT"
+
+# WCAG: wrap body content in <main> landmark + fix lang attr
+python3 .agents/skills/wcag-accessibility-audit/scripts/wcag-postprocess.py "$HTML_OUT"
+
+cp "$HTML_OUT" "$HTML_INDEX"
+
+if command -v xelatex >/dev/null 2>&1; then
+  pandoc "${DOCS[@]}" \
+    --from gfm \
+    --toc \
+    --number-sections \
+    --pdf-engine=xelatex \
+    --metadata title="Agentic Development Harness" \
+    -o "$PDF_OUT"
+  echo "wrote $PDF_OUT"
+elif command -v chromium >/dev/null 2>&1; then
+  chromium --headless --disable-gpu \
+    --print-to-pdf="$ROOT/$PDF_OUT" \
+    "file://$ROOT/$HTML_OUT" >/dev/null 2>&1 || true
+  if [ -f "$PDF_OUT" ]; then
+    echo "wrote $PDF_OUT"
+  else
+    echo "warning: PDF generation via chromium failed; HTML was generated" >&2
+  fi
+else
+  echo "warning: xelatex/chromium not found; generated HTML only" >&2
+  echo "Fedora PDF option: sudo dnf install texlive-xetex" >&2
+fi
+
+echo "wrote $HTML_OUT"
+
+# KG visualizer
+mkdir -p dist/kg
+cp apps/kg-visualizer/src/app.html dist/kg/index.html
+echo "wrote dist/kg/index.html"
+
+# KG pipeline — refresh + reason
+if [ -f "apps/kg/dist/cli.js" ] && [ -d ".knowledge" ]; then
+  node apps/kg/dist/cli.js bootstrap > /dev/null 2>&1 && echo "KG bootstrapped"
+  node apps/kg/dist/cli.js reason > /dev/null 2>&1 && echo "KG reasoned"
+fi
+echo "wrote $HTML_INDEX"
+
+# Build eval trend dashboard (reads evals/history/runs.json — no API calls)
+if command -v python3 >/dev/null 2>&1; then
+  python3 "$(dirname "$0")/build-eval-report.py" && true
+fi=== existing tests (first 40) ===
+apps/eval-hub/dist/domains/measurement/__tests__/deltaService.test.js
+apps/eval-hub/dist/domains/measurement/__tests__/qualityGate.test.js
+apps/eval-hub/dist/domains/persistence/__tests__/contentHash.test.js
+apps/eval-hub/dist/domains/persistence/__tests__/historyRepo.test.js
+apps/eval-hub/dist/domains/reporting/__tests__/htmlBuilder.test.js
+apps/eval-hub/dist/server/__tests__/api.test.js
+apps/eval-hub/e2e/api.spec.ts
+apps/eval-hub/playwright.config.ts
+apps/eval-hub/smoke/startup.spec.ts
+apps/eval-hub/src/domains/measurement/__tests__/deltaService.test.ts
+apps/eval-hub/src/domains/measurement/__tests__/qualityGate.test.ts
+apps/eval-hub/src/domains/persistence/__tests__/contentHash.test.ts
+apps/eval-hub/src/domains/persistence/__tests__/historyRepo.test.ts
+apps/eval-hub/src/domains/reporting/__tests__/htmlBuilder.test.ts
+apps/eval-hub/src/server/__tests__/api.test.ts
+apps/kg-visualizer/dist/server.test.js
+apps/kg-visualizer/src/server.test.ts
+apps/kg/dist/harness.test.js
+apps/kg/dist/reason.test.js
+apps/kg/src/harness.test.ts
+apps/kg/src/reason.test.ts
+dist/evals/layered/20260717T204607Z/skills/agentic-dev-harness/e2923f65bc268bde/eval-0/without_skill/run-1/worktree/apps/kg-visualizer/src/server.test.ts
+dist/evals/layered/20260717T204607Z/skills/agentic-dev-harness/e2923f65bc268bde/eval-0/without_skill/run-1/worktree/apps/kg/dist/harness.test.js
+dist/evals/layered/20260717T204607Z/skills/agentic-dev-harness/e2923f65bc268bde/eval-0/without_skill/run-1/worktree/apps/kg/dist/reason.test.js
+dist/evals/layered/20260717T204607Z/skills/agentic-dev-harness/e2923f65bc268bde/eval-0/without_skill/run-1/worktree/apps/kg/src/harness.test.ts
+dist/evals/layered/20260717T204607Z/skills/agentic-dev-harness/e2923f65bc268bde/eval-0/without_skill/run-1/worktree/apps/kg/src/reason.test.ts
+dist/evals/layered/20260717T204607Z/skills/agentic-ux/0870d94ed41591b1/eval-0/without_skill/run-1/worktree/apps/kg-visualizer/src/server.test.ts
+dist/evals/layered/20260717T204607Z/skills/agentic-ux/0870d94ed41591b1/eval-0/without_skill/run-1/worktree/apps/kg/dist/harness.test.js
+dist/evals/layered/20260717T204607Z/skills/agentic-ux/0870d94ed41591b1/eval-0/without_skill/run-1/worktree/apps/kg/dist/reason.test.js
+dist/evals/layered/20260717T204607Z/skills/agentic-ux/0870d94ed41591b1/eval-0/without_skill/run-1/worktree/apps/kg/src/harness.test.ts
+dist/evals/layered/20260717T204607Z/skills/agentic-ux/0870d94ed41591b1/eval-0/without_skill/run-1/worktree/apps/kg/src/reason.test.ts
+dist/evals/layered/20260717T204607Z/skills/atomic-design-fundamentals/93023aee2ec7d2d9/eval-0/without_skill/run-1/worktree/apps/kg-visualizer/src/server.test.ts
+dist/evals/layered/20260717T204607Z/skills/atomic-design-fundamentals/93023aee2ec7d2d9/eval-0/without_skill/run-1/worktree/apps/kg/dist/harness.test.js
+dist/evals/layered/20260717T204607Z/skills/atomic-design-fundamentals/93023aee2ec7d2d9/eval-0/without_skill/run-1/worktree/apps/kg/dist/reason.test.js
+dist/evals/layered/20260717T204607Z/skills/atomic-design-fundamentals/93023aee2ec7d2d9/eval-0/without_skill/run-1/worktree/apps/kg/src/harness.test.ts
+dist/evals/layered/20260717T204607Z/skills/atomic-design-fundamentals/93023aee2ec7d2d9/eval-0/without_skill/run-1/worktree/apps/kg/src/reason.test.ts
+dist/evals/layered/20260717T204607Z/skills/atomic-design/e31de50320177daf/eval-0/without_skill/run-1/worktree/apps/kg-visualizer/src/server.test.ts
+dist/evals/layered/20260717T204607Z/skills/atomic-design/e31de50320177daf/eval-0/without_skill/run-1/worktree/apps/kg/dist/harness.test.js
+dist/evals/layered/20260717T204607Z/skills/atomic-design/e31de50320177daf/eval-0/without_skill/run-1/worktree/apps/kg/dist/reason.test.js
+dist/evals/layered/20260717T204607Z/skills/atomic-design/e31de50320177daf/eval-0/without_skill/run-1/worktree/apps/kg/src/harness.test.ts
+=== server probe 8765 ===
+LISTEN 0      5                 0.0.0.0:8765       0.0.0.0:*    users:(("python3",pid=1625028,fd=3))       
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.14.4
+Date: Mon, 20 Jul 2026 06:15:33 GMT
+Content-type: text/html
+Content-Length: 196574
+Last-Modified: Thu, 09 Jul 2026 15:29:17 GMT
+
+=== docs source path ===
+ls: impossible d'accéder à 'docs/00-index.md': Aucun fichier ou dossier de ce nom
+-rw-r--r--. 1 jmercier jmercier 4315 18 juil. 16:00 docs/reference/00-index.md

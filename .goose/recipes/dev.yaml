@@ -17,7 +17,19 @@ instructions: |
   Therefore this recipe owns phase order, and each delegated agent owns its phase
   by loading the explicit skills named below.
 
+  Canonical /dev process for non-trivial work:
+  Explore source + web
+  -> Intent
+  -> Spec
+  -> Acceptance Criteria (AC)
+  -> Bead
+  -> RED Test
+  -> Code
+  -> Verification
+  -> Memory
+
   Default non-trivial feature flow:
+  0. Explore evidence   -> delegate codebase-researcher for source-code context; perform targeted web search when external practices, APIs, standards, or ecosystem behavior can affect the implementation.
   1. Discovery/PRD      -> delegate product-owner; require load skill sdd.
   2. Formal spec        -> delegate architect or product-owner; require load skill sdd.
   3. Beads planning     -> delegate planner; require load skill beads and AC-linked tasks.
@@ -25,7 +37,13 @@ instructions: |
   5. GREEN/REFACTOR     -> delegate implementation-worker; require load skill agentic-devlopment, beads, and sdd.
   6. Verification       -> delegate qa-automation or verify subrecipe; require domain testing skill.
   7. Review             -> delegate review-critic; require load skill code-review.
-  8. Escalation         -> after 2 BLOCKs or 3 implement/verify loops, delegate principal-engineer.
+  8. Memory             -> record durable learnings with bd remember or knowledge-graph evidence when structural.
+  9. Escalation         -> after 2 BLOCKs, 3 implement/verify loops, or verification score medium-or-lower after a fix attempt, delegate principal-engineer.
+
+  Verification scoring:
+  - high/pass: continue to review, memory, and close.
+  - medium or lower: loop back to the earliest failed gate: unclear requirement -> Spec; missing AC traceability -> AC/Bead; failing behavior -> Test/Code; weak evidence -> Verification.
+  - after 3 loops: escalate to principal-engineer or ask the user only for the missing decision.
 
   Skip this full flow only for Micro/Small scoped edits, explicit phase-only modes, or documented hotfix exceptions.
 
@@ -228,14 +246,20 @@ prompt: |
 
   Recipes are workflow. Agents are autonomous. Use this recipe hardcoded phase order unless mode explicitly selects one phase.
 
+  Canonical /dev process:
+  Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Verification -> Memory.
+
   Gate evidence required:
-  - Discovery/PRD gate: product intent is clear enough to write ACs, or a product-owner output exists.
+  - Explore gate: source-code evidence exists; targeted web-search evidence exists when external practices, APIs, standards, framework behavior, or current ecosystem context can change the implementation decision.
+  - Intent gate: product intent is clear enough to write ACs, or a product-owner output exists.
   - Spec gate: .specs/features/[feature]/spec.md exists with FEAT acceptance criteria in WHEN/THEN/SHALL form.
-  - Plan gate: Beads tasks exist and each implementation bead cites AC IDs.
-  - RED gate: tdd-guide has produced a failing test command/output tied to an AC ID.
-  - GREEN/REFACTOR gate: implementation-worker has produced the minimal code diff and passing targeted tests.
-  - Verify gate: qa-automation or verify has produced evidence; add env:verified only on PASS.
+  - AC gate: every implementation target maps to at least one acceptance criterion.
+  - Bead gate: Beads tasks exist and each implementation bead cites AC IDs.
+  - RED/Test gate: tdd-guide has produced a failing test command/output tied to an AC ID.
+  - Code gate: implementation-worker has produced the minimal code diff and passing targeted tests.
+  - Verification gate: qa-automation or verify has produced evidence; add env:verified only on PASS/high.
   - Review gate: review-critic has produced APPROVE/PASS-WITH-NITS/BLOCK; add env:reviewed only when not BLOCK.
+  - Memory gate: durable learnings are recorded with bd remember, and structural harness knowledge has KG evidence.
 
   If mode=auto and a prerequisite is missing, do not stop and tell the user to run the next command. Delegate the missing phase to the explicit agent below and continue until the next unsafe or ambiguous boundary.
 
@@ -245,6 +269,7 @@ prompt: |
 
   | Phase | Load skill in parent | Delegate agent/subrecipe | Agent must load | Expected output |
   |---|---|---|---|---|
+  | explore | agentic-devlopment, goose-orchestration | codebase-researcher plus direct targeted web search when needed | agentic-devlopment, goose-orchestration | source-code evidence, external evidence, risks, unknowns |
   | discover/prd | sdd | product-owner | sdd, agentic-devlopment; agentic-ux if AI UX | PRD/user stories, success metrics, risks |
   | spec | sdd | architect or product-owner | sdd, agentic-devlopment | spec.md ACs with FEAT IDs |
   | plan | beads | planner | beads | Beads graph with dependencies and AC links |
@@ -265,7 +290,9 @@ prompt: |
   • Subrecipe: use this recipe sub_recipes block when typed parameters are better than free-form agent instruction.
   • After each worker returns, synthesize the result, update Beads/gate labels when evidence allows, and advance to the next safe phase without user prompting.
 
-  ## Step 5 — Loop limits and escalation
+  ## Step 5 — Verification scoring, loop limits, and escalation
+  - Verification score high/pass -> continue to review, memory, and close.
+  - Verification score medium or lower -> loop back to the earliest failed gate: Spec, AC, Bead, Test, Code, or Verification.
   - Max 3 implement <-> verify cycles per bead.
   - Max 2 review BLOCK cycles per bead.
   - On limit breach: create or update a blocker bead, delegate principal-engineer, and ask the user only for the missing decision.
