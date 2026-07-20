@@ -31,8 +31,8 @@ Run this analysis when scope=all, after scoring individual domains B, C, D. It i
 - `orchestrator` (when loaded by `dev`) / `sdd` (when loaded by `sdd.yaml`) — both route the full SDD cycle
 
 **Recipe × Recipe known candidates** (check these first):
-- `harness-audit` / `harness-review` / `harness-doc-review` — all inspect the harness
+- `harness-audit` / `harness-review` — both inspect the harness (audit is forensic, review is quality gate)
 - `sdd` / `dev` — both can drive the full SDD cycle
-- `doc-review` / `harness-doc-review` — both review documentation
+- `doc-review` subrecipe — documentation review (used by `harness-review scope=docs`)
 
 Cross-artifact red flags: two skills with identical trigger scope and no routing rule; two agents with the same primary responsibility and no cross-reference in do-not-invoke; two recipes with the same entry condition and no differentiation statement; conflicting instructions for the same concern across two artifacts of the same type.

@@ -2,6 +2,9 @@ import { describe, it, expect } from "vitest";
 import { bootstrap } from "../src/bootstrap.js";
 import { reason, RULES } from "../src/reason.js";
 import { parseJSONL } from "../src/types.js";
+import { mkdtemp, readFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 const j = (o) => JSON.stringify(o);
 const e = (name, entityType, obs = []) => j({ type: "entity", name, entityType, observations: obs });
 const r = (from, to, relationType, extra = {}) => j({ type: "relation", from, to, relationType, ...extra });
@@ -23,14 +26,16 @@ describe("parseJSONL", () => {
     });
 });
 describe("RULES", () => {
-    it("RULES: exports 5+ named rules (R1–R6)", () => {
-        expect(RULES.length).toBeGreaterThanOrEqual(5);
+    it("RULES: exports 7+ named rules (R1–R7)", () => {
+        expect(RULES.length).toBeGreaterThanOrEqual(7);
         const names = RULES.map(r => r.name);
         expect(names).toContain("R1:ac-test-gap");
         expect(names).toContain("R2:feature-not-decomposed");
         expect(names).toContain("R3:feature-not-implemented");
         expect(names).toContain("R4:transitive-skill");
         expect(names).toContain("R5:epic-blocked");
+        expect(names).toContain("R6:deprecated-impl-detection");
+        expect(names).toContain("R7:status-disposition");
     });
     it("R1: AC without VALIDATES test → HAS_STATUS test-gap", () => {
         const kg = parseJSONL(e("AC-01", "acceptance_criterion"));
@@ -65,6 +70,15 @@ describe("RULES", () => {
         const rs = new Set(kg.relations.map(rel => rel.from + "|" + rel.to + "|" + rel.relationType));
         expect(RULES.find(r => r.name === "R2:feature-not-decomposed").fn(kg, rs)).toHaveLength(0);
     });
+    it("R2: feature with HAS_CRITERION acceptance criterion → no decomposition gap", () => {
+        const kg = parseJSONL([
+            e("feat-criteria", "feature"),
+            e("AC-X", "acceptance_criterion"),
+            r("feat-criteria", "AC-X", "HAS_CRITERION"),
+        ].join("\n"));
+        const rs = new Set(kg.relations.map(rel => rel.from + "|" + rel.to + "|" + rel.relationType));
+        expect(RULES.find(r => r.name === "R2:feature-not-decomposed").fn(kg, rs)).toHaveLength(0);
+    });
     it("R3: feature IMPLEMENTED_BY code_file → gap closed", () => {
         const kg = parseJSONL([
             e("feat-x", "feature"),
@@ -79,6 +93,14 @@ describe("RULES", () => {
             e("feat-y", "feature"),
             e("g.ts", "code_file"),
             r("g.ts", "feat-y", "IMPLEMENTS"),
+        ].join("\n"));
+        const rs = new Set(kg.relations.map(rel => rel.from + "|" + rel.to + "|" + rel.relationType));
+        expect(RULES.find(r => r.name === "R3:feature-not-implemented").fn(kg, rs)).toHaveLength(0);
+    });
+    it("R3: feature IMPLEMENTED_IN artifact → gap closed", () => {
+        const kg = parseJSONL([
+            e("feat-cli", "feature"),
+            r("feat-cli", "scripts/run.ts", "IMPLEMENTED_IN"),
         ].join("\n"));
         const rs = new Set(kg.relations.map(rel => rel.from + "|" + rel.to + "|" + rel.relationType));
         expect(RULES.find(r => r.name === "R3:feature-not-implemented").fn(kg, rs)).toHaveLength(0);
@@ -142,6 +164,26 @@ describe("R6: deprecated-impl-detection", () => {
         const rs = new Set(kg.relations.map(rel => rel.from + "|" + rel.to + "|" + rel.relationType));
         const d = RULES.find(r => r.name === "R6:deprecated-impl-detection").fn(kg, rs);
         expect(d).toHaveLength(0);
+    });
+});
+describe("R7: status-disposition", () => {
+    it("R7: status with beads-issue observation → STATUS_DISPOSED_BY", () => {
+        const kg = parseJSONL([
+            e("AC-GAP", "acceptance_criterion", ["beads-issue: issue-123"]),
+            r("AC-GAP", "status:test-gap", "HAS_STATUS", { status_value: "test-gap" }),
+        ].join("\n"));
+        const rs = new Set(kg.relations.map(rel => rel.from + "|" + rel.to + "|" + rel.relationType));
+        const d = RULES.find(r => r.name === "R7:status-disposition").fn(kg, rs);
+        expect(d.some(x => x.relationType === "STATUS_DISPOSED_BY" && x.to === "issue-123")).toBe(true);
+    });
+});
+describe("non-mutating reason output", () => {
+    it("reason writes to explicit output path", async () => {
+        const dir = await mkdtemp(join(tmpdir(), "kg-reason-"));
+        const output = join(dir, "derived.jsonl");
+        await reason({ input: join(dir, "missing-memory.jsonl"), output });
+        const text = await readFile(output, "utf8");
+        expect(text).toBe("\n");
     });
 });
 describe("bootstrap + reason exports", () => {

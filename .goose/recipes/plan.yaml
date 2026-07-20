@@ -183,7 +183,23 @@ prompt: |
   Run `bd ready --json`. Confirm at least one task has no blockers.
   If >10 nodes or cycles found: delegate to `planner`.
 
-  ## Step 6 — Handoff
+  ## Step 6 — Completion Gate (MUST pass before handoff)
+  Verify ALL before proceeding:
+  - [ ] `bd graph --json` returns valid graph (no cycles)
+  - [ ] Every task has --assignee set
+  - [ ] Every task has --acceptance linking to [FEAT]-NN ID
+  - [ ] `bd ready --json` shows ≥1 unblocked task
+  - [ ] Dependencies use `needs:` and `partOf:` correctly
+  
+  If ANY check fails: STOP and fix graph before handoff.
+
+  ## Step 7 — Handoff to implementation-worker
   Print the plan table. Store memory snapshot.
-  Report: epic ID, task count, first available bead to claim, recommended next command:
-    `goose run --recipe ./.goose/recipes/dev.yaml --params task="<first-bead-id>" --params mode=implement`
+  Report:
+  - Artifact: Beads task graph
+  - Epic ID: [epic-bead-id]
+  - Task count: [N]
+  - First claimable: [bead-id]
+  - Recommended next: `/implement [first-bead-id]`
+  
+  The plan is now ready for implementation-worker to claim and build.

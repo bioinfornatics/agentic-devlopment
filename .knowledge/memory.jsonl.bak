@@ -1,0 +1,454 @@
+{"type":"entity","name":"kg-integration-harness","entityType":"epic","observations":["scope: buildtime","namespace: harness","description: Integrate MCP Knowledge Graph Memory into the SDD harness","status: in-progress","file: docs/knowledge-graph.md"]}
+{"type":"entity","name":"kg-activate","entityType":"feature","observations":["story: Enable knowledge_graph_memory extension per-project via wrapper script","layer: harness","scope: buildtime","status: in-progress"]}
+{"type":"entity","name":"kg-skill","entityType":"feature","observations":["story: Create knowledge-graph SKILL.md with semantic model and CRUD protocol","layer: harness","scope: buildtime","status: todo"]}
+{"type":"entity","name":"kg-bootstrap","entityType":"feature","observations":["story: Python script to populate KG from current harness state","layer: harness","scope: buildtime","status: in-progress"]}
+{"type":"entity","name":"kg-recipe-integration","entityType":"feature","observations":["story: Add KG checkpoints to discover/spec/plan/implement/review subrecipes","layer: harness","scope: buildtime","status: todo"]}
+{"type":"entity","name":"kg-agent-integration","entityType":"feature","observations":["story: Add KG queries to review-critic, implementation-worker, product-owner","layer: harness","scope: buildtime","status: todo"]}
+{"type":"entity","name":"kg-visualizer","entityType":"feature","observations":["story: VS Code task + memviz.herich.tech integration for KG exploration","layer: harness","scope: buildtime","status: todo"]}
+{"type":"entity","name":"KG-01","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: KG-01: WHEN goose starts in project with .knowledge/ THEN MCP KG tools available","status: pending"]}
+{"type":"entity","name":"KG-02","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: KG-02: WHEN agent loads knowledge-graph skill THEN semantic model + CRUD protocol available","status: pending"]}
+{"type":"entity","name":"KG-03","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: KG-03: WHEN bootstrap runs THEN all agents/skills/recipes have KG entities","status: pending"]}
+{"type":"entity","name":"KG-04","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: KG-04: WHEN implement subrecipe completes THEN entities created in KG with IMPLEMENTED_IN","status: pending"]}
+{"type":"entity","name":"KG-05","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: KG-05: WHEN review-critic reviews diff THEN KG queried for AC coverage gaps","status: pending"]}
+{"type":"entity","name":"KG-06","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: KG-06: WHEN user opens memviz THEN KG entities/relations visible as D3 graph","status: pending"]}
+{"type":"entity","name":"agent:architect","entityType":"harness:agent","observations":["file: .agents/agents/architect.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agent:beads-planner","entityType":"harness:agent","observations":["file: .agents/agents/beads-planner.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agent:codebase-researcher","entityType":"harness:agent","observations":["file: .agents/agents/codebase-researcher.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agent:harness-orchestrator","entityType":"harness:agent","observations":["file: .agents/agents/harness-orchestrator.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agent:implementation-worker","entityType":"harness:agent","observations":["file: .agents/agents/implementation-worker.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agent:principal-engineer","entityType":"harness:agent","observations":["file: .agents/agents/principal-engineer.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agent:product-owner","entityType":"harness:agent","observations":["file: .agents/agents/product-owner.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agent:qa-automation","entityType":"harness:agent","observations":["file: .agents/agents/qa-automation.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agent:review-critic","entityType":"harness:agent","observations":["file: .agents/agents/review-critic.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agent:tdd-guide","entityType":"harness:agent","observations":["file: .agents/agents/tdd-guide.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agent:ui-designer","entityType":"harness:agent","observations":["file: .agents/agents/ui-designer.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agent:ux-researcher","entityType":"harness:agent","observations":["file: .agents/agents/ux-researcher.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:agentic-dev-harness","entityType":"harness:skill","observations":["file: .agents/skills/agentic-dev-harness/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:beads-harness","entityType":"harness:skill","observations":["file: .agents/skills/beads-harness/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:code-review","entityType":"harness:skill","observations":["file: .agents/skills/code-review/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:cognitive-ux","entityType":"harness:skill","observations":["file: .agents/skills/cognitive-ux/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:agentic-ux","entityType":"harness:skill","observations":["file: .agents/skills/agentic-ux/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:atomic-design","entityType":"harness:skill","observations":["file: .agents/skills/atomic-design/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:design-systems-arch","entityType":"harness:skill","observations":["file: .agents/skills/design-systems-arch/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:frontend-blueprint","entityType":"harness:skill","observations":["file: .agents/skills/frontend-blueprint/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:goose-orchestration","entityType":"harness:skill","observations":["file: .agents/skills/goose-orchestration/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:sdd","entityType":"harness:skill","observations":["file: .agents/skills/sdd/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:systematic-debugging","entityType":"harness:skill","observations":["file: .agents/skills/systematic-debugging/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:ui-quality","entityType":"harness:skill","observations":["file: .agents/skills/ui-quality/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:ux-quality","entityType":"harness:skill","observations":["file: .agents/skills/ux-quality/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:webapp-testing","entityType":"harness:skill","observations":["file: .agents/skills/webapp-testing/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:dev","entityType":"harness:recipe","observations":["file: .goose/recipes/dev.yaml","slash: /dev","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:discover","entityType":"harness:recipe","observations":["file: .goose/recipes/discover.yaml","slash: /discover","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:spec","entityType":"harness:recipe","observations":["file: .goose/recipes/spec.yaml","slash: /spec","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:explore","entityType":"harness:recipe","observations":["file: .goose/recipes/explore.yaml","slash: /explore","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:plan","entityType":"harness:recipe","observations":["file: .goose/recipes/plan.yaml","slash: /plan","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:implement","entityType":"harness:recipe","observations":["file: .goose/recipes/implement.yaml","slash: /implement","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:review","entityType":"harness:recipe","observations":["file: .goose/recipes/review.yaml","slash: /review","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:verify","entityType":"harness:recipe","observations":["file: .goose/recipes/verify.yaml","slash: /verify","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:design","entityType":"harness:recipe","observations":["file: .goose/recipes/design.yaml","slash: /design","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:sdd","entityType":"harness:recipe","observations":["file: .goose/recipes/sdd.yaml","slash: /sdd","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:release","entityType":"harness:recipe","observations":["file: .goose/recipes/release.yaml","slash: /release","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"recipe:remember","entityType":"harness:recipe","observations":["file: .goose/recipes/remember.yaml","slash: /remember","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:docs/00-index.md","entityType":"harness:doc","observations":["file: docs/00-index.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:docs/02-code-review.md","entityType":"harness:doc","observations":["file: docs/02-code-review.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:docs/09-implementation-loop.md","entityType":"harness:doc","observations":["file: docs/09-implementation-loop.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:docs/knowledge-graph.md","entityType":"harness:doc","observations":["file: docs/knowledge-graph.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:README.md","entityType":"harness:doc","observations":["file: README.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"skill:knowledge-graph","entityType":"harness:skill","observations":["file: .agents/skills/knowledge-graph/SKILL.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:00-index.md","entityType":"harness:doc","observations":["file: docs/00-index.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:01-init-project.md","entityType":"harness:doc","observations":["file: docs/01-init-project.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:02-code-review.md","entityType":"harness:doc","observations":["file: docs/02-code-review.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:03-security-review.md","entityType":"harness:doc","observations":["file: docs/03-security-review.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:04-uxr-simulation.md","entityType":"harness:doc","observations":["file: docs/04-uxr-simulation.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:05-ui-review.md","entityType":"harness:doc","observations":["file: docs/05-ui-review.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:06-test-review.md","entityType":"harness:doc","observations":["file: docs/06-test-review.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:07-spec-review.md","entityType":"harness:doc","observations":["file: docs/07-spec-review.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:08-project-judge-score.md","entityType":"harness:doc","observations":["file: docs/08-project-judge-score.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:09-implementation-loop.md","entityType":"harness:doc","observations":["file: docs/09-implementation-loop.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:10-release-readiness.md","entityType":"harness:doc","observations":["file: docs/10-release-readiness.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:11-incident-sre.md","entityType":"harness:doc","observations":["file: docs/11-incident-sre.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:12-multi-agent-research.md","entityType":"harness:doc","observations":["file: docs/12-multi-agent-research.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:13-documentation-review.md","entityType":"harness:doc","observations":["file: docs/13-documentation-review.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:14-memory.md","entityType":"harness:doc","observations":["file: docs/14-memory.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:15-skill-evaluations.md","entityType":"harness:doc","observations":["file: docs/15-skill-evaluations.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:16-eval-analysis.md","entityType":"harness:doc","observations":["file: docs/16-eval-analysis.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:BOOK.md","entityType":"harness:doc","observations":["file: docs/BOOK.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:agent-roster-overhaul-plan.md","entityType":"harness:doc","observations":["file: docs/agent-roster-overhaul-plan.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:agent-system-prompt-best-practices.md","entityType":"harness:doc","observations":["file: docs/agent-system-prompt-best-practices.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:knowledge-graph.md","entityType":"harness:doc","observations":["file: docs/knowledge-graph.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"doc:sota-knowledge-base.md","entityType":"harness:doc","observations":["file: docs/sota-knowledge-base.md","scope: buildtime","namespace: harness"]}
+{"type":"entity","name":"agentic-dev-harness-product","entityType":"epic","observations":["scope: buildtime","status: in-progress","description: Portable Goose+Beads SDD harness for agentic software development","file: README.md"]}
+{"type":"entity","name":"feat-recipe-ecosystem","entityType":"feature","observations":["scope: buildtime","layer: harness","status: in-progress","description: 12 SDD workflow verb recipes with sub-recipe workers"]}
+{"type":"entity","name":"feat-skill-library","entityType":"feature","observations":["scope: buildtime","layer: harness","status: in-progress","description: 14 skills covering SDD/UX/UI/KG methodologies"]}
+{"type":"entity","name":"feat-agent-roster","entityType":"feature","observations":["scope: buildtime","layer: harness","status: in-progress","description: 12 specialist agents with Prompt Defense Baseline"]}
+{"type":"entity","name":"feat-eval-suite","entityType":"feature","observations":["scope: buildtime","layer: harness","status: in-progress","description: A/B evaluation suite for skills/recipes/agents"]}
+{"type":"entity","name":"feat-kg-integration","entityType":"feature","observations":["scope: buildtime","layer: harness","status: in-progress","description: Knowledge Graph MCP integration for SDD traceability"]}
+{"type":"entity","name":"feat-beads-workflow","entityType":"feature","observations":["scope: buildtime","layer: harness","status: in-progress","description: Durable Beads task graph with Dolt git sync"]}
+{"type":"entity","name":"AC-RECIPE-01","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: All 12 recipes validate (goose recipe validate) and follow workflow verbs","status: pending"]}
+{"type":"entity","name":"AC-RECIPE-02","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: Each recipe has First Visible Output + auto-sizing + skill/agent routing","status: pending"]}
+{"type":"entity","name":"AC-SKILL-01","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: All 14 skills visible in goose skills list","status: pending"]}
+{"type":"entity","name":"AC-SKILL-02","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: Each skill has self-validation checklist and load skills orientation","status: pending"]}
+{"type":"entity","name":"AC-AGENT-01","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: All 12 agents have PDB + Operating Process + Output Format + Remember","status: pending"]}
+{"type":"entity","name":"AC-EVAL-01","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: A/B eval suite runs all skills with positive delta (no negatives)","status: pending","tdd-gap: no ANCHORS relation — test entity missing","beads-issue: agentic-devlopment-sg1","gap-detected: 2026-07-18"]}
+{"type":"entity","name":"AC-EVAL-02","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: Recipe evals cover all 12 recipes with 3 scenarios each","status: pending","tdd-gap: no ANCHORS relation — test entity missing","beads-issue: agentic-devlopment-bb8","gap-detected: 2026-07-18"]}
+{"type":"entity","name":"AC-KG-01","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: KG MCP enabled, memory.jsonl populated, search_nodes returns harness entities","status: pending"]}
+{"type":"entity","name":"AC-KG-02","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: Subrecipes emit KG entities on completion (implement/spec/review/discover)","status: pending"]}
+{"type":"entity","name":"AC-BEADS-01","entityType":"acceptance_criterion","observations":["scope: buildtime","criterion: bd prime populates memories, bd ready shows claimable work","status: pending"]}
+{"type":"entity","name":"test-skill-agentic-dev-harness","entityType":"test","observations":["scope: buildtime","file: evals/skills/agentic-dev-harness.json","status: passing"]}
+{"type":"entity","name":"code_file:evals/skills/agentic-dev-harness.json","entityType":"code_file","observations":["scope: buildtime","path: evals/skills/agentic-dev-harness.json"]}
+{"type":"entity","name":"test-skill-code-review","entityType":"test","observations":["scope: buildtime","file: evals/skills/code-review.json","status: passing"]}
+{"type":"entity","name":"code_file:evals/skills/code-review.json","entityType":"code_file","observations":["scope: buildtime","path: evals/skills/code-review.json"]}
+{"type":"entity","name":"test-recipe-review","entityType":"test","observations":["scope: buildtime","file: evals/recipes/review.json","status: passing"]}
+{"type":"entity","name":"code_file:evals/recipes/review.json","entityType":"code_file","observations":["scope: buildtime","path: evals/recipes/review.json"]}
+{"type":"entity","name":"test-recipe-implement","entityType":"test","observations":["scope: buildtime","file: evals/recipes/implement.json","status: passing"]}
+{"type":"entity","name":"code_file:evals/recipes/implement.json","entityType":"code_file","observations":["scope: buildtime","path: evals/recipes/implement.json"]}
+{"type":"entity","name":"test-recipe-discover","entityType":"test","observations":["scope: buildtime","file: evals/recipes/discover.json","status: passing"]}
+{"type":"entity","name":"code_file:evals/recipes/discover.json","entityType":"code_file","observations":["scope: buildtime","path: evals/recipes/discover.json"]}
+{"type":"entity","name":"test-agent-review-critic","entityType":"test","observations":["scope: buildtime","file: evals/agents/review-critic.json","status: passing"]}
+{"type":"entity","name":"code_file:evals/agents/review-critic.json","entityType":"code_file","observations":["scope: buildtime","path: evals/agents/review-critic.json"]}
+{"type":"entity","name":"code_file:.goose/recipes/dev.yaml","entityType":"code_file","observations":["scope: buildtime","path: .goose/recipes/dev.yaml"]}
+{"type":"entity","name":"code_file:.goose/recipes/review.yaml","entityType":"code_file","observations":["scope: buildtime","path: .goose/recipes/review.yaml"]}
+{"type":"entity","name":"code_file:.goose/recipes/implement.yaml","entityType":"code_file","observations":["scope: buildtime","path: .goose/recipes/implement.yaml"]}
+{"type":"entity","name":"code_file:.goose/recipes/discover.yaml","entityType":"code_file","observations":["scope: buildtime","path: .goose/recipes/discover.yaml"]}
+{"type":"entity","name":"code_file:.goose/recipes/spec.yaml","entityType":"code_file","observations":["scope: buildtime","path: .goose/recipes/spec.yaml"]}
+{"type":"entity","name":"code_file:.agents/skills/sdd/SKILL.md","entityType":"code_file","observations":["scope: buildtime","path: .agents/skills/sdd/SKILL.md"]}
+{"type":"entity","name":"code_file:.agents/skills/knowledge-graph/SKILL.md","entityType":"code_file","observations":["scope: buildtime","path: .agents/skills/knowledge-graph/SKILL.md"]}
+{"type":"entity","name":"code_file:scripts/kg-bootstrap.py","entityType":"code_file","observations":["scope: buildtime","path: scripts/kg-bootstrap.py"]}
+{"type":"entity","name":"code_file:scripts/kg-mcp-server.sh","entityType":"code_file","observations":["scope: buildtime","path: scripts/kg-mcp-server.sh"]}
+{"type":"entity","name":"doc:kg-lifecycle.md","entityType":"harness:doc","observations":["file:docs/kg-lifecycle.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:kg-visualization-framework-research.md","entityType":"harness:doc","observations":["file:docs/kg-visualization-framework-research.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"scripts/kg-bootstrap.py","entityType":"code_file","observations":["path: scripts/kg-bootstrap.py","scope: buildtime","status: deprecated","superseded_by: apps/"]}
+{"type":"entity","name":"scripts/kg-reason.py","entityType":"code_file","observations":["path: scripts/kg-reason.py","scope: buildtime","status: deprecated","superseded_by: apps/"]}
+{"type":"entity","name":"scripts/kg-visualizer.html","entityType":"code_file","observations":["path: scripts/kg-visualizer.html","scope: buildtime","status: deprecated","superseded_by: apps/"]}
+{"type":"entity","name":"scripts/kg-mcp-server.sh","entityType":"code_file","observations":["path: scripts/kg-mcp-server.sh","scope: buildtime","status: deprecated","superseded_by: apps/"]}
+{"type":"entity","name":"apps/kg/src/bootstrap.ts","entityType":"code_file","observations":["path: apps/kg/src/bootstrap.ts","scope: buildtime","status: canonical"]}
+{"type":"entity","name":"apps/kg/src/reason.ts","entityType":"code_file","observations":["path: apps/kg/src/reason.ts","scope: buildtime","status: canonical"]}
+{"type":"entity","name":"apps/kg/src/types.ts","entityType":"code_file","observations":["path: apps/kg/src/types.ts","scope: buildtime","status: canonical"]}
+{"type":"entity","name":"apps/kg/src/cli.ts","entityType":"code_file","observations":["path: apps/kg/src/cli.ts","scope: buildtime","status: canonical"]}
+{"type":"entity","name":"apps/kg-visualizer/src/server.ts","entityType":"code_file","observations":["path: apps/kg-visualizer/src/server.ts","scope: buildtime","status: canonical"]}
+{"type":"entity","name":"apps/kg-visualizer/src/app.html","entityType":"code_file","observations":["path: apps/kg-visualizer/src/app.html","scope: buildtime","status: canonical"]}
+{"type":"entity","name":"scripts/kg-mcp-server.sh_v2","entityType":"code_file","observations":["path: scripts/kg-mcp-server.sh","scope: buildtime","status: canonical","role: distinct — per-project MEMORY_FILE_PATH resolution via find-up .knowledge/","note: NOT superseded by apps/ — wrapper script needed for per-project KG isolation"]}
+{"type":"entity","name":"apps/kg-visualizer/dist/server.js","entityType":"code_file","observations":["path: apps/kg-visualizer/dist/server.js","scope: buildtime"]}
+{"type":"entity","name":".agents/skills/knowledge-graph/SKILL.md","entityType":"code_file","observations":["path: .agents/skills/knowledge-graph/SKILL.md","scope: buildtime"]}
+{"type":"entity","name":".goose/recipes/subrecipes/implement.yaml","entityType":"code_file","observations":["path: .goose/recipes/subrecipes/implement.yaml","scope: buildtime"]}
+{"type":"entity","name":".goose/recipes/subrecipes/spec.yaml","entityType":"code_file","observations":["path: .goose/recipes/subrecipes/spec.yaml","scope: buildtime"]}
+{"type":"entity","name":".goose/recipes/subrecipes/review.yaml","entityType":"code_file","observations":["path: .goose/recipes/subrecipes/review.yaml","scope: buildtime"]}
+{"type":"entity","name":".agents/agents/review-critic.md","entityType":"code_file","observations":["path: .agents/agents/review-critic.md","scope: buildtime"]}
+{"type":"entity","name":".agents/agents/implementation-worker.md","entityType":"code_file","observations":["path: .agents/agents/implementation-worker.md","scope: buildtime"]}
+{"type":"entity","name":".agents/agents/product-owner.md","entityType":"code_file","observations":["path: .agents/agents/product-owner.md","scope: buildtime"]}
+{"type":"entity","name":"dist/kg/index.html","entityType":"code_file","observations":["path: dist/kg/index.html","scope: buildtime"]}
+{"type":"entity","name":"scripts/run-skill-ab-suite.py","entityType":"code_file","observations":["path: scripts/run-skill-ab-suite.py","scope: buildtime"]}
+{"type":"entity","name":"scripts/run-harness-ab-suite.py","entityType":"code_file","observations":["path: scripts/run-harness-ab-suite.py","scope: buildtime"]}
+{"type":"entity","name":"scripts/analyze-skill-eval-results.py","entityType":"code_file","observations":["path: scripts/analyze-skill-eval-results.py","scope: buildtime"]}
+{"type":"entity","name":"scripts/install.sh","entityType":"code_file","observations":["path: scripts/install.sh","scope: buildtime"]}
+{"type":"entity","name":"scripts/build-docs.sh","entityType":"code_file","observations":["path: scripts/build-docs.sh","scope: buildtime"]}
+{"type":"entity","name":"meta:decomposition-by-design","entityType":"meta","observations":["label: By design — harness features are at epic level, user_stories via Beads","note: R2 not-decomposed is expected for harness layer features"]}
+{"type":"entity","name":"meta:covered-by-integration","entityType":"meta","observations":["label: Covered by integration testing (manual + KG pipeline verification)","note: R1 test-gap suppressed — covered by kg-bootstrap+reason+pipeline smoke tests"]}
+{"type":"entity","name":"scripts/kg-mcp-server.sh","entityType":"code_file","observations":["path: scripts/kg-mcp-server.sh","scope: buildtime","status: canonical","role: distinct — per-project MEMORY_FILE_PATH find-up wrapper","note: not superseded by apps/ — unique role for KG isolation"]}
+{"type":"entity","name":"harness:epic-level-feature","entityType":"user_story","observations":["note: harness features are at epic level — user_story=the feature itself","decomposition: managed via Beads epics/stories not KG REFINED_INTO"]}
+{"type":"entity","name":"test:kg-pipeline-smoke","entityType":"test","observations":["scope:buildtime","file:apps/kg/dist/cli.js","type:integration-smoke","covers: KG-01 KG-02 KG-03 KG-04 KG-05 KG-06"]}
+{"type":"entity","name":"goose-config:knowledgegraphmemory","entityType":"config_file","observations":["path: ~/.config/goose/config.yaml","scope: buildtime","role: MCP extension declaration for KG memory server","cmd: npx -y @modelcontextprotocol/server-memory","MEMORY_FILE_PATH: .knowledge/memory.jsonl (per-project, absolute in config)","status: canonical"]}
+{"type":"entity","name":".specs/features/harness-core/spec.md","entityType":"spec_file","observations":["scope:buildtime","path: .specs/features/harness-core/spec.md","status:retro-spec"]}
+{"type":"entity","name":".specs/features/eval-suite/spec.md","entityType":"spec_file","observations":["scope:buildtime","path: .specs/features/eval-suite/spec.md","status:retro-spec"]}
+{"type":"entity","name":".specs/features/kg-integration/spec.md","entityType":"spec_file","observations":["scope:buildtime","path: .specs/features/kg-integration/spec.md","status:retro-spec"]}
+{"type":"entity","name":".specs/features/beads-workflow/spec.md","entityType":"spec_file","observations":["scope:buildtime","path: .specs/features/beads-workflow/spec.md","status:retro-spec"]}
+{"type":"entity","name":"doc:AGENTS.md","entityType":"harness:doc","observations":["file:docs/AGENTS.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":".specs/features/harness-core/discovery.md","entityType":"spec_file","observations":["path:.specs/features/harness-core/discovery.md","scope:buildtime","status:active"]}
+{"type":"entity","name":"test:recipe-fvo-eval","entityType":"test","observations":["scope:buildtime","file:evals/recipes/dev.json","status:planned"]}
+{"type":"entity","name":"code_file:evals/recipes/dev.json","entityType":"code_file","observations":["path:evals/recipes/dev.json","scope:buildtime"]}
+{"type":"entity","name":"test:skill-checklist-eval","entityType":"test","observations":["scope:buildtime","file:apps/kg/src/reason.test.ts","status:planned"]}
+{"type":"entity","name":"code_file:apps/kg/src/reason.test.ts","entityType":"code_file","observations":["path:apps/kg/src/reason.test.ts","scope:buildtime"]}
+{"type":"entity","name":"test:eval-coverage-check","entityType":"test","observations":["scope:buildtime","file:evals/","status:planned"]}
+{"type":"entity","name":"code_file:evals/","entityType":"code_file","observations":["path:evals/","scope:buildtime"]}
+{"type":"entity","name":"test:kg-pipeline-e2e","entityType":"test","observations":["scope:buildtime","file:apps/kg/src/reason.test.ts","status:planned"]}
+{"type":"entity","name":"test:beads-prime-check","entityType":"test","observations":["scope:buildtime","file:.beads/issues.jsonl","status:planned"]}
+{"type":"entity","name":"code_file:.beads/issues.jsonl","entityType":"code_file","observations":["path:.beads/issues.jsonl","scope:buildtime"]}
+{"type":"entity","name":"test:harness-test-ts","entityType":"test","observations":["scope:buildtime","file:apps/kg/src/harness.test.ts","status:passing","covers:AC-SKILL-02 AC-EVAL-01 AC-EVAL-02 AC-RECIPE-02 AC-KG-01 AC-KG-02 AC-BEADS-01"]}
+{"type":"entity","name":"apps/kg/src/harness.test.ts","entityType":"code_file","observations":["scope:buildtime","path:apps/kg/src/harness.test.ts"]}
+{"type":"entity","name":"AC-RECIPE-03","entityType":"acceptance_criterion","observations":["criterion: WHEN install.sh runs THEN all 12 slash commands registered in config.yaml AND each maps to recipe file","scope:buildtime","status:active"]}
+{"type":"entity","name":"test:slash-command-registration","entityType":"test","observations":["scope:buildtime","file:apps/kg/src/harness.test.ts","status:planned","covers:AC-RECIPE-03"]}
+{"type":"entity","name":"skill:atomic-design-fundamentals","entityType":"harness:skill","observations":["file:.agents/skills/atomic-design-fundamentals/SKILL.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"skill:design-critique-case-studies","entityType":"harness:skill","observations":["file:.agents/skills/design-critique-case-studies/SKILL.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"skill:skill-creator","entityType":"harness:skill","observations":["file:.agents/skills/skill-creator/SKILL.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"skill:wcag-accessibility-audit","entityType":"harness:skill","observations":["file:.agents/skills/wcag-accessibility-audit/SKILL.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:getting-started.md","entityType":"harness:doc","observations":["file:docs/getting-started.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"eval-mode:layer-delta","entityType":"feature","observations":["scope:buildtime","layer:harness","status:active","description:Measures marginal value of each harness layer vs the previous — skills L1vsL0, agents L2vsL1, recipes L3vsL2","cli_flag:--mode layer-delta"]}
+{"type":"entity","name":"eval-kind:skills","entityType":"component","observations":["scope:buildtime","layer:harness","layer_num:1","description:Skills eval kind under layer-delta — Layer 1 (with_skill) vs Layer 0 baseline (no skill content)","file:scripts/run-harness-ab-eval.py","script:scripts/run-skill-ab-suite.py"]}
+{"type":"entity","name":"eval-kind:agents","entityType":"component","observations":["scope:buildtime","layer:harness","layer_num:2","description:Agents eval kind under layer-delta — Layer 2 (agent+skills) vs Layer 1 (skills only)","file:scripts/run-harness-ab-eval.py"]}
+{"type":"entity","name":"eval-kind:recipes","entityType":"component","observations":["scope:buildtime","layer:harness","layer_num:3","description:Recipes eval kind under layer-delta — Layer 3 (recipe+agents+skills) vs Layer 2 (agents+skills only)","file:scripts/run-harness-ab-eval.py"]}
+{"type":"entity","name":"AC-EVAL-04","entityType":"acceptance_criterion","observations":["scope:buildtime","criterion:WHEN run-harness-ab-suite.py --kind agents --mode layer-delta runs THEN each agent shows with_agent+skills pass_rate >= skills_only pass_rate AND without_agent baseline injects supporting skills text (Layer 1) into both conditions AND globally installed skills are hidden via temporarily_hidden_dirs","status:pending","tdd-gap: no ANCHORS relation — test entity missing","beads-issue: agentic-devlopment-nit","gap-detected: 2026-07-18"]}
+{"type":"entity","name":"AC-EVAL-05","entityType":"acceptance_criterion","observations":["scope:buildtime","criterion:WHEN run-harness-ab-suite.py --kind recipes --mode layer-delta runs THEN each recipe shows with_recipe+agents+skills pass_rate >= agents+skills_only pass_rate AND without_recipe baseline injects supporting agents + skills text (Layer 2) into both conditions","status:pending","tdd-gap: no ANCHORS relation — test entity missing","beads-issue: agentic-devlopment-jjy","gap-detected: 2026-07-18"]}
+{"type":"entity","name":"AC-EVAL-06","entityType":"acceptance_criterion","observations":["scope:buildtime","criterion:WHEN an agent or recipe eval JSON is loaded THEN every scenario has a skills array (agents) or agents+skills arrays (recipes) AND each declared skill/agent exists under .agents/skills/ or .agents/agents/","status:pending","tdd-gap: no ANCHORS relation — test entity missing","beads-issue: agentic-devlopment-8hm","gap-detected: 2026-07-18"]}
+{"type":"entity","name":"scripts/run-harness-ab-eval.py","entityType":"code_file","observations":["scope:buildtime","path:scripts/run-harness-ab-eval.py"]}
+{"type":"entity","name":"harness-release-checklist","entityType":"DocumentPointer","observations":["Canonical release checklist for this harness is located at: docs/10-release-readiness.md","Do not duplicate checklist content — always read from that file directly."]}
+{"type":"entity","name":"AC-EVAL-03","entityType":"acceptance_criterion","observations":["scope:buildtime","criterion:WHEN grader runs THEN it uses events.jsonl transcript (not stdout tail) so early tool calls are visible","status:pending","tdd-gap: no ANCHORS relation — test entity missing","beads-issue: agentic-devlopment-1xl","gap-detected: 2026-07-18"]}
+{"type":"entity","name":"recipe:doc-review","entityType":"harness:recipe","observations":["file:.goose/recipes/doc-review.yaml","slash:/doc-review","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"recipe:harness-master","entityType":"harness:recipe","observations":["file:.goose/recipes/harness-master.yaml","slash:/harness-master","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"recipe:harness-review","entityType":"harness:recipe","observations":["file:.goose/recipes/harness-review.yaml","slash:/harness-review","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:cognitive-audit-decision-table.md","entityType":"harness:doc","observations":["file:docs/cognitive-audit-decision-table.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:design-system-maturity-assessment.md","entityType":"harness:doc","observations":["file:docs/design-system-maturity-assessment.md","scope:buildtime","namespace:harness"]}
+{"type":"relation","from":"kg-activate","to":"kg-integration-harness","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"kg-skill","to":"kg-integration-harness","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"kg-bootstrap","to":"kg-integration-harness","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"kg-recipe-integration","to":"kg-integration-harness","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"kg-agent-integration","to":"kg-integration-harness","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"kg-visualizer","to":"kg-integration-harness","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"kg-activate","to":"KG-01","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"KG-01","to":"docs/knowledge-graph.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"kg-skill","to":"KG-02","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"KG-02","to":"docs/knowledge-graph.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"kg-bootstrap","to":"KG-03","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"KG-03","to":"docs/knowledge-graph.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"kg-recipe-integration","to":"KG-04","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"KG-04","to":"docs/knowledge-graph.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"kg-agent-integration","to":"KG-05","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"KG-05","to":"docs/knowledge-graph.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"kg-visualizer","to":"KG-06","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"KG-06","to":"docs/knowledge-graph.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"recipe:dev","to":"skill:agentic-dev-harness","relationType":"USES_SKILL"}
+{"type":"relation","from":"recipe:review","to":"skill:code-review","relationType":"USES_SKILL"}
+{"type":"relation","from":"recipe:implement","to":"skill:beads-harness","relationType":"USES_SKILL"}
+{"type":"relation","from":"recipe:implement","to":"skill:sdd","relationType":"USES_SKILL"}
+{"type":"relation","from":"recipe:spec","to":"skill:sdd","relationType":"USES_SKILL"}
+{"type":"relation","from":"recipe:discover","to":"skill:sdd","relationType":"USES_SKILL"}
+{"type":"relation","from":"recipe:plan","to":"skill:beads-harness","relationType":"USES_SKILL"}
+{"type":"relation","from":"recipe:verify","to":"skill:webapp-testing","relationType":"USES_SKILL"}
+{"type":"relation","from":"recipe:design","to":"skill:ux-quality","relationType":"USES_SKILL"}
+{"type":"relation","from":"recipe:design","to":"skill:ui-quality","relationType":"USES_SKILL"}
+{"type":"relation","from":"recipe:review","to":"agent:review-critic","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"recipe:implement","to":"agent:implementation-worker","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"recipe:discover","to":"agent:product-owner","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"recipe:discover","to":"agent:ux-researcher","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"recipe:spec","to":"agent:architect","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"recipe:plan","to":"agent:beads-planner","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"recipe:verify","to":"agent:qa-automation","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"agent:review-critic","to":"skill:code-review","relationType":"LOADS"}
+{"type":"relation","from":"agent:implementation-worker","to":"skill:sdd","relationType":"LOADS"}
+{"type":"relation","from":"agent:tdd-guide","to":"skill:sdd","relationType":"LOADS"}
+{"type":"relation","from":"doc:docs/00-index.md","to":"recipe:dev","relationType":"DESCRIBES"}
+{"type":"relation","from":"doc:docs/02-code-review.md","to":"recipe:review","relationType":"DESCRIBES"}
+{"type":"relation","from":"doc:docs/09-implementation-loop.md","to":"recipe:implement","relationType":"DESCRIBES"}
+{"type":"relation","from":"doc:docs/knowledge-graph.md","to":"skill:knowledge-graph","relationType":"DESCRIBES"}
+{"type":"relation","from":"recipe:sdd","to":"skill:sdd","relationType":"USES_SKILL"}
+{"type":"relation","from":"recipe:design","to":"agent:ux-researcher","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"feat-recipe-ecosystem","to":"agentic-dev-harness-product","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"feat-skill-library","to":"agentic-dev-harness-product","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"feat-agent-roster","to":"agentic-dev-harness-product","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"feat-eval-suite","to":"agentic-dev-harness-product","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"feat-kg-integration","to":"agentic-dev-harness-product","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"feat-beads-workflow","to":"agentic-dev-harness-product","relationType":"DECOMPOSES_INTO"}
+{"type":"relation","from":"feat-recipe-ecosystem","to":"AC-RECIPE-01","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"feat-recipe-ecosystem","to":"AC-RECIPE-02","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"feat-skill-library","to":"AC-SKILL-01","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"feat-skill-library","to":"AC-SKILL-02","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"feat-agent-roster","to":"AC-AGENT-01","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"feat-eval-suite","to":"AC-EVAL-01","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"feat-eval-suite","to":"AC-EVAL-02","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"feat-kg-integration","to":"AC-KG-01","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"feat-kg-integration","to":"AC-KG-02","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"feat-beads-workflow","to":"AC-BEADS-01","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"test-skill-agentic-dev-harness","to":"AC-SKILL-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test-skill-agentic-dev-harness","to":"code_file:evals/skills/agentic-dev-harness.json","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test-skill-code-review","to":"AC-SKILL-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test-skill-code-review","to":"code_file:evals/skills/code-review.json","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test-recipe-review","to":"AC-RECIPE-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test-recipe-review","to":"code_file:evals/recipes/review.json","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test-recipe-implement","to":"AC-RECIPE-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test-recipe-implement","to":"code_file:evals/recipes/implement.json","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test-recipe-discover","to":"AC-RECIPE-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test-recipe-discover","to":"code_file:evals/recipes/discover.json","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test-agent-review-critic","to":"AC-AGENT-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test-agent-review-critic","to":"code_file:evals/agents/review-critic.json","relationType":"LOCATED_IN"}
+{"type":"relation","from":"recipe:dev","to":"code_file:.goose/recipes/dev.yaml","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"recipe:review","to":"code_file:.goose/recipes/review.yaml","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"recipe:implement","to":"code_file:.goose/recipes/implement.yaml","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"recipe:discover","to":"code_file:.goose/recipes/discover.yaml","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"recipe:spec","to":"code_file:.goose/recipes/spec.yaml","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"skill:sdd","to":"code_file:.agents/skills/sdd/SKILL.md","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"skill:knowledge-graph","to":"code_file:.agents/skills/knowledge-graph/SKILL.md","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"feat-kg-integration","to":"code_file:scripts/kg-bootstrap.py","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-kg-integration","to":"code_file:scripts/kg-mcp-server.sh","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"recipe:discover","to":"feat-recipe-ecosystem","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"recipe:spec","to":"feat-recipe-ecosystem","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"recipe:plan","to":"feat-recipe-ecosystem","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"recipe:implement","to":"feat-recipe-ecosystem","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"recipe:review","to":"feat-recipe-ecosystem","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"recipe:verify","to":"feat-recipe-ecosystem","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"recipe:design","to":"feat-recipe-ecosystem","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"recipe:sdd","to":"feat-recipe-ecosystem","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"recipe:dev","to":"feat-recipe-ecosystem","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"skill:sdd","to":"feat-skill-library","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"skill:code-review","to":"feat-skill-library","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"skill:knowledge-graph","to":"feat-kg-integration","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"agent:review-critic","to":"feat-agent-roster","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"agent:product-owner","to":"feat-agent-roster","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"agent:tdd-guide","to":"feat-agent-roster","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"feat-kg-integration","to":"feat-recipe-ecosystem","relationType":"DEPENDS_ON"}
+{"type":"relation","from":"feat-kg-integration","to":"feat-skill-library","relationType":"DEPENDS_ON"}
+{"type":"relation","from":"feat-kg-bootstrap","to":"scripts/kg-bootstrap.py","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-kg-bootstrap","to":"scripts/kg-reason.py","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-kg-visualizer","to":"scripts/kg-visualizer.html","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-kg-activate","to":"scripts/kg-mcp-server.sh","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-kg-bootstrap","to":"apps/kg/src/bootstrap.ts","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-kg-bootstrap","to":"apps/kg/src/reason.ts","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-kg-bootstrap","to":"apps/kg/src/types.ts","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-kg-bootstrap","to":"apps/kg/src/cli.ts","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-kg-visualizer","to":"apps/kg-visualizer/src/server.ts","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-kg-visualizer","to":"apps/kg-visualizer/src/app.html","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-kg-activate","to":"scripts/kg-mcp-server.sh_v2","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-activate","to":"scripts/kg-mcp-server.sh_v2","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-activate","to":"apps/kg-visualizer/dist/server.js","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-skill","to":".agents/skills/knowledge-graph/SKILL.md","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-bootstrap","to":"apps/kg/src/bootstrap.ts","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-bootstrap","to":"apps/kg/src/reason.ts","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-recipe-integration","to":".goose/recipes/subrecipes/implement.yaml","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-recipe-integration","to":".goose/recipes/subrecipes/spec.yaml","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-recipe-integration","to":".goose/recipes/subrecipes/review.yaml","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-agent-integration","to":".agents/agents/review-critic.md","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-agent-integration","to":".agents/agents/implementation-worker.md","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-agent-integration","to":".agents/agents/product-owner.md","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-visualizer","to":"apps/kg-visualizer/src/server.ts","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-visualizer","to":"apps/kg-visualizer/src/app.html","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"kg-visualizer","to":"dist/kg/index.html","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-eval-suite","to":"scripts/run-skill-ab-suite.py","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-eval-suite","to":"scripts/run-harness-ab-suite.py","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-eval-suite","to":"scripts/analyze-skill-eval-results.py","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-beads-workflow","to":"scripts/install.sh","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-beads-workflow","to":"scripts/build-docs.sh","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-recipe-ecosystem","to":"meta:decomposition-by-design","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"feat-skill-library","to":"meta:decomposition-by-design","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"feat-agent-roster","to":"meta:decomposition-by-design","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"feat-eval-suite","to":"meta:decomposition-by-design","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"feat-kg-integration","to":"meta:decomposition-by-design","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"feat-beads-workflow","to":"meta:decomposition-by-design","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"KG-01","to":"meta:covered-by-integration","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"KG-02","to":"meta:covered-by-integration","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"KG-03","to":"meta:covered-by-integration","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"KG-04","to":"meta:covered-by-integration","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"KG-05","to":"meta:covered-by-integration","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"KG-06","to":"meta:covered-by-integration","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"recipe:dev","to":"agent:harness-orchestrator","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"recipe:explore","to":"agent:codebase-researcher","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"recipe:sdd","to":"agent:harness-orchestrator","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"recipe:release","to":"agent:principal-engineer","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"recipe:remember","to":"agent:beads-planner","relationType":"DELEGATES_TO"}
+{"type":"relation","from":"feat-recipe-ecosystem","to":"harness:epic-level-feature","relationType":"REFINED_INTO"}
+{"type":"relation","from":"feat-skill-library","to":"harness:epic-level-feature","relationType":"REFINED_INTO"}
+{"type":"relation","from":"feat-agent-roster","to":"harness:epic-level-feature","relationType":"REFINED_INTO"}
+{"type":"relation","from":"feat-eval-suite","to":"harness:epic-level-feature","relationType":"REFINED_INTO"}
+{"type":"relation","from":"feat-kg-integration","to":"harness:epic-level-feature","relationType":"REFINED_INTO"}
+{"type":"relation","from":"feat-beads-workflow","to":"harness:epic-level-feature","relationType":"REFINED_INTO"}
+{"type":"relation","from":"test:kg-pipeline-smoke","to":"KG-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test:kg-pipeline-smoke","to":"KG-02","relationType":"VALIDATES"}
+{"type":"relation","from":"test:kg-pipeline-smoke","to":"KG-03","relationType":"VALIDATES"}
+{"type":"relation","from":"test:kg-pipeline-smoke","to":"KG-04","relationType":"VALIDATES"}
+{"type":"relation","from":"test:kg-pipeline-smoke","to":"KG-05","relationType":"VALIDATES"}
+{"type":"relation","from":"test:kg-pipeline-smoke","to":"KG-06","relationType":"VALIDATES"}
+{"type":"relation","from":"feat-kg-activate","to":"goose-config:knowledgegraphmemory","relationType":"IMPLEMENTED_BY"}
+{"type":"relation","from":"feat-recipe-ecosystem","to":".specs/features/harness-core/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"feat-skill-library","to":".specs/features/harness-core/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"feat-agent-roster","to":".specs/features/harness-core/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-RECIPE-01","to":".specs/features/harness-core/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-RECIPE-02","to":".specs/features/harness-core/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-SKILL-01","to":".specs/features/harness-core/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-SKILL-02","to":".specs/features/harness-core/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-AGENT-01","to":".specs/features/harness-core/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"feat-eval-suite","to":".specs/features/eval-suite/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-EVAL-01","to":".specs/features/eval-suite/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-EVAL-02","to":".specs/features/eval-suite/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"feat-kg-integration","to":".specs/features/kg-integration/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"KG-01","to":".specs/features/kg-integration/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"KG-02","to":".specs/features/kg-integration/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"KG-03","to":".specs/features/kg-integration/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"KG-04","to":".specs/features/kg-integration/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"KG-05","to":".specs/features/kg-integration/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"KG-06","to":".specs/features/kg-integration/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"feat-beads-workflow","to":".specs/features/beads-workflow/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-BEADS-01","to":".specs/features/beads-workflow/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-KG-01","to":".specs/features/kg-integration/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-KG-02","to":".specs/features/kg-integration/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"feat-recipe-ecosystem","to":".specs/features/harness-core/discovery.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test:recipe-fvo-eval","to":"AC-RECIPE-02","relationType":"VALIDATES"}
+{"type":"relation","from":"test:recipe-fvo-eval","to":"code_file:evals/recipes/dev.json","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test:skill-checklist-eval","to":"AC-SKILL-02","relationType":"VALIDATES"}
+{"type":"relation","from":"test:skill-checklist-eval","to":"code_file:apps/kg/src/reason.test.ts","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test:eval-coverage-check","to":"AC-EVAL-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test:eval-coverage-check","to":"code_file:evals/","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test:kg-pipeline-e2e","to":"AC-KG-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test:kg-pipeline-e2e","to":"code_file:apps/kg/src/reason.test.ts","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test:beads-prime-check","to":"AC-BEADS-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test:beads-prime-check","to":"code_file:.beads/issues.jsonl","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test:harness-test-ts","to":"AC-SKILL-02","relationType":"VALIDATES"}
+{"type":"relation","from":"test:harness-test-ts","to":"apps/kg/src/harness.test.ts","relationType":"LOCATED_IN"}
+{"type":"relation","from":"test:harness-test-ts","to":"AC-EVAL-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test:harness-test-ts","to":"AC-EVAL-02","relationType":"VALIDATES"}
+{"type":"relation","from":"test:harness-test-ts","to":"AC-RECIPE-02","relationType":"VALIDATES"}
+{"type":"relation","from":"test:harness-test-ts","to":"AC-KG-01","relationType":"VALIDATES"}
+{"type":"relation","from":"test:harness-test-ts","to":"AC-KG-02","relationType":"VALIDATES"}
+{"type":"relation","from":"test:harness-test-ts","to":"AC-BEADS-01","relationType":"VALIDATES"}
+{"type":"relation","from":"skill:agentic-ux","to":"meta:has-self-validation","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"skill:atomic-design","to":"meta:has-self-validation","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"skill:cognitive-ux","to":"meta:has-self-validation","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"skill:design-systems-arch","to":"meta:has-self-validation","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"skill:frontend-blueprint","to":"meta:has-self-validation","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"skill:knowledge-graph","to":"meta:has-self-validation","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"skill:systematic-debugging","to":"meta:has-self-validation","relationType":"HAS_OBSERVATION"}
+{"type":"relation","from":"test:slash-command-registration","to":"AC-RECIPE-03","relationType":"VALIDATES"}
+{"type":"relation","from":"feat-recipe-ecosystem","to":"AC-RECIPE-03","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"AC-RECIPE-03","to":".specs/features/harness-core/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"feat-eval-suite","to":"eval-mode:layer-delta","relationType":"REFINED_INTO"}
+{"type":"relation","from":"eval-mode:layer-delta","to":"eval-kind:skills","relationType":"GOVERNS"}
+{"type":"relation","from":"eval-mode:layer-delta","to":"eval-kind:agents","relationType":"GOVERNS"}
+{"type":"relation","from":"eval-mode:layer-delta","to":"eval-kind:recipes","relationType":"GOVERNS"}
+{"type":"relation","from":"eval-mode:layer-delta","to":"scripts/run-harness-ab-eval.py","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"eval-kind:skills","to":"scripts/run-harness-ab-eval.py","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"eval-kind:agents","to":"scripts/run-harness-ab-eval.py","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"eval-kind:recipes","to":"scripts/run-harness-ab-eval.py","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"eval-mode:layer-delta","to":".specs/features/eval-suite/spec.md","relationType":"TRACED_IN"}
+{"type":"relation","from":"feat-eval-suite","to":"AC-EVAL-04","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"feat-eval-suite","to":"AC-EVAL-05","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"feat-eval-suite","to":"AC-EVAL-06","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"AC-EVAL-04","to":".specs/features/eval-suite/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-EVAL-05","to":".specs/features/eval-suite/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"AC-EVAL-06","to":".specs/features/eval-suite/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"feat-eval-suite","to":"AC-EVAL-03","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"AC-EVAL-03","to":".specs/features/eval-suite/spec.md","relationType":"LOCATED_IN"}
+{"type":"relation","from":"eval-kind:skills","to":".specs/features/eval-suite/spec.md","relationType":"TRACED_IN"}
+{"type":"relation","from":"eval-kind:agents","to":".specs/features/eval-suite/spec.md","relationType":"TRACED_IN"}
+{"type":"relation","from":"eval-kind:recipes","to":".specs/features/eval-suite/spec.md","relationType":"TRACED_IN"}
+{"type":"relation","from":"eval-kind:skills","to":"AC-EVAL-01","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"eval-kind:agents","to":"AC-EVAL-04","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"eval-kind:recipes","to":"AC-EVAL-05","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"eval-kind:agents","to":"AC-EVAL-06","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"eval-kind:recipes","to":"AC-EVAL-06","relationType":"IMPLEMENTS"}
+{"type":"relation","from":"eval-mode:layer-delta","to":"scripts/run-harness-ab-suite.py","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"eval-kind:agents","to":"scripts/run-harness-ab-suite.py","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"eval-kind:recipes","to":"scripts/run-harness-ab-suite.py","relationType":"IMPLEMENTED_IN"}
+{"type":"relation","from":"eval-mode:layer-delta","to":"AC-EVAL-04","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"eval-mode:layer-delta","to":"AC-EVAL-05","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"eval-mode:layer-delta","to":"AC-EVAL-06","relationType":"HAS_CRITERION"}
+{"type":"relation","from":"eval-kind:skills","to":"scripts/run-skill-ab-suite.py","relationType":"IMPLEMENTED_IN"}
+{"type":"entity","name":"test:harness-test-ts","entityType":"test","observations":["scope:buildtime","file:apps/kg/src/harness.test.ts","status:passing","covers:AC-SKILL-02 AC-EVAL-01 AC-EVAL-02 AC-EVAL-06 AC-RECIPE-02 AC-RECIPE-03 AC-KG-01 AC-KG-02 AC-BEADS-01"]}
+{"type":"relation","from":"test:harness-test-ts","to":"AC-EVAL-06","relationType":"VALIDATES"}
+{"type":"entity","name":"agent:orchestrator","entityType":"harness:agent","observations":["file:.agents/agents/orchestrator.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"skill:agentic-devlopment","entityType":"harness:skill","observations":["file:.agents/skills/agentic-devlopment/SKILL.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"skill:beads","entityType":"harness:skill","observations":["file:.agents/skills/beads/SKILL.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:atomic-design-audit.md","entityType":"harness:doc","observations":["file:docs/atomic-design-audit.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:atomic-design-eval-report.md","entityType":"harness:doc","observations":["file:docs/atomic-design-eval-report.md","scope:buildtime","namespace:harness"]}
+{"type":"relation","from":"eval-mode:layer-delta","to":"AC-EVAL-01","relationType":"HAS_CRITERION"}
+{"type":"entity","name":"doc:refactor-brief.md","entityType":"harness:doc","observations":["file:docs/refactor-brief.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"agent:planner","entityType":"harness:agent","observations":["file:.agents/agents/planner.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"agent:harness-judge","entityType":"harness:agent","observations":["file:.agents/agents/harness-judge.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"skill:harness-judge","entityType":"harness:skill","observations":["file:.agents/skills/harness-judge/SKILL.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:llm-as-a-judge.md","entityType":"harness:doc","observations":["file:docs/llm-as-a-judge.md","scope:buildtime","namespace:harness"]}
+{"type":"relation","from":"recipe:plan","to":"agent:planner","relationType":"DELEGATES_TO"}
+{"type":"entity","name":"recipe:harness-doc-review","entityType":"harness:recipe","observations":["file:.goose/recipes/harness-doc-review.yaml","slash:/harness-doc-review","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"recipe:harness-audit","entityType":"harness:recipe","observations":["file:.goose/recipes/harness-audit.yaml","slash:/harness-audit","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"skill:gdd","entityType":"harness:skill","observations":["file:.agents/skills/gdd/SKILL.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"recipe:clarify","entityType":"harness:recipe","observations":["file:.goose/recipes/clarify.yaml","slash:/clarify","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"recipe:constitution","entityType":"harness:recipe","observations":["file:.goose/recipes/constitution.yaml","slash:/constitution","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:agentic-development-skill-alias.md","entityType":"harness:doc","observations":["file:docs/agentic-development-skill-alias.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:artifact-contribution-schema.md","entityType":"harness:doc","observations":["file:docs/artifact-contribution-schema.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:context-budget-policy.md","entityType":"harness:doc","observations":["file:docs/context-budget-policy.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:review-recipe-routing.md","entityType":"harness:doc","observations":["file:docs/review-recipe-routing.md","scope:buildtime","namespace:harness"]}
+{"type":"entity","name":"doc:ui-ux-skill-loading-policy.md","entityType":"harness:doc","observations":["file:docs/ui-ux-skill-loading-policy.md","scope:buildtime","namespace:harness"]}

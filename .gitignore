@@ -21,3 +21,6 @@ CLAUDE.md
 *.pyc
 apps/*/node_modules/
 apps/node_modules/
+
+# Ephemeral audit outputs
+.audit/

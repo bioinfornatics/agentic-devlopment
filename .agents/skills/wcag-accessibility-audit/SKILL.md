@@ -9,6 +9,7 @@ description: >
   evaluate a web interface for disabled users, or establish an accessibility baseline
   before a release.
   Do NOT use for non-web interfaces, backend-only code review, or sessions without a rendered web interface to audit for WCAG compliance.
+  Usage pattern: recipe-conditional (loaded by design.yaml for accessibility-risk scenarios).
 metadata:
   version: 1.0.0
 ---

@@ -567,7 +567,7 @@ a clear routing rule.
 |------|---------------|--------------------------|
 | `review` / `harness-review` | Code review | `harness-review` is harness-artifact-only; `review` is general codebase |
 | `sdd` / `dev` | Full SDD cycle | `sdd` = multi-phase governance; `dev` = single-task routing |
-| `doc-review` / `harness-doc-review` | Documentation review | `harness-doc-review` is harness-only; `doc-review` is project docs |
+| `doc-review` (subrecipe) | Documentation review | Used by `harness-review scope=docs`; `output_format=json` for CI |
 | `verify` / `review` | Quality gate | `verify` = test execution; `review` = code correctness verdict |
 | `explore` / `discover` | Feature analysis | `explore` = read-only blast-radius; `discover` = problem statement + user stories |
 

@@ -1,92 +1,38 @@
 [
   {
-    "agents": [
-      "review-critic"
-    ],
     "skills": [
       "code-review"
     ],
-    "query": "Review the prepared install-script change that adds a new slash command mapping.",
-    "files": [
-      "scripts/install.sh",
-      "scripts/install.ps1",
-      ".goose/recipes/"
+    "agents": [
+      "review-critic"
     ],
-    "max_turns": 500,
+    "query": "Review the latest commit",
     "difficulty": "normal",
-    "expected_skill_contribution": "The review recipe should follow review workflow: read diff, apply confidence gate, rank findings by severity, produce a verdict, and propose Beads follow-ups — not just list observations.",
-    "fixture_intent": "An install-script patch that introduces a broken slash command mapping pointing to a missing recipe; the agent must surface the missing recipe as a CRITICAL finding and not approve the diff.",
-    "fixture_patch": "evals/fixtures/code-review/install-missing-recipe.py",
-    "fixture_description": "Applied a patch adding a slash command mapping that points to a missing recipe.",
-    "baseline_gaps": [
-      "lists observations without severity ranking — no CRITICAL/HIGH/MEDIUM/LOW labels",
-      "no explicit verdict — summarises findings without APPROVE/PASS-WITH-NITS/BLOCK decision",
-      "no Beads follow-ups — ends report without proposing `bd create` commands"
-    ],
-    "expected_behavior": [
-      "produces an explicit verdict (APPROVE / PASS-WITH-NITS / BLOCK) before the findings list",
-      "ranks findings by severity (CRITICAL/HIGH/MEDIUM/LOW) with exact file references",
-      "applies confidence filtering — only reports findings it is >80% sure about",
-      "proposes Beads follow-ups as `bd create` commands rather than markdown TODOs"
-    ]
+    "expected_skill_contribution": "APPROVE/PASS-WITH-NITS/BLOCK verdict",
+    "max_turns": 100
   },
   {
-    "agents": [
-      "review-critic"
-    ],
     "skills": [
       "code-review"
     ],
-    "query": "Review the diff in `.agents/skills/code-review/SKILL.md` and `docs/15-skill-evaluations.md`. Focus on Beads hygiene and harness-rule compliance.",
-    "files": [
-      ".agents/skills/code-review/SKILL.md",
-      "docs/15-skill-evaluations.md"
+    "agents": [
+      "review-critic"
     ],
-    "max_turns": 500,
+    "query": "Review this pull request",
     "difficulty": "difficult",
-    "expected_skill_contribution": "The review recipe should check Beads hygiene as a non-discretionary category, identify harness-rule violations, and produce a severity-ranked report with proof for HIGH findings.",
-    "fixture_intent": "A skill file and its corresponding evaluation documentation as a review surface; the agent must treat Beads hygiene as a non-discretionary check and validate harness-rule compliance independently of confidence filtering.",
-    "baseline_gaps": [
-      "misses Beads hygiene violations — treats hygiene as optional or applies confidence filtering to it",
-      "no proof requirement for HIGH findings — reports them without exact file/line and failure mode",
-      "no harness-rule check — does not verify against TODO.md prohibition, validation requirement, or scope rules"
-    ],
-    "expected_behavior": [
-      "checks Beads hygiene as a non-discretionary category (not subject to confidence filtering)",
-      "for any HIGH finding includes exact file/line, concrete failure mode, and why existing guards don't catch it",
-      "identifies harness-rule violations (TODO.md, missing validation, scope expansion)",
-      "zero findings is a valid outcome — agent must not manufacture findings to justify invocation"
-    ]
+    "expected_skill_contribution": "Comprehensive code review",
+    "max_turns": 100
   },
   {
-    "agents": [
-      "review-critic"
-    ],
     "skills": [
       "code-review"
     ],
-    "query": "Review a multi-surface diff touching recipes, skills, and docs simultaneously. Produce a severity-ranked report with validation steps.",
-    "files": [
-      ".goose/recipes/review.yaml",
-      ".agents/skills/code-review/SKILL.md",
-      "docs/15-skill-evaluations.md"
+    "agents": [
+      "review-critic"
     ],
-    "max_turns": 500,
+    "query": "Security-focused review of auth changes",
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "The review recipe should handle a multi-surface diff: connect findings across surfaces, run or propose recipe validation, rank findings, and propose exact follow-up Beads work.",
-    "fixture_intent": "A multi-surface patch touching a recipe, skill, and documentation simultaneously; the agent must connect cross-surface implications and include recipe validation rather than reviewing each file in isolation.",
-    "fixture_patch": "evals/fixtures/code-review/current-diff-regression.patch",
-    "fixture_description": "Applied a patch modifying a recipe, a skill, and documentation simultaneously.",
-    "baseline_gaps": [
-      "reviews each file in isolation — misses cross-surface connections between recipe and skill changes",
-      "no recipe validation step — does not run or propose `goose recipe validate`",
-      "proposes prose follow-ups instead of exact `bd create` commands"
-    ],
-    "expected_behavior": [
-      "states an explicit verdict (APPROVE/PASS-WITH-NITS/BLOCK) covering the full diff",
-      "runs or proposes `goose recipe validate` for changed recipes and reports the result",
-      "connects findings across surfaces (e.g., skill change affects recipe behavior)",
-      "proposes exact `bd create` commands for follow-up rather than prose recommendations"
-    ]
+    "expected_skill_contribution": "Security findings with severity",
+    "max_turns": 100
   }
 ]

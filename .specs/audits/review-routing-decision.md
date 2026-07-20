@@ -1,7 +1,20 @@
 # Review Recipe Routing Decision
 
-Status: active policy. Findings: F-008.
+Status: **Superseded** (2026-07-20). See consolidation below.
 
-/review is canonical implementation and handoff review. /doc-review is canonical documentation static review. /harness-review is harness-wide quality gate. /harness-doc-review is a CI JSON wrapper pending future deprecation decision.
+## Current State (Post-Consolidation)
 
-Verification: goose recipe validate, check-consistency, check-recipe-metadata.
+- `/review` — canonical code and handoff review
+- `/harness-review` — unified quality gate with `scope` param (code/docs/full) and `output_format` (json/markdown)
+
+## Deleted (Absorbed)
+
+- `/doc-review` → use `/harness-review scope=docs`
+- `/harness-doc-review` → use `/harness-review scope=docs output_format=json`
+
+## Historical Context
+
+Original finding F-008 noted overlap between review/doc-review/harness-review/harness-doc-review.
+Resolved by collapsing to 2 recipes with parameterized scope.
+
+Verification: goose recipe validate, check-consistency.

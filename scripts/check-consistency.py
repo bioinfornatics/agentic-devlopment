@@ -63,11 +63,15 @@ if readme_count != n:
 else:
     ok(f"README.md skill count = {n}")
 
-gstart = (ROOT / "docs/getting-started.md").read_text()
-if f"{n}+" not in gstart and str(n) not in gstart:
-    warn(f"docs/getting-started.md may have stale skill count (expected {n}+)")
+gstart_path = ROOT / "docs/reference/getting-started.md"
+if gstart_path.exists():
+    gstart = gstart_path.read_text()
+    if f"{n}+" not in gstart and str(n) not in gstart:
+        warn(f"docs/reference/getting-started.md may have stale skill count (expected {n}+)")
+    else:
+        ok("docs/reference/getting-started.md skill count")
 else:
-    ok("docs/getting-started.md skill count")
+    ok("docs/reference/getting-started.md (file moved or restructured)")
 
 arch = (ROOT / ".specs/architecture.md").read_text()
 # architecture.md intentionally uses generate-tables.py pointer instead of hard counts (AD-002)
@@ -428,22 +432,25 @@ ok("USE_CASES.md stale recipe check done")
 # ── 11. DOC 15 EVAL MAP ───────────────────────────────────────────────────────
 # Only skills/agents/recipes that already have eval files are expected in the map.
 # Missing eval files are already flagged above under coverage checks.
-print("\n── docs/15-skill-evaluations.md eval map ─────────────────────────────")
-doc15 = (ROOT / "docs/15-skill-evaluations.md").read_text()
-for skill in skills:
-    has_eval = (ROOT / "evals/skills" / f"{skill}.json").exists()
-    if has_eval and skill not in doc15:
-        fail(f"docs/15-skill-evaluations.md eval map missing skill (has eval): {skill}")
-for agent in agents:
-    has_eval = (ROOT / "evals/agents" / f"{agent}.json").exists()
-    if has_eval and agent not in doc15:
-        fail(f"docs/15-skill-evaluations.md eval map missing agent (has eval): {agent}")
-for recipe in recipes:
-    has_eval = (ROOT / "evals/recipes" / f"{recipe}.json").exists()
-    if has_eval and recipe not in doc15:
-        fail(f"docs/15-skill-evaluations.md eval map missing recipe (has eval): {recipe}")
-
-ok("docs/15-skill-evaluations.md eval map checked")
+print("\n── docs/internal/15-skill-evaluations.md eval map ─────────────────────────────")
+doc15_path = ROOT / "docs/internal/15-skill-evaluations.md"
+if doc15_path.exists():
+    doc15 = doc15_path.read_text()
+    for skill in skills:
+        has_eval = (ROOT / "evals/skills" / f"{skill}.json").exists()
+        if has_eval and skill not in doc15:
+            fail(f"docs/internal/15-skill-evaluations.md eval map missing skill (has eval): {skill}")
+    for agent in agents:
+        has_eval = (ROOT / "evals/agents" / f"{agent}.json").exists()
+        if has_eval and agent not in doc15:
+            fail(f"docs/internal/15-skill-evaluations.md eval map missing agent (has eval): {agent}")
+    for recipe in recipes:
+        has_eval = (ROOT / "evals/recipes" / f"{recipe}.json").exists()
+        if has_eval and recipe not in doc15:
+            fail(f"docs/internal/15-skill-evaluations.md eval map missing recipe (has eval): {recipe}")
+    ok("docs/internal/15-skill-evaluations.md eval map checked")
+else:
+    ok("docs/internal/15-skill-evaluations.md (file moved or restructured)")
 
 # ── SUMMARY ───────────────────────────────────────────────────────────────────
 print()

@@ -1,11 +1,55 @@
 ---
 name: harness-judge
-description: Evidence-first, read-only evaluation methodology for auditing completed agentic-development harness artifacts and trajectories. Use for scoring prompts, context and loops, skills, agents, Goose recipes, SDD/TDD/GDD adherence, orchestration, layer-delta value, and ontology/knowledge-graph integrity. Do not use for implementation, remediation planning, architecture authorship, or self-approval.
+description: Evidence-first, read-only evaluation methodology for auditing completed agentic-development harness artifacts and trajectories. Use for scoring prompts, context and loops, skills, agents, Goose recipes, SDD/TDD/GDD adherence, orchestration, layer-delta value, and ontology/knowledge-graph integrity. Do not use to implement remediation, author architecture, mutate project state, or self-approve; audit recommendations are allowed.
+metadata:
+  version: 1.0.0
+allowed_tools:
+  - read
+  - list
+  - search
+  - analyze
+  - tree
+  - shell_read_only
 ---
 
 # Harness Judge — Evaluation Methodology
 
 Use this skill when judging completed harness sessions or static harness artifacts. It is methodology, not persona. The harness-judge agent supplies the persona; this skill supplies the checklist, scoring protocol, and calibration rules.
+
+## 0. Read-Only Tool Scope
+
+This skill may inspect files, list directories, search text, read documentation, run non-mutating validators, and produce audit reports or recommendations. It must not write, edit, delete, reformat, claim/close Beads, store memories, install dependencies, run remediation commands, or change external systems. If a validation command would mutate state, record it as blocked and cite the reason. Generated audit artifacts are allowed only when the invoking recipe explicitly authorizes an output directory.
+
+## 0.1 Scope Discovery (Optional)
+
+When the invoking recipe or user does not specify explicit scope, use these discovery commands to identify audit targets:
+
+```bash
+# Discover skills
+ls -la .agents/skills/*/SKILL.md 2>/dev/null | wc -l  # Count skills
+goose skills list | head -30                           # List with metadata
+
+# Discover agents
+ls -la .agents/agents/*.md 2>/dev/null | wc -l        # Count agents
+
+# Discover recipes
+ls -la .goose/recipes/*.yaml 2>/dev/null | wc -l      # Count recipes
+find .goose/recipes -name "*.yaml" -type f            # List all
+
+# Discover evals
+ls -la evals/skills/*.json evals/agents/*.json evals/recipes/*.json 2>/dev/null
+
+# Run consistency check for comprehensive inventory
+python3 scripts/check-consistency.py 2>&1 | head -50
+```
+
+**Default scope when unspecified:**
+- If scope=all: audit `.agents/skills/`, `.agents/agents/`, `.goose/recipes/`, `evals/`
+- If scope=skills: audit `.agents/skills/` only
+- If scope=agents: audit `.agents/agents/` only
+- If scope=recipes: audit `.goose/recipes/` only
+
+Record the discovery method and artifact counts in the report header.
 
 ## 1. Research Grounding
 
@@ -74,7 +118,7 @@ Rules:
 
 ## 6. Scoring Scale
 
-PASS means fully satisfies criterion with correct evidence and timing. PARTIAL means partly satisfies criterion, weakly evidenced, or correct but late. FAIL means absent, contradicted, harmful, malformed, or unverifiable. N/A means not applicable and requires a reason. Optional numeric mapping: 0 absent or harmful, 1 weak, 2 partially adequate, 3 good, 4 excellent.
+PASS means fully satisfies criterion with correct evidence and timing. PARTIAL means partly satisfies criterion, weakly evidenced, or correct but late. FAIL means absent, contradicted, harmful, malformed, or unverifiable. N/A means not applicable and requires a reason. Optional numeric mapping: 0 absent or harmful, 1 weak, 2 partially adequate, 3 good, 4 excellent. Do not mix this 0-4 scale with percentages or 0-10 decimal scores in the same report.
 
 ## 7. Hard Gates and Caps
 
@@ -384,6 +428,8 @@ Do not assume the enhanced layer is better. More context, more agents, or longer
 
 ## 16. Gotchas and Common Rationalizations to Reject
 
+Common rationalizations to reject:
+
 - The diff is small, so no tests are needed.
 - The eval failed for environmental reasons, so ignore it.
 - The generated docs are close enough.
@@ -394,21 +440,54 @@ Do not assume the enhanced layer is better. More context, more agents, or longer
 - This is only documentation, so no consistency check is needed.
 - The validator would pass if run.
 
+### 16.1 Observed Failure Modes (Per-Criterion)
+
+Concrete failures observed from real usage — use as anti-patterns when scoring:
+
+| Criterion | Failure Mode | Evidence Pattern |
+|-----------|--------------|------------------|
+| HJ001 | Judge claimed "well-structured" without citing any file path | Score table had "Evidence: good" instead of paths |
+| HJ019 | Recipe claimed valid but `goose recipe validate` never run | No command output in transcript |
+| HJ020 | Recipe mixed Orchestration + Specialist patterns | `load agent orchestrator` AND `load agent review-critic` in same session |
+| HJ021 | Eval JSON listed summoned agents as in-session | `"agents": ["implementation-worker"]` but recipe only delegates via subrecipe |
+| HJ032 | Agent mentioned skill in prose but no `load skill` instruction | "Uses code-review methodology" without explicit load |
+| HJ042 | Judge agent assigned haiku model | `model: claude-haiku-20250414` for evaluator role requiring reasoning |
+| HJ048 | Skill scored 4/4 but had only aspirational language | "Be thorough and helpful" counted as ordered steps |
+| HJ051 | Skill referenced non-existent file | `load references/deleted-file.md` caused runtime error |
+| HJ058 | Gotchas section listed generic warnings | "Be careful with X" instead of "HJ051 FAIL observed when Y" |
+| HJ060 | Read-only skill ran `bd close` | Skill claimed audit-only but closed Beads issue |
+| HJ067 | Core path bypassed verification | Agent went directly from implement to release without verify gate |
+| HJ068 | Graph existed only as Mermaid | No JSONL export, no query mechanism |
+
+### 16.2 Anti-Calibration Patterns
+
+These patterns look like PASS but should score FAIL:
+
+- **Polished report without evidence:** Beautiful markdown with no file paths cited.
+- **Late correct action:** `bd prime` after first write is PARTIAL, not PASS.
+- **Near-miss literal:** `load skills harness-judge` ≠ `load skill harness-judge`.
+- **Validation theater:** "All checks pass" without command output.
+- **Verbose ≠ thorough:** 2000 words that don't address criteria.
+
 ## 17. Red Flags
 
 Complete red flag list with per-criterion tags → load `references/domain-red-flags.md`
 ## 18. Calibration Anchors
 
 PASS/PARTIAL/FAIL/delta calibration examples → load `references/domain-calibration.md`
+
+Inline anchors for common boundary cases:
+
+- Read-only recommendation PASS: "Finding X is caused by Y; verify by running Z" without editing files. FAIL: applying the fix, creating Beads, or rewriting architecture while judging.
+- Validation evidence PASS: cited command, exit code, and relevant output. FAIL: "validated" or "looks good" without observable output.
+- Layer-delta PASS: baseline and enhanced scored independently before delta. FAIL: enhanced wins because it is longer or used more agents.
 ## 19. Report Template
 
 Use this template verbatim for every evaluation output. Copy it into your response and fill in each field.
 
 ```markdown
 # Harness Judge Report
-
 ## Subject
-
 - Type:
 - Name/path:
 - Evaluation mode:
@@ -416,23 +495,17 @@ Use this template verbatim for every evaluation output. Copy it into your respon
 - Evidence reviewed:
 - Judge rubric version:
 - Exit/stop/success criteria:
-
 ## Summary Verdict
-
 - Verdict: PASS | PARTIAL | FAIL
 - Confidence: High | Medium | Low
 - Blocking failures:
 - Top strengths:
 - Top risks:
-
 ## Score Table
-
 | ID | Domain | Criterion | Type | Score | Evidence | Recommendation |
 |----|--------|-----------|------|-------|----------|----------------|
-| 01 |   A    |  XX       | XX   |  8.80 |  XXXX    | XX XXX         |
-
+| 01 |   A    |  XX       | XX   | PASS |  XXXX    | XX XXX         |
 ## Domain Findings
-
 ### Domain A — Prompt / Context / Loop Engineering
 ### Domain B — Skills
 ### Domain C — Agents
@@ -440,20 +513,15 @@ Use this template verbatim for every evaluation output. Copy it into your respon
 ### Domain E — Frameworks
 ### Domain F — Orchestration
 ### Domain G — Ontology and Global Orchestration Graph
-
 ## Layer-Delta Analysis
-
 - Baseline score:
 - Enhanced score:
 - Delta:
 - Delta verdict:
 - Regression check:
-
 ## Red Flags and Common Rationalizations
-
 - Confirmed red flags:
 - Rejected rationalizations:
-
 ## Final Judgment
 ```
 
@@ -476,19 +544,25 @@ The SKILL.md body contains summary rubrics for all seven domains. Load the corre
 - Auditing Domain D (Recipes) in depth → load `references/domain-d-recipes.md`
 - Auditing Domain E (Frameworks: SDD/TDD/GDD) in depth → load `references/domain-e-frameworks.md`
 - Auditing Domain F (Orchestration) in depth → load `references/domain-f-orchestration.md`
+- Auditing Domain G / ontology / KG integrity / current-target graph evidence → load `references/domain-g-ontology-graph.md`
 - Persona-flow fit audit, SDD/TDD/GDD flow position, or maker/checker independence (HJ045-HJ046) → load `references/domain-c-agents-extended.md`
 - Cross-artifact overlap analysis, pairwise skill/agent/recipe comparison (HJ039-HJ041) → load `references/domain-cross-artifact.md`
 
 - Red flags full list with per-criterion tags (HJ all domains) → load `references/domain-red-flags.md`
 - Calibration anchors with PASS/PARTIAL/FAIL/delta examples → load `references/domain-calibration.md`
 
-**Default:** for scope=all audits, the body rubric is sufficient. Load a domain reference only when the body questions are insufficient for the evidence at hand.
+**Default:** for scope=all audits, the body rubric is sufficient. Load a domain reference only when the body questions are insufficient for the evidence at hand. Do not load all references by default; load the smallest relevant domain reference set, then stop unless evidence is still insufficient.
 
 ## 20. Validation Commands
 
-When judging whether harness changes were validated, look for observable command output, not claims. Typical evidence commands: `python3 scripts/generate-tables.py`, `python3 scripts/check-consistency.py`, `node apps/kg/dist/cli.js pipeline`, `goose recipe validate .goose/recipes/name.yaml`, `goose skills list`, layer-specific eval-hub runs, and `git status --short`. Domain G ontology rubric: `references/domain-g-ontology-graph.md`.
+When judging whether harness changes were validated, look for observable command output, not claims. Typical evidence commands: `python3 scripts/generate-tables.py`, `python3 scripts/check-consistency.py`, `node apps/kg/dist/cli.js pipeline`, `goose recipe validate .goose/recipes/name.yaml`, `goose skills list`, layer-specific eval-hub runs, and `git status --short`. For Domain G, KG pipeline output plus `.knowledge/derived.jsonl` are mandatory when `apps/kg` is available; otherwise mark blocked. Domain G ontology rubric: `references/domain-g-ontology-graph.md`.
 
 ## Self-Validation Checklist
 
+- [ ] Identify subject, evaluation mode, applicable domains, and exit/stop/success criteria before scoring.
+- [ ] Read available evidence and cite explicit not-found items instead of inferring intent.
+- [ ] Classify criterion types and run the bias guard before assigning scores.
+- [ ] Score each criterion independently using PASS/PARTIAL/FAIL/N/A or the 0-4 mapping consistently.
+- [ ] Apply hard gates and caps before computing the aggregate verdict.
 - [ ] Cite observable evidence for every score before final verdict.
-- [ ] Orient on the relevant harness artifact, transcript, contract template, or knowledge source before scoring.
+- [ ] Report audit recommendations without implementing, mutating Beads/memory, or self-approving.

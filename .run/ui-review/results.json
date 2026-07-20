@@ -1,0 +1,1059 @@
+{
+  "baseURL": "http://127.0.0.1:8765/",
+  "viewports": [
+    {
+      "label": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "metrics": {
+        "title": "Agentic Development Harness",
+        "url": "http://127.0.0.1:8765/",
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyHeight": 80886,
+        "nav": {
+          "domContentLoaded": 8,
+          "loadEventEnd": 14,
+          "transferSize": 196874,
+          "encodedBodySize": 196574
+        },
+        "paints": [
+          {
+            "name": "first-paint",
+            "startTime": 400
+          },
+          {
+            "name": "first-contentful-paint",
+            "startTime": 400
+          }
+        ]
+      },
+      "a11y": {
+        "headings": [
+          {
+            "level": "H1",
+            "text": "Agentic Development Harness"
+          },
+          {
+            "level": "H1",
+            "text": "Agentic Development Harness"
+          },
+          {
+            "level": "H2",
+            "text": "Core idea"
+          },
+          {
+            "level": "H2",
+            "text": "Development workflow"
+          },
+          {
+            "level": "H2",
+            "text": "SDD loop — Spec-Driven Development"
+          },
+          {
+            "level": "H2",
+            "text": "Repository layout"
+          },
+          {
+            "level": "H2",
+            "text": "Recipes — SDD workflow verbs"
+          },
+          {
+            "level": "H2",
+            "text": "Skills (14)"
+          },
+          {
+            "level": "H2",
+            "text": "Named agents (12)"
+          },
+          {
+            "level": "H2",
+            "text": "Quick start"
+          },
+          {
+            "level": "H2",
+            "text": "Use-case playbooks"
+          },
+          {
+            "level": "H2",
+            "text": "Common workflows"
+          },
+          {
+            "level": "H3",
+            "text": "Code review"
+          },
+          {
+            "level": "H3",
+            "text": "Research"
+          },
+          {
+            "level": "H3",
+            "text": "Planning"
+          },
+          {
+            "level": "H3",
+            "text": "Implementation"
+          },
+          {
+            "level": "H3",
+            "text": "UI / accessibility verification"
+          },
+          {
+            "level": "H2",
+            "text": "Build documentation bundle"
+          },
+          {
+            "level": "H3",
+            "text": "Beads memory"
+          },
+          {
+            "level": "H2",
+            "text": "Beads operating rules"
+          },
+          {
+            "level": "H2",
+            "text": "License / ownership"
+          },
+          {
+            "level": "H1",
+            "text": "Install the Agentic Development Harness"
+          },
+          {
+            "level": "H2",
+            "text": "Prerequisites"
+          },
+          {
+            "level": "H2",
+            "text": "Install"
+          },
+          {
+            "level": "H3",
+            "text": "Option A: install script"
+          },
+          {
+            "level": "H3",
+            "text": "Option B: manual install"
+          },
+          {
+            "level": "H3",
+            "text": "Option C: manual install with backups"
+          },
+          {
+            "level": "H2",
+            "text": "Validate"
+          },
+          {
+            "level": "H2",
+            "text": "Configure Goose extensions"
+          },
+          {
+            "level": "H2",
+            "text": "Smoke tests"
+          }
+        ],
+        "landmarks": [
+          {
+            "tag": "main",
+            "label": "",
+            "id": "main-content",
+            "classes": ""
+          },
+          {
+            "tag": "header",
+            "label": "",
+            "id": "title-block-header",
+            "classes": ""
+          },
+          {
+            "tag": "nav",
+            "label": "",
+            "id": "TOC",
+            "classes": ""
+          }
+        ],
+        "links": [
+          {
+            "text": "",
+            "href": "#cb5-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb6-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb7-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb7-2",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb7-3",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb7-4",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb8-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb8-2",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb9-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb10-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb10-2",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb10-3",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb11-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb11-2",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb11-3",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb11-4",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb12-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb12-2",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb12-3",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb13-1",
+            "name": ""
+          }
+        ],
+        "images": [],
+        "forms": [],
+        "buttons": [],
+        "skipLinks": []
+      },
+      "styleSamples": [
+        {
+          "selector": "body",
+          "color": "rgb(23, 32, 51)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "16px",
+          "lineHeight": "28px",
+          "outline": "rgb(23, 32, 51) none 3px",
+          "boxShadow": "none",
+          "borderRadius": "0px"
+        },
+        {
+          "selector": "header",
+          "color": "rgb(23, 32, 51)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "16px",
+          "lineHeight": "28px",
+          "outline": "rgb(23, 32, 51) none 3px",
+          "boxShadow": "none",
+          "borderRadius": "0px"
+        },
+        {
+          "selector": "main a",
+          "color": "rgb(102, 112, 133)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "16px",
+          "lineHeight": "28px",
+          "outline": "rgb(102, 112, 133) none 3px",
+          "boxShadow": "none",
+          "borderRadius": "0px"
+        }
+      ]
+    },
+    {
+      "label": "mobile",
+      "width": 390,
+      "height": 844,
+      "metrics": {
+        "title": "Agentic Development Harness",
+        "url": "http://127.0.0.1:8765/",
+        "scrollWidth": 551,
+        "clientWidth": 390,
+        "bodyHeight": 98558,
+        "nav": {
+          "domContentLoaded": 8,
+          "loadEventEnd": 13,
+          "transferSize": 196874,
+          "encodedBodySize": 196574
+        },
+        "paints": [
+          {
+            "name": "first-paint",
+            "startTime": 96
+          },
+          {
+            "name": "first-contentful-paint",
+            "startTime": 96
+          }
+        ]
+      },
+      "a11y": {
+        "headings": [
+          {
+            "level": "H1",
+            "text": "Agentic Development Harness"
+          },
+          {
+            "level": "H1",
+            "text": "Agentic Development Harness"
+          },
+          {
+            "level": "H2",
+            "text": "Core idea"
+          },
+          {
+            "level": "H2",
+            "text": "Development workflow"
+          },
+          {
+            "level": "H2",
+            "text": "SDD loop — Spec-Driven Development"
+          },
+          {
+            "level": "H2",
+            "text": "Repository layout"
+          },
+          {
+            "level": "H2",
+            "text": "Recipes — SDD workflow verbs"
+          },
+          {
+            "level": "H2",
+            "text": "Skills (14)"
+          },
+          {
+            "level": "H2",
+            "text": "Named agents (12)"
+          },
+          {
+            "level": "H2",
+            "text": "Quick start"
+          },
+          {
+            "level": "H2",
+            "text": "Use-case playbooks"
+          },
+          {
+            "level": "H2",
+            "text": "Common workflows"
+          },
+          {
+            "level": "H3",
+            "text": "Code review"
+          },
+          {
+            "level": "H3",
+            "text": "Research"
+          },
+          {
+            "level": "H3",
+            "text": "Planning"
+          },
+          {
+            "level": "H3",
+            "text": "Implementation"
+          },
+          {
+            "level": "H3",
+            "text": "UI / accessibility verification"
+          },
+          {
+            "level": "H2",
+            "text": "Build documentation bundle"
+          },
+          {
+            "level": "H3",
+            "text": "Beads memory"
+          },
+          {
+            "level": "H2",
+            "text": "Beads operating rules"
+          },
+          {
+            "level": "H2",
+            "text": "License / ownership"
+          },
+          {
+            "level": "H1",
+            "text": "Install the Agentic Development Harness"
+          },
+          {
+            "level": "H2",
+            "text": "Prerequisites"
+          },
+          {
+            "level": "H2",
+            "text": "Install"
+          },
+          {
+            "level": "H3",
+            "text": "Option A: install script"
+          },
+          {
+            "level": "H3",
+            "text": "Option B: manual install"
+          },
+          {
+            "level": "H3",
+            "text": "Option C: manual install with backups"
+          },
+          {
+            "level": "H2",
+            "text": "Validate"
+          },
+          {
+            "level": "H2",
+            "text": "Configure Goose extensions"
+          },
+          {
+            "level": "H2",
+            "text": "Smoke tests"
+          }
+        ],
+        "landmarks": [
+          {
+            "tag": "main",
+            "label": "",
+            "id": "main-content",
+            "classes": ""
+          },
+          {
+            "tag": "header",
+            "label": "",
+            "id": "title-block-header",
+            "classes": ""
+          },
+          {
+            "tag": "nav",
+            "label": "",
+            "id": "TOC",
+            "classes": ""
+          }
+        ],
+        "links": [
+          {
+            "text": "",
+            "href": "#cb5-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb6-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb7-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb7-2",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb7-3",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb7-4",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb8-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb8-2",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb9-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb10-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb10-2",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb10-3",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb11-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb11-2",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb11-3",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb11-4",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb12-1",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb12-2",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb12-3",
+            "name": ""
+          },
+          {
+            "text": "",
+            "href": "#cb13-1",
+            "name": ""
+          }
+        ],
+        "images": [],
+        "forms": [],
+        "buttons": [],
+        "skipLinks": []
+      },
+      "styleSamples": [
+        {
+          "selector": "body",
+          "color": "rgb(23, 32, 51)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "16px",
+          "lineHeight": "28px",
+          "outline": "rgb(23, 32, 51) none 3px",
+          "boxShadow": "none",
+          "borderRadius": "0px"
+        },
+        {
+          "selector": "header",
+          "color": "rgb(23, 32, 51)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "16px",
+          "lineHeight": "28px",
+          "outline": "rgb(23, 32, 51) none 3px",
+          "boxShadow": "none",
+          "borderRadius": "0px"
+        },
+        {
+          "selector": "main a",
+          "color": "rgb(102, 112, 133)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "fontSize": "16px",
+          "lineHeight": "28px",
+          "outline": "rgb(102, 112, 133) none 3px",
+          "boxShadow": "none",
+          "borderRadius": "0px"
+        }
+      ]
+    }
+  ],
+  "console": [],
+  "pageErrors": [],
+  "keyboard": [
+    {
+      "tag": "a",
+      "text": "Agentic Development Harness",
+      "id": "toc-agentic-development-harness",
+      "classes": "",
+      "href": "#agentic-development-harness",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 79,
+        "y": 398,
+        "w": 230,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Core idea",
+      "id": "toc-core-idea",
+      "classes": "",
+      "href": "#core-idea",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 433,
+        "w": 73,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Development workflow",
+      "id": "toc-development-workflow",
+      "classes": "",
+      "href": "#development-workflow",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 468,
+        "w": 174,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "SDD loop — Spec-Driven Development",
+      "id": "toc-sdd-loop--spec-driven-development",
+      "classes": "",
+      "href": "#sdd-loop--spec-driven-development",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 503,
+        "w": 295,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Repository layout",
+      "id": "toc-repository-layout",
+      "classes": "",
+      "href": "#repository-layout",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 538,
+        "w": 131,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Recipes — SDD workflow verbs",
+      "id": "toc-recipes--sdd-workflow-verbs",
+      "classes": "",
+      "href": "#recipes--sdd-workflow-verbs",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 573,
+        "w": 240,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Skills (14)",
+      "id": "toc-skills-14",
+      "classes": "",
+      "href": "#skills-14",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 608,
+        "w": 72,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Named agents (12)",
+      "id": "toc-named-agents-12",
+      "classes": "",
+      "href": "#named-agents-12",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 643,
+        "w": 142,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Quick start",
+      "id": "toc-quick-start",
+      "classes": "",
+      "href": "#quick-start",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 678,
+        "w": 82,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Use-case playbooks",
+      "id": "toc-use-case-playbooks",
+      "classes": "",
+      "href": "#use-case-playbooks",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 713,
+        "w": 155,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Common workflows",
+      "id": "toc-common-workflows",
+      "classes": "",
+      "href": "#common-workflows",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 748,
+        "w": 151,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Build documentation bundle",
+      "id": "toc-build-documentation-bundle",
+      "classes": "",
+      "href": "#build-documentation-bundle",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 783,
+        "w": 211,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Beads operating rules",
+      "id": "toc-beads-operating-rules",
+      "classes": "",
+      "href": "#beads-operating-rules",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 811,
+        "w": 165,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "License / ownership",
+      "id": "toc-license--ownership",
+      "classes": "",
+      "href": "#license--ownership",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 603,
+        "w": 152,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Install the Agentic Development Harness",
+      "id": "toc-install-the-agentic-development-harness",
+      "classes": "",
+      "href": "#install-the-agentic-development-harness",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 79,
+        "y": 638,
+        "w": 307,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Prerequisites",
+      "id": "toc-prerequisites",
+      "classes": "",
+      "href": "#prerequisites",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 673,
+        "w": 99,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Install",
+      "id": "toc-install",
+      "classes": "",
+      "href": "#install",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 708,
+        "w": 44,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Validate",
+      "id": "toc-validate",
+      "classes": "",
+      "href": "#validate",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 743,
+        "w": 60,
+        "h": 32
+      }
+    }
+  ],
+  "reverseKeyboard": [
+    {
+      "tag": "a",
+      "text": "Install",
+      "href": "#install",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 708,
+        "w": 44,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Prerequisites",
+      "href": "#prerequisites",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 673,
+        "w": 99,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Install the Agentic Development Harness",
+      "href": "#install-the-agentic-development-harness",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 79,
+        "y": 638,
+        "w": 307,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "License / ownership",
+      "href": "#license--ownership",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 603,
+        "w": 152,
+        "h": 32
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Beads operating rules",
+      "href": "#beads-operating-rules",
+      "outline": "rgb(16, 16, 16) auto 1px",
+      "boxShadow": "none",
+      "rect": {
+        "x": 95,
+        "y": 568,
+        "w": 165,
+        "h": 32
+      }
+    }
+  ],
+  "a11y": {},
+  "perf": {
+    "resources": [
+      {
+        "name": "site.css",
+        "initiatorType": "link",
+        "transferSize": 6068,
+        "duration": 1
+      }
+    ],
+    "navigation": {
+      "duration": 13,
+      "domInteractive": 8
+    },
+    "paints": [
+      {
+        "name": "first-paint",
+        "startTime": 56
+      },
+      {
+        "name": "first-contentful-paint",
+        "startTime": 56
+      }
+    ]
+  },
+  "styles": {},
+  "screenshots": [
+    {
+      "label": "desktop",
+      "path": ".run/ui-review/desktop.png",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "label": "mobile",
+      "path": ".run/ui-review/mobile.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "label": "focus-after-tabs",
+      "path": ".run/ui-review/focus-after-tabs.png",
+      "width": 1280,
+      "height": 900
+    }
+  ],
+  "contrast": [
+    {
+      "selector": "body",
+      "text": "Agentic Development Harness Agentic Development Harness Core idea Development wo",
+      "color": "rgb(23, 32, 51)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "ratio": 1.2908396918548963
+    },
+    {
+      "selector": "h1",
+      "text": "Agentic Development Harness",
+      "color": "rgb(15, 23, 42)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "fontSize": "102.4px",
+      "fontWeight": "700",
+      "ratio": 1.1763035358019647
+    },
+    {
+      "selector": "h2",
+      "text": "Core idea",
+      "color": "rgb(15, 23, 42)",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "fontSize": "30.72px",
+      "fontWeight": "700",
+      "ratio": 1.1763035358019647
+    },
+    {
+      "selector": "main a",
+      "text": "Agentic Development Harness",
+      "color": "rgb(102, 112, 133)",
+      "backgroundColor": "rgba(255, 255, 255, 0.86)",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "ratio": 4.974752735406439
+    },
+    {
+      "selector": "code",
+      "text": "bd",
+      "color": "rgb(49, 46, 129)",
+      "backgroundColor": "rgb(238, 242, 255)",
+      "fontSize": "14.08px",
+      "fontWeight": "700",
+      "ratio": 10.215627320970466
+    }
+  ]
+}

@@ -198,7 +198,7 @@ def gen_eval_recipes() -> str:
 
 changed = 0
 readme = ROOT / 'README.md'
-doc15 = ROOT / 'docs/15-skill-evaluations.md'
+doc15 = ROOT / 'docs/internal/15-skill-evaluations.md'
 
 changes = [
     (readme, 'skills-table', gen_readme_skills()),

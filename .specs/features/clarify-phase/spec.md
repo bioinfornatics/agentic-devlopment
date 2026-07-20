@@ -1,17 +1,20 @@
 # Spec: Clarify Phase — Explicit Clarify Artifact
 
-> Status: Active
+> Status: **Deprecated** — absorbed into `spec.yaml` (2026-07-20)
 > Created: 2026-07-19
 > Scope: feat-clarify-phase
 
-## Context
+## Deprecation Notice
 
-The SDD workflow currently jumps from `discover.yaml` (problem statement + user stories) directly
-to `spec.yaml` (formal WHEN/THEN/SHALL acceptance criteria). For Complex and Large scope features,
-this leaves ambiguities, gray areas, and unresolved implicit-requirement dimensions embedded as
-prose in `discovery.md` — where they are invisible to the spec writer and cause expensive
-spec-gap loops discovered during TDD. The Clarify phase closes this gap with an explicit,
-structured artifact that resolves every ambiguity before spec writing begins.
+The clarify phase has been absorbed into `spec.yaml`. The spec recipe now handles
+ambiguity resolution as part of its workflow, eliminating the need for a separate
+clarify step. The ACs below are historical and no longer active.
+
+## Original Context (Historical)
+
+The SDD workflow originally jumped from `discover.yaml` (problem statement + user stories) directly
+to `spec.yaml` (formal WHEN/THEN/SHALL acceptance criteria). This spec proposed a separate clarify
+phase, but the complexity was deemed low-value — spec.yaml now handles clarification inline.
 
 ## Acceptance Criteria
 

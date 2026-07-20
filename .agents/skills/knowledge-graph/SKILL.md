@@ -1,6 +1,8 @@
 ---
 name: knowledge-graph
 description: Create, query, validate, and update the project knowledge graph for Spec-Driven Development and agentic-harness audits. Use for product traceability; agents, skills, recipes, topics, responsibilities, delegated tasks, artifacts, gates, and Beads orchestration analysis; TBox/ABox construction; current-versus-target graph comparison; blast-radius queries; integrity checks; or structural changes recorded in `.knowledge/memory.jsonl`. Always search before creating entities. Do not use when no graph query, update, or structural knowledge change is required.
+metadata:
+  version: 1.0.0
 ---
 
 # Knowledge Graph — SDD and Harness Ontology

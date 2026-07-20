@@ -4,14 +4,15 @@ This recipe library is intentionally small and composable.
 
 ## Primary entrypoints
 
-- `harness-master` — choose this for most work. It routes to research, plan, implement, review, web-test, or release.
+- `dev` — main entry point, routes to any specialist workflow.
+- `sdd` — SDD loop orchestration (spec→plan→implement→verify).
+- `harness-review` — unified quality gate (scope: code/docs/full, output: json/markdown).
+- `harness-audit` — forensic audit with KG reasoning and independent judge.
 - `harness-research` — read-only codebase and Beads investigation.
 - `harness-plan` — create/update a Beads-backed executable plan.
 - `harness-implement` — implement a claimed/scoped bead.
-- `harness-review` — review code, tests, and Beads hygiene.
 - `harness-web-test` — Playwright/accessibility/UI verification.
 - `harness-release` — gated release orchestration.
-- `sdd-master` — product-engineering governance on top of the harness.
 - `ui-ux-suite` — full UI/UX quality workflow.
 
 ## Why this rewrite

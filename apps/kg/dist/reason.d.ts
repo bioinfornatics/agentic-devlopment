@@ -7,5 +7,7 @@ export declare const RULES: {
 export declare function reason(opts?: {
     dryRun?: boolean;
     listRules?: boolean;
+    input?: string;
+    output?: string;
 }): Promise<void>;
 export {};

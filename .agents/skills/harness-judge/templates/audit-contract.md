@@ -604,8 +604,7 @@ Inspect:
 * [ ] `.goose/recipes/doc-review.yaml`
 * [ ] `.goose/recipes/explore.yaml`
 * [ ] `.goose/recipes/harness-audit.yaml`
-* [ ] `.goose/recipes/harness-doc-review.yaml`
-* [ ] `.goose/recipes/harness-master.yaml`
+
 * [ ] `.goose/recipes/harness-review.yaml`
 * [ ] `.goose/recipes/implement.yaml`
 * [ ] `.goose/recipes/plan.yaml`

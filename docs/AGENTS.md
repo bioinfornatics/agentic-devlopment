@@ -2,6 +2,17 @@
 
 > Overrides root AGENTS.md when working in the docs/ directory.
 
+## Documentation Tiers
+
+```
+docs/
+├── START-HERE.md       # New users start here (< 50 lines)
+├── tutorials/          # Visual walkthroughs
+├── concepts/           # Visual explainers
+├── reference/          # Power user docs
+└── internal/           # Contributor docs
+```
+
 ## Setup
 
 ```bash
@@ -10,34 +21,34 @@
 
 ## Conventions
 
-- **Recipe names** — always workflow verbs: `dev`, `explore`, `plan`, `implement`, `review`, `verify`, `design`, `sdd`, `release`, `remember`, `discover`, `spec`, `doc-review`. Never `harness-*`.
+- **Recipe names** — always workflow verbs: `dev`, `explore`, `plan`, `implement`, `review`, `verify`, `design`, `sdd`, `release`, `remember`, `discover`, `spec`, `doc-review`.
 - **Slash commands** — `/dev`, `/review`, `/implement` etc.
 - **Mermaid diagrams** — use ```mermaid``` fenced blocks. Validate by rendering.
 - **Skill references** — use backtick `skill-name` format. Load with `load skills <name>`.
 - **Agent references** — use backtick `agent-name` format.
 
-## File naming
+## File organization
 
 ```
-docs/00-index.md          # decision table + workflow diagrams
-docs/01-09-*.md           # use-case playbooks
-docs/14-memory.md         # Beads memory guide
-docs/15-skill-evaluations.md  # eval workflow
-docs/knowledge-graph.md   # KG semantic model (source of truth for KG design)
-docs/kg-lifecycle.md      # KG initiation + maintenance + auto-alimentation
-docs/adr/ADR-*.md         # Architecture Decision Records
+docs/START-HERE.md                    # Entry point (< 50 lines)
+docs/tutorials/*.md                   # Task-oriented walkthroughs
+docs/concepts/*.md                    # Visual explainers
+docs/reference/                       # Detailed docs
+docs/reference/use-cases/             # Scenario playbooks
+docs/internal/                        # Contributor docs
+docs/internal/sota/                   # Research
+docs/adr/ADR-*.md                     # Architecture Decision Records
 ```
 
 ## After editing
 
 ```bash
 ./scripts/build-docs.sh   # verify HTML builds without errors
-# Check: wrote dist/docs/html/agentic-development-harness.html
-# Check: KG bootstrapped + reasoned
 ```
 
 ## What to avoid
 
-- Referencing deleted files or old recipe names (`harness-review`, `sdd-master`, etc.)
-- Adding user-facing docs for unreleased features
+- Putting detailed docs in tutorials/ (use reference/)
+- Putting contributor docs in tutorials/ or concepts/ (use internal/)
+- Adding complexity to START-HERE.md (keep < 50 lines)
 - Adding `TODO` sections — create a Beads issue instead

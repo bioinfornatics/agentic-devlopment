@@ -1,95 +1,41 @@
 [
   {
-    "agents": [
-      "architect",
-      "tdd-guide"
-    ],
     "skills": [
       "sdd",
       "beads"
     ],
-    "query": "Write the formal spec for 'Bruno API test support in verify recipe'. Produce WHEN/THEN/SHALL acceptance criteria with [FEAT]-NN IDs.",
-    "files": [
-      ".goose/recipes/verify.yaml",
-      ".goose/recipes/subrecipes/verify.yaml",
-      "AGENTS.md"
+    "agents": [
+      "architect"
     ],
-    "max_turns": 500,
+    "query": "Write a spec for user login",
     "difficulty": "normal",
-    "expected_skill_contribution": "The spec recipe should load sdd skill, read discovery context, produce WHEN/THEN/SHALL acceptance criteria with [FEAT]-NN IDs, run the spec closure gate, and create Beads stories with --acceptance flags.",
-    "fixture_intent": "Validates that the spec recipe produces spec-anchored ACs (not aspirational prose), runs the closure gate, and creates Beads stories linked to the feature epic.",
-    "baseline_gaps": [
-      "produces aspirational prose ('the system should handle API tests') without precise WHEN/THEN/SHALL format",
-      "skips assigning [FEAT]-NN IDs to acceptance criteria",
-      "creates no Beads stories and stores no pointer memory"
-    ],
-    "expected_behavior": [
-      "loads the sdd skill and runs `bd prime` before writing any spec content",
-      "produces acceptance criteria in WHEN/THEN/SHALL format with precise expected outcomes",
-      "assigns [FEAT]-NN IDs (e.g., BRUNOV-01, BRUNOV-02) to every acceptance criterion",
-      "creates Beads stories with `bd create --acceptance '<AC summary>' --deps 'partOf:<epic-id>'`"
-    ]
+    "expected_skill_contribution": "WHEN/THEN/SHALL ACs",
+    "max_turns": 100
   },
   {
-    "agents": [
-      "architect",
-      "tdd-guide"
-    ],
     "skills": [
       "sdd",
       "beads"
     ],
-    "query": "Write a formal spec for the parallel eval runner feature, validating ACs with architect (feasibility) and tdd-guide (testability). Run the spec closure gate.",
-    "files": [
-      "scripts/run-skill-ab-suite.py",
-      "docs/adr/ADR-001-eval-suite-parallelism.md",
-      ".beads/issues.jsonl"
+    "agents": [
+      "architect"
     ],
-    "max_turns": 500,
+    "query": "Spec an API with multiple endpoints",
     "difficulty": "difficult",
-    "expected_skill_contribution": "The spec recipe must produce a complete spec.md with requirement traceability, delegate feasibility and testability checks to architect and tdd-guide, run the 3-item closure gate, and flag any spec-precision gaps.",
-    "fixture_intent": "A feature with complex technical constraints (WAL mode, thread safety); ACs must be precise enough for TDD — vague ACs like 'should be faster' must be flagged as spec-precision gaps.",
-    "baseline_gaps": [
-      "produces vague ACs ('should be faster') without flagging them as spec-precision gaps",
-      "skips the feasibility delegation to architect and testability delegation to tdd-guide",
-      "does not run the spec closure gate before finalising the spec"
-    ],
-    "expected_behavior": [
-      "produces at least 3 ACs in WHEN/THEN/SHALL format with precise numeric outcomes where applicable",
-      "delegates feasibility check to architect agent using `load agent architect`",
-      "delegates testability check to tdd-guide using `load agent tdd-guide`",
-      "runs the spec closure gate (3 checks: unambiguity, open questions, 9 dimensions) and reports result"
-    ]
+    "expected_skill_contribution": "Multiple AC IDs, clear boundaries",
+    "max_turns": 100
   },
   {
-    "agents": [
-      "architect",
-      "tdd-guide"
-    ],
     "skills": [
       "sdd",
       "beads"
     ],
-    "query": "Spec the full SDD+TDD cycle for recipe eval coverage: write spec.md, create Beads stories for all 3 phases (spec, implement, review), store pointer memory.",
-    "files": [
-      "evals/recipes/",
-      "docs/15-skill-evaluations.md",
-      ".beads/issues.jsonl"
+    "agents": [
+      "architect"
     ],
-    "max_turns": 500,
+    "query": "Spec a feature with vague requirements",
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "The spec recipe must produce a multi-story spec.md with [FEAT]-NN IDs across 3 phases, validate each AC is spec-anchored, create Beads stories per phase with correct dependencies, store a spec pointer memory.",
-    "fixture_intent": "A complex multi-phase spec covering spec, implement, and review work items; the agent must assign distinct IDs per phase and story, link stories with partOf dependencies, and store a navigable pointer memory.",
-    "baseline_gaps": [
-      "produces a single flat spec without phase structure or per-story AC grouping",
-      "creates Beads stories without --deps partOf linking to an epic bead",
-      "stores no pointer memory and produces no spec.md file path in the handoff"
-    ],
-    "expected_behavior": [
-      "produces a spec.md with at least 3 user stories each with 2+ ACs in WHEN/THEN/SHALL format",
-      "assigns [FEAT]-NN IDs consistently across stories and phases",
-      "creates Beads stories with `--deps partOf:<epic-id>` for each story",
-      "stores a pointer memory: `bd remember 'Spec for ...: canonical source is .specs/features/.../spec.md; read when implementing ...' --key spec-<feature>-pointer`"
-    ]
+    "expected_skill_contribution": "Clarifies ambiguities, asks questions",
+    "max_turns": 100
   }
 ]

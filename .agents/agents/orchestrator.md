@@ -195,6 +195,22 @@ Remaining risks: [list or "none"]
 - **Synthesize, don't forward** — raw worker output must be integrated into a coherent conclusion. Listing worker outputs without synthesis is abdication, not orchestration.
 - **Subagents cannot spawn subagents** — only this session can call `delegate()`. Instructing a subagent to further delegate fails silently at runtime with no error surfaced.
 
+
+## Native Orchestrator Extension
+
+When the `orchestrator` platform extension is enabled, additional capabilities:
+
+| Tool | Use Case |
+|------|----------|
+| `list_sessions` | Monitor all delegated work |
+| `view_session` | Inspect/summarize any session |
+| `start_agent` | Create persistent parallel workers |
+| `send_message` | Coordinate with persistent workers |
+| `interrupt_agent` | Cancel stuck sessions |
+
+**Hybrid pattern:** Use `delegate()` for transient work, `start_agent()` for persistent workers.
+Check `list_sessions()` before retrying stuck delegates.
+
 ## Reference
 
 For workflow context and SDD loop, load skill: `agentic-devlopment`.

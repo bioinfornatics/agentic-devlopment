@@ -149,7 +149,7 @@
 {"type":"entity","name":"test:kg-pipeline-smoke","entityType":"test","observations":["scope:buildtime","file:apps/kg/dist/cli.js","type:integration-smoke","covers: KG-01 KG-02 KG-03 KG-04 KG-05 KG-06"]}
 {"type":"entity","name":"goose-config:knowledgegraphmemory","entityType":"config_file","observations":["path: ~/.config/goose/config.yaml","scope: buildtime","role: MCP extension declaration for KG memory server","cmd: npx -y @modelcontextprotocol/server-memory","MEMORY_FILE_PATH: .knowledge/memory.jsonl (per-project, absolute in config)","status: canonical"]}
 {"type":"entity","name":".specs/features/harness-core/spec.md","entityType":"spec_file","observations":["scope:buildtime","path: .specs/features/harness-core/spec.md","status:retro-spec"]}
-{"type":"entity","name":".specs/features/eval-suite/spec.md","entityType":"spec_file","observations":["scope:buildtime","path: .specs/features/eval-suite/spec.md","status:retro-spec"]}
+{"type":"entity","name":".specs/features/eval-suite/spec.md","entityType":"spec_file","observations":["scope:buildtime","path: .specs/features/eval-suite/spec.md","status:retro-spec","source_kind:explicit","source_path:.specs/features/eval-suite/spec.md","source_lines:1-55","confidence:1.0","status:current","graph_view:current"]}
 {"type":"entity","name":".specs/features/kg-integration/spec.md","entityType":"spec_file","observations":["scope:buildtime","path: .specs/features/kg-integration/spec.md","status:retro-spec"]}
 {"type":"entity","name":".specs/features/beads-workflow/spec.md","entityType":"spec_file","observations":["scope:buildtime","path: .specs/features/beads-workflow/spec.md","status:retro-spec"]}
 {"type":"entity","name":"doc:AGENTS.md","entityType":"harness:doc","observations":["file:docs/AGENTS.md","scope:buildtime","namespace:harness"]}
@@ -172,10 +172,10 @@
 {"type":"entity","name":"skill:skill-creator","entityType":"harness:skill","observations":["file:.agents/skills/skill-creator/SKILL.md","scope:buildtime","namespace:harness"]}
 {"type":"entity","name":"skill:wcag-accessibility-audit","entityType":"harness:skill","observations":["file:.agents/skills/wcag-accessibility-audit/SKILL.md","scope:buildtime","namespace:harness"]}
 {"type":"entity","name":"doc:getting-started.md","entityType":"harness:doc","observations":["file:docs/getting-started.md","scope:buildtime","namespace:harness"]}
-{"type":"entity","name":"eval-mode:layer-delta","entityType":"feature","observations":["scope:buildtime","layer:harness","status:active","description:Measures marginal value of each harness layer vs the previous — skills L1vsL0, agents L2vsL1, recipes L3vsL2","cli_flag:--mode layer-delta"]}
-{"type":"entity","name":"eval-kind:skills","entityType":"component","observations":["scope:buildtime","layer:harness","layer_num:1","description:Skills eval kind under layer-delta — Layer 1 (with_skill) vs Layer 0 baseline (no skill content)","file:scripts/run-harness-ab-eval.py","script:scripts/run-skill-ab-suite.py"]}
-{"type":"entity","name":"eval-kind:agents","entityType":"component","observations":["scope:buildtime","layer:harness","layer_num:2","description:Agents eval kind under layer-delta — Layer 2 (agent+skills) vs Layer 1 (skills only)","file:scripts/run-harness-ab-eval.py"]}
-{"type":"entity","name":"eval-kind:recipes","entityType":"component","observations":["scope:buildtime","layer:harness","layer_num:3","description:Recipes eval kind under layer-delta — Layer 3 (recipe+agents+skills) vs Layer 2 (agents+skills only)","file:scripts/run-harness-ab-eval.py"]}
+{"type":"entity","name":"eval-mode:layer-delta","entityType":"feature","observations":["scope:buildtime","layer:harness","status:active","description:Measures marginal value of each harness layer vs the previous — skills L1vsL0, agents L2vsL1, recipes L3vsL2","cli_flag:--mode layer-delta","namespace:harness","entity_type:harness:eval_mode","source_kind:explicit","source_path:.specs/features/eval-suite/spec.md","source_lines:25-36","confidence:1.0","status:current","graph_view:current","summary:layer-delta compares each harness layer against the previous supporting-layer baseline","skills_relationship:Layer 1 skills are evaluated against Layer 0 no-skill baseline when layer-delta is selected","agents_relationship:Layer 2 agent+skills condition is evaluated against Layer 1 skills-only baseline","recipes_relationship:Layer 3 recipe+agents+skills condition is evaluated against Layer 2 agents+skills-only baseline"]}
+{"type":"entity","name":"eval-kind:skills","entityType":"component","observations":["scope:buildtime","layer:harness","layer_num:1","description:Skills eval kind under layer-delta — Layer 1 (with_skill) vs Layer 0 baseline (no skill content)","file:scripts/run-harness-ab-eval.py","script:scripts/run-skill-ab-suite.py","namespace:harness","entity_type:harness:eval_kind","source_kind:inferred","source_path:.specs/features/eval-suite/spec.md","source_lines:25-36","confidence:0.78","status:current","graph_view:current","layer_delta_relationship:Layer 1 skills vs Layer 0 no skill content baseline"]}
+{"type":"entity","name":"eval-kind:agents","entityType":"component","observations":["scope:buildtime","layer:harness","layer_num:2","description:Agents eval kind under layer-delta — Layer 2 (agent+skills) vs Layer 1 (skills only)","file:scripts/run-harness-ab-eval.py","namespace:harness","entity_type:harness:eval_kind","source_kind:explicit","source_path:.specs/features/eval-suite/spec.md","source_lines:25-30","confidence:1.0","status:current","graph_view:current","layer_delta_relationship:Layer 2 with_agent+skills vs Layer 1 skills_only baseline"]}
+{"type":"entity","name":"eval-kind:recipes","entityType":"component","observations":["scope:buildtime","layer:harness","layer_num:3","description:Recipes eval kind under layer-delta — Layer 3 (recipe+agents+skills) vs Layer 2 (agents+skills only)","file:scripts/run-harness-ab-eval.py","namespace:harness","entity_type:harness:eval_kind","source_kind:explicit","source_path:.specs/features/eval-suite/spec.md","source_lines:32-36","confidence:1.0","status:current","graph_view:current","layer_delta_relationship:Layer 3 with_recipe+agents+skills vs Layer 2 agents+skills_only baseline"]}
 {"type":"entity","name":"AC-EVAL-04","entityType":"acceptance_criterion","observations":["scope:buildtime","criterion:WHEN run-harness-ab-suite.py --kind agents --mode layer-delta runs THEN each agent shows with_agent+skills pass_rate >= skills_only pass_rate AND without_agent baseline injects supporting skills text (Layer 1) into both conditions AND globally installed skills are hidden via temporarily_hidden_dirs","status:pending","tdd-gap: no ANCHORS relation — test entity missing","beads-issue: agentic-devlopment-nit","gap-detected: 2026-07-18"]}
 {"type":"entity","name":"AC-EVAL-05","entityType":"acceptance_criterion","observations":["scope:buildtime","criterion:WHEN run-harness-ab-suite.py --kind recipes --mode layer-delta runs THEN each recipe shows with_recipe+agents+skills pass_rate >= agents+skills_only pass_rate AND without_recipe baseline injects supporting agents + skills text (Layer 2) into both conditions","status:pending","tdd-gap: no ANCHORS relation — test entity missing","beads-issue: agentic-devlopment-jjy","gap-detected: 2026-07-18"]}
 {"type":"entity","name":"AC-EVAL-06","entityType":"acceptance_criterion","observations":["scope:buildtime","criterion:WHEN an agent or recipe eval JSON is loaded THEN every scenario has a skills array (agents) or agents+skills arrays (recipes) AND each declared skill/agent exists under .agents/skills/ or .agents/agents/","status:pending","tdd-gap: no ANCHORS relation — test entity missing","beads-issue: agentic-devlopment-8hm","gap-detected: 2026-07-18"]}
@@ -452,3 +452,132 @@
 {"type":"entity","name":"doc:context-budget-policy.md","entityType":"harness:doc","observations":["file:docs/context-budget-policy.md","scope:buildtime","namespace:harness"]}
 {"type":"entity","name":"doc:review-recipe-routing.md","entityType":"harness:doc","observations":["file:docs/review-recipe-routing.md","scope:buildtime","namespace:harness"]}
 {"type":"entity","name":"doc:ui-ux-skill-loading-policy.md","entityType":"harness:doc","observations":["file:docs/ui-ux-skill-loading-policy.md","scope:buildtime","namespace:harness"]}
+{"type":"relation","from":"agent:architect","to":"skill:sdd","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:architect","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:architect","to":"skill:design-systems-arch","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:codebase-researcher","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:codebase-researcher","to":"skill:goose-orchestration","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:harness-judge","to":"skill:harness-judge","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:implementation-worker","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:implementation-worker","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:implementation-worker","to":"skill:sdd","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:implementation-worker","to":"skill:knowledge-graph","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:orchestrator","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:orchestrator","to":"skill:goose-orchestration","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:orchestrator","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:planner","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:principal-engineer","to":"skill:code-review","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:principal-engineer","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:product-owner","to":"skill:sdd","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:product-owner","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:product-owner","to":"skill:agentic-ux","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:product-owner","to":"skill:knowledge-graph","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:qa-automation","to":"skill:webapp-testing","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:qa-automation","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:qa-automation","to":"skill:systematic-debugging","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:review-critic","to":"skill:code-review","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:review-critic","to":"skill:knowledge-graph","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:tdd-guide","to":"skill:sdd","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:tdd-guide","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:tdd-guide","to":"skill:systematic-debugging","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:ui-designer","to":"skill:ui-quality","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:ui-designer","to":"skill:atomic-design","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:ui-designer","to":"skill:design-systems-arch","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:ui-designer","to":"skill:ux-quality","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:ui-designer","to":"skill:cognitive-ux","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:ui-designer","to":"skill:frontend-blueprint","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:ui-designer","to":"skill:webapp-testing","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:ux-researcher","to":"skill:ux-quality","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:ux-researcher","to":"skill:agentic-ux","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:ux-researcher","to":"skill:cognitive-ux","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"agent:ux-researcher","to":"skill:webapp-testing","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:agent-skill-extract"}
+{"type":"relation","from":"recipe:clarify","to":"agent:product-owner","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:clarify","to":"skill:sdd","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:clarify","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:constitution","to":"agent:architect","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:constitution","to":"skill:sdd","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:constitution","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:design","to":"agent:ui-designer","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:design","to":"skill:cognitive-ux","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:design","to":"skill:atomic-design","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:design","to":"skill:design-systems-arch","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:design","to":"skill:webapp-testing","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:design","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:design","to":"skill:agentic-ux","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:dev","to":"agent:orchestrator","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:dev","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:dev","to":"skill:goose-orchestration","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:dev","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:discover","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:doc-review","to":"agent:review-critic","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:doc-review","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:doc-review","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:explore","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-audit","to":"agent:orchestrator","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:harness-audit","to":"agent:harness-judge","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:harness-audit","to":"skill:goose-orchestration","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-audit","to":"skill:sdd","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-audit","to":"skill:knowledge-graph","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-audit","to":"skill:harness-judge","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-doc-review","to":"agent:review-critic","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:harness-doc-review","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-doc-review","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-master","to":"agent:orchestrator","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:harness-master","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-master","to":"skill:goose-orchestration","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-master","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-review","to":"agent:review-critic","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:harness-review","to":"skill:code-review","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-review","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:harness-review","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:implement","to":"agent:tdd-guide","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:implement","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:implement","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:plan","to":"agent:architect","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:plan","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:plan","to":"skill:sdd","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:release","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:remember","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:sdd","to":"agent:orchestrator","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:sdd","to":"agent:ux-researcher","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:sdd","to":"agent:ui-designer","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:sdd","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:spec","to":"agent:tdd-guide","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:spec","to":"skill:beads","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:verify","to":"agent:ui-designer","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:verify","to":"skill:agentic-devlopment","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:verify","to":"skill:ui-quality","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"doc:02-code-review.md","to":"skill:code-review","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"doc:05-ui-review.md","to":"skill:ui-quality","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"doc:05-ui-review.md","to":"skill:ux-quality","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"doc:06-test-review.md","to":"skill:webapp-testing","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"doc:07-spec-review.md","to":"skill:sdd","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"doc:09-implementation-loop.md","to":"skill:agentic-devlopment","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"doc:10-release-readiness.md","to":"recipe:release","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"doc:13-documentation-review.md","to":"recipe:doc-review","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"doc:14-memory.md","to":"skill:beads","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"doc:15-skill-evaluations.md","to":"harness:eval-framework","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"doc:16-eval-analysis.md","to":"harness:eval-framework","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"doc:getting-started.md","to":"harness:onboarding","relationType":"DESCRIBES","confidence":0.8,"rule":"bootstrap:doc-topic-pattern"}
+{"type":"relation","from":"recipe:design","to":"skill:wcag-accessibility-audit","relationType":"MAY_LOAD","confidence":0.9,"rule":"bootstrap:conditional-skill-mapping"}
+{"type":"relation","from":"recipe:design","to":"skill:design-critique-case-studies","relationType":"MAY_LOAD","confidence":0.9,"rule":"bootstrap:conditional-skill-mapping"}
+{"type":"relation","from":"recipe:design","to":"skill:frontend-blueprint","relationType":"MAY_LOAD","confidence":0.9,"rule":"bootstrap:conditional-skill-mapping"}
+{"type":"relation","from":"recipe:verify","to":"skill:webapp-testing","relationType":"MAY_LOAD","confidence":0.9,"rule":"bootstrap:conditional-skill-mapping"}
+{"type":"relation","from":"recipe:verify","to":"skill:ui-quality","relationType":"MAY_LOAD","confidence":0.9,"rule":"bootstrap:conditional-skill-mapping"}
+{"type":"relation","from":"skill:gdd","to":"harness:direct-load-skills","relationType":"USAGE_PATTERN","confidence":1,"rule":"bootstrap:direct-load-skill"}
+{"type":"relation","from":"skill:skill-creator","to":"harness:direct-load-skills","relationType":"USAGE_PATTERN","confidence":1,"rule":"bootstrap:direct-load-skill"}
+{"type":"entity","name":"harness:direct-load-skills","entityType":"harness:category","observations":["description:Skills loaded directly by users, not routed via agents","scope:buildtime"]}
+{"type":"entity","name":"doc:START-HERE.md","entityType":"harness:doc","observations":["file:docs/START-HERE.md","scope:buildtime","namespace:harness"]}
+{"type":"relation","from":"recipe:design","to":"skill:wcag-accessibility-audit","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"entity","name":"kg-assertion:layer-delta-governs-skills","entityType":"harness:relation_assertion","observations":["scope:buildtime","namespace:harness","entity_type:harness:relation_assertion","source_kind:inferred","source_path:.specs/features/eval-suite/spec.md","source_lines:25-36","confidence:0.78","status:current","graph_view:current","subject:eval-mode:layer-delta","predicate:GOVERNS","object:eval-kind:skills","summary:Layer-delta includes skills as Layer 1 vs Layer 0 baseline in the documented harness layer model."]}
+{"type":"relation","from":"kg-assertion:layer-delta-governs-skills","to":"eval-mode:layer-delta","relationType":"ASSERTS_SUBJECT"}
+{"type":"relation","from":"kg-assertion:layer-delta-governs-skills","to":"eval-kind:skills","relationType":"ASSERTS_OBJECT"}
+{"type":"relation","from":"kg-assertion:layer-delta-governs-skills","to":".specs/features/eval-suite/spec.md","relationType":"TRACED_IN"}
+{"type":"entity","name":"kg-assertion:layer-delta-governs-agents","entityType":"harness:relation_assertion","observations":["scope:buildtime","namespace:harness","entity_type:harness:relation_assertion","source_kind:explicit","source_path:.specs/features/eval-suite/spec.md","source_lines:25-30","confidence:1.0","status:current","graph_view:current","subject:eval-mode:layer-delta","predicate:GOVERNS","object:eval-kind:agents","summary:Layer-delta agent eval compares with_agent+skills against skills_only."]}
+{"type":"relation","from":"kg-assertion:layer-delta-governs-agents","to":"eval-mode:layer-delta","relationType":"ASSERTS_SUBJECT"}
+{"type":"relation","from":"kg-assertion:layer-delta-governs-agents","to":"eval-kind:agents","relationType":"ASSERTS_OBJECT"}
+{"type":"relation","from":"kg-assertion:layer-delta-governs-agents","to":".specs/features/eval-suite/spec.md","relationType":"TRACED_IN"}
+{"type":"entity","name":"kg-assertion:layer-delta-governs-recipes","entityType":"harness:relation_assertion","observations":["scope:buildtime","namespace:harness","entity_type:harness:relation_assertion","source_kind:explicit","source_path:.specs/features/eval-suite/spec.md","source_lines:32-36","confidence:1.0","status:current","graph_view:current","subject:eval-mode:layer-delta","predicate:GOVERNS","object:eval-kind:recipes","summary:Layer-delta recipe eval compares with_recipe+agents+skills against agents+skills_only."]}
+{"type":"relation","from":"kg-assertion:layer-delta-governs-recipes","to":"eval-mode:layer-delta","relationType":"ASSERTS_SUBJECT"}
+{"type":"relation","from":"kg-assertion:layer-delta-governs-recipes","to":"eval-kind:recipes","relationType":"ASSERTS_OBJECT"}
+{"type":"relation","from":"kg-assertion:layer-delta-governs-recipes","to":".specs/features/eval-suite/spec.md","relationType":"TRACED_IN"}

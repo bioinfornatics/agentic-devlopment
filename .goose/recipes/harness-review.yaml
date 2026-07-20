@@ -9,9 +9,9 @@ instructions: |
   You orchestrate a comprehensive review of the agentic development harness.
 
   Explicit routing for this recipe (AD-001 — Specialist pattern):
-  - load skills code-review          (adaptive code/PR review methodology)
-  - load skills agentic-devlopment  (harness workflow rules and scope discipline)
-  - load skills beads        (memory-pointer format and Beads hygiene rules)
+  - load skill: code-review          (adaptive code/PR review methodology)
+  - load skill: agentic-devlopment  (harness workflow rules and scope discipline)
+  - load skill: beads                (memory-pointer format and Beads hygiene rules)
   - In-session agent: load agent review-critic
 
   ## First visible output (required before any tool call)
@@ -21,9 +21,9 @@ instructions: |
     Approach: [code subrecipe only | doc-review subrecipe only | both in sequence]
 
   ## Orient (bd prime FIRST — run before anything else)
-  load skills code-review.
-  load skills agentic-devlopment.
-  load skills beads.
+  load skill: code-review.
+  load skill: agentic-devlopment.
+  load skill: beads.
   load agent review-critic.
   1. Run `bd prime` — load project memories and workflow context.
   2. Run `bd ready --json` — check for related review beads already open.
@@ -32,18 +32,22 @@ instructions: |
 
   ## Routing by scope
 
-  **scope = code (or full)** → run `review` subrecipe for code/diff changes.
-  **scope = docs (or full)** → run `doc-review` subrecipe for documentation consistency.
-  **scope = full (default)** → run both subrecipes in sequence; synthesize into one report.
+  **scope = code (or full)** → invoke the `review` subrecipe for code/diff changes.
+  **scope = docs (or full)** → invoke the `doc-review` subrecipe for documentation consistency.
+  **scope = full (default)** → invoke both subrecipes in sequence; synthesize into one report.
 
-  When scope is "full", run code review first, then doc review. Collect all findings
+  When scope is "full", invoke code review first, then doc review. Collect all findings
   before synthesizing to avoid context fragmentation.
 
   ## Synthesis
   Merge findings from all review passes:
-  - Rank all findings by severity: CRITICAL → HIGH → MEDIUM → LOW
-  - Note cross-surface implications (e.g., a recipe change that also breaks doc accuracy)
-  - Emit a single unified verdict: APPROVE | PASS-WITH-NITS | BLOCK
+  - Deduplicate overlapping findings from code and documentation passes.
+  - Rank all findings by severity: CRITICAL → HIGH → MEDIUM → LOW.
+  - Before detailed findings, emit a summary table with CRITICAL/HIGH/MEDIUM/LOW counts and code/docs origin.
+  - For every CRITICAL or HIGH finding, include exact file path, quoted evidence, concrete failure mode, proposed fix, and an exact `bd create` command.
+  - Note cross-surface implications (e.g., a recipe change that also breaks doc accuracy).
+  - Report recipe validation status explicitly, including each failed recipe path and validator error.
+  - Emit a single unified verdict: APPROVE | PASS-WITH-NITS | BLOCK.
 
   Verdict semantics:
   - APPROVE       = zero actionable findings
@@ -55,10 +59,13 @@ instructions: |
   - [ ] bd prime run before any inspection
   - [ ] Code review subrecipe run (if scope is "code" or "full")
   - [ ] Doc-review subrecipe run (if scope is "docs" or "full")
+  - [ ] Summary table emitted before detailed findings with CRITICAL/HIGH/MEDIUM/LOW counts
   - [ ] All findings severity-ranked (CRITICAL/HIGH/MEDIUM/LOW) with file references
+  - [ ] Each CRITICAL/HIGH finding includes quoted evidence, concrete failure mode, fix, and exact `bd create` command
+  - [ ] Recipe validation status reported, including failed paths/errors if any
   - [ ] Cross-surface implications noted between code and documentation changes
   - [ ] Single unified verdict emitted: APPROVE | PASS-WITH-NITS | BLOCK
-  - [ ] Proposed `bd create` commands included for every CRITICAL/HIGH finding
+  - [ ] Memory checkpoint explicitly records a proposed `bd remember` or states none was found
   - [ ] No files modified (read-only review unless explicitly instructed)
 
   Memory checkpoint:
@@ -96,6 +103,15 @@ parameters:
     requirement: optional
     default: ""
     description: Extra review constraints or pass/fail criteria.
+  - key: output_format
+    input_type: select
+    requirement: optional
+    default: markdown
+    options: [markdown, json]
+    description: >
+      Output format for the final report.
+      markdown = human-readable report (default);
+      json = structured JSON for CI integration.
 extensions:
   - type: platform
     name: developer
@@ -140,6 +156,7 @@ prompt: |
   Repo: {{ repo_path }}
   Scope: {{ scope }}
   Constraints: {{ constraints }}
+  Output format: {{ output_format }}
 
   ## Step 0 — Elicit task if missing
   If the task line above is blank or empty AND scope is "code", ask the user:
@@ -151,32 +168,49 @@ prompt: |
   State the scope, focus, and approach before any tool call or skill load.
 
   ## Step 2 — Orient
-  load skills code-review.
-  load skills agentic-devlopment.
-  load skills beads.
+  load skill: code-review.
+  load skill: agentic-devlopment.
+  load skill: beads.
   load agent review-critic.
   Run `bd prime`, then `bd ready --json`, then `bd memories harness`.
 
   ## Step 3a — Code review (scope: full or code)
   If scope is "full" or "code":
-    Run `review` subrecipe for: {{ task }}
+    Invoke `review` subrecipe for: {{ task }}
     Collect severity-ranked code findings before proceeding.
 
   ## Step 3b — Documentation review (scope: full or docs)
   If scope is "full" or "docs":
-    Run `doc-review` subrecipe (scope: all, focus: "{{ task }}").
+    Invoke `doc-review` subrecipe (scope: all, focus: "{{ task }}").
     Collect severity-ranked documentation findings.
 
   ## Step 4 — Synthesize
-  Merge all findings from both passes.
-  Group by severity: CRITICAL → HIGH → MEDIUM → LOW.
+  Merge all findings from both passes and deduplicate overlaps.
+  Emit a summary table before the detailed findings with CRITICAL/HIGH/MEDIUM/LOW counts and code/docs origin.
+  For each CRITICAL or HIGH finding, include exact file path, quoted evidence, concrete failure mode, proposed fix, and an exact `bd create` command.
   Note cross-surface implications between code and documentation changes.
-  Emit the unified verdict: APPROVE | PASS-WITH-NITS | BLOCK.
+  Emit one unified verdict: APPROVE | PASS-WITH-NITS | BLOCK.
 
   ## Step 5 — Handoff
   Report:
-  - Total findings by severity (code + docs combined)
-  - Top 3 actionable findings with proposed fix or exact `bd create` command
-  - Whether any recipe failed `goose recipe validate`
+  - Summary table with total findings by severity (code + docs combined) before detailed findings
+  - All CRITICAL/HIGH actionable findings with proposed fix and exact `bd create` command
+  - Top 3 MEDIUM/LOW findings, if any, with concise fixes
+  - Whether any recipe failed `goose recipe validate`, with path/error details
   - Unified verdict with one-sentence justification
+  - Memory checkpoint: one proposed `bd remember` for a durable harness quality fact, or an explicit "none found" statement
+
+  ## Output format
+  If output_format is "json", emit only valid JSON with this schema:
+  {
+    "verdict": "APPROVE | PASS-WITH-NITS | BLOCK",
+    "scope": "{{ scope }}",
+    "focus": "{{ task }}",
+    "summary": "<one sentence>",
+    "findings": [{"severity": "...", "file": "...", "issue": "...", "fix": "..."}],
+    "recipe_validation": {"passed": N, "failed": N, "errors": [...]},
+    "memory_checkpoint": "<proposed memory or null>"
+  }
+  If output_format is "markdown", emit the human-readable report as usual.
+
   Stop after the handoff block. Do not continue exploring.

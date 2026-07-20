@@ -104,11 +104,35 @@ prompt: |
   Wait for their reply and use it as the task for all subsequent steps. Do not call any tool until you have it.
 
   Step 1 — First visible output: state release target, current git status, gate plan.
-  Step 2 — Ordering gate check: run `bd show <bead-id>` or `bd list --label env:verified`.
-           STOP if env:verified label absent — output gate error message.
+  
+  Step 2 — Pre-flight gates (ALL MUST pass):
+  - [ ] `bd list --label env:verified` returns target beads
+  - [ ] All release beads are closed
+  - [ ] `git status` is clean (no uncommitted changes)
+  - [ ] Tests pass: `make test` or equivalent
+  - [ ] Version bumped in package manifest
+  STOP on first gate FAIL — output gate error message.
+  
   Step 3 — Orient: load skill agentic-devlopment. Run bd prime and bd ready --json.
-  Step 4 — Pre-release gate: verify all beads closed, tests pass, git clean, version bumped.
-  Step 5 — Execute release: use release subrecipe.
-  Step 6 — Gate stamp: on success → `bd update <bead-id> --add-label env:prod`.
-  Step 7 — Post-release: verify deployed artifact, run smoke test, close release bead.
-  STOP on first gate FAIL — do not proceed past a failed gate.
+  
+  Step 4 — Execute release: use release subrecipe.
+  
+  Step 5 — Post-release gates (ALL MUST pass):
+  - [ ] Artifact deployed successfully
+  - [ ] Smoke test passes
+  - [ ] `bd update <bead-id> --add-label env:prod` succeeds
+  
+  ## Completion Gate (MUST pass before handoff)
+  Verify ALL before completing:
+  - [ ] All pre-flight gates passed
+  - [ ] Release executed without errors
+  - [ ] All post-release gates passed
+  - [ ] Release bead closed with env:prod label
+  
+  ## Handoff
+  Report:
+  - Version released: [version]
+  - Beads released: [list]
+  - Deployment target: [env]
+  - Smoke test: PASS/FAIL
+  - Next: Monitor for issues, prepare next iteration

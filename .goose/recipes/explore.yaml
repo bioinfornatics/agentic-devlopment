@@ -86,5 +86,25 @@ prompt: |
   Step 1 — First visible output: Scope=Read-only, Selected flow=direct inspection, Research topic={{ task }}.
   Step 2 — Orient: load skill agentic-devlopment. Run bd prime and bd ready --json.
   Step 3 — Research: use analyze tools before grep. Map files, blast radius, existing tests.
-  Step 4 — Return JSON-compatible findings with summary, relevant_files, risks, recommended_next_steps.
-  Step 5 — Stop. Do not create beads or modify files.
+  Step 4 — Synthesize findings into structured report.
+  
+  ## Completion Gate (MUST pass before handoff)
+  Verify ALL before completing:
+  - [ ] Research question answered with evidence
+  - [ ] Relevant files identified with paths
+  - [ ] Risks/blast radius assessed
+  - [ ] NO file modifications made (read-only)
+  - [ ] NO beads created (research only)
+  
+  ## Handoff
+  Return JSON-compatible findings:
+  ```json
+  {
+    "summary": "...",
+    "relevant_files": ["path1", "path2"],
+    "risks": ["risk1", "risk2"],
+    "recommended_next_steps": ["step1", "step2"]
+  }
+  ```
+  
+  Recommended next: `/spec` if new feature, `/implement` if fix, `/review` if checking.

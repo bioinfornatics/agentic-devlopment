@@ -48,4 +48,5 @@ bd ready --json
 bd blocked --json
 ```
 
+| Documentation review | /doc-review | Read-only documentation consistency review of docs, recipes, skills, agents, memory pointers, and harness workflow checklists. |
 | Harness audit | /harness-audit | Read-only LLM-as-judge audit of agents, skills, recipes, frameworks, and orchestration. |

@@ -1,8 +1,0 @@
-COMMAND: spec deviation scan
-2026-07-19T18:51:18+02:00
-# SPEC_DEVIATION Scan — 2026-07-19T16:51:18Z
-# Root: /home/jmercier/Codes/agentic-devlopment
-
-
-SPEC_DEVIATION scan: clean (0 active markers found; 7 classified example/instruction marker(s))
-exit=0

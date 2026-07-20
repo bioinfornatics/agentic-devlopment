@@ -1,19 +1,20 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { parseJSONL, makeRel, makeStatus } from "./types.js";
 const REPO = new URL("../../..", import.meta.url).pathname;
 const MEM = join(REPO, ".knowledge", "memory.jsonl");
 const DER = join(REPO, ".knowledge", "derived.jsonl");
 const rk = (r) => r.from + "|" + r.to + "|" + r.relationType;
 const R1 = ({ entities, relations }) => { const v = new Set(relations.filter(r => r.relationType === "VALIDATES").map(r => r.to)); return [...entities.values()].filter(e => e.entityType === "acceptance_criterion" && !v.has(e.name)).map(e => makeStatus(e.name, "test-gap", e.name + " no VALIDATES test", "R1:ac-test-gap")); };
-const R2 = ({ entities, relations }) => { const v = new Set(relations.filter(r => r.relationType === "REFINED_INTO").map(r => r.from)); return [...entities.values()].filter(e => e.entityType === "feature" && !v.has(e.name)).map(e => makeStatus(e.name, "not-decomposed", e.name + " no REFINED_INTO", "R2:feature-not-decomposed")); };
+const R2 = ({ entities, relations }) => { const v = new Set(relations.filter(r => ["REFINED_INTO", "DECOMPOSES_INTO", "HAS_CRITERION"].includes(r.relationType)).map(r => r.from)); return [...entities.values()].filter(e => e.entityType === "feature" && !v.has(e.name)).map(e => makeStatus(e.name, "not-decomposed", e.name + " no REFINED_INTO/DECOMPOSES_INTO/HAS_CRITERION", "R2:feature-not-decomposed")); };
 const R3 = ({ entities, relations }) => {
     // A feature is implemented if: (code_file IMPLEMENTS feature) OR (feature IMPLEMENTED_BY code_file)
     const byImplements = new Set(relations.filter(r => r.relationType === "IMPLEMENTS").map(r => r.to));
     const byImplementedBy = new Set(relations.filter(r => r.relationType === "IMPLEMENTED_BY").map(r => r.from));
-    const implemented = new Set([...byImplements, ...byImplementedBy]);
+    const byImplementedIn = new Set(relations.filter(r => r.relationType === "IMPLEMENTED_IN").map(r => r.from));
+    const implemented = new Set([...byImplements, ...byImplementedBy, ...byImplementedIn]);
     return [...entities.values()].filter(e => e.entityType === "feature" && !implemented.has(e.name))
-        .map(e => makeStatus(e.name, "not-implemented", e.name + " no IMPLEMENTS or IMPLEMENTED_BY", "R3:feature-not-implemented"));
+        .map(e => makeStatus(e.name, "not-implemented", e.name + " no IMPLEMENTS, IMPLEMENTED_BY, or IMPLEMENTED_IN", "R3:feature-not-implemented"));
 };
 const R4 = ({ relations }, rs) => { const out = []; for (const u of relations.filter(r => r.relationType === "USES_SKILL"))
     for (const l of relations.filter(r => r.from === u.to && ["LOADS", "REFERENCED_BY"].includes(r.relationType))) {
@@ -56,6 +57,39 @@ const R6 = ({ entities, relations }) => {
     }
     return out;
 };
+const dispositionRelations = new Set(["TRACKED_BY", "WAIVED_BY", "ACCEPTED_RISK", "SUPERSEDED_BY"]);
+function obsDisposition(e, status) {
+    if (status === "has-deprecated-impl")
+        return { target: "canonical implementation", kind: "SUPERSEDED_BY", reason: "deprecated implementation status is disposed by canonical replacement" };
+    if (!e)
+        return undefined;
+    const bead = e.observations.find(o => o.startsWith("beads-issue:"));
+    if (bead)
+        return { target: bead.slice("beads-issue:".length).trim(), kind: "TRACKED_BY", reason: "entity observation beads-issue" };
+    const superseded = e.observations.find(o => o.startsWith("superseded_by:"));
+    if (superseded)
+        return { target: superseded.slice("superseded_by:".length).trim(), kind: "SUPERSEDED_BY", reason: "entity observation superseded_by" };
+    return undefined;
+}
+const R7 = ({ entities, relations }, rs) => {
+    const out = [];
+    for (const hs of relations.filter(r => r.relationType === "HAS_STATUS")) {
+        const explicit = relations.find(r => r.from === hs.from && dispositionRelations.has(r.relationType));
+        if (explicit) {
+            const d = makeRel(hs.from, explicit.to, "STATUS_DISPOSED_BY", { confidence: explicit.confidence ?? 1.0, rule: "R7:status-disposition", reason: explicit.relationType + " disposition for " + hs.to, status_value: hs.status_value });
+            if (!rs.has(rk(d)))
+                out.push(d);
+            continue;
+        }
+        const inferred = obsDisposition(entities.get(hs.from), hs.status_value);
+        if (inferred) {
+            const d = makeRel(hs.from, inferred.target, "STATUS_DISPOSED_BY", { confidence: 0.9, rule: "R7:status-disposition", reason: inferred.kind + " inferred from " + inferred.reason + " for " + hs.to, status_value: hs.status_value });
+            if (!rs.has(rk(d)))
+                out.push(d);
+        }
+    }
+    return out;
+};
 export const RULES = [
     { name: "R1:ac-test-gap", fn: R1 },
     { name: "R2:feature-not-decomposed", fn: R2 },
@@ -63,15 +97,17 @@ export const RULES = [
     { name: "R4:transitive-skill", fn: R4 },
     { name: "R5:epic-blocked", fn: R5 },
     { name: "R6:deprecated-impl-detection", fn: R6 },
+    { name: "R7:status-disposition", fn: R7 },
 ];
 export async function reason(opts = {}) {
     if (opts.listRules) {
         RULES.forEach(r => console.log(r.name));
         return;
     }
-    const text = await readFile(MEM, "utf8").catch(() => "");
+    const input = opts.input ?? MEM;
+    const text = await readFile(input, "utf8").catch(() => "");
     const kg = parseJSONL(text);
-    console.log("Loaded:", kg.entities.size, "entities,", kg.relations.length, "relations");
+    console.log("Loaded:", kg.entities.size, "entities,", kg.relations.length, "relations", "from", input);
     const all = [...kg.relations], rs = new Set(all.map(rk)), der = [];
     for (let i = 0; i < 10; i++) {
         const nf = [];
@@ -87,7 +123,8 @@ export async function reason(opts = {}) {
             break;
     }
     console.log("Derived:", der.length, "facts");
-    if (opts.dryRun) {
+    const output = opts.output ?? DER;
+    if (opts.dryRun && !opts.output) {
         console.log("Dry-run.");
         return;
     }
@@ -95,8 +132,8 @@ export async function reason(opts = {}) {
     const se = new Map();
     der.filter(r => r.relationType === "HAS_STATUS").forEach(r => { if (!se.has(r.to))
         se.set(r.to, { type: "entity", name: r.to, entityType: "derived_status", derived: true, observations: ["color:" + (sc[r.to] ?? "#aaa"), "derived:true"] }); });
-    await mkdir(join(REPO, ".knowledge"), { recursive: true });
+    await mkdir(dirname(output), { recursive: true });
     const lines = [...[...se.values()].map(e => JSON.stringify(e)), ...der.map(r => JSON.stringify(r))];
-    await writeFile(DER, lines.join("\n") + "\n");
-    console.log("Written:", DER, "(" + lines.length + " lines)");
+    await writeFile(output, lines.join("\n") + "\n");
+    console.log("Written:", output, "(" + lines.length + " lines)");
 }

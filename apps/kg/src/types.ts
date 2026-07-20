@@ -8,9 +8,18 @@ export function parseJSONL(text: string): KG {
   const relations: Relation[] = [];
   for (const line of text.split("\n").filter(Boolean)) {
     try {
-      const d = JSON.parse(line) as KGRecord;
-      if (d.type === "entity") entities.set(d.name, d);
-      else if (d.type === "relation") relations.push(d);
+      const d = JSON.parse(line) as Partial<KGRecord>;
+      if (d.type === "entity" && typeof d.name === "string" && typeof d.entityType === "string") {
+        entities.set(d.name, {
+          type: "entity",
+          name: d.name,
+          entityType: d.entityType,
+          observations: Array.isArray(d.observations) ? d.observations.filter((o): o is string => typeof o === "string") : [],
+          ...(typeof d.derived === "boolean" ? { derived: d.derived } : {}),
+        });
+      } else if (d.type === "relation" && typeof d.from === "string" && typeof d.to === "string" && typeof d.relationType === "string") {
+        relations.push(d as Relation);
+      }
     } catch { /* skip */ }
   }
   return { entities, relations };

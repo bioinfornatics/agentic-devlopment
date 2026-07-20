@@ -57,13 +57,87 @@ load(source: "<task_id>", peek: true)
 load(source: "<task_id>", cancel: true)
 ```
 
+
+
+## Native Orchestrator Extension (Advanced)
+
+> **When to use:** Persistent parallel workers, session monitoring, stuck recovery.
+> **Enable in config:** `orchestrator: { enabled: true, type: platform }`
+> **Default:** hidden, disabled — enable explicitly for advanced use cases.
+
+### Native vs Summon Orchestration
+
+| Aspect | `delegate()` (Summon) | `start_agent()` (Native) |
+|--------|------------------------|---------------------------|
+| Session type | SubAgent (transient) | User (persistent) |
+| Survives parent | ❌ No | ✅ Yes |
+| Can spawn children | ❌ No | ✅ Yes |
+| Communication | Inline response | `send_message()` async |
+| Monitoring | `load(task_id, peek)` | `list_sessions()` |
+| Use case | Short tasks, research | Long builds, pipelines |
+
+### Native Orchestrator Tools
+
+```text
+# List all sessions (monitoring dashboard)
+orchestrator__list_sessions(session_type: "user", last_n: 20)
+
+# Inspect session with LLM summary
+orchestrator__view_session(session_id: "xxx", mode: "summarize")
+
+# Create persistent worker
+orchestrator__start_agent(working_dir: "/repo", name: "Build Worker")
+→ returns session_id
+
+# Send work to persistent worker
+orchestrator__send_message(session_id: "xxx", message: "Build the frontend")
+→ returns worker response (blocks until complete)
+
+# Cancel stuck session
+orchestrator__interrupt_agent(session_id: "xxx")
+```
+
+### Hybrid Orchestration Pattern
+
+Combine both for optimal workflow:
+
+```text
+# Quick research — use delegate() (transient)
+delegate(source: "codebase-researcher", instructions: "Map auth module", async: true)
+
+# Long parallel build — use native orchestrator (persistent)  
+frontend_id = start_agent(working_dir: "./frontend", name: "Frontend Build")
+backend_id = start_agent(working_dir: "./backend", name: "Backend Build")
+
+# Monitor all workers
+list_sessions(session_type: "user")
+
+# Coordinate when both ready
+send_message(session_id: frontend_id, message: "Build complete?")
+send_message(session_id: backend_id, message: "Build complete?")
+
+# Recovery if stuck
+interrupt_agent(session_id: stuck_id)
+```
+
+### Decision: delegate() vs start_agent()
+
+```
+Task duration < 5 min?         → delegate()
+Worker needs children?         → start_agent()
+Need to monitor many workers?  → start_agent() + list_sessions()
+Task is read-only research?    → delegate(async: true)
+Long parallel builds?          → start_agent() per build
+Recovery from stuck needed?    → interrupt_agent() then retry
+```
+
+
 ## Agent and Subrecipe Routing Table
 
-> **Primary source: `load()` at runtime.**
-> This table is a **reading guide** — not a fixed list.
-> Always call `load()` first; the names and descriptions it returns are authoritative.
-> This table teaches you *how to read* descriptions to match intent.
-> New or renamed agents discovered via `load()` are routed the same way: read description, match intent.
+> **Canonical routing guide, runtime authority:** this table is the durable, canonical source for reusable agent/subrecipe routing guidance and orchestration methodology. It is still a **reading guide** — not a fixed runtime registry.
+> Always call `load()` first; the names, descriptions, and subrecipes it returns are authoritative for the current session.
+> Use this table to interpret live descriptions, select the right specialist or subrecipe, and keep routing decisions consistent across recipes.
+> New, renamed, or unavailable agents discovered via `load()` are handled by the same method: read the live description, match intent, then emit `Orchestration decision:` before delegating.
 
 ### Named agents — `delegate(source: "<name>", instructions: "…")`
 
@@ -99,14 +173,18 @@ load(source: "<task_id>", cancel: true)
 ### Routing decision algorithm
 
 ```
-1. call load()                     → read live agent names + descriptions
-2. match user intent               → "Invoke when" column above
-3. single intent, clear match      → delegate to that agent directly
-4. multi-intent or unclear         → delegate to orchestrator
-5. emit Orchestration decision     → before every delegate() call
-6. parallel read-only work         → async: true + load(source: "<task_id>")
-7. write work                      → one writer per file/module, no overlap
+1. call load()                     → read live agent/subrecipe names + descriptions
+2. treat load() as authoritative   → route only to currently discoverable sources
+3. use this table as canonical guidance → interpret descriptions and choose the routing pattern
+4. match user intent               → "Invoke when" column above
+5. single intent, clear match      → delegate to that agent/subrecipe directly
+6. multi-intent or unclear         → delegate to orchestrator or split into parent-owned scopes
+7. emit Orchestration decision:    → before every delegate() call
+8. parallel read-only work         → async: true + load(source: "<task_id>")
+9. write work                      → parent/orchestrator partitions scope first; one writer per file/module; no overlapping write permission
 ```
+
+For write work, the parent/orchestrator must partition durable edits before delegation. Each worker contract must name the exact file(s) or module(s) it may write, name any forbidden adjacent files when relevant, and avoid overlap with every other worker. If two workers need the same file, serialize the work under the parent/orchestrator instead of allowing concurrent writers.
 
 ### Agent vs subrecipe selection
 
@@ -231,8 +309,7 @@ Orchestration decision:
 - Scope: [files / modules / bead IDs]
 - Read/write: [read-only | write to: <path>]
 - Output expected: [format]
-Subagent invariant: subagents cannot coordinate; I own scope partitioning,
-context injection, integration, and synthesis.
+Subagent invariant: Subagents cannot coordinate with each other; the parent/orchestrator owns scope partitioning, context passing, integration, and synthesis.
 ```
 
 
@@ -351,9 +428,10 @@ Before orchestration-heavy work, state an `Orchestration decision`:
 - selected flow: research, review, implementation split, or direct inspection;
 - whether delegation is used;
 - if not delegating, why direct inspection is sufficient;
-- if delegating, list each worker scope, read/write permission, validation expectations, and output format.
+- if delegating, list each worker scope, read/write permission, validation expectations, and output format;
+- for write work, partition by the parent/orchestrator before workers start: one writer per file/module, no overlapping write permission, and explicit forbidden-file boundaries when needed.
 
-When delegating, include this invariant verbatim in the plan or worker contract:
+When delegating, include this invariant verbatim in the plan, worker contract, and handoff when scope partitioning matters:
 
 ```text
 Subagents cannot coordinate with each other; the parent/orchestrator owns scope partitioning, context passing, integration, and synthesis.

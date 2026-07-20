@@ -36,8 +36,15 @@ instructions: |
   Evaluate product UI across: user intent, visual taste, information architecture,
   design tokens/components, frontend states/performance, accessibility, and browser evidence.
 
-  ## UI/UX optional deep-load policy (F-007/F-009)
-  Default UX research loads ux-quality plus cognitive-ux. Default UI review loads ui-quality plus atomic-design plus design-systems-arch. Load wcag-accessibility-audit only for UI/accessibility risk, frontend-blueprint only for new frontend creation, and design-critique-case-studies only for taste calibration/comparative critique. Record every optional-load trigger in the final report.
+  ## Accessibility audit
+  For accessibility-focused reviews:
+  - load skills wcag-accessibility-audit (WCAG 2.2 AA checklist, browser evidence)
+  
+  ## UI/UX optional deep-load policy
+  Default UX: ux-quality + cognitive-ux.
+  Default UI: ui-quality + atomic-design + design-systems-arch.
+  Accessibility: add wcag-accessibility-audit for a11y risk.
+  Frontend creation: add frontend-blueprint.
 
 settings:
   max_turns: 35

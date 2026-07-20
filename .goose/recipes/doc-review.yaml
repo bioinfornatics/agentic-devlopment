@@ -1,108 +1,63 @@
 version: 1.0.0
-title: Documentation Review — Harness
+title: Documentation Review
 description: >
-  Review harness documentation for correctness, consistency, coverage, and
-  memory-pointer hygiene. Inspects skills, recipes, AGENTS.md, and docs/
-  without modifying any files. Produces severity-ranked findings and
-  proposed Beads follow-ups.
+  Read-only documentation review workflow for the agentic development harness.
+  Validates docs, recipe references, skill references, memory-pointer examples,
+  and harness checklist consistency, then returns severity-ranked findings.
 instructions: |
-  You orchestrate a read-only documentation review of the agentic development harness.
+  You run the harness documentation review workflow. This is a read-only review;
+  you MUST NOT modify files, Beads issues, or memory.
+
+  Explicit routing for this recipe (AD-001 — Specialist pattern):
+  - load skills agentic-devlopment  (read-only review protocol and handoff discipline)
+  - load skills beads               (memory-pointer format and Beads hygiene rules)
+  - In-session agent: load agent review-critic
+  - Worker subrecipe: run `doc-review` for isolated documentation inspection.
 
   ## First visible output (required before any tool call)
-  State this block before acting:
-    Doc-review scope: [skills | recipes | docs | agents | all]
-    Focus: [what the user asked to review, or "full harness" if unspecified]
-    Approach: [direct inspection | delegated to doc-review subrecipe]
+  State this exact block before any tool call or skill load:
+    Doc-review scope: [all | skills | recipes | docs | agents | memory]
+    Focus: [specific item or "full documentation set" if unspecified]
+    Approach: read-only documentation review via doc-review worker
 
-  ## What this recipe reviews
-  | Layer            | Paths                                    | Checks applied                                     |
-  |------------------|------------------------------------------|----------------------------------------------------|
-  | Skills           | .agents/skills/*.md                      | Required sections, pointer-memory format, examples |
-  | Recipes          | .goose/recipes/*.yaml                    | goose recipe validate, extensions, sub_recipes     |
-  | Subrecipes       | .goose/recipes/subrecipes/*.yaml         | goose recipe validate, isolated from parent        |
-  | Agent configs    | .agents/agents/*.yaml or AGENTS.md       | Routing table accuracy, skill references           |
-  | Documentation    | docs/*.md, README.md                     | Stale links, internal cross-references, completeness |
-  | Memory pointers  | bd memories (live) or referenced in docs | "read when" trigger, canonical source, <250 chars  |
+  ## Orient (bd prime FIRST — run before inspection)
+  1. load skills agentic-devlopment.
+  2. load skills beads.
+  3. load agent review-critic.
+  4. Run `bd prime` — load project context and memories.
+  5. Run `bd ready --json` — check for existing documentation-review work.
 
-  ## Skill and agent routing
-  - load skills agentic-devlopment   (orientation, Beads workflow)
-  - load skills beads         (memory pointer format rules)
-  - Delegate doc-review subrecipe     (isolated scan worker)
-  - In-session escalation: load agent review-critic (when recipe/skill has CRITICAL finding)
+  ## Review workflow
+  Run the `doc-review` subrecipe with the requested scope, focus, repository path,
+  and constraints. Treat the worker output as evidence, then synthesize a final report.
 
-  ## Orient (bd prime FIRST)
-  1. Run `bd prime` — load project memories and workflow context.
-  2. Run `bd ready --json` — check for related documentation or review beads already open.
-  3. Run `bd memories documentation` — load any persisted documentation facts.
-  Only then proceed to the review workflow.
+  The review MUST cover, within the selected scope:
+  - recipe validation results from `goose recipe validate`;
+  - documentation and recipe cross-reference integrity;
+  - skill and agent reference validity;
+  - Beads memory-pointer examples (`canonical source is`, `read when`, `invariant:`);
+  - harness workflow checklist presence;
+  - TODO/FIXME/HACK hygiene in docs and harness recipe text.
 
-  ## Documentation-specific checks
+  ## Verdict semantics
+  - APPROVE = zero actionable findings.
+  - PASS-WITH-NITS = only LOW/MEDIUM findings; no blocking issue.
+  - BLOCK = one or more CRITICAL or HIGH findings with evidence.
 
-  ### Recipe validation
-  For every *.yaml in .goose/recipes/ and .goose/recipes/subrecipes/:
-    goose recipe validate <path>
-  Report each result as PASS or FAIL with the full error if any.
+  ## Self-validation checklist (complete before returning)
+  - [ ] First visible output declared (scope + focus + approach).
+  - [ ] No files, Beads issues, or memories modified.
+  - [ ] bd prime run before documentation inspection.
+  - [ ] doc-review worker run with the selected scope.
+  - [ ] Findings are severity-ranked CRITICAL → HIGH → MEDIUM → LOW.
+  - [ ] Every CRITICAL/HIGH finding has an exact file reference, quoted evidence, and proposed `bd create` command.
+  - [ ] Recipe validation results are reported when recipes are in scope.
+  - [ ] Final verdict emitted: APPROVE | PASS-WITH-NITS | BLOCK.
 
-  ### Skill completeness
-  Each skill must contain:
-  - A metadata block with name, description, version
-  - At least one concrete example or command
-  - A "## Load next" or progressive-disclosure section (if it references other skills)
-  Check that every skill referenced in a recipe's instructions exists on disk.
-
-  ### Memory pointer format (from beads skill)
-  For each `bd remember` call found in docs or skills:
-  - Value must contain "read when <trigger>" (not "read before", not "read always")
-  - Value must contain "canonical source is <file>#<section>"
-  - Value must contain "invariant: <one-line rule>"
-  - Value must be under 250 characters
-  Report violations as HIGH findings.
-
-  ### Internal cross-reference integrity
-  - Every agent name referenced in a routing table must exist in .agents/agents/ or be discoverable via load().
-  - Every subrecipe path in a sub_recipes block must exist on disk.
-  - Every skill name in a `load skills <name>` instruction must resolve to a known skill.
-
-  ### Harness workflow checklist presence
-  For each recipe's instructions block, verify:
-  - "First visible output" section present
-  - "bd prime FIRST" mentioned or equivalent orient step
-  - Self-validation checklist present (for implementation/review recipes)
-  - Memory checkpoint present
-  Report absent sections as MEDIUM findings.
-
-  ### Beads hygiene in docs
-  - Search for "TODO", "FIXME", "HACK" in .md and .yaml files.
-  - Each found item is a LOW finding unless it has a corresponding open Beads bead.
-
-  ## Severity scale
-  | Severity | Criteria                                                        |
-  |----------|-----------------------------------------------------------------|
-  | CRITICAL | Recipe fails `goose recipe validate`; broken extension ref      |
-  | HIGH     | Memory pointer format violation; missing skill on disk          |
-  | MEDIUM   | Missing workflow checklist section; stale cross-reference       |
-  | LOW      | Undocumented TODO; minor wording inconsistency                  |
-
-  ## Proposed Beads follow-ups (do NOT execute — output commands only)
-  For each CRITICAL or HIGH finding, output the command to create a tracking bead:
-    bd create "<finding title>" -t bug -p 1 --json       # CRITICAL
-    bd create "<finding title>" -t chore -p 2 --json     # HIGH
-
-  ## Self-validation checklist (before returning)
-  - [ ] First visible output declared (scope + focus + approach)
-  - [ ] bd prime run before any inspection
-  - [ ] All recipes validated with `goose recipe validate`
-  - [ ] Memory pointer format checked against beads rules
-  - [ ] Internal cross-references verified
-  - [ ] Findings severity-ranked
-  - [ ] Proposed Beads follow-up commands included for CRITICAL/HIGH findings
-  - [ ] No files modified (read-only review)
-
-  ## Memory checkpoint
-  - At the end, decide whether a durable documentation fact was learned.
-  - If yes, propose (do not execute): `bd remember "<fact>" --key <stable-key>`.
-  - Prefer pointer memories over content memories.
-  - Never store the review findings themselves in memory — create beads for actionable work.
+  Memory checkpoint:
+  - Do not store memory during this read-only workflow.
+  - If a durable documentation routing fact is discovered, propose a `bd remember` command instead.
+  - If actionable work is discovered, propose Beads issues rather than TODO text.
 settings:
   max_turns: 35
 parameters:
@@ -111,26 +66,28 @@ parameters:
     requirement: optional
     default: all
     options: [all, skills, recipes, docs, agents, memory]
-    description: >
-      Which documentation layer to review.
-      all = full harness review; individual options scope to one layer.
+    description: Documentation-review scope.
   - key: repo_path
     input_type: string
     requirement: optional
     default: "."
-    description: Path to the repository root containing .goose/ and .agents/.
+    description: Repository root path.
   - key: focus
     input_type: string
     requirement: optional
     default: ""
-    description: >
-      Optional narrowing focus — e.g. a specific recipe name, skill name, or doc path.
-      Leave blank for a full review of the selected scope.
+    description: Optional narrowing focus — specific recipe, skill, doc path, or topic.
   - key: constraints
     input_type: string
     requirement: optional
     default: ""
     description: Additional review constraints or pass/fail criteria.
+  - key: output_format
+    input_type: select
+    requirement: optional
+    default: markdown
+    options: [markdown, json]
+    description: Final report format.
 extensions:
   - type: platform
     name: developer
@@ -155,45 +112,53 @@ extensions:
 sub_recipes:
   - name: doc-review
     path: "subrecipes/doc-review.yaml"
+    description: Documentation consistency and memory-pointer hygiene review.
     values:
       scope: "{{ scope }}"
       repo_path: "{{ repo_path }}"
       focus: "{{ focus }}"
       constraints: "{{ constraints }}"
 prompt: |
-  ## AD-001 pattern: Specialist/worker-hybrid. Use doc-review subrecipe for isolated scanning and review-critic only for escalation.
+  ## AD-001 pattern: Specialist. Load review-critic in-session for documentation quality review.
 
   Scope: {{ scope }}
   Repo: {{ repo_path }}
   Focus: {{ focus }}
   Constraints: {{ constraints }}
-
-  ## Step 0 — Elicit focus if helpful
-  If scope is "all" and focus is blank, briefly confirm with the user:
-  "I will review the full harness documentation (skills, recipes, AGENTS.md, docs/).
-  Is there a specific area you want me to prioritise, or shall I run the full review?"
-  If the user confirms full review, proceed immediately. Do not wait if focus is already set.
+  Output format: {{ output_format }}
 
   ## Step 1 — First visible output
-  State the scope, focus, and approach (direct inspection or delegated subrecipe)
-  before any tool call.
+  State Doc-review scope, focus, and approach before any tool call or skill load.
 
   ## Step 2 — Orient
-  load skills agentic-devlopment. load skills beads.
-  Run `bd prime`, then `bd ready --json`, then `bd memories documentation`.
+  load skills agentic-devlopment.
+  load skills beads.
+  load agent review-critic.
+  Run `bd prime`, then `bd ready --json`.
 
-  ## Step 3 — Run doc-review subrecipe
-  Delegate the inspection to the doc-review subrecipe for an isolated context window.
-  Pass scope, repo_path, focus, and constraints.
+  ## Step 3 — Worker review
+  Run `doc-review` subrecipe with scope={{ scope }}, repo_path={{ repo_path }}, focus={{ focus }}, constraints={{ constraints }}.
+  Collect its severity-ranked findings and recipe validation results.
 
   ## Step 4 — Synthesize
-  Collect findings from the subrecipe. Group by severity (CRITICAL → HIGH → MEDIUM → LOW).
-  For each CRITICAL/HIGH finding, include the proposed `bd create` command.
+  Emit a final report with:
+  - Summary table: CRITICAL/HIGH/MEDIUM/LOW counts.
+  - Findings in severity order, each with file reference, evidence, fix, and proposed bead for CRITICAL/HIGH.
+  - Recipe validation table when recipes are in scope.
+  - Read-only confirmation.
+  - Unified verdict: APPROVE | PASS-WITH-NITS | BLOCK.
+  - Memory checkpoint: proposed `bd remember` command or explicit "none".
 
-  ## Step 5 — Handoff
-  Report:
-  - Total findings by severity
-  - Top 3 actionable findings with proposed fix or follow-up bead command
-  - Whether any recipe failed `goose recipe validate`
-  - Memory checkpoint: propose one `bd remember` if a durable doc fact was found
-  Do NOT modify any file. Stop after the handoff block.
+  If output_format is "json", emit only valid JSON with this schema:
+  {
+    "verdict": "APPROVE | PASS-WITH-NITS | BLOCK",
+    "scope": "{{ scope }}",
+    "focus": "{{ focus }}",
+    "summary": "<one sentence>",
+    "findings": [{"severity": "...", "file": "...", "issue": "...", "evidence": "...", "fix": "...", "proposed_bead": "..."}],
+    "recipe_validation": {"passed": N, "failed": N, "errors": []},
+    "read_only": true,
+    "memory_checkpoint": "<proposed memory or none>"
+  }
+
+  Stop after the final report. Do not modify files, Beads issues, or memory.

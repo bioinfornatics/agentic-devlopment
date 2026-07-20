@@ -37,10 +37,6 @@ parameters:
     options: [concise, full]
     description: "Evidence detail level; use full for scope=all."
 
-settings:
-  temperature: 0.1
-  max_turns: 180
-
 sub_recipes:
   - name: harness_judge
     path: "./subrecipes/harness-judge-audit.yaml"
@@ -77,11 +73,12 @@ instructions: |
     Output directory: {{ output_dir }}
     Graph format: {{ graph_format }}
     Independent judge: harness_judge subrecipe
+    Mode note: read-only means no tracked source, Beads, memory, or external-system modifications; generated audit artifacts are allowed only under the authorized output directory.
 
   SAFETY BOUNDARY
   - Do not modify tracked repository files, agents, skills, recipes, templates, Beads, memories, or external systems.
   - Generated audit artifacts are permitted only under `{{ output_dir }}`. Create that directory when absent.
-  - Before writing, prove that `{{ output_dir }}` is excluded from tracked source or is an explicitly authorized audit-output path. Otherwise use a temporary directory and report the substitution.
+  - Before writing, prove that `{{ output_dir }}` is ignored ephemeral output (`git check-ignore {{ output_dir }}` or child path passes) or is governed by an explicit versioned-audit policy. Otherwise use a temporary directory and report the substitution.
   - Never execute implementation or remediation tasks returned by `bd list`.
   - If a required tool, agent, skill, path, or command is unavailable, record a blocker and continue unaffected work.
 
@@ -93,12 +90,30 @@ instructions: |
   - Do not claim that parallel work occurred unless separate delegated sessions actually ran.
 
   REQUIRED LOADS
-  Load skills goose-orchestration, sdd, knowledge-graph, and harness-judge. Load agent orchestrator in the main session. Load the contract resource `harness-judge/templates/audit-contract.md` before Phase 1. Load beads only when Beads evidence is examined.
+  Load skills goose-orchestration, sdd, knowledge-graph, and harness-judge.
+  load skills: goose-orchestration
+  load skills: sdd
+  load skills: knowledge-graph
+  load skills: harness-judge
+  Load agent orchestrator in the main session. Load the contract resource `harness-judge/templates/audit-contract.md` before Phase 1. Load beads only when Beads evidence is examined.
 
   JUDGE SUBRECIPE CONTRACT
   The isolated harness_judge subrecipe is the only place that may run: load agent harness-judge; load skill harness-judge. Keep that judge isolated from authoring and invoke it only after evidence is frozen.
 
   PHASES AND HARD GATES
+  # Structured gate reference (for programmatic validation):
+  # phase: 0, input: none, output: preconditions.md, gate: all_known_or_blocked
+  # phase: 1, input: contract, output: checklist-matrix.md, gate: all_items_assigned
+  # phase: 2, input: SDD refs, output: inventory.md, gate: all_paths_classified
+  # phase: 3, input: validators, output: validation-results.md, gate: all_commands_recorded
+  # phase: 4, input: KG tools, output: graph exports, gate: exports_exist_or_blocked
+  # phase: 5, input: artifacts, output: flow-analysis.md, gate: all_paths_terminate
+  # phase: 6, input: evidence, output: findings-register.md, gate: critical_findings_evidenced
+  # phase: 7, input: findings, output: alternatives.md, gate: disagreements_preserved
+  # phase: 8, input: all artifacts, output: evidence-manifest.json, gate: manifest_immutable
+  # phase: 9, input: manifest, output: judge-report.json, gate: judge_received
+  # phase: 10, input: judge verdict, output: final-report.md, gate: status_emitted
+
   0. Preconditions: record repository revision, execution mode, output location, available tools, validators, and inaccessible dependencies.
      Gate: do not continue until each precondition is known or explicitly blocked.
   1. Contract model: convert every applicable contract item into a checklist-to-owner-to-evidence matrix.
@@ -108,9 +123,12 @@ instructions: |
   3. Deterministic validation: run available YAML, recipe, schema, reference, and repository consistency checks before semantic judgment.
      Gate: commands, exit codes, and outputs are recorded; missing validators are not fabricated.
   4. Current-state ontology: build TBox and ABox with provenance, confidence, current/target view separation, integrity checks, and required traversal queries.
-     Gate: graph exports and query results exist or are blocked with reasons.
+     Mandatory KG reasoning evidence: run `node apps/kg/dist/cli.js pipeline --output-dir {{ output_dir }}/kg`, run `node apps/kg/dist/cli.js reason --rules`, read `.knowledge/memory.jsonl` and `{{ output_dir }}/kg/derived.jsonl`, and incorporate derived `HAS_STATUS` facts and inferred relations into `graph-query-results.md` and findings.
+     Gate: graph exports, KG command outputs, derived fact summary, and query results exist or are blocked with reasons. If non-mutating KG output is absent or stale after an available KG pipeline, Domain G cannot PASS; do not dirty `.knowledge`.
   5. Flow analysis: map lifecycle, recipe invocation, delegated tasks, agents, loaded skills, responsibilities, artifacts, handoffs, gates, Beads, failure paths, and bounded retries.
-     Gate: every core path terminates or has an explicit finding.
+     Beads evidence: prefer `python3 scripts/beads-readonly-evidence.py --format md` or direct `.beads/issues.jsonl` parsing; do not invoke Beads commands that may sync or mutate unless a before/after diff proves read-only behavior.
+     Delegation fallback: if any mandatory delegated evidence collector returns empty output, max-action output, or missing facts, record the delegate as blocked and immediately replace it with deterministic extraction commands for that partition.
+     Gate: every core path terminates or has an explicit finding, and no mandatory checklist item depends only on an empty delegate response.
   6. Findings: create only evidence-backed findings with severity, confidence, impact, root cause, target state, acceptance criteria, and verification.
      Gate: all critical/high findings have enough evidence for adversarial review.
   7. Alternatives and challenge: produce minimal, balanced, and high-assurance target architectures; have review-critic and principal-engineer challenge critical/high findings and proposals.
@@ -135,6 +153,7 @@ instructions: |
   - target-state-graph.<format-extension>
   - graph-diff.md
   - graph-query-results.md
+  - kg-derived-facts.md
   - findings-register.md
   - architecture-alternatives.md
   - adversarial-review.md
@@ -153,6 +172,14 @@ instructions: |
   - evidence_budget: {{ evidence_budget }}
   - output_dir: {{ output_dir }}
   - evidence_manifest: path to `{{ output_dir }}/evidence-manifest.json`
+
+  Canonical subrecipe parameter map:
+    harness_judge.repository_path = "{{ repository_path }}"
+    harness_judge.scope = "{{ scope }}"
+    harness_judge.focus = "{{ focus }}"
+    harness_judge.evidence_budget = "{{ evidence_budget }}"
+    harness_judge.output_dir = "{{ output_dir }}"
+    harness_judge.evidence_manifest = "{{ output_dir }}/evidence-manifest.json"
 
   FINAL RESPONSE
   Summarize scope, blockers, finding counts by severity, selected architecture, graph outputs, judge verdict, score, and final status. Cite artifact paths. Stop immediately after the final status.

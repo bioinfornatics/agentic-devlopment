@@ -122,7 +122,27 @@ prompt: |
   ```
   Keep entries < 500 chars. This enables cross-session context recovery for ongoing work.
 
-  ## Step 5 — REFACTOR + handoff
+  ## Step 5 — REFACTOR phase
   Clean up the implementation without changing tests.
-  Run the full quality gate. Close the bead.
-  Report: files changed, test output, bead closed, spec AC IDs covered, next step: review.
+  Ensure code follows project conventions (AGENTS.md).
+
+  ## Step 6 — Completion Gate (MUST pass before handoff)
+  Verify ALL before proceeding:
+  - [ ] All tests pass (GREEN confirmed)
+  - [ ] Bead is claimed by this agent
+  - [ ] Code covers the AC IDs in the bead
+  - [ ] No new TODO/FIXME markers introduced
+  - [ ] Diff is minimal (no unrelated changes)
+  
+  If ANY check fails: STOP and fix before handoff.
+
+  ## Step 7 — Handoff to review-critic
+  Close the bead: `bd close <id> --json`
+  Report:
+  - Artifact: Git diff (committed)
+  - Bead ID: [bead-id] (closed)
+  - AC IDs covered: [list]
+  - Test count: [N] passing
+  - Recommended next: `/review`
+  
+  The implementation is now ready for review-critic to evaluate.

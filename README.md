@@ -1,8 +1,71 @@
 # Agentic Development Harness
 
-A portable Goose + Beads harness for durable agentic software development.
+> **A layered orchestration framework for LLM-powered software development**
 
-This repository packages reusable **Goose recipes**, **Goose skills**, and **named agents** that make agentic development more reliable, repeatable, and auditable.
+```mermaid
+flowchart LR
+    YOU((You)) --> DEV["/dev"]
+    DEV --> |"build"| BUILD[Implement]
+    DEV --> |"review"| CHECK[Review]
+    DEV --> |"explore"| EXPLORE[Explore]
+    
+    BUILD --> CODE["Code + Tests"]
+    CHECK --> VERDICT["Approve/Block"]
+    EXPLORE --> INSIGHT["Understanding"]
+```
+
+## Quick Start
+
+```bash
+./scripts/install.sh    # Install
+goose run dev           # Use
+```
+
+That's it. Describe what you want. The system handles the rest.
+
+📖 **[Full Getting Started Guide](docs/START-HERE.md)**
+
+---
+
+## Documentation
+
+| Audience | Start Here |
+|----------|------------|
+| **New users** | [START-HERE.md](docs/START-HERE.md) |
+| **Learning** | [Tutorials](docs/tutorials/) |
+| **Understanding** | [Concepts](docs/concepts/) |
+| **Power users** | [Reference](docs/reference/) |
+| **Contributors** | [Internal](docs/internal/) |
+
+---
+
+## Architecture (For the Curious)
+
+```
+Layer 3: RECIPES      Workflow orchestration (dev, sdd, review...)
+Layer 2: AGENTS       Specialist personas (architect, reviewer...)
+Layer 1: SKILLS       Reusable methodology (sdd, beads, code-review...)
+Layer 0: GOOSE        Runtime with extensions and tools
+```
+
+<details>
+<summary>Repository Structure</summary>
+
+```
+.agents/
+├── skills/     # 17 domain skills (methodology)
+├── agents/     # 13 specialist agents (personas)
+└── plugins/    # Consistency checking
+
+.goose/
+└── recipes/    # 11 workflow recipes
+
+.specs/         # SDD specifications
+docs/           # Documentation (tiered)
+evals/          # A/B evaluation scenarios
+```
+
+</details>
 
 ## Core idea
 
@@ -116,7 +179,7 @@ flowchart TD
 **SDD on-ramp:** `/discover` → `/spec` → `/plan` → `/implement` → `/review` → `/verify` → `/release`
 
 <!-- BEGIN GENERATED: skills-table -->
-## Skills (19)
+## Skills (17)
 
 | Skill | Purpose |
 |-------|---------|
@@ -126,10 +189,8 @@ flowchart TD
 | `beads` | Load when managing tasks, dependencies, or work state that must persist across sessions. |
 | `code-review` | Load when reviewing code, pull requests, architecture changes, or any diff. |
 | `cognitive-ux` | Load when evaluating usability, designing user flows, or explaining why users struggle wit |
-| `design-critique-case-studies` | Load when running or participating in a structured design critique, or when drawing on rea |
 | `design-systems-arch` | Load when architecting, auditing, or evolving a design system at scale. |
 | `frontend-blueprint` | Load when starting or reviewing any frontend implementation task where visual fidelity and |
-| `gdd` | Load when a design or product decision benefits from structured exploration before committ |
 | `goose-orchestration` | Load before any call to delegate(), or when deciding which specialist to summon. |
 | `harness-judge` | Evidence-first, read-only evaluation methodology for auditing completed agentic-developmen |
 | `knowledge-graph` | Create, query, validate, and update the project knowledge graph for Spec-Driven Developmen |
@@ -149,19 +210,19 @@ Named agents in `.agents/agents/` — invoke with Goose Summon natural language:
 
 | Agent | Role | Model |
 |-------|------|-------|
-| `architect` | Use PROACTIVELY when planning a new feature, making a technology choice, or touc | opus-4-5 |
-| `codebase-researcher` | Read-only codebase researcher. | sonnet-4-5 |
-| `harness-judge` | Evidence-first LLM-as-judge for the Goose agentic development harness. | sonnet-4-5 |
-| `implementation-worker` | Implementation specialist for scoped Beads issues. | sonnet-4-5 |
-| `orchestrator` | Lead orchestrator for the SDD+TDD loop. | opus-4-5 |
-| `planner` | Beads dependency graph specialist. | sonnet-4-5 |
-| `principal-engineer` | Use when a change touches shared infrastructure, public APIs, breaking changes,  | opus-4-5 |
-| `product-owner` | Product Owner — owns the full backlog lifecycle: user story definition, PRD qual | opus-4-5 |
-| `qa-automation` | QA automation engineer. | sonnet-4-5 |
-| `review-critic` | Critical code and Beads handoff reviewer. | sonnet-4-5 |
-| `tdd-guide` | Use PROACTIVELY before any new feature implementation or bug fix. | sonnet-4-5 |
-| `ui-designer` | User interface designer. | sonnet-4-5 |
-| `ux-researcher` | User experience researcher. | sonnet-4-5 |
+| `architect` | Use PROACTIVELY when planning a new feature, making a technology choice, or touc | gpt-5.5 |
+| `codebase-researcher` | Read-only codebase researcher. | gpt-5.5 |
+| `harness-judge` | Evidence-first LLM-as-judge for the Goose agentic development harness. | gpt-5.5 |
+| `implementation-worker` | Implementation specialist for scoped Beads issues. | gpt-5.5 |
+| `orchestrator` | Lead orchestrator for the SDD+TDD loop. | gpt-5.5 |
+| `planner` | Beads dependency graph specialist. | gpt-5.5 |
+| `principal-engineer` | Use when a change touches shared infrastructure, public APIs, breaking changes,  | gpt-5.5 |
+| `product-owner` | Product Owner — owns the full backlog lifecycle: user story definition, PRD qual | gpt-5.5 |
+| `qa-automation` | QA automation engineer. | gpt-5.5 |
+| `review-critic` | Critical code and Beads handoff reviewer. | gpt-5.5 |
+| `tdd-guide` | Use PROACTIVELY before any new feature implementation or bug fix. | gpt-5.5 |
+| `ui-designer` | User interface designer. | gpt-5.5 |
+| `ux-researcher` | User experience researcher. | gpt-5.5 |
 <!-- END GENERATED: agents-table -->
 
 ## Quick start

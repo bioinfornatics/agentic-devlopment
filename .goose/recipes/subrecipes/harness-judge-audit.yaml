@@ -8,13 +8,21 @@ instructions: |
   Load the harness-judge agent in-session and explicitly load the harness-judge skill before any scoring.
 
   First visible output before any tool call:
-    Harness-audit scope: agents | skills | recipes | frameworks | orchestration | all
-    Focus: requested target or full harness
+    Harness-audit scope: {{ scope }}
+    Focus: {{ focus }}
+    Evidence budget: {{ evidence_budget }}
+    Evidence manifest: {{ evidence_manifest }}
     Required skill: load skill harness-judge
 
   Required loads:
   load agent harness-judge.
   load skill harness-judge.
+
+  Frozen evidence handoff:
+  - Repository path: {{ repository_path }}
+  - Output directory: {{ output_dir }}
+  - Evidence manifest: {{ evidence_manifest }}
+  Read `{{ evidence_manifest }}` before scoring. Prefer artifacts, hashes, commands, and blockers listed in the manifest. Do not inspect mutable unfrozen artifacts unless the manifest is missing or explicitly incomplete; if you must inspect outside the manifest, mark that evidence as unfrozen.
 
   Scope to audit:
   - .agents/agents/
@@ -96,6 +104,17 @@ instructions: |
   Score HJ039 (skills), HJ040 (agents), HJ041 (recipes) as binary PASS/FAIL.
   Cite both file paths and the overlapping passage as evidence for every finding.
 
+  Read-only Beads evidence pass — when Beads workflow freshness is scored, prefer:
+    python3 scripts/beads-readonly-evidence.py --format md
+  This parses `.beads/issues.jsonl` without invoking `bd` and must leave `.beads` unchanged.
+
+  Mandatory KG reasoning pass — run before scoring Domain G when scope=all or graph artifacts are in scope:
+    node apps/kg/dist/cli.js pipeline --output-dir {{ output_dir }}/kg
+    node apps/kg/dist/cli.js reason --rules
+    read .knowledge/memory.jsonl
+    read {{ output_dir }}/kg/derived.jsonl
+  Cite command outputs and summarize derived `HAS_STATUS` facts and inferred relations in Domain G. If KG commands or files are unavailable, mark them blocked with reasons. If available non-mutating KG reasoning evidence is missing, Domain G cannot score PASS.
+
   Evidence rules:
   - Cite file paths and exact evidence for every score.
   - Mark missing evidence as not found.
@@ -127,6 +146,11 @@ instructions: |
 settings:
   max_turns: 60
 parameters:
+  - key: repository_path
+    input_type: string
+    requirement: optional
+    default: .
+    description: Repository root that produced the frozen evidence.
   - key: scope
     input_type: string
     requirement: optional
@@ -142,6 +166,16 @@ parameters:
     requirement: optional
     default: concise
     description: Evidence detail level concise or full.
+  - key: output_dir
+    input_type: string
+    requirement: optional
+    default: .audit/harness
+    description: Directory containing frozen audit artifacts.
+  - key: evidence_manifest
+    input_type: string
+    requirement: optional
+    default: .audit/harness/evidence-manifest.json
+    description: Path to immutable evidence manifest produced by the parent audit recipe.
 extensions:
   - type: platform
     name: developer
@@ -153,12 +187,48 @@ extensions:
   - type: platform
     name: skills
     bundled: true
-  - type: platform
-    name: summon
-    bundled: true
 prompt: |
   Scope: {{ scope }}
   Focus: {{ focus }}
   Evidence budget: {{ evidence_budget }}
+  Repository: {{ repository_path }}
+  Output directory: {{ output_dir }}
+  Evidence manifest: {{ evidence_manifest }}
 
-  State the first visible output block. Load agent harness-judge and load skill harness-judge before scoring. Perform a read-only static artifact audit of the current repository harness across domains A-G. Include SDD, TDD, and GDD in the framework section. When graph artifacts are in scope, score Domain G using the ontology rubric and query evidence. Cite evidence for every score. Do not modify files or Beads.
+  State the first visible output block. Load agent harness-judge and load skill harness-judge before scoring. Read the frozen evidence manifest before scoring and prefer manifest-listed artifacts. Perform a read-only static artifact audit of the current repository harness across domains A-G. Include SDD, TDD, and GDD in the framework section. When graph artifacts are in scope, score Domain G using the ontology rubric, KG pipeline output, `.knowledge/derived.jsonl`, and query evidence. Cite evidence for every score. Do not modify files or Beads.
+response:
+  json_schema:
+    type: object
+    properties:
+      subject:
+        type: string
+      evaluation_mode:
+        type: string
+      verdict:
+        type: string
+        enum: [PASS, PARTIAL, FAIL, BLOCKED]
+      confidence:
+        type: string
+        enum: [High, Medium, Low]
+      scores:
+        type: array
+        items:
+          type: object
+          properties:
+            id: {type: string}
+            domain: {type: string}
+            criterion: {type: string}
+            score: {type: string}
+            evidence: {type: string}
+            recommendation: {type: string}
+          required: [id, domain, criterion, score, evidence]
+      domain_findings:
+        type: array
+        items: {type: string}
+      red_flags:
+        type: array
+        items: {type: string}
+      recommendations:
+        type: array
+        items: {type: string}
+    required: [subject, evaluation_mode, verdict, confidence, scores]

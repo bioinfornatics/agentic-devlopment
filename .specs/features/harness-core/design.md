@@ -10,7 +10,7 @@ KG stores harness + product entities with reasoning rules.
 
 ## Data Flow
 
-/discover -> product-owner -> spec.md + Beads stories
+/spec -> architect -> spec.md + Beads stories
 /plan -> planner -> Beads dependency graph
 /implement -> implementation-worker -> code + KG IMPLEMENTED_BY
 /review -> review-critic -> APPROVE or BLOCK

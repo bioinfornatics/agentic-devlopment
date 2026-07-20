@@ -157,5 +157,22 @@ prompt: |
   Store pointer memory:
     `bd remember "Spec for {{ feature }}: canonical source is .specs/features/{{ feature }}/spec.md" --key spec-{{ feature }}-pointer`
 
-  ## Step 6 — Handoff
-  Report: spec.md path, Beads story IDs, recommended next step (plan.yaml or sdd.yaml).
+  ## Step 6 — Completion Gate (MUST pass before handoff)
+  Verify ALL before proceeding:
+  - [ ] spec.md exists at `.specs/features/{{ feature }}/spec.md`
+  - [ ] Every AC has [FEAT]-NN ID
+  - [ ] Every AC uses WHEN/THEN/SHALL format
+  - [ ] No TBD, TODO, or "to be confirmed" in any AC
+  - [ ] Beads stories created for P1 items
+  - [ ] Memory pointer stored
+  
+  If ANY check fails: STOP and fix before handoff.
+
+  ## Step 7 — Handoff to planner
+  Report:
+  - Artifact: `.specs/features/{{ feature }}/spec.md`
+  - Beads story IDs: [list]
+  - AC count: [N]
+  - Recommended next: `/plan {{ feature }}`
+  
+  The spec is now ready for planner to create the Beads task graph.

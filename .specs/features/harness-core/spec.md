@@ -20,25 +20,18 @@ WHEN `goose recipe validate` runs on each of the following top-level recipes:
 
 | Order | Recipe file                          | Slash command  |
 |------:|--------------------------------------|----------------|
-| 1     | `.goose/recipes/constitution.yaml`   | `/constitution`|
-| 2     | `.goose/recipes/discover.yaml`       | `/discover`    |
-| 3     | `.goose/recipes/clarify.yaml`        | `/clarify`     |
-| 4     | `.goose/recipes/explore.yaml`        | `/explore`     |
-| 5     | `.goose/recipes/spec.yaml`           | `/spec`        |
-| 6     | `.goose/recipes/design.yaml`         | `/design`      |
-| 7     | `.goose/recipes/sdd.yaml`            | `/sdd`         |
-| 8     | `.goose/recipes/plan.yaml`           | `/plan`        |
-| 9     | `.goose/recipes/dev.yaml`            | `/dev`         |
-| 10    | `.goose/recipes/implement.yaml`      | `/implement`   |
-| 11    | `.goose/recipes/review.yaml`         | `/review`      |
-| 12    | `.goose/recipes/verify.yaml`         | `/verify`      |
-| 13    | `.goose/recipes/release.yaml`        | `/release`     |
-| 14    | `.goose/recipes/remember.yaml`       | `/remember`    |
-| 15    | `.goose/recipes/doc-review.yaml`     | `/doc-review`  |
-| 16    | `.goose/recipes/harness-review.yaml` | —              |
-| 17    | `.goose/recipes/harness-doc-review.yaml` | —            |
-| 18    | `.goose/recipes/harness-master.yaml` | —                |
-| 19    | `.goose/recipes/harness-audit.yaml` | —                 |
+| 1     | `.goose/recipes/dev.yaml`            | `/dev`         |
+| 2     | `.goose/recipes/spec.yaml`           | `/spec`        |
+| 3     | `.goose/recipes/plan.yaml`           | `/plan`        |
+| 4     | `.goose/recipes/implement.yaml`      | `/implement`   |
+| 5     | `.goose/recipes/review.yaml`         | `/review`      |
+| 6     | `.goose/recipes/verify.yaml`         | `/verify`      |
+| 7     | `.goose/recipes/explore.yaml`        | `/explore`     |
+| 8     | `.goose/recipes/design.yaml`         | `/design`      |
+| 9     | `.goose/recipes/release.yaml`        | `/release`     |
+| 10    | `.goose/recipes/doc-review.yaml`     | `/doc-review`  |
+| 11    | `.goose/recipes/harness-review.yaml` | —              |
+| 12    | `.goose/recipes/harness-audit.yaml`  | —              |
 
 THEN every recipe returns "valid" with 0 failures.
 
@@ -53,36 +46,28 @@ AND it delegates to the correct agent(s) per the following wiring table:
 
 | Recipe          | Skills loaded                                                                                         | Agents delegated to                                            |
 |-----------------|-------------------------------------------------------------------------------------------------------|----------------------------------------------------------------|
-| clarify         | sdd, agentic-devlopment                                                                               | product-owner                                                  |
-| constitution    | sdd, agentic-devlopment                                                                               | architect                                                      |
-| design          | ux-quality, cognitive-ux, ui-quality, atomic-design, design-systems-arch, webapp-testing, agentic-ux  | ux-researcher, ui-designer                                     |
 | dev             | agentic-devlopment, beads                                                                             | orchestrator (in-session, then delegates by task type)         |
-| discover        | sdd, agentic-devlopment                                                                               | ux-researcher, product-owner                                   |
-| doc-review      | agentic-devlopment, beads                                                                             | review-critic (in-session, CRITICAL escalation only)           |
-| explore         | agentic-devlopment                                                                                    | codebase-researcher                                            |
-| harness-review  | code-review, agentic-devlopment, beads                                                                | review-critic                                                  |
-| harness-doc-review | agentic-devlopment, beads                                                                          | review-critic                                                  |
-| harness-master  | agentic-devlopment, goose-orchestration, beads                                                        | orchestrator (in-session; routes to harness subrecipes)        |
-| harness-audit | harness-judge                                                                                       | harness-judge                                                 |
-| implement       | beads, sdd, agentic-devlopment                                                                        | implementation-worker, tdd-guide                               |
-| plan            | beads, sdd                                                                                            | planner, architect                                       |
-| release         | agentic-devlopment                                                                                    | principal-engineer                                             |
-| remember        | beads                                                                                                 | (direct bd calls — no agent)                                   |
-| review          | code-review                                                                                           | review-critic                                                  |
-| sdd             | sdd, agentic-devlopment                                                                               | orchestrator (in-session, then routes by SDD phase)            |
 | spec            | sdd, beads                                                                                            | architect, tdd-guide                                           |
+| plan            | beads, sdd                                                                                            | planner, architect                                             |
+| implement       | beads, sdd, agentic-devlopment                                                                        | implementation-worker, tdd-guide                               |
+| review          | code-review                                                                                           | review-critic                                                  |
 | verify          | agentic-devlopment, webapp-testing                                                                    | qa-automation (in-session); ui-designer (summon, ui/web path)  |
+| explore         | agentic-devlopment                                                                                    | codebase-researcher                                            |
+| design          | ux-quality, cognitive-ux, ui-quality, atomic-design, design-systems-arch, webapp-testing, agentic-ux  | ux-researcher, ui-designer                                     |
+| release         | agentic-devlopment                                                                                    | principal-engineer                                             |
+| doc-review      | agentic-devlopment, beads                                                                            | review-critic (scope: all/skills/recipes/docs/agents/memory)   |
+| harness-review  | code-review, agentic-devlopment, beads                                                                | review-critic (scope: code/docs/full; output: json/markdown)   |
+| harness-audit   | goose-orchestration, sdd, knowledge-graph, harness-judge                                              | orchestrator (in-session; isolated harness_judge subrecipe)    |
 
 ---
 
 ### AC-RECIPE-03 — Slash command registration
 
 WHEN `./scripts/install.sh` runs
-THEN all 13 slash commands are registered in `~/.config/goose/config.yaml`:
+THEN all 10 slash commands are registered in `~/.config/goose/config.yaml`:
 
 ```
-/clarify  /design   /dev   /discover   /doc-review   /explore   /implement   /plan
-/release  /remember   /review   /sdd   /spec   /verify
+/dev  /spec  /plan  /implement  /review  /verify  /explore  /design  /release  /doc-review
 ```
 
 AND each maps to its corresponding recipe file in `~/.config/goose/recipes/`.
@@ -92,7 +77,7 @@ AND each maps to its corresponding recipe file in `~/.config/goose/recipes/`.
 ### AC-SKILL-01 — Skill discoverability
 
 WHEN `goose skills list` runs
-THEN all of the following 19 domain skills are visible (plus `skill-creator` tooling):
+THEN all of the following 17 domain skills are visible (plus `skill-creator` tooling):
 
 | Skill name                     | Domain                              |
 |--------------------------------|-------------------------------------|
@@ -124,14 +109,11 @@ WHEN a recipe is invoked
 THEN it follows exactly one of:
 
   a) **Specialist** — loads ≥1 specialist agent(s) in-session via `load agent X`
-     (clarify, design, discover, doc-review, explore, implement, plan, release, review, spec, verify)
+     (design, explore, implement, plan, release, review, spec, verify, doc-review, harness-review)
 
   b) **Orchestration** — loads `orchestrator` in-session; ALL specialists are
      summoned as isolated sub-sessions; no specialist is loaded in-session
-     (dev, sdd)
-
-  c) **Skill-only** — loads skills, no agent in-session
-     (remember)
+     (dev, harness-audit)
 
 AND the in-session agent(s) SHALL match the `"agents"` field in the recipe's eval JSON
 AND no recipe SHALL mix `orchestrator` with a specialist agent in the same session
