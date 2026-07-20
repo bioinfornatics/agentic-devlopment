@@ -39,6 +39,23 @@ Use this skill when doing software development, planning, research, review, rele
 7. **Gate async waits**: use `bd gate` for CI/human/timer waits.
 8. **Close/handoff**: close completed beads, run gates, report git status and remaining risk.
 
+## Autonomous SDD+TDD gate loop
+
+For non-trivial development, do not stop after one phase when the next safe phase is derivable. Advance through:
+
+orient -> discover/spec -> plan Beads -> RED test -> GREEN implementation -> REFACTOR -> verify -> review -> remember/close
+
+Gate rules:
+
+- Missing ACs -> load sdd and produce/repair .specs/features/<feature>/spec.md before implementation.
+- Missing Beads graph -> load beads and create AC-linked tasks before implementation.
+- Missing failing test -> delegate/use tdd-guide; do not write feature code until RED evidence exists.
+- Verify failure -> fix and re-verify, max 3 cycles.
+- Review BLOCK -> fix and re-review, max 2 cycles; then escalate to principal-engineer.
+- Successful verify + review -> close bead, capture durable lessons, and hand off.
+
+Recipes may hardcode the phase order and agents for complex workflows. Agents must still act autonomously inside their assigned phase by loading their explicit skills and returning evidence.
+
 ## Tool constraints (universal — apply in every session)
 
 - **Never use `sudo`** or any privilege-escalation command.

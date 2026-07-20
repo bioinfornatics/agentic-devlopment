@@ -2,6 +2,8 @@ import { bootstrap } from "./bootstrap.js";
 import { reason, RULES } from "./reason.js";
 import { execSync } from "node:child_process";
 import { join } from "node:path";
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
 const REPO = new URL("../../..", import.meta.url).pathname;
 const [, , cmd, ...args] = process.argv;
 function parseFlags(argv: string[]): Record<string, string | boolean> {
@@ -31,9 +33,15 @@ switch (cmd) {
       const derivedOut = join(outputDir, "derived.jsonl");
       await bootstrap({ product: str("product"), output: memoryOut });
       await reason({ input: memoryOut, output: derivedOut });
-    } else {
+    } else if (dryRun || str("product")) {
       await bootstrap({ product: str("product"), dryRun });
       await reason({ dryRun });
+    } else {
+      const auditDir = await mkdtemp(join(tmpdir(), "kg-pipeline-"));
+      const memoryOut = join(auditDir, "memory.jsonl");
+      const derivedOut = join(auditDir, "derived.jsonl");
+      await bootstrap({ output: memoryOut });
+      await reason({ input: memoryOut, output: derivedOut });
     }
     break;
   }

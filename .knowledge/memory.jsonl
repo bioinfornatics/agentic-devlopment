@@ -581,3 +581,13 @@
 {"type":"relation","from":"kg-assertion:layer-delta-governs-recipes","to":"eval-mode:layer-delta","relationType":"ASSERTS_SUBJECT"}
 {"type":"relation","from":"kg-assertion:layer-delta-governs-recipes","to":"eval-kind:recipes","relationType":"ASSERTS_OBJECT"}
 {"type":"relation","from":"kg-assertion:layer-delta-governs-recipes","to":".specs/features/eval-suite/spec.md","relationType":"TRACED_IN"}
+{"type":"relation","from":"recipe:dev","to":"agent:product-owner","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:dev","to":"agent:architect","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:dev","to":"agent:planner","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:dev","to":"agent:tdd-guide","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:dev","to":"agent:implementation-worker","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:dev","to":"agent:qa-automation","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:dev","to":"agent:review-critic","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:dev","to":"agent:principal-engineer","relationType":"DELEGATES_TO","confidence":1,"rule":"bootstrap:recipe-agent-extract"}
+{"type":"relation","from":"recipe:dev","to":"skill:sdd","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}
+{"type":"relation","from":"recipe:dev","to":"skill:code-review","relationType":"USES_SKILL","confidence":1,"rule":"bootstrap:recipe-skill-extract"}

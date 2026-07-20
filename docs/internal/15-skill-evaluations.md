@@ -470,7 +470,7 @@ If you create workspaces by hand instead of using the runner, the viewer expects
 | `codebase-researcher` | `evals/agents/codebase-researcher.json` | `agentic-devlopment` |
 | `harness-judge` | `evals/agents/harness-judge.json` | `harness-judge` |
 | `implementation-worker` | `evals/agents/implementation-worker.json` | `beads`, `sdd` |
-| `orchestrator` | `evals/agents/orchestrator.json` | `agentic-devlopment`, `beads` |
+| `orchestrator` | `evals/agents/orchestrator.json` | `agentic-devlopment`, `goose-orchestration`, `beads` |
 | `planner` | `evals/agents/planner.json` | `beads` |
 | `principal-engineer` | `evals/agents/principal-engineer.json` | `agentic-devlopment`, `code-review` |
 | `product-owner` | `evals/agents/product-owner.json` | `sdd` |
@@ -489,7 +489,7 @@ If you create workspaces by hand instead of using the runner, the viewer expects
 | Recipe | Eval file | In-session agents (Layer 2) | Skills (Layer 1) |
 | --- | --- | --- | --- |
 | `design` | `evals/recipes/design.json` | `ux-researcher`, `ui-designer` | `ux-quality`, `cognitive-ux`, `ui-quality`, `atomic-design`, `design-systems-arch`, `webapp-testing` |
-| `dev` | `evals/recipes/dev.json` | — |  |
+| `dev` | `evals/recipes/dev.json` | `orchestrator` | `agentic-devlopment`, `goose-orchestration`, `beads` |
 | `doc-review` | `evals/recipes/doc-review.json` | `review-critic` | `agentic-devlopment`, `beads` |
 | `explore` | `evals/recipes/explore.json` | `codebase-researcher` | `agentic-devlopment` |
 | `harness-audit` | `evals/recipes/harness-audit.json` | `orchestrator` | `goose-orchestration`, `sdd`, `knowledge-graph`, `harness-judge` |

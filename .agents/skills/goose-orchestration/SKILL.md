@@ -31,6 +31,17 @@ Only after this knowledge is generated: emit the Orchestration decision block.
 - **Subagents**: independent Goose instances for delegated tasks.
 - **Summon**: platform extension providing `load` and `delegate`.
 
+## Recipe workflow vs agent autonomy
+
+- Recipes are workflow controllers: they may hardcode phase order, required gates, explicit agents, subrecipes, extensions, and output schemas for complex tasks.
+- Agents are autonomous specialists: once delegated, an agent loads its explicit Required Skill Load, performs its phase, gathers evidence, and returns a structured result without waiting for step-by-step parent instructions.
+- Skills are methodology contracts: every delegation must name which skills the worker must load when the phase depends on a method such as SDD, TDD, Beads, code review, or web testing.
+- Parent/orchestrator owns integration: subagents cannot coordinate with each other; the parent/orchestrator owns scope partitioning, context passing, integration, synthesis, gate transitions, and escalation.
+
+For complex SDD+TDD work, prefer this pattern:
+
+recipe hardcodes workflow -> orchestrator emits decision -> delegate explicit agent with explicit skills -> agent returns evidence -> orchestrator advances gate
+
 ## Summon patterns
 
 Load knowledge:

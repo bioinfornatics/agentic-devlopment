@@ -1,23 +1,41 @@
 [
   {
-    "skills": [],
-    "agents": [],
+    "skills": [
+      "agentic-devlopment",
+      "goose-orchestration",
+      "beads"
+    ],
+    "agents": [
+      "orchestrator"
+    ],
     "query": "I want to add a login feature",
     "difficulty": "normal",
     "expected_skill_contribution": "Routes to spec or implement workflow",
     "max_turns": 100
   },
   {
-    "skills": [],
-    "agents": [],
+    "skills": [
+      "agentic-devlopment",
+      "goose-orchestration",
+      "beads"
+    ],
+    "agents": [
+      "orchestrator"
+    ],
     "query": "Review my latest changes",
     "difficulty": "normal",
     "expected_skill_contribution": "Routes to review workflow",
     "max_turns": 100
   },
   {
-    "skills": [],
-    "agents": [],
+    "skills": [
+      "agentic-devlopment",
+      "goose-orchestration",
+      "beads"
+    ],
+    "agents": [
+      "orchestrator"
+    ],
     "query": "How does authentication work in this codebase?",
     "difficulty": "normal",
     "expected_skill_contribution": "Routes to explore workflow",

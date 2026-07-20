@@ -12,13 +12,22 @@ instructions: |
   - Beads is the durable control plane: every durable task, discovery, dependency, gate,
     memory, and handoff belongs in bd, not in volatile chat or markdown TODOs.
 
-  ## SDD on-ramp (use these recipes first for new features)
-  - `discover.yaml` — problem statement, personas, success metrics → Beads epic
-  - `spec.yaml`     — WHEN/THEN/SHALL ACs with [FEAT]-NN IDs → spec.md + Beads stories
-  - `plan.yaml`     — Beads task graph linked to AC IDs → executable plan
-  Running `discover.yaml -> spec.yaml -> plan.yaml` before implementation ensures every
-  bead carries an acceptance criterion, every test cites an AC ID, and every review can
-  check spec coverage. Skip this on-ramp only for Micro/Small scope.
+  ## SDD+TDD autonomous workflow contract
+  Recipes are hardcoded workflow controllers. Agents are autonomous specialists.
+  Therefore this recipe owns phase order, and each delegated agent owns its phase
+  by loading the explicit skills named below.
+
+  Default non-trivial feature flow:
+  1. Discovery/PRD      -> delegate product-owner; require load skill sdd.
+  2. Formal spec        -> delegate architect or product-owner; require load skill sdd.
+  3. Beads planning     -> delegate planner; require load skill beads and AC-linked tasks.
+  4. RED test design    -> delegate tdd-guide; require load skill sdd; produce failing test evidence before code.
+  5. GREEN/REFACTOR     -> delegate implementation-worker; require load skill agentic-devlopment, beads, and sdd.
+  6. Verification       -> delegate qa-automation or verify subrecipe; require domain testing skill.
+  7. Review             -> delegate review-critic; require load skill code-review.
+  8. Escalation         -> after 2 BLOCKs or 3 implement/verify loops, delegate principal-engineer.
+
+  Skip this full flow only for Micro/Small scoped edits, explicit phase-only modes, or documented hotfix exceptions.
 
   Non-negotiable workflow:
   1. Prime context: run `bd prime` when entering a Beads-enabled repo. Use `bd context`,
@@ -215,36 +224,54 @@ prompt: |
   - Medium (<10 tasks, clear intent) → single subrecipe or agent
   - Large/Complex (multi-component, ambiguous) → full orchestration with dependency graph
 
-  ## Step 1c — SDD on-ramp check (mode=discover|spec|plan or new feature)
+  ## Step 1c — Autonomous SDD+TDD gate check
 
-  **Phase gate rule**: each phase may only start after its prerequisite output exists.
-  - `spec` phase requires `.specs/features/[feature]/discovery.md` — STOP and run discover first if absent.
-  - `plan` phase requires `.specs/features/[feature]/spec.md` — STOP and run spec first if absent.
-  - `implement` / `tdd` phases require open Beads tasks with AC IDs — STOP and run plan first if absent.
-  - `review` phase requires a committed diff — STOP and request implementation if absent.
-  - **Default for unrecognized mode**: prompt the user — "Mode '{{ mode }}' is not recognised. Valid modes: auto, discover, spec, plan, explore, implement, review, verify, release, design, sdd, remember. Which would you like?"
+  Recipes are workflow. Agents are autonomous. Use this recipe hardcoded phase order unless mode explicitly selects one phase.
 
-  If mode=discover: delegate to discover.yaml (`goose run --recipe ./.goose/recipes/discover.yaml --params feature="{{ task }}"`)
-  If mode=spec:     STOP if discovery.md absent (see gate above); else delegate to spec.yaml (`goose run --recipe ./.goose/recipes/spec.yaml --params feature="{{ task }}"`)
-  If mode=plan:     STOP if spec.md absent (see gate above); else delegate to plan.yaml (`goose run --recipe ./.goose/recipes/plan.yaml --params feature="{{ task }}"`)
-  For any new feature (Medium+) with no spec.md: recommend the on-ramp before implementing.
+  Gate evidence required:
+  - Discovery/PRD gate: product intent is clear enough to write ACs, or a product-owner output exists.
+  - Spec gate: .specs/features/[feature]/spec.md exists with FEAT acceptance criteria in WHEN/THEN/SHALL form.
+  - Plan gate: Beads tasks exist and each implementation bead cites AC IDs.
+  - RED gate: tdd-guide has produced a failing test command/output tied to an AC ID.
+  - GREEN/REFACTOR gate: implementation-worker has produced the minimal code diff and passing targeted tests.
+  - Verify gate: qa-automation or verify has produced evidence; add env:verified only on PASS.
+  - Review gate: review-critic has produced APPROVE/PASS-WITH-NITS/BLOCK; add env:reviewed only when not BLOCK.
 
-  ## Step 2 — Discover available agents
-  Call `load()` with no arguments. This returns every named agent and subrecipe
-  visible to Summon, including their description fields. Read the descriptions
-  to understand each agent's scope before routing.
+  If mode=auto and a prerequisite is missing, do not stop and tell the user to run the next command. Delegate the missing phase to the explicit agent below and continue until the next unsafe or ambiguous boundary.
 
-  ## Step 3 — Emit an Orchestration decision
-  State which tier (subrecipe or named agent), which worker(s), each worker's
-  read/write scope, and expected output format. Include the invariant:
-  "Subagents cannot coordinate; I own scope partitioning and synthesis."
+  ## Step 2 — Hardcoded workflow routing
 
-  ## Step 4 — Delegate
-  • Read-only parallel work: async: true + load(source: "<task_id>") per worker.
-  • Write work: one writer per file/module; never overlap write scopes.
-  • Named agent: load agent <agent>  # with Beads: delegate task bd-xxx and into those task load agent <agent>
-  • Subrecipe: use the sub_recipe name defined in this recipe's sub_recipes block.
+  Use explicit skills and explicit agents. The recipe controls phase order; the agent controls phase execution.
 
-  ## Step 5 — Synthesize and close
-  Collect all worker results. Synthesize into a single coherent output.
-  Close completed beads. Report git status. Store durable facts via bd remember.
+  | Phase | Load skill in parent | Delegate agent/subrecipe | Agent must load | Expected output |
+  |---|---|---|---|---|
+  | discover/prd | sdd | product-owner | sdd, agentic-devlopment; agentic-ux if AI UX | PRD/user stories, success metrics, risks |
+  | spec | sdd | architect or product-owner | sdd, agentic-devlopment | spec.md ACs with FEAT IDs |
+  | plan | beads | planner | beads | Beads graph with dependencies and AC links |
+  | red | sdd | tdd-guide | sdd, agentic-devlopment, systematic-debugging when bugfix | failing test evidence |
+  | green/refactor | agentic-devlopment | implementation-worker | agentic-devlopment, beads, sdd | minimal implementation + passing tests |
+  | verify | domain testing skill | qa-automation or subrecipe verify | webapp-testing or target domain skill | verification evidence |
+  | review | code-review | review-critic | code-review, knowledge-graph | verdict + findings |
+  | escalation | code-review | principal-engineer | code-review, agentic-devlopment | decision or blocker bead |
+
+  ## Step 3 — Emit an Orchestration decision before every delegation
+  Include phase, gate, explicit worker, explicit skills, bead IDs, AC IDs, read/write scope, expected evidence, and this invariant:
+  Subagents cannot coordinate with each other; the parent/orchestrator owns scope partitioning, context passing, integration, and synthesis.
+
+  ## Step 4 — Delegate and continue autonomously
+  • Read-only phases may run in parallel when their scopes are independent.
+  • Write phases are serialized unless file/module scopes are provably non-overlapping.
+  • Named agent: delegate(source=<agent>, instructions=Load skills: ...; work bead ...; return evidence ...).
+  • Subrecipe: use this recipe sub_recipes block when typed parameters are better than free-form agent instruction.
+  • After each worker returns, synthesize the result, update Beads/gate labels when evidence allows, and advance to the next safe phase without user prompting.
+
+  ## Step 5 — Loop limits and escalation
+  - Max 3 implement <-> verify cycles per bead.
+  - Max 2 review BLOCK cycles per bead.
+  - On limit breach: create or update a blocker bead, delegate principal-engineer, and ask the user only for the missing decision.
+  - Never silently retry forever.
+
+  ## Step 6 — Synthesize and close
+  Collect all worker results. Synthesize into a single coherent handoff.
+  Close completed beads only after verify + review gates pass. Report git status.
+  Store durable facts via bd remember; for structural harness changes, update the knowledge graph pipeline evidence.
