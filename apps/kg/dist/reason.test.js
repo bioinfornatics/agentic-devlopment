@@ -24,6 +24,14 @@ describe("parseJSONL", () => {
         expect(relations.length).toBe(1);
         expect(relations[0].relationType).toBe("IMPLEMENTS");
     });
+    it("normalizes entities with missing observations to an empty array", () => {
+        const { entities } = parseJSONL(JSON.stringify({ type: "entity", name: "bad-code", entityType: "code_file" }));
+        expect(entities.get("bad-code").observations).toEqual([]);
+    });
+    it("skips structurally invalid relations", () => {
+        const { relations } = parseJSONL(JSON.stringify({ type: "relation", from: "a", to: "b" }));
+        expect(relations).toHaveLength(0);
+    });
 });
 describe("RULES", () => {
     it("RULES: exports 7+ named rules (R1–R7)", () => {

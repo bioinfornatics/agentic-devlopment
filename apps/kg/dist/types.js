@@ -4,10 +4,18 @@ export function parseJSONL(text) {
     for (const line of text.split("\n").filter(Boolean)) {
         try {
             const d = JSON.parse(line);
-            if (d.type === "entity")
-                entities.set(d.name, d);
-            else if (d.type === "relation")
+            if (d.type === "entity" && typeof d.name === "string" && typeof d.entityType === "string") {
+                entities.set(d.name, {
+                    type: "entity",
+                    name: d.name,
+                    entityType: d.entityType,
+                    observations: Array.isArray(d.observations) ? d.observations.filter((o) => typeof o === "string") : [],
+                    ...(typeof d.derived === "boolean" ? { derived: d.derived } : {}),
+                });
+            }
+            else if (d.type === "relation" && typeof d.from === "string" && typeof d.to === "string" && typeof d.relationType === "string") {
                 relations.push(d);
+            }
         }
         catch { /* skip */ }
     }
