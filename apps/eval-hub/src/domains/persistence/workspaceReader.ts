@@ -51,8 +51,24 @@ export class FsWorkspaceReader implements IWorkspaceReader {
           const runDir = path.join(evalDir, cd.name, "run-1");
           try {
             const raw = await fs.readFile(path.join(runDir, "grading.json"), "utf8");
-            const g   = JSON.parse(raw) as { passed: boolean; score: number; feedback?: string };
-            records.push({ evalId, config: cd.name, run: 1, passed: g.passed, score: g.score, ...(g.feedback !== undefined ? { feedback: g.feedback } : {}) });
+            const g   = JSON.parse(raw) as {
+              passed?: boolean;
+              score?: number;
+              feedback?: string;
+              summary?: { pass_rate?: number | null };
+            };
+            const passRate = typeof g.summary?.pass_rate === "number"
+              ? g.summary.pass_rate
+              : (typeof g.score === "number" ? g.score : null);
+            if (passRate === null) continue; // grader unavailable; exclude from delta instead of biasing to zero
+            records.push({
+              evalId,
+              config: cd.name,
+              run: 1,
+              passed: passRate >= 1,
+              score: passRate,
+              ...(g.feedback !== undefined ? { feedback: g.feedback } : {}),
+            });
           } catch { /* grading not yet written */ }
         }
       }

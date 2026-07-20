@@ -11,7 +11,7 @@ export class DeltaService implements IDeltaService {
   passRate(gradings: readonly GradingRecord[], config: string): PassRateStats {
     const samples = gradings
       .filter(g => g.config === config)
-      .map(g => g.passed ? 1 : 0);
+      .map(g => Number.isFinite(g.score) ? clamp01(g.score) : (g.passed ? 1 : 0));
     const n    = samples.length;
     const mean = n > 0 ? samples.reduce<number>((a, b) => a + b, 0) / n : 0;
     return { mean, samples, n };
@@ -45,4 +45,10 @@ export class DeltaService implements IDeltaService {
     const maxTurnsReachedRate = td.length > 0 ? td.filter(t => t.maxTurnsReached).length / td.length : 0;
     return { ...base, turnsUsedMean, maxTurnsReachedRate };
   }
+}
+
+function clamp01(value: number): number {
+  if (value < 0) return 0;
+  if (value > 1) return 1;
+  return value;
 }

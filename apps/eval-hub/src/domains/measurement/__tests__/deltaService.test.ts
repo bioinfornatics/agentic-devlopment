@@ -71,6 +71,24 @@ describe("DeltaService", () => {
       expect(result.n).toBe(5);
     });
 
+    it("uses numeric score samples so partial pass rates contribute to layer deltas", () => {
+      const gradings: GradingRecord[] = [
+        grading(0, "with_skill", false, 0.75),
+        grading(1, "with_skill", true, 1.0),
+        grading(0, "without_skill", false, 0.25),
+        grading(1, "without_skill", false, 0.5),
+      ];
+
+      const withResult = svc.passRate(gradings, "with_skill");
+      const withoutResult = svc.passRate(gradings, "without_skill");
+      const delta = svc.delta(withResult, withoutResult);
+
+      expect(withResult.samples).toEqual([0.75, 1.0]);
+      expect(withResult.mean).toBeCloseTo(0.875, 10);
+      expect(withoutResult.mean).toBeCloseTo(0.375, 10);
+      expect(delta.passRate).toBeCloseTo(0.5, 10);
+    });
+
     it("ignores gradings that belong to a different config", () => {
       const gradings = [
         grading(0, "with_skill",    true),
