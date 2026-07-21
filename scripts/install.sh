@@ -127,20 +127,7 @@ dry_run = sys.argv[4] == "1"
 stamp = sys.argv[5]
 
 managed = [
-    ("dev", "dev.yaml"),
-    ("discover", "discover.yaml"),
-    ("clarify", "clarify.yaml"),
-    ("spec", "spec.yaml"),
-    ("explore", "explore.yaml"),
-    ("plan", "plan.yaml"),
-    ("implement", "implement.yaml"),
-    ("review", "review.yaml"),
-    ("verify", "verify.yaml"),
-    ("release", "release.yaml"),
-    ("remember", "remember.yaml"),
-    ("sdd", "sdd.yaml"),
-    ("design", "design.yaml"),
-    ("doc-review", "doc-review.yaml"),
+    (path.stem, path.name) for path in sorted(recipe_dir.glob("*.yaml"))
 ]
 managed_names = {name.lower() for name, _ in managed}
 

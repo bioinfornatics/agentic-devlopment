@@ -10,7 +10,13 @@
     "query": "Implement bead BD-123",
     "difficulty": "normal",
     "expected_skill_contribution": "Claims bead and implements with TDD",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Claims bead and implements with TDD"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -23,7 +29,13 @@
     "query": "Add user validation with tests first",
     "difficulty": "difficult",
     "expected_skill_contribution": "RED-GREEN-REFACTOR cycle",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "RED-GREEN-REFACTOR cycle"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -36,6 +48,12 @@
     "query": "Implement authentication flow with multiple ACs",
     "difficulty": "very_difficult",
     "expected_skill_contribution": "Handles multi-AC implementation",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Handles multi-AC implementation"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   }
 ]

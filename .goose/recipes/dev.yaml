@@ -25,7 +25,9 @@ instructions: |
   -> Bead
   -> RED Test
   -> Code
-  -> Verification
+  -> Local validation
+  -> Review
+  -> Gated verification
   -> Memory
 
   Default non-trivial feature flow:
@@ -35,10 +37,11 @@ instructions: |
   3. Beads planning     -> delegate planner; require load skill beads and AC-linked tasks.
   4. RED test design    -> delegate tdd-guide; require load skill sdd; produce failing test evidence before code.
   5. GREEN/REFACTOR     -> delegate implementation-worker; require load skill agentic-devlopment, beads, and sdd.
-  6. Verification       -> delegate qa-automation or verify subrecipe; require domain testing skill.
-  7. Review             -> delegate review-critic; require load skill code-review.
-  8. Memory             -> record durable learnings with bd remember or knowledge-graph evidence when structural.
-  9. Escalation         -> after 2 BLOCKs, 3 implement/verify loops, or verification score medium-or-lower after a fix attempt, delegate principal-engineer.
+  6. Local validation    -> delegate qa-automation for pre-review tests; do not invoke gated verify or stamp env:verified.
+  7. Review             -> delegate review-critic; require load skill code-review; stamp env:reviewed only when not BLOCK.
+  8. Gated verification -> invoke verify subrecipe after env:reviewed exists; require domain testing skill.
+  9. Memory             -> record durable learnings with bd remember or knowledge-graph evidence when structural.
+  10. Escalation        -> after 2 BLOCKs, 3 implement/verify loops, or verification score medium-or-lower after a fix attempt, delegate principal-engineer.
 
   Verification scoring:
   - high/pass: continue to review, memory, and close.
@@ -168,42 +171,42 @@ extensions:
     timeout: 300
 sub_recipes:
   - name: explore
-    path: "subrecipes/explore.yaml"
+    path: "explore.yaml"
     description: Read-only codebase and documentation research.
     values:
       repo_path: "{{ repo_path }}"
       topic: "{{ task }}"
       constraints: "{{ constraints }}"
   - name: plan
-    path: "subrecipes/plan.yaml"
+    path: "plan.yaml"
     description: Turn a goal into a Beads-backed executable plan.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
   - name: implement
-    path: "subrecipes/implement.yaml"
+    path: "implement.yaml"
     description: Implement a scoped bead with tests and handoff.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
   - name: review
-    path: "subrecipes/review.yaml"
+    path: "review.yaml"
     description: Review code, tests, Beads state, and handoff quality.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
   - name: verify
-    path: "subrecipes/verify.yaml"
+    path: "verify.yaml"
     description: Browser/UI verification using Playwright when available.
     values:
       repo_path: "{{ repo_path }}"
       task: "{{ task }}"
       constraints: "{{ constraints }}"
   - name: release
-    path: "subrecipes/release.yaml"
+    path: "release.yaml"
     description: Release, CI, gates, and verification flow.
     values:
       repo_path: "{{ repo_path }}"
@@ -247,7 +250,7 @@ prompt: |
   Recipes are workflow. Agents are autonomous. Use this recipe hardcoded phase order unless mode explicitly selects one phase.
 
   Canonical /dev process:
-  Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Verification -> Memory.
+  Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Local validation -> Review -> Gated verification -> Memory.
 
   Gate evidence required:
   - Explore gate: source-code evidence exists; targeted web-search evidence exists when external practices, APIs, standards, framework behavior, or current ecosystem context can change the implementation decision.
@@ -275,8 +278,9 @@ prompt: |
   | plan | beads | planner | beads | Beads graph with dependencies and AC links |
   | red | sdd | tdd-guide | sdd, agentic-devlopment, systematic-debugging when bugfix | failing test evidence |
   | green/refactor | agentic-devlopment | implementation-worker | agentic-devlopment, beads, sdd | minimal implementation + passing tests |
-  | verify | domain testing skill | qa-automation or subrecipe verify | webapp-testing or target domain skill | verification evidence |
-  | review | code-review | review-critic | code-review, knowledge-graph | verdict + findings |
+  | local validation | domain testing skill | qa-automation | webapp-testing or target domain skill | pre-review test evidence; no gate stamp |
+  | review | code-review | review-critic | code-review, knowledge-graph | verdict + findings; env:reviewed only when not BLOCK |
+  | gated verify | domain testing skill | subrecipe verify | webapp-testing or target domain skill | post-review verification evidence |
   | escalation | code-review | principal-engineer | code-review, agentic-devlopment | decision or blocker bead |
 
   ## Step 3 — Emit an Orchestration decision before every delegation

@@ -98,8 +98,8 @@ Chaque phase SDD écrit dans le KG via le MCP `knowledgegraphmemory` :
 | **discover** | discover.yaml | epic + feature entities + DECOMPOSES_INTO |
 | **spec** | subrecipes/spec.yaml | acceptance_criterion entities + HAS_CRITERION + LOCATED_IN spec_file |
 | **plan** | plan.yaml | bead entity + TRACKS user_story |
-| **implement** | subrecipes/implement.yaml | component/api_endpoint + IMPLEMENTED_IN code_file + IMPLEMENTS user_story |
-| **review** | subrecipes/review.yaml | search_nodes pour gap detection + observation "reviewed:date" |
+| **implement** | .goose/recipes/implement.yaml | component/api_endpoint + IMPLEMENTED_IN code_file + IMPLEMENTS user_story |
+| **review** | .goose/recipes/review.yaml | search_nodes pour gap detection + observation "reviewed:date" |
 
 **Condition :** l'extension `knowledgegraphmemory` doit être active dans la session.
 

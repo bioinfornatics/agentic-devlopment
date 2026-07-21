@@ -74,14 +74,6 @@ extensions:
     args:
       - beads-mcp
     timeout: 300
-sub_recipes:
-  - name: implement
-    path: "subrecipes/implement.yaml"
-    values:
-      task: "{{ task }}"
-      topic: "{{ task }}"
-      repo_path: "{{ repo_path }}"
-      constraints: "{{ constraints }}"
 prompt: |
   Implement: {{ task }}
   Repo: {{ repo_path }}
@@ -105,8 +97,7 @@ prompt: |
 
   ## Step 3 — GREEN phase
   Claim the bead: `bd update <id> --claim --json`.
-  Run the `implement` subrecipe:
-    `use sub_recipe: implement`
+  Delegate implementation to `implementation-worker` with the claimed bead and RED evidence.
   The implementation must make the RED tests pass with minimum code.
 
   ## Step 4 — Observe result (test output)

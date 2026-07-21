@@ -1,65 +1,5 @@
 {
   "recipes": {
-    "clarify": {
-      "ad001_pattern": "specialist",
-      "artifacts": [
-        "recipe output report",
-        "Beads update or memory pointer when durable state changes"
-      ],
-      "entry_criteria": [
-        "inputs declared",
-        "required artifacts or Beads state checked"
-      ],
-      "exit_criteria": [
-        "output or verdict produced",
-        "validation or gate evidence reported"
-      ],
-      "gate_evidence_lines": [
-        "## Precondition gate (CLARIFY-03)",
-        "- [ ] discovery.md presence checked (gate passed or halted)",
-        "## Step 2 \u2014 Precondition gate",
-        "List them before attempting resolution (transparency gate)."
-      ],
-      "involved_agents": [
-        "product-owner"
-      ],
-      "loaded_skills": [
-        "agentic-devlopment",
-        "sdd"
-      ],
-      "phase": "Clarify",
-      "source_path": ".goose/recipes/clarify.yaml"
-    },
-    "constitution": {
-      "ad001_pattern": "specialist",
-      "artifacts": [
-        "recipe output report",
-        "Beads update or memory pointer when durable state changes"
-      ],
-      "entry_criteria": [
-        "inputs declared",
-        "required artifacts or Beads state checked"
-      ],
-      "exit_criteria": [
-        "output or verdict produced",
-        "validation or gate evidence reported"
-      ],
-      "gate_evidence_lines": [
-        "architecture guardrails, and quality gates. All plan.yaml runs are grounded by this.",
-        "### III. Quality Gates (non-negotiable)",
-        "## III. Quality Gates (non-negotiable)",
-        "- [ ] Quality gates have measurable thresholds (numbers, not prose)"
-      ],
-      "involved_agents": [
-        "architect"
-      ],
-      "loaded_skills": [
-        "agentic-devlopment",
-        "sdd"
-      ],
-      "phase": "Constitution",
-      "source_path": ".goose/recipes/constitution.yaml"
-    },
     "design": {
       "ad001_pattern": "specialist",
       "artifacts": [
@@ -116,7 +56,6 @@
         "description: Release, CI, gates, and verification flow.",
         "## AD-001 pattern: Orchestration. Load orchestrator in-session only; delegate specialist recipe runs or agents from the orchestrator context.",
         "**Phase gate rule**: each phase may only start after its prerequisite output exists.",
-        "If mode=discover: delegate to discover.yaml (`goose run --recipe ./.goose/recipes/discover.yaml --params feature=\"{{ task }}\"`)",
         "If mode=spec:     STOP if discovery.md absent (see gate above); else delegate to spec.yaml (`goose run --recipe ./.goose/recipes/spec.yaml --params feature=\"{{ task }}\"`)",
         "If mode=plan:     STOP if spec.md absent (see gate above); else delegate to plan.yaml (`goose run --recipe ./.goose/recipes/plan.yaml --params feature=\"{{ task }}\"`)"
       ],
@@ -130,37 +69,6 @@
       ],
       "phase": "LifecycleRouter",
       "source_path": ".goose/recipes/dev.yaml"
-    },
-    "discover": {
-      "ad001_pattern": "specialist",
-      "artifacts": [
-        "recipe output report",
-        "Beads update or memory pointer when durable state changes"
-      ],
-      "entry_criteria": [
-        "inputs declared",
-        "required artifacts or Beads state checked"
-      ],
-      "exit_criteria": [
-        "output or verdict produced",
-        "validation or gate evidence reported"
-      ],
-      "gate_evidence_lines": [
-        "- Delegate to `product-owner`: write user stories + PRD quality gate (>=85/100)",
-        "- For UI features: delegate to `ux-researcher`: personas + user journeys (BEFORE product-owner)",
-        "- Delegate to `ux-researcher` if this feature has user-facing UI:",
-        "- Delegate to `product-owner`:"
-      ],
-      "involved_agents": [
-        "product-owner",
-        "ux-researcher"
-      ],
-      "loaded_skills": [
-        "agentic-devlopment",
-        "sdd"
-      ],
-      "phase": "Discover",
-      "source_path": ".goose/recipes/discover.yaml"
     },
     "doc-review": {
       "ad001_pattern": "specialist",
@@ -252,61 +160,6 @@
       "phase": "HarnessAudit",
       "source_path": ".goose/recipes/harness-audit.yaml"
     },
-    "harness-doc-review": {
-      "ad001_pattern": "specialist",
-      "artifacts": [
-        "recipe output report",
-        "Beads update or memory pointer when durable state changes"
-      ],
-      "entry_criteria": [
-        "inputs declared",
-        "required artifacts or Beads state checked"
-      ],
-      "exit_criteria": [
-        "output or verdict produced",
-        "validation or gate evidence reported"
-      ],
-      "gate_evidence_lines": [
-        "State the first visible output block, load the required skills and review-critic agent, run bd prime, delegate inspection to doc-review, then synthesize JSON only. Do not modify fi"
-      ],
-      "involved_agents": [
-        "review-critic"
-      ],
-      "loaded_skills": [
-        "agentic-devlopment",
-        "and",
-        "beads"
-      ],
-      "phase": "HarnessDocReview",
-      "source_path": ".goose/recipes/harness-doc-review.yaml"
-    },
-    "harness-master": {
-      "ad001_pattern": "orchestration",
-      "artifacts": [
-        "recipe output report",
-        "Beads update or memory pointer when durable state changes"
-      ],
-      "entry_criteria": [
-        "inputs declared",
-        "required artifacts or Beads state checked"
-      ],
-      "exit_criteria": [
-        "output or verdict produced",
-        "validation or gate evidence reported"
-      ],
-      "gate_evidence_lines": [],
-      "involved_agents": [
-        "orchestrator"
-      ],
-      "loaded_skills": [
-        "agentic-devlopment",
-        "and",
-        "beads",
-        "goose-orchestration"
-      ],
-      "phase": "HarnessControlPlane",
-      "source_path": ".goose/recipes/harness-master.yaml"
-    },
     "harness-review": {
       "ad001_pattern": "specialist",
       "artifacts": [
@@ -378,21 +231,15 @@
         "validation or gate evidence reported"
       ],
       "gate_evidence_lines": [
-        "- Delegate architecture decomposition to `architect`:",
-        "- Delegate graph validation to `planner`:",
-        "Its approved stack, quality gates, and architecture guardrails constrain ALL task decomposition.",
-        "Delegate to `planner` if the graph has >10 nodes or any cycles are found:",
+        "## AD-001 pattern: Specialist. Load planner in-session; delegated/summoned specialists: none.",
+        "- load agent planner           (in-session owner for decomposition and graph validation)",
         "### Step 5 \u2014 Gate (Large/Complex scope only)",
         "For Large/Complex scope, create a human-review gate before implementation begins:",
         "bd gate create \"Plan approved: [feature]\" --blocks <first-implementation-task-id>",
-        "description: Delegate graph-building work to the isolated plan worker subrecipe.",
-        "Optionally delegate deep graph building to the plan-worker subrecipe:",
-        "## Step 3 \u2014 Delegate architecture decomposition",
-        "Delegate to `architect`:",
-        "If >10 nodes or cycles found: delegate to `planner`."
+        "## Step 3 \u2014 Architecture decomposition",
+        "If >10 nodes or cycles are found, perform an additional reachability and cycle review."
       ],
       "involved_agents": [
-        "architect",
         "planner"
       ],
       "loaded_skills": [
@@ -439,28 +286,6 @@
       "phase": "Release",
       "source_path": ".goose/recipes/release.yaml"
     },
-    "remember": {
-      "ad001_pattern": "skill-only",
-      "artifacts": [
-        "recipe output report",
-        "Beads update or memory pointer when durable state changes"
-      ],
-      "entry_criteria": [
-        "inputs declared",
-        "required artifacts or Beads state checked"
-      ],
-      "exit_criteria": [
-        "output or verdict produced",
-        "validation or gate evidence reported"
-      ],
-      "gate_evidence_lines": [],
-      "involved_agents": [],
-      "loaded_skills": [
-        "beads"
-      ],
-      "phase": "Memory",
-      "source_path": ".goose/recipes/remember.yaml"
-    },
     "review": {
       "ad001_pattern": "specialist",
       "artifacts": [
@@ -495,44 +320,6 @@
       ],
       "phase": "Review",
       "source_path": ".goose/recipes/review.yaml"
-    },
-    "sdd": {
-      "ad001_pattern": "orchestration",
-      "artifacts": [
-        "recipe output report",
-        "Beads update or memory pointer when durable state changes"
-      ],
-      "entry_criteria": [
-        "inputs declared",
-        "required artifacts or Beads state checked"
-      ],
-      "exit_criteria": [
-        "output or verdict produced",
-        "validation or gate evidence reported"
-      ],
-      "gate_evidence_lines": [
-        "| Phase        | Load skill             | Delegate to agent       | Beads --assignee      |",
-        "- Delegate `ux-researcher`: personas, user journeys, accessibility requirements.",
-        "- Delegate `ui-designer`: wireframes, design-system tokens, WCAG 2.2 AA audit.",
-        "`delegate(source: \"<agent>\", instructions: \"<SDD phase context + AC IDs>\")`",
-        "via `delegate()` \u2014 NEVER loaded in-session alongside the orchestrator.",
-        "## AD-001 pattern: Orchestration. Load orchestrator in-session only; delegate specialists per AD-001.",
-        "## Step 3 \u2014 Spec-anchored routing with explicit phase gates",
-        "**Hard gate rule**: no phase may start until its predecessor's output artifact exists.",
-        "## Label state machine \u2014 cross-recipe ordering gates (HJ035, HJ037)",
-        "env:dev  \u2192  env:reviewed  \u2192  env:verified  \u2192  env:prod",
-        "Use `bd show <bead-id>` to inspect a bead's current gate state.",
-        "Use `bd list --label \"env:reviewed\"` to find reviewed beads ready for verify."
-      ],
-      "involved_agents": [
-        "orchestrator"
-      ],
-      "loaded_skills": [
-        "agentic-devlopment",
-        "sdd"
-      ],
-      "phase": "LifecycleOrchestration",
-      "source_path": ".goose/recipes/sdd.yaml"
     },
     "spec": {
       "ad001_pattern": "specialist",
@@ -612,5 +399,5 @@
     }
   },
   "schema": "harness-recipe-workflow-metadata-v1",
-  "updated_at": "regenerated-final"
+  "updated_at": "2026-07-20-balanced-lite-remediation"
 }

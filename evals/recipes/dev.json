@@ -10,8 +10,14 @@
     ],
     "query": "I want to add a login feature",
     "difficulty": "normal",
-    "expected_skill_contribution": "Routes to spec or implement workflow Must preserve canonical /dev flow: Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Verification -> Memory, looping back when verification is medium or lower.",
-    "max_turns": 100
+    "expected_skill_contribution": "Routes to spec or implement workflow Must preserve canonical /dev flow: Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Local validation -> Review -> Gated verification -> Memory, looping back when verification is medium or lower.",
+    "max_turns": 100,
+    "expected_behavior": [
+      "Routes to spec or implement workflow Must preserve canonical /dev flow: Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Local validation -> Review -> Gated verification -> Memory, looping back when verification is medium or lower."
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -24,8 +30,14 @@
     ],
     "query": "Review my latest changes",
     "difficulty": "normal",
-    "expected_skill_contribution": "Routes to review workflow Must preserve canonical /dev flow: Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Verification -> Memory, looping back when verification is medium or lower.",
-    "max_turns": 100
+    "expected_skill_contribution": "Routes to review workflow Must preserve canonical /dev flow: Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Local validation -> Review -> Gated verification -> Memory, looping back when verification is medium or lower.",
+    "max_turns": 100,
+    "expected_behavior": [
+      "Routes to review workflow Must preserve canonical /dev flow: Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Local validation -> Review -> Gated verification -> Memory, looping back when verification is medium or lower."
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -38,7 +50,13 @@
     ],
     "query": "How does authentication work in this codebase?",
     "difficulty": "normal",
-    "expected_skill_contribution": "Routes to explore workflow Must preserve canonical /dev flow: Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Verification -> Memory, looping back when verification is medium or lower.",
-    "max_turns": 100
+    "expected_skill_contribution": "Routes to explore workflow Must preserve canonical /dev flow: Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Local validation -> Review -> Gated verification -> Memory, looping back when verification is medium or lower.",
+    "max_turns": 100,
+    "expected_behavior": [
+      "Routes to explore workflow Must preserve canonical /dev flow: Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Local validation -> Review -> Gated verification -> Memory, looping back when verification is medium or lower."
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   }
 ]

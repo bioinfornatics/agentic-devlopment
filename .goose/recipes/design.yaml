@@ -80,7 +80,7 @@ extensions:
     timeout: 300
 sub_recipes:
   - name: verify
-    path: "subrecipes/verify.yaml"
+    path: "verify.yaml"
     values:
       task: "{{ target }}"
       repo_path: "{{ repo_path }}"

@@ -144,15 +144,6 @@ extensions:
       - "--executable-path"
       - /usr/bin/chromium-browser
     timeout: 300
-sub_recipes:
-  - name: verify
-    path: "subrecipes/verify.yaml"
-    description: Isolated adaptive verification worker.
-    values:
-      task: "{{ task }}"
-      target_type: "{{ target_type }}"
-      repo_path: "{{ repo_path }}"
-      constraints: "{{ constraints }}"
 prompt: |
   Verify: {{ task }}
   Type: {{ target_type }}
@@ -169,6 +160,6 @@ prompt: |
            STOP if env:reviewed label absent — output gate error message.
   Step 3 — Orient: bd prime, bd ready --json, read spec.md for [FEAT]-NN AC IDs.
   Step 4 — Detect type if auto: inspect file extensions, repo structure, task description.
-  Step 5 — Load skills for detected type and use sub_recipe: verify.
+  Step 5 — Load skills for detected type and execute verification as the in-session qa-automation specialist.
   Step 6 — Gate stamp: if all PASS → `bd update <bead-id> --add-label env:verified`.
            If any FAIL → do NOT stamp; file Beads issue → re-verify (max 3).

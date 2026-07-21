@@ -9,7 +9,13 @@
     "query": "Release version 1.2.0",
     "difficulty": "normal",
     "expected_skill_contribution": "Release gates checked",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Release gates checked"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -21,7 +27,13 @@
     "query": "Release with pending reviews",
     "difficulty": "difficult",
     "expected_skill_contribution": "Gates block release",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Gates block release"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -33,6 +45,12 @@
     "query": "Rollback from failed release",
     "difficulty": "very_difficult",
     "expected_skill_contribution": "Rollback procedure executed",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Rollback procedure executed"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   }
 ]

@@ -9,7 +9,13 @@
     "query": "Review the latest commit",
     "difficulty": "normal",
     "expected_skill_contribution": "APPROVE/PASS-WITH-NITS/BLOCK verdict",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "APPROVE/PASS-WITH-NITS/BLOCK verdict"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -21,7 +27,13 @@
     "query": "Review this pull request",
     "difficulty": "difficult",
     "expected_skill_contribution": "Comprehensive code review",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Comprehensive code review"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -33,6 +45,12 @@
     "query": "Security-focused review of auth changes",
     "difficulty": "very_difficult",
     "expected_skill_contribution": "Security findings with severity",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Security findings with severity"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   }
 ]

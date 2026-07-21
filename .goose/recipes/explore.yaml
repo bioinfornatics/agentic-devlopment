@@ -63,14 +63,6 @@ extensions:
     args:
       - beads-mcp
     timeout: 300
-sub_recipes:
-  - name: explore
-    path: "subrecipes/explore.yaml"
-    values:
-      task: "{{ task }}"
-      topic: "{{ task }}"
-      repo_path: "{{ repo_path }}"
-      constraints: "{{ constraints }}"
 prompt: |
   ## AD-001 pattern: Specialist. Load codebase-researcher in-session for read-only investigation.
 

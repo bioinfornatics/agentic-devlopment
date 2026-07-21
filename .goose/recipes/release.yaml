@@ -83,14 +83,6 @@ extensions:
     args:
       - beads-mcp
     timeout: 300
-sub_recipes:
-  - name: release
-    path: "subrecipes/release.yaml"
-    values:
-      task: "{{ task }}"
-      topic: "{{ task }}"
-      repo_path: "{{ repo_path }}"
-      constraints: "{{ constraints }}"
 prompt: |
   ## AD-001 pattern: Specialist. Load principal-engineer in-session for gated release.
 
@@ -115,7 +107,7 @@ prompt: |
   
   Step 3 — Orient: load skill agentic-devlopment. Run bd prime and bd ready --json.
   
-  Step 4 — Execute release: use release subrecipe.
+  Step 4 — Execute the release directly under the principal-engineer gate contract.
   
   Step 5 — Post-release gates (ALL MUST pass):
   - [ ] Artifact deployed successfully

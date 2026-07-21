@@ -10,7 +10,13 @@
     "query": "Write a spec for user login",
     "difficulty": "normal",
     "expected_skill_contribution": "WHEN/THEN/SHALL ACs",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "WHEN/THEN/SHALL ACs"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -23,7 +29,13 @@
     "query": "Spec an API with multiple endpoints",
     "difficulty": "difficult",
     "expected_skill_contribution": "Multiple AC IDs, clear boundaries",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Multiple AC IDs, clear boundaries"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -36,6 +48,12 @@
     "query": "Spec a feature with vague requirements",
     "difficulty": "very_difficult",
     "expected_skill_contribution": "Clarifies ambiguities, asks questions",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Clarifies ambiguities, asks questions"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   }
 ]

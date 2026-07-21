@@ -9,7 +9,13 @@
     "query": "How does error handling work?",
     "difficulty": "normal",
     "expected_skill_contribution": "Codebase investigation results",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Codebase investigation results"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -21,7 +27,13 @@
     "query": "Explain the system architecture",
     "difficulty": "difficult",
     "expected_skill_contribution": "Architecture overview with diagrams",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Architecture overview with diagrams"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   },
   {
     "skills": [
@@ -33,6 +45,12 @@
     "query": "What are the blast radius risks of changing module X?",
     "difficulty": "very_difficult",
     "expected_skill_contribution": "Dependency and risk analysis",
-    "max_turns": 100
+    "max_turns": 100,
+    "expected_behavior": [
+      "Dependency and risk analysis"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ]
   }
 ]
