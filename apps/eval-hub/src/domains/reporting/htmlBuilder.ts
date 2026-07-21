@@ -26,10 +26,24 @@ import {
 } from "./components/pages/EvalReportPage.js";
 import type { RunRow }             from "./components/molecules/TableRow.js";
 import type { EvalResultCardData } from "./components/molecules/EvalResultCard.js";
+import { esc } from "./components/utils.js";
+
+export interface FeedbackRecord {
+  runId: string;
+  kind: string;
+  subject: string;
+  evalId: number;
+  configuration: string;
+  expectation: string;
+  passed: boolean;
+  evidence: string;
+  source: string;
+}
 
 export interface TrendReportData {
   runs:        HistoryRow[];
   results:     ResultRow[];
+  feedback?:   FeedbackRecord[];
   generatedAt: string;
 }
 
@@ -212,6 +226,21 @@ export class HtmlReportBuilder {
       rowsJson:      JSON.stringify(rows),
     };
 
-    return EvalReportPage(pageData, chartJs);
+    const feedback = data.feedback ?? [];
+    const candidateFailures = feedback.filter(item => !item.passed && item.configuration.startsWith("with_"));
+    const runDelta = new Map(summaries.map(item => [item.subject, item.delta]));
+    const priority = (subject: string) => (runDelta.get(subject) ?? 0) < 0 ? "HIGH" : "MEDIUM";
+    const evidenceHtml = feedback.length === 0
+      ? `<p>No grader feedback is available. Run or re-grade evaluations to populate expectation evidence.</p>`
+      : `<h3>Complete grader evidence</h3>${feedback.map(item => `<details class="feedback-evidence"><summary>${esc(item.subject)} · eval ${item.evalId} · ${esc(item.configuration)} · ${item.passed ? "PASS" : "FAIL"}</summary><p><strong>Expectation:</strong> ${esc(item.expectation)}</p><p><strong>Evidence:</strong> ${esc(item.evidence)}</p><p class="provenance"><strong>Provenance:</strong> ${esc(item.source)}</p></details>`).join("")}`;
+    const recommendationsHtml = candidateFailures.length === 0
+      ? `<p>No failed candidate expectations require remediation.</p>`
+      : candidateFailures.map(item => {
+          const delta = runDelta.get(item.subject);
+          const signal = delta != null && delta < 0 ? "Regression" : delta === 0 ? "No improvement" : "Candidate failure";
+          return `<article class="feedback-item"><h3>${esc(item.subject)} · ${signal} · <span class="severity">${priority(item.subject)}</span></h3><p><strong>Expectation:</strong> ${esc(item.expectation)}</p><p><strong>Evidence:</strong> ${esc(item.evidence)}</p><p><strong>Recommendation:</strong> Update the ${esc(item.kind)} contract or scenario fixture so the candidate emits the required artifact, then rerun this scenario.</p><p class="provenance"><strong>Provenance:</strong> eval ${item.evalId}, ${esc(item.configuration)} · ${esc(item.source)}</p></article>`;
+        }).join("");
+    const feedbackHtml = `<section class="feedback-panel"><h2>Feedback, Insights &amp; Recommendations</h2><p>Deterministic insights from failed candidate expectations. Regressions are prioritized first.</p>${recommendationsHtml}${evidenceHtml}</section>`;
+    return EvalReportPage(pageData, chartJs).replace("<!-- Runs table -->", feedbackHtml + "\n    <!-- Runs table -->");
   }
 }

@@ -10,28 +10,33 @@ import path from "node:path";
 import type { HistoryRow, ResultRow, GradingRecord, TimingRecord } from "../persistence/ports.js";
 import type { EvalKind } from "../../shared/types.js";
 import { EVAL_KINDS }   from "../../shared/types.js";
+import type { FeedbackRecord } from "./htmlBuilder.js";
 import { DIST_EVALS }   from "../../shared/paths.js";
 
 export interface WorkspaceSnapshot {
-  runs:    HistoryRow[];
-  results: ResultRow[];
+  runs:     HistoryRow[];
+  results:  ResultRow[];
+  feedback: FeedbackRecord[];
 }
 
 export class WorkspaceDataCollector {
+  constructor(private readonly root: string = DIST_EVALS) {}
 
   async collect(kinds: readonly EvalKind[] = EVAL_KINDS): Promise<WorkspaceSnapshot> {
-    const runs:    HistoryRow[] = [];
-    const results: ResultRow[]  = [];
+    const runs:     HistoryRow[] = [];
+    const results:  ResultRow[]  = [];
+    const feedback: FeedbackRecord[] = [];
 
     for (const kind of kinds) {
       const subjects = await this.listSubjects(kind);
       for (const subject of subjects) {
         const hashes = await this.listHashes(kind, subject);
         for (const hash of hashes) {
-          const { row, resultRows } = await this.collectSubject(kind, subject, hash);
+          const { row, resultRows, feedbackRows } = await this.collectSubject(kind, subject, hash);
           if (resultRows.length > 0) {
             runs.push(row);
             results.push(...resultRows);
+            feedback.push(...feedbackRows);
           }
         }
       }
@@ -39,28 +44,29 @@ export class WorkspaceDataCollector {
 
     // Sort newest first
     runs.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-    return { runs, results };
+    return { runs, results, feedback };
   }
 
   private async listSubjects(kind: EvalKind): Promise<string[]> {
     try {
-      const entries = await fs.readdir(path.join(DIST_EVALS, kind), { encoding: "utf8", withFileTypes: true });
+      const entries = await fs.readdir(path.join(this.root, kind), { encoding: "utf8", withFileTypes: true });
       return entries.filter(e => e.isDirectory()).map(e => e.name).sort();
     } catch { return []; }
   }
 
   private async listHashes(kind: EvalKind, subject: string): Promise<string[]> {
     try {
-      const entries = await fs.readdir(path.join(DIST_EVALS, kind, subject), { encoding: "utf8", withFileTypes: true });
+      const entries = await fs.readdir(path.join(this.root, kind, subject), { encoding: "utf8", withFileTypes: true });
       return entries.filter(e => e.isDirectory()).map(e => e.name);
     } catch { return []; }
   }
 
   private async collectSubject(
     kind: EvalKind, subject: string, hash: string,
-  ): Promise<{ row: HistoryRow; resultRows: ResultRow[] }> {
-    const hashDir   = path.join(DIST_EVALS, kind, subject, hash);
+  ): Promise<{ row: HistoryRow; resultRows: ResultRow[]; feedbackRows: FeedbackRecord[] }> {
+    const hashDir   = path.join(this.root, kind, subject, hash);
     const resultRows: ResultRow[] = [];
+    const feedbackRows: FeedbackRecord[] = [];
 
     // Discover eval dirs
     let evalDirs: string[] = [];
@@ -84,9 +90,11 @@ export class WorkspaceDataCollector {
 
       for (const config of configDirs) {
         const runDir  = path.join(evalPath, config, "run-1");
-        const grading = await this.readJson<{ summary?: { pass_rate?: number | null } }>(
-          path.join(runDir, "grading.json"),
-        );
+        const gradingPath = path.join(runDir, "grading.json");
+        const grading = await this.readJson<{
+          summary?: { pass_rate?: number | null };
+          expectations?: Array<{ text?: unknown; passed?: unknown; evidence?: unknown }>;
+        }>(gradingPath);
         if (!grading) continue;
 
         const timing  = await this.readJson<TimingRecord>(path.join(runDir, "timing.json"));
@@ -100,6 +108,16 @@ export class WorkspaceDataCollector {
           totalTurns += timing.turnsUsed;
           turnsCount++;
           if (timing.maxTurnsReached) maxReachedCount++;
+        }
+
+        for (const expectation of grading.expectations ?? []) {
+          if (typeof expectation.text !== "string" || typeof expectation.passed !== "boolean" || typeof expectation.evidence !== "string") continue;
+          feedbackRows.push({
+            runId: hash, kind, subject, evalId, configuration: config,
+            expectation: expectation.text, passed: expectation.passed,
+            evidence: expectation.evidence,
+            source: path.relative(process.cwd(), gradingPath),
+          });
         }
 
         resultRows.push({
@@ -129,7 +147,7 @@ export class WorkspaceDataCollector {
       createdAt:           modifiedAt || new Date().toISOString(),
     };
 
-    return { row, resultRows };
+    return { row, resultRows, feedbackRows };
   }
 
   private async readJson<T>(p: string): Promise<T | null> {

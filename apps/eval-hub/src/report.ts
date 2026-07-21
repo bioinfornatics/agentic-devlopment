@@ -81,6 +81,7 @@ export async function startReport(args: string[]): Promise<void> {
   const html    = await builder.build({
     runs:        merged.runs,
     results:     merged.results,
+    feedback:    wsData.feedback,
     generatedAt: new Date().toISOString(),
   });
 

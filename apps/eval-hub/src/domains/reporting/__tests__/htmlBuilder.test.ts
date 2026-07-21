@@ -125,4 +125,45 @@ describe("HtmlReportBuilder", () => {
     expect(html).toContain("<style>");
     expect(html).not.toMatch(/rel=["']stylesheet["']/);
   });
+
+  it("[EVAL-FB-01..04] renders escaped evidence and an actionable recommendation with provenance", async () => {
+    const html = await builder.build({
+      runs: [historyRow()],
+      results: [
+        resultRow({ configuration: "with_skill", passRate: 0.25 }),
+        resultRow({ configuration: "without_skill", passRate: 0.75 }),
+      ],
+      feedback: [{
+        runId: "run-001", kind: "skills", subject: "code-review", evalId: 2,
+        configuration: "with_skill", expectation: "emit <script>alert(1)</script>",
+        passed: false, evidence: "missing <b>verdict</b>",
+        source: "dist/evals/skills/code-review/hash/eval-2/with_skill/run-1/grading.json",
+      }],
+      generatedAt: "",
+    });
+
+    expect(html).toContain("Feedback, Insights &amp; Recommendations");
+    expect(html).toContain("Regression");
+    expect(html).toContain("HIGH");
+    expect(html).toContain("dist/evals/skills/code-review/hash/eval-2/with_skill/run-1/grading.json");
+    expect(html).toContain("missing &lt;b&gt;verdict&lt;/b&gt;");
+    expect(html).not.toContain("<script>alert(1)</script>");
+    expect(html).toContain("Update the skills contract or scenario fixture");
+  });
+
+  it("[EVAL-FB-01..03] shows passing evidence but does not recommend baseline-only failures", async () => {
+    const html = await builder.build({ runs: [historyRow()], results: [], feedback: [
+      { runId: "run-001", kind: "skills", subject: "code-review", evalId: 0, configuration: "with_skill", expectation: "candidate passes", passed: true, evidence: "complete verdict", source: "candidate/grading.json" },
+      { runId: "run-001", kind: "skills", subject: "code-review", evalId: 0, configuration: "without_skill", expectation: "baseline fails", passed: false, evidence: "baseline omission", source: "baseline/grading.json" },
+    ], generatedAt: "" });
+    expect(html).toContain("complete verdict");
+    expect(html).toContain("baseline omission");
+    expect(html).toContain("No failed candidate expectations require remediation");
+    expect(html).not.toContain("Update the skills contract or scenario fixture");
+  });
+
+  it("[EVAL-FB-05] shows an explicit empty feedback state", async () => {
+    const html = await builder.build({ runs: [], results: [], feedback: [], generatedAt: "" });
+    expect(html).toContain("No grader feedback is available");
+  });
 });

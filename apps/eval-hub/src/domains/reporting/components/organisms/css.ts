@@ -16,6 +16,14 @@ export const ORGANISMS_CSS = `
     .subjects-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: .875rem; }
     .subjects-grid__heading { font-size: .875rem; font-weight: 600; color: var(--text-sm);
                                margin-bottom: .75rem; }
+    /* ── Feedback, insights, and recommendations ─────────── */
+    .feedback-panel { margin-top: 1rem; padding: 1rem; background: var(--surface); border: 1px solid var(--gray-bdr); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .feedback-panel h2 { margin-bottom: .4rem; }
+    .feedback-item { margin-top: .8rem; padding: .8rem; border-left: 4px solid var(--amber); background: var(--gray-lt); }
+    .feedback-item h3 { font-size: .9rem; margin-bottom: .35rem; }
+    .feedback-item p { margin-top: .3rem; }
+    .severity { color: var(--red); }
+    .provenance { color: var(--gray); font-size: .78rem; overflow-wrap: anywhere; }
     /* ── Runs table card ─────────────────────────────────── */
     .table-card { background: var(--surface); border: 1px solid var(--gray-bdr); border-radius: var(--radius);
                   box-shadow: var(--shadow); overflow: hidden; }
