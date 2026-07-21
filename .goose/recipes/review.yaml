@@ -10,7 +10,7 @@ instructions: |
   - Durable assignment: `bd create "<title>" --assignee review-critic -p 2 --json`
 
   load skills code-review first — it detects the review type and loads the matching reference.
-  Then run the `review` subrecipe and synthesize the result.
+  Then review directly as the in-session review-critic and synthesize the result.
 
   Loop cycle: run `bd prime` to orient before any work, `bd ready --json` to triage,
   claim beads before writes, close on completion, store memories at handoff.
@@ -91,13 +91,6 @@ extensions:
     args:
       - beads-mcp
     timeout: 300
-sub_recipes:
-  - name: review
-    path: "subrecipes/review.yaml"
-    values:
-      task: "{{ task }}"
-      repo_path: "{{ repo_path }}"
-      constraints: "{{ constraints }}"
 prompt: |
   ## AD-001 pattern: Specialist. Load review-critic in-session for independent review.
 
@@ -121,7 +114,7 @@ prompt: |
   - Markers found → list each with file:line:deviation:reason; flag for Amendment Proposal in findings table.
   - Do NOT issue APPROVE verdict while any SPEC_DEVIATION remains unresolved.
 
-  Run `review` subrecipe for: {{ task }}
+  Review directly as the in-session review-critic for: {{ task }}
   Repo: {{ repo_path }}
   Constraints: {{ constraints }}
 
