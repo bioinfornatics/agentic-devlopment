@@ -135,14 +135,14 @@ extensions:
     timeout: 300
 sub_recipes:
   - name: review
-    path: "subrecipes/review.yaml"
+    path: "review.yaml"
     description: Code, diff, and PR review using the review-critic worker.
     values:
       task: "{{ task }}"
       repo_path: "{{ repo_path }}"
       constraints: "{{ constraints }}"
   - name: doc-review
-    path: "subrecipes/doc-review.yaml"
+    path: "doc-review.yaml"
     description: Documentation consistency and memory-pointer hygiene review.
     values:
       scope: all
