@@ -29,7 +29,9 @@ instructions: |
 
   ## Review workflow
   Run the `doc-review` subrecipe with the requested scope, focus, repository path,
-  and constraints. Treat the worker output as evidence, then synthesize a final report.
+  and constraints. Treat the worker output as evidence, verify that it reports
+  `read_only: true`, then synthesize a final report. If the worker reports or causes
+  any durable mutation, stop and return BLOCK with the mutation evidence.
 
   The review MUST cover, within the selected scope:
   - recipe validation results from `goose recipe validate`;

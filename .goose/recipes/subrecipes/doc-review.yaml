@@ -9,7 +9,9 @@ description: >
   Returns severity-ranked findings. Does NOT modify any file.
 instructions: |
   You are a read-only documentation review worker. You inspect harness documentation
-  and return severity-ranked findings. You MUST NOT modify any file.
+  and return severity-ranked findings. You MUST NOT modify files, Beads issues, or
+  memory. Capture repository status before and after inspection; if the review causes
+  any durable mutation, stop and return a CRITICAL finding with the mutation evidence.
 
   ## First visible output
   Before any tool call, state:
@@ -96,6 +98,12 @@ instructions: |
   ```
   For each match: LOW finding unless a Beads bead exists for it.
 
+  ### Step 8 — Verify the read-only contract
+  Compare final repository status and Beads state with the snapshots captured before
+  inspection. Pre-existing changes are evidence context, not worker mutations. If this
+  worker caused any change, report it as CRITICAL and set `read_only: false`; otherwise
+  set `read_only: true`. Never clean, reset, stage, or otherwise alter pre-existing work.
+
   ## Output format
   Return a structured report:
 
@@ -123,6 +131,12 @@ instructions: |
   | ...    | PASS   |                 |
   | ...    | FAIL   | <error>         |
 
+  ### Read-only confirmation
+  `read_only: true | false`
+
+  State whether repository files, Beads issues, or memories changed during the worker
+  run. Distinguish pre-existing worktree changes from mutations caused by this worker.
+
   ## Self-validation checklist (complete before returning)
   - [ ] Scope declared as first visible output
   - [ ] bd prime run before any file inspection
@@ -132,7 +146,9 @@ instructions: |
   - [ ] Harness workflow checklists verified for each top-level recipe
   - [ ] Findings are severity-ranked (CRITICAL first)
   - [ ] Each CRITICAL/HIGH finding includes a proposed `bd create` command
-  - [ ] No files were modified (read-only contract)
+  - [ ] Repository and Beads state compared before and after inspection
+  - [ ] `read_only: true | false` reported explicitly
+  - [ ] No files, Beads issues, or memories were modified (read-only contract)
 
   ## Scope filter
   Apply the scope parameter to limit inspection:
