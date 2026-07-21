@@ -5,7 +5,7 @@
  *   • deterministic — same inputs always produce the same hash
  *   • sensitive — any content change changes the hash
  *   • 16-char hex — format contract
- *   • graceful — missing paths are silently skipped
+ *   • safe — missing sources fail instead of collapsing to the empty-content hash
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { ContentHasher } from "../contentHash.js";
@@ -94,13 +94,10 @@ describe("ContentHasher", () => {
 
   // ── Graceful degradation ──────────────────────────────────────────────────
 
-  it("returns a stable hash and does not throw when path does not exist", async () => {
+  it("rejects a missing source instead of returning the empty-content hash", async () => {
     const missing = path.join(tmpDir, "does-not-exist");
 
-    // Should not throw — missing paths are silently skipped
-    const hash = await hasher.hash([missing]);
-
-    expect(hash).toHaveLength(16);
+    await expect(hasher.hash([missing])).rejects.toThrow("Content hash source not found");
   });
 
   it("returns the same hash for two empty path arrays", async () => {

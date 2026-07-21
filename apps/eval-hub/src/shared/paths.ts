@@ -18,15 +18,29 @@
  *   https://goose-docs.ai/docs/guides/context-engineering/custom-agents
  *   https://goose-docs.ai/docs/guides/recipes/recipe-reference/
  *
- * PROJECT_ROOT defaults to cwd — always run eval-hub from the repo root,
- * or set the PROJECT_ROOT env var explicitly.
+ * PROJECT_ROOT defaults to the nearest ancestor containing evals/ and .agents/.
+ * Set PROJECT_ROOT explicitly to override repository discovery.
  */
 import path from "node:path";
 import os   from "node:os";
 import fs   from "node:fs/promises";
 
 // ── Project root ──────────────────────────────────────────────────────────────
-export const PROJECT_ROOT: string = process.env["PROJECT_ROOT"] ?? process.cwd();
+export const PROJECT_ROOT: string = process.env["PROJECT_ROOT"] ?? await findProjectRoot(process.cwd());
+
+async function findProjectRoot(start: string): Promise<string> {
+  let current = path.resolve(start);
+  while (true) {
+    try {
+      await fs.access(path.join(current, "evals"));
+      await fs.access(path.join(current, ".agents"));
+      return current;
+    } catch { /* walk upward */ }
+    const parent = path.dirname(current);
+    if (parent === current) return path.resolve(start);
+    current = parent;
+  }
+}
 
 // ── Project-space paths  (Goose walks up from cwd — overrides user-space) ────
 export const PROJECT_SKILLS_DIR  = path.join(PROJECT_ROOT, ".agents",  "skills");
@@ -84,11 +98,20 @@ export async function resolveSubjectPath(kind: string, subject: string): Promise
   const projectPath = subjectSourcePath(kind, subject);
   try {
     await fs.access(projectPath);
-    return projectPath;          // project-space wins
+    return projectPath;
   } catch {
-    // fall back to user-space
-    if (kind === "agents")  return path.join(USER_AGENTS_DIR,  `${subject}.md`);
-    if (kind === "recipes") return path.join(USER_RECIPES_DIR, `${subject}.yaml`);
+    if (kind === "recipes") {
+      const candidates = [
+        path.join(PROJECT_RECIPES_DIR, "subrecipes", `${subject}.yaml`),
+        path.join(USER_RECIPES_DIR, `${subject}.yaml`),
+        path.join(USER_RECIPES_DIR, "subrecipes", `${subject}.yaml`),
+      ];
+      for (const candidate of candidates) {
+        try { await fs.access(candidate); return candidate; } catch { /* continue */ }
+      }
+      throw new Error(`Recipe subject not found: ${subject}`);
+    }
+    if (kind === "agents") return path.join(USER_AGENTS_DIR, `${subject}.md`);
     return path.join(USER_SKILLS_DIR, subject);
   }
 }

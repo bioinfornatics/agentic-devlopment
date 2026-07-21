@@ -14,6 +14,7 @@ export interface IWorkspaceReader {
   listSubjects(kind: EvalKind): Promise<SubjectName[]>;
   listRuns(kind: EvalKind, subject: SubjectName): Promise<RunManifest[]>;
   readGradings(kind: EvalKind, subject: SubjectName, hash: ContentHash): Promise<GradingRecord[]>;
+  readGradingsAt(hashDir: string): Promise<GradingRecord[]>;
   readBenchmark(kind: EvalKind, subject: SubjectName, hash: ContentHash): Promise<BenchmarkFile | null>;
   readEvents(kind: EvalKind, subject: SubjectName, hash: ContentHash, evalId: number, config: string, run?: number): AsyncGenerator<string>;
   readLayeredState(layeredRunId: string): Promise<LayeredState | null>;

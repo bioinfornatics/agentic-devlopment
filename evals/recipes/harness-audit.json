@@ -82,7 +82,7 @@
       ".goose/recipes/",
       ".specs/features/",
       "evals/",
-      "docs/15-skill-evaluations.md"
+      "docs/internal/15-skill-evaluations.md"
     ],
     "max_turns": 70,
     "difficulty": "very_difficult",

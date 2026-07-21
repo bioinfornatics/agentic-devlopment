@@ -16,7 +16,7 @@ import type { EvalScenario } from "../../shared/types.js";
 import { LAYER_META } from "../../shared/types.js";
 import { SkillEvalRunner }  from "./evalRunner.js";
 import { ContentHasher }    from "../persistence/contentHash.js";
-import { EVALS_DIR, resolveSubjectPath, AMBIENT_HIDE_DIRS } from "../../shared/paths.js";
+import { EVALS_DIR, DIST_EVALS, resolveSubjectPath, AMBIENT_HIDE_DIRS, evalJsonPath } from "../../shared/paths.js";
 import { NULL_SINK } from "../../shared/eventBus.js";
 
 export class SuiteRunner implements ISuiteRunner {
@@ -58,27 +58,41 @@ export class SuiteRunner implements ISuiteRunner {
       sem.run(async () => {
         if (stopped) return { subject, rc: -1, ms: 0 };
         const effectivePath = await resolveSubjectPath(cfg.kind, subject);
-        const hash          = await this.hasher.hash([effectivePath]);
+        // Scenario/fixture changes alter what is measured and must produce a
+        // new artifact identity instead of overwriting source-only history.
+        const hash          = await this.hasher.hash([effectivePath, evalJsonPath(cfg.kind, subject)]);
         const ws            = path.join(cfg.workspace, subject, hash);
         await fs.mkdir(ws, { recursive: true });
+        // Layered workspaces record immutable provenance. Artifacts themselves
+        // live in the canonical dist/evals tree, so persist the exact canonical
+        // target instead of a marker that could later resolve to overwritten data.
+        await fs.writeFile(path.join(ws, "artifact_path.txt"), path.join(DIST_EVALS, cfg.kind, subject, hash));
 
         const subStart = Date.now();
-        for (const [evalId, scenario] of subjectScenarios.entries()) {
-          for (const config of configs) {
-            if (stopped) break;
-            const runCfg = {
-              kind: cfg.kind, subject, hash,
-              scenario: scenario as EvalScenario,
-              evalId, config, runNumber: 1, workspace: ws,
-              gooseCli: cfg.gooseCli, maxTurns: cfg.maxTurns,
-              timeoutMs: cfg.timeoutMs, ambient: cfg.ambient,
-            };
-            for await (const _ev of this.evalRunner.run(runCfg, sink)) {
-              // All events forwarded via sink; typed events yielded by evalRunner
+        const canonical = path.join(DIST_EVALS, cfg.kind, subject, hash);
+        try {
+          for (const [evalId, scenario] of subjectScenarios.entries()) {
+            for (const config of configs) {
+              if (stopped) break;
+              const runCfg = {
+                kind: cfg.kind, subject, hash,
+                scenario: scenario as EvalScenario,
+                evalId, config, runNumber: 1, workspace: ws,
+                gooseCli: cfg.gooseCli, maxTurns: cfg.maxTurns,
+                timeoutMs: cfg.timeoutMs, ambient: cfg.ambient,
+              };
+              for await (const _ev of this.evalRunner.run(runCfg, sink)) {
+                // All events forwarded via sink; typed events yielded by evalRunner
+              }
             }
           }
+          return { subject, rc: 0, ms: Date.now() - subStart };
+        } finally {
+          // Canonical hash directories are reusable caches and can be overwritten
+          // by a repeat run. Snapshot this run's evidence for immutable provenance
+          // and partial-matrix resume, including when execution fails midway.
+          await fs.cp(canonical, ws, { recursive: true, force: true }).catch(() => {});
         }
-        return { subject, rc: 0, ms: Date.now() - subStart };
       }).then(
         v  => { queue.push({ status: "fulfilled",  value: v });  notify(); },
         e  => { queue.push({ status: "rejected",   reason: e }); notify(); },

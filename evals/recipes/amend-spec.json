@@ -5,7 +5,13 @@
       "sdd",
       "beads"
     ],
-    "query": "A SPEC_DEVIATION was found: '// SPEC_DEVIATION: returns HTTP 200 instead of 201 — Reason: legacy client compatibility'. The affected AC is AUTH-03 in .specs/features/auth/spec.md. Triage this deviation.",
+    "recipe_params": {
+      "deviation": "returns HTTP 200 instead of 201",
+      "reason": "legacy client compatibility",
+      "ac_id": "AUTH-03",
+      "spec_file": ".specs/features/authentication/spec.md"
+    },
+    "query": "A SPEC_DEVIATION was found: '// SPEC_DEVIATION: returns HTTP 200 instead of 201 — Reason: legacy client compatibility'. The affected AC is AUTH-03 in .specs/features/authentication/spec.md. Triage this deviation.",
     "files": [
       ".goose/recipes/subrecipes/amend-spec.yaml"
     ],
@@ -19,10 +25,10 @@
       "creates SPEC_REVERT bead without the --deps discovered-from flag"
     ],
     "expected_behavior": [
-      "reads .specs/features/auth/spec.md and prints current AUTH-03 AC text before drafting",
-      "drafts both Accept amendment (WHEN/THEN/SHALL) and Reject (bd create SPEC_REVERT) options side by side",
-      "explicitly asks 'Accept (amend spec) or Reject (create SPEC_REVERT bead)?' before any file write",
-      "stores bd remember with scoped key after decision is made"
+      "reads .specs/features/authentication/spec.md and prints current AUTH-03 AC text before drafting",
+      "drafts one evidence-backed Accept or Reject recommendation in WHEN/THEN/SHALL or bd create SPEC_REVERT form",
+      "explicitly asks 'Accept (amend spec) or Reject (create SPEC_REVERT bead)?' before any file write or Beads mutation",
+      "does not write files, create Beads issues, or store memory before an explicit decision"
     ]
   },
   {
@@ -31,25 +37,31 @@
       "sdd",
       "beads"
     ],
-    "query": "Process this SPEC_DEVIATION and accept it — update the spec: 'SPEC_DEVIATION: pagination uses cursor-based instead of offset-based — Reason: performance requirements changed [PERF-02]'. Spec at .specs/features/search/spec.md.",
+    "recipe_params": {
+      "deviation": "pagination uses cursor-based instead of offset-based",
+      "reason": "performance requirements changed",
+      "ac_id": "PERF-02",
+      "spec_file": ".specs/features/search/spec.md"
+    },
+    "query": "Process this SPEC_DEVIATION and recommend whether to accept it: 'SPEC_DEVIATION: pagination uses cursor-based instead of offset-based — Reason: performance requirements changed [PERF-02]'. Spec at .specs/features/search/spec.md. Do not assume or execute my decision.",
     "files": [
       ".goose/recipes/subrecipes/amend-spec.yaml"
     ],
     "max_turns": 300,
     "difficulty": "difficult",
-    "expected_skill_contribution": "amend-spec subrecipe must locate PERF-02 in search/spec.md, produce a precise WHEN/THEN/SHALL amendment using cursor-based pagination, update the spec.md, annotate the source comment, and store bd remember.",
-    "fixture_intent": "Tests the full Accept path — spec update + annotation + memory.",
+    "expected_skill_contribution": "amend-spec subrecipe must locate PERF-02 in search/spec.md, compare it with the deviation, produce a precise recommendation, and enforce the explicit Accept/Reject gate before any mutation.",
+    "fixture_intent": "Tests difficult triage when the current AC already reflects the deviation; the recipe must still ask for an explicit decision and must not fabricate a completed Accept path.",
     "baseline_gaps": [
-      "updates spec.md without preserving the WHEN/THEN/SHALL format for the amended AC",
-      "forgets to annotate the source SPEC_DEVIATION comment after amendment",
-      "stores no bd remember after the amendment"
+      "claims the spec was amended even though no explicit Accept decision was received",
+      "does not notice that the current PERF-02 text already specifies cursor-based pagination",
+      "writes a file, creates a Beads issue, or stores memory before the human gate"
     ],
     "expected_behavior": [
-      "locates PERF-02 AC in spec.md and prints it before proposing amendment",
-      "produces amended WHEN/THEN/SHALL statement that explicitly mentions cursor-based pagination",
-      "adds 'Last amended: YYYY-MM-DD' to spec.md header",
-      "annotates source as '// SPEC_DEVIATION resolved — spec amended PERF-02 on YYYY-MM-DD'",
-      "stores bd remember with key spdev-search-PERF-02"
+      "locates PERF-02 AC in spec.md and prints it before proposing a recommendation",
+      "notes that the current AC already explicitly requires cursor-based pagination",
+      "produces an evidence-backed Accept or Reject recommendation without claiming that it was executed",
+      "asks for explicit Accept or Reject before any file, Beads, or memory mutation",
+      "does not fabricate a source annotation when no source_file parameter was supplied"
     ]
   }
 ]

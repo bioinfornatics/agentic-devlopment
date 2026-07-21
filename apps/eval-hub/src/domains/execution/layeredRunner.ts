@@ -13,18 +13,32 @@ import fs   from "node:fs/promises";
 import type { ILayeredRunner, ISuiteRunner, LayeredConfig, IEventSink } from "./ports.js";
 import type { LayeredEvent } from "../../shared/events.js";
 import type { EvalKind } from "../../shared/types.js";
+import { LAYER_META } from "../../shared/types.js";
 import { SuiteRunner }         from "./suiteRunner.js";
 import { FsWorkspaceReader }   from "../persistence/workspaceReader.js";
 import type { IWorkspaceReader } from "../persistence/ports.js";
 import { DeltaService }        from "../measurement/deltaService.js";
 import type { IDeltaService }  from "../measurement/ports.js";
-import { LAYERED_ROOT, EVALS_DIR } from "../../shared/paths.js";
+import { LAYERED_ROOT, EVALS_DIR, DIST_EVALS } from "../../shared/paths.js";
 import { NULL_SINK } from "../../shared/eventBus.js";
 
 const LAYER_ORDER: EvalKind[] = ["skills", "agents", "recipes"];
 
 interface LayerState { status: "done"; avgDelta: number; n: number; elapsedMs: number; }
 interface RunState   { layers: Partial<Record<EvalKind, LayerState>>; }
+
+export function pairedSubjectDelta(
+  gradings: readonly import("../persistence/ports.js").GradingRecord[],
+  candidateConfig: string,
+  baselineConfig: string,
+): number | null {
+  const candidate = new Map(gradings.filter(g => g.config === candidateConfig).map(g => [g.evalId, g.score]));
+  const baseline = new Map(gradings.filter(g => g.config === baselineConfig).map(g => [g.evalId, g.score]));
+  const deltas = [...candidate.entries()]
+    .filter(([evalId, score]) => Number.isFinite(score) && Number.isFinite(baseline.get(evalId)))
+    .map(([evalId, score]) => score - baseline.get(evalId)!);
+  return deltas.length ? deltas.reduce((a, b) => a + b, 0) / deltas.length : null;
+}
 
 export class LayeredRunner implements ILayeredRunner {
   constructor(
@@ -74,10 +88,10 @@ export class LayeredRunner implements ILayeredRunner {
       const { avg: avgDelta, n: gradingN } = await this.computeAvgDelta(kind, layerWs, subjects);
       const elapsedMs = Date.now() - layerStart;
 
-      state.layers[kind] = { status: "done", avgDelta, n: subjects.length, elapsedMs };
+      state.layers[kind] = { status: "done", avgDelta, n: gradingN, elapsedMs };
       await this.saveState(statePath, state);
 
-      yield { type: "layer.completed", level: this.level(kind), kind, avgDelta, n: subjects.length, durationMs: elapsedMs };
+      yield { type: "layer.completed", level: this.level(kind), kind, avgDelta, n: gradingN, durationMs: elapsedMs };
 
       // n === 0 means no grading data found at all — do NOT early-stop on phantom zero
       if (gradingN > 0 && !cfg.noEarlyStop && avgDelta <= cfg.earlyStopThreshold) {
@@ -100,59 +114,39 @@ export class LayeredRunner implements ILayeredRunner {
     layerWs: string,
     subjects: string[],
   ): Promise<{ avg: number; n: number }> {
-    // 1. Prefer benchmark.json (written by skill-creator when available)
-    const benchDeltas = await this.collectBenchmarkDeltas(layerWs);
-    if (benchDeltas.length > 0) {
-      return { avg: this.delta.layerAvgDelta(benchDeltas), n: benchDeltas.length };
-    }
-
-    // 2. Fall back: pair grading.json files via IWorkspaceReader + DeltaService
     const gradingDeltas: number[] = [];
+    const [withConfig, baseConfig] = LAYER_META[kind].configs;
     for (const subject of subjects) {
       try {
-        const runs = await this.workspace.listRuns(kind, subject);
-        if (runs.length === 0) continue;
-        const hash     = runs[0]!.hash;
-        const gradings = await this.workspace.readGradings(kind, subject, hash);
-        if (gradings.length === 0) continue;
-
-        // Identify candidate/baseline config names from grading records
-        const configNames = [...new Set(gradings.map(g => g.config))];
-        const withConfig  = configNames.find(c => c.startsWith("with_"));
-        const baseConfig  = configNames.find(c => c.startsWith("without_") || c.endsWith("_only"));
-        if (!withConfig || !baseConfig) continue;
-
-        // Filter out records where grading failed (pass_rate is null in grading.json)
-        // We read raw grading.json to access pass_rate since GradingRecord.score is 0 for null
-        const withStats  = this.delta.passRate(gradings, withConfig);
-        const baseStats  = this.delta.passRate(gradings, baseConfig);
-        if (withStats.n === 0 && baseStats.n === 0) continue;
-
-        const d = this.delta.delta(withStats, baseStats);
-        gradingDeltas.push(d.passRate);
-      } catch { /* skip subject on error */ }
+        const hashDir = await this.layeredHashDir(kind, layerWs, subject);
+        if (!hashDir) continue;
+        const gradings = await this.workspace.readGradingsAt(hashDir);
+        const paired = pairedSubjectDelta(gradings, withConfig!, baseConfig!);
+        if (paired !== null) gradingDeltas.push(paired);
+      } catch { /* invalid or incomplete subject: exclude */ }
     }
-
     return { avg: this.delta.layerAvgDelta(gradingDeltas), n: gradingDeltas.length };
   }
 
-  private async collectBenchmarkDeltas(layerWs: string): Promise<number[]> {
-    const deltas: number[] = [];
+  private async layeredHashDir(kind: EvalKind, layerWs: string, subject: string): Promise<string | null> {
+    const subjectDir = path.join(layerWs, subject);
     try {
-      const subjects = await fs.readdir(layerWs, { encoding: "utf8", withFileTypes: true });
-      for (const s of subjects.filter(e => e.isDirectory())) {
-        const hashes = await fs.readdir(path.join(layerWs, s.name), { encoding: "utf8", withFileTypes: true });
-        for (const h of hashes.filter(e => e.isDirectory())) {
-          try {
-            const bPath = path.join(layerWs, s.name, h.name, "benchmark.json");
-            const data  = JSON.parse(await fs.readFile(bPath, "utf8")) as Record<string, unknown>;
-            const pr    = ((data["runSummary"] as Record<string, unknown>)?.["delta"] as Record<string, unknown>)?.["pass_rate"];
-            if (typeof pr === "number") deltas.push(pr);
-          } catch { /* no benchmark.json */ }
-        }
-      }
-    } catch { /* layerWs absent */ }
-    return deltas;
+      const entries = await fs.readdir(subjectDir, { withFileTypes: true });
+      const hashes = entries.filter(e => e.isDirectory()).map(e => e.name);
+      if (hashes.length !== 1) return null;
+
+      const runHashDir = path.join(subjectDir, hashes[0]!);
+      if ((await this.workspace.readGradingsAt(runHashDir)).length > 0) return runHashDir;
+
+      try {
+        const recorded = (await fs.readFile(path.join(runHashDir, "artifact_path.txt"), "utf8")).trim();
+        if (recorded) return recorded;
+      } catch { /* legacy run: hash is the only provenance marker */ }
+
+      // Older layered runs stored only a hash marker. Resolve that exact hash
+      // without selecting a newer artifact by mtime or directory order.
+      return path.join(DIST_EVALS, kind, subject, hashes[0]!);
+    } catch { return null; }
   }
 
   // ── Subject discovery ─────────────────────────────────────────────────────
@@ -171,20 +165,19 @@ export class LayeredRunner implements ILayeredRunner {
       const subjects = await fs.readdir(path.join(baseWs, kind), { encoding: "utf8", withFileTypes: true });
       for (const s of subjects.filter(e => e.isDirectory())) {
         try {
-          // A subject is done when it has grading.json files for every expected (evalId × config × run)
-          const gradings = await this.workspace.readGradings(kind, s.name, await this.latestHash(kind, s.name, baseWs));
-          if (gradings.length > 0) done.add(s.name);
+          const scenarios = JSON.parse(await fs.readFile(path.join(EVALS_DIR, kind, `${s.name}.json`), "utf8")) as unknown[];
+          const hashDir = await this.layeredHashDir(kind, path.join(baseWs, kind), s.name);
+          if (!hashDir) continue;
+          const gradings = await this.workspace.readGradingsAt(hashDir);
+          const configs = LAYER_META[kind].configs;
+          const complete = scenarios.every((_, evalId) => configs.every(config =>
+            gradings.some(g => g.evalId === evalId && g.config === config),
+          ));
+          if (complete && gradings.length === scenarios.length * configs.length) done.add(s.name);
         } catch { /* skip */ }
       }
     } catch { /* layer not started */ }
     return done;
-  }
-
-  private async latestHash(kind: EvalKind, subject: string, baseWs: string): Promise<string> {
-    const subjectDir = path.join(baseWs, kind, subject);
-    const entries    = await fs.readdir(subjectDir, { encoding: "utf8", withFileTypes: true });
-    const hashes     = entries.filter(e => e.isDirectory()).map(e => e.name);
-    return hashes[0] ?? "";
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

@@ -39,7 +39,10 @@ export class FsWorkspaceReader implements IWorkspaceReader {
   }
 
   async readGradings(kind: EvalKind, subject: SubjectName, hash: ContentHash): Promise<GradingRecord[]> {
-    const hashDir = path.join(DIST_EVALS, kind, subject, hash);
+    return this.readGradingsAt(path.join(DIST_EVALS, kind, subject, hash));
+  }
+
+  async readGradingsAt(hashDir: string): Promise<GradingRecord[]> {
     const records: GradingRecord[] = [];
     try {
       const evalDirs = await fs.readdir(hashDir, { withFileTypes: true });

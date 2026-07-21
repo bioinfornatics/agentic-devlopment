@@ -16,7 +16,7 @@ import { SkillPromptBuilder }  from "./promptBuilder.js";
 import { LlmGrader }           from "./grader.js";
 import { FsWorkspaceWriter }   from "../persistence/workspaceWriter.js";
 import type { IWorkspaceWriter } from "../persistence/ports.js";
-import { PROJECT_ROOT }        from "../../shared/paths.js";
+import { PROJECT_ROOT, resolveSubjectPath } from "../../shared/paths.js";
 import { NULL_SINK }           from "../../shared/eventBus.js";
 
 export class SkillEvalRunner implements IEvalRunner {
@@ -48,18 +48,18 @@ export class SkillEvalRunner implements IEvalRunner {
       ? await fs.mkdtemp(path.join(os.tmpdir(), "goose-eval-cwd-"))
       : null;
     const cwd = cfg.ambient ? (isWith ? PROJECT_ROOT : tmpCwd!) : cfg.workspace;
+    // Isolation is provided by cwd and project-layer hiding. Replacing HOME or
+    // XDG_CONFIG_HOME also removes the configured provider and turns every run
+    // into an infrastructure failure, so preserve the caller's provider config.
     const env: Record<string, string> = {};
-    if (!cfg.ambient) {
-      const home = path.join(cfg.workspace, `eval-${evalId}`, config, `run-${run}`, ".goose_home");
-      await fs.mkdir(path.join(home, ".config", "goose"), { recursive: true });
-      await fs.writeFile(path.join(home, ".config", "goose", "config.yaml"), "# eval isolation\n");
-      env["HOME"] = home;
-      env["XDG_CONFIG_HOME"] = path.join(home, ".config");
-    }
 
     // ── Run Goose ─────────────────────────────────────────────────────────────
     const maxTurns   = (scenario.max_turns ?? cfg.maxTurns) || cfg.maxTurns;
-    const args       = ["run", "--instructions", promptPath, "--no-session",
+    const isRecipeCandidate = kind === "recipes" && config === "with_recipe";
+    const inputArgs = isRecipeCandidate
+      ? ["--recipe", await resolveSubjectPath(kind, subject), ...recipeParams(scenario)]
+      : ["--instructions", promptPath];
+    const args       = ["run", ...inputArgs, "--no-session",
                         "--max-turns", String(maxTurns), "--output-format", "stream-json", "--quiet"];
     const startMs    = Date.now();
     let   turns      = 0;
@@ -93,8 +93,13 @@ export class SkillEvalRunner implements IEvalRunner {
       durationMs, turnsUsed: turns, maxTurns, maxTurnsReached: turns >= maxTurns,
     });
 
-    const ev1 = { type: "subject.completed" as const, kind, subject, hash, evalId, config, run, rc: rc ?? -1, turns, durationMs };
+    const exitCode = rc ?? -1;
+    const ev1 = { type: "subject.completed" as const, kind, subject, hash, evalId, config, run, rc: exitCode, turns, durationMs };
     yield ev1; sink.emit(ev1);
+
+    if (exitCode !== 0) {
+      throw new Error(`Goose run failed for ${subject} eval-${evalId}/${config} (exit ${exitCode})`);
+    }
 
     // ── Grade ─────────────────────────────────────────────────────────────────
     const grading = await this.grader.grade(scenario, config, outputLines.join("\n"), cfg.workspace, gooseCli);
@@ -103,6 +108,14 @@ export class SkillEvalRunner implements IEvalRunner {
     const ev2 = { type: "subject.graded" as const, subject, evalId, config, passed: passRate !== null && passRate === 1.0, score: passRate ?? 0 };
     yield ev2; sink.emit(ev2);
   }
+}
+
+function recipeParams(scenario: import("../../shared/types.js").EvalScenario): string[] {
+  const declared = scenario.recipe_params ?? {};
+  const entries = Object.keys(declared).length > 0
+    ? Object.entries(declared)
+    : [["task", scenario.query ?? ""]];
+  return entries.flatMap(([key, value]) => ["--params", `${key}=${value}`]);
 }
 
 function parseStreamLine(line: string): { isTurn?: boolean; isToolCall?: boolean; tool?: string; args?: unknown; preview?: string } | null {

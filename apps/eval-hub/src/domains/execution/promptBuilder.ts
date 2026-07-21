@@ -14,13 +14,15 @@ export class SkillPromptBuilder implements IPromptBuilder {
   build(scenario: EvalScenario, config: string): string {
     const lines: string[] = [];
 
-    if (config.startsWith("with_")) {
-      const skills = scenario.skills  ?? [];
-      const agents = scenario.agents  ?? [];
-      if (skills.length) lines.push(`load skill: ${skills.join(", ")}`);
-      if (agents.length) lines.push(`load agent: ${agents.join(", ")}`);
-      if (skills.length || agents.length) lines.push("");
-    }
+    const skills = scenario.skills ?? [];
+    const agents = scenario.agents ?? [];
+    // Layer-delta baselines retain lower-layer context: L1 skills for agents,
+    // and L2 agents + skills for recipes.
+    const loadSkills = config === "with_skill" || config === "with_agent" || config === "skills_only" || config === "agents_only";
+    const loadAgents = config === "with_agent" || config === "agents_only";
+    if (loadSkills && skills.length) lines.push(`load skill: ${skills.join(", ")}`);
+    if (loadAgents && agents.length) lines.push(`load agent: ${agents.join(", ")}`);
+    if ((loadSkills && skills.length) || (loadAgents && agents.length)) lines.push("");
 
     const files = scenario.files ?? [];
     if (files.length) {

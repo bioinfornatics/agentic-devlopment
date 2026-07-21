@@ -29,6 +29,11 @@ export class ContentHasher implements IContentHasher {
   async hash(paths: readonly string[]): Promise<string> {
     const h = crypto.createHash("sha256");
 
+    // Missing sources make a run incomparable; never collapse them to SHA-256(empty).
+    for (const p of paths) {
+      try { await fs.access(p); } catch { throw new Error(`Content hash source not found: ${p}`); }
+    }
+
     // Collect and sort all files across all input paths
     const allFiles: string[] = [];
     for (const p of paths) {

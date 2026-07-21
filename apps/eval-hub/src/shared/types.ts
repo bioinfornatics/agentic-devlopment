@@ -41,6 +41,8 @@ export interface EvalScenario {
   readonly fixture_patch?:                 string;
   readonly fixture_description?:           string;
   readonly fixture_intent?:                string;
+  /** Typed parameters passed to a recipe candidate. */
+  readonly recipe_params?:                  Readonly<Record<string, string>>;
   /** Per-scenario turn cap (overrides global --max-turns when set). */
   readonly max_turns?:                     number;
   readonly expected_skill_contribution?:   string;

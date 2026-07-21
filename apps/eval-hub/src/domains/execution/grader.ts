@@ -71,9 +71,9 @@ User query: ${scenario.query ?? ""}
 Expected behaviors to grade (each independently):
 ${JSON.stringify(expectations, null, 2)}
 
-Goose run output (last 20 000 chars):
+Goose events.jsonl transcript (complete; earliest tool calls included):
 \`\`\`
-${output.slice(-20_000)}
+${output}
 \`\`\`
 
 Required JSON (return ONLY this, nothing else):
