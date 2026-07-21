@@ -30,10 +30,6 @@ jobs:
       - name: Build documentation
         run: ./scripts/build-docs.sh
 
-      - name: Build eval trend report
-        # Reads evals/history/runs.json (committed) — no API calls, always fast.
-        run: python3 scripts/build-eval-report.py
-
       - name: Copy committed eval artifacts into dist/
         # benchmark.json, analysis files, and review.html are committed under
         # evals/history/; the runner also commits dist/evals/skills/ selectively.
@@ -46,8 +42,7 @@ jobs:
           fi
 
       - name: Create landing index
-        # dist/index.html already built by build-eval-report.py dependency.
-        # Ensure it is present as Pages root.
+        # Use the generated documentation as the Pages root.
         run: |
           if [ ! -f dist/index.html ]; then
             cp dist/docs/html/index.html dist/index.html

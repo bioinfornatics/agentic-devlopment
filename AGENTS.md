@@ -210,7 +210,7 @@ evals/               # A/B eval scenarios (skills/, agents/, recipes/)
 
 ## Slash commands
 
-`/constitution` `/dev` `/discover` `/spec` `/explore` `/plan` `/implement` `/review` `/verify` `/design` `/sdd` `/release` `/remember`
+`/constitution` `/dev` `/discover` `/spec` `/explore` `/plan` `/implement` `/review` `/verify` `/design` `/sdd` `/release` `/remember` `/doc-review`
 
 ## Validation checklist (before committing)
 

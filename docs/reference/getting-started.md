@@ -4,7 +4,7 @@
 
 - [Goose](https://github.com/block/goose) installed
 - Python 3.14+ (for scripts)
-- Node.js 18+ (for apps)
+- Node.js 22.x (for apps; pinned in apps/.node-version)
 
 ## Installation
 
@@ -15,7 +15,7 @@ cd agentic-devlopment
 ./scripts/install.sh
 
 # Verify installation
-goose skills list | grep -c '|'  # Should show 21+
+goose skills list | grep -c '|'  # Should show 17+
 ```
 
 ## First Session
@@ -27,6 +27,7 @@ goose run dev
 # Or use slash commands in any session
 /dev       # Main entry, routes to specialists
 /review    # Code review
+/doc-review # Read-only harness documentation review
 /implement # TDD implementation
 ```
 
@@ -39,6 +40,7 @@ goose run dev
 | `/plan` | plan | Spec→Beads task graph |
 | `/implement` | implement | Bead→Code with TDD |
 | `/review` | review | Code→Approval/Block |
+| `/doc-review` | doc-review | Docs→Approval/Block (read-only) |
 | `/verify` | verify | Code→Test evidence |
 | `/explore` | explore | Read-only codebase research |
 | `/design` | design | UX research + UI design |

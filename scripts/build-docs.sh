@@ -34,22 +34,25 @@ DOCS=(
   README.md
   INSTALL.md
   USE_CASES.md
-  docs/00-index.md
-  docs/01-init-project.md
-  docs/02-code-review.md
-  docs/03-security-review.md
-  docs/04-uxr-simulation.md
-  docs/05-ui-review.md
-  docs/06-test-review.md
-  docs/07-spec-review.md
-  docs/08-project-judge-score.md
-  docs/09-implementation-loop.md
-  docs/10-release-readiness.md
-  docs/11-incident-sre.md
-  docs/12-multi-agent-research.md
-  docs/13-documentation-review.md
-  docs/14-memory.md
-  docs/15-skill-evaluations.md
+  docs/reference/00-index.md
+  docs/reference/use-cases/01-init-project.md
+  docs/reference/use-cases/02-code-review.md
+  docs/reference/use-cases/03-security-review.md
+  docs/reference/use-cases/04-uxr-simulation.md
+  docs/reference/use-cases/05-ui-review.md
+  docs/reference/use-cases/06-test-review.md
+  docs/reference/use-cases/07-spec-review.md
+  docs/reference/use-cases/08-project-judge-score.md
+  docs/reference/use-cases/09-implementation-loop.md
+  docs/reference/use-cases/10-release-readiness.md
+  docs/reference/use-cases/11-incident-sre.md
+  docs/reference/use-cases/12-multi-agent-research.md
+  docs/reference/use-cases/13-documentation-review.md
+  docs/internal/14-memory.md
+  docs/internal/15-skill-evaluations.md
+  docs/internal/16-eval-analysis.md
+  docs/internal/knowledge-graph.md
+  docs/internal/kg-lifecycle.md
   AGENTS.md
 )
 
@@ -105,7 +108,10 @@ if [ -f "apps/kg/dist/cli.js" ] && [ -d ".knowledge" ]; then
 fi
 echo "wrote $HTML_INDEX"
 
-# Build eval trend dashboard (reads evals/history/runs.json — no API calls)
-if command -v python3 >/dev/null 2>&1; then
-  python3 "$(dirname "$0")/build-eval-report.py" && true
+# Build eval trend dashboard through the TypeScript eval-hub CLI.
+if [ -d apps/eval-hub/node_modules ]; then
+  (cd apps && pnpm --filter @harness/eval-hub build >/dev/null)
+  node apps/eval-hub/dist/index.js --report || echo warning: eval report unavailable >&2
+else
+  echo warning: eval-hub dependencies not installed - skipping trend report >&2
 fi
