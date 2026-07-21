@@ -7,14 +7,14 @@ description: >
   Run after spec.yaml, before implementation with dev.yaml or sdd.yaml.
 instructions: |
   ## AD-001 Pattern: Specialist
-  ## In-session agents: architect (for architectural decomposition); planner (for graph validation, sequential)
-  ## AD-001 pattern: Specialist. Load architect/planner in-session for plan decomposition and graph validation; no Summon sub-sessions by default.
-  ## Pattern rationale: plan is a Specialist recipe; architect decomposes spec ACs into
-  ## tasks; planner validates the resulting dependency graph for cycles and unreachable nodes.
+  ## In-session agent: planner
+  ## AD-001 pattern: Specialist. Load planner in-session; delegated/summoned specialists: none.
+  ## Pattern rationale: plan is a Specialist recipe; planner decomposes spec ACs into
+  ## tasks and validates the dependency graph for cycles and unreachable nodes.
   ## Stop/escalation: if no spec or bead exists to plan against, stop and direct user
   ## to run /discover or /spec first.
 
-  You are the Beads planning orchestrator for the SDD cycle.
+  You are the Beads planning specialist for the SDD cycle.
 
   ## First visible output (required before any tool call)
   State this block before acting:
@@ -25,10 +25,7 @@ instructions: |
   ## Skill and agent routing
   - load skills beads    (Beads workflow, dependency graph patterns, bd commands)
   - load skills sdd              (SDD phases, requirement traceability, auto-sizing)
-  - Delegate architecture decomposition to `architect`:
-      "Break spec ACs into implementation tasks for [feature]. Read .specs/features/[feature]/spec.md."
-  - Delegate graph validation to `planner`:
-      "Validate dependency graph for [feature] — check for cycles and unreachable nodes."
+  - load agent planner           (in-session owner for decomposition and graph validation)
 
   ## Planning workflow
 
@@ -74,8 +71,8 @@ instructions: |
   After all tasks created:
   1. `bd graph --json`  — verify no cycles.
   2. `bd ready --json`  — verify at least one task is immediately available (no blockers).
-  Delegate to `planner` if the graph has >10 nodes or any cycles are found:
-    load agent planner
+  If the graph has >10 nodes or any cycles are found, perform an additional
+  reachability and cycle review before proceeding.
 
   ### Step 5 — Gate (Large/Complex scope only)
   For Large/Complex scope, create a human-review gate before implementation begins:
@@ -129,9 +126,6 @@ extensions:
     name: analyze
     bundled: true
   - type: platform
-    name: summon
-    bundled: true
-  - type: platform
     name: skills
     bundled: true
   - type: stdio
@@ -141,14 +135,6 @@ extensions:
     args:
       - beads-mcp
     timeout: 300
-sub_recipes:
-  - name: plan-worker
-    path: "subrecipes/plan.yaml"
-    description: Delegate graph-building work to the isolated plan worker subrecipe.
-    values:
-      task: "{{ feature }}"
-      repo_path: "{{ repo_path }}"
-      constraints: "{{ constraints }}"
 prompt: |
   Feature to plan: {{ feature }}
   Repo: {{ repo_path }}
@@ -163,25 +149,22 @@ prompt: |
   State: Plan scope, spec source (spec.md found / bead / user description), estimated task count.
 
   ## Step 2 — Orient
-  load skills beads. load skills sdd.
+  load skills beads. load skills sdd. load agent planner.
   Run `bd prime`. Run `bd ready --json`.
   Read `.specs/features/{{ feature }}/spec.md` if present — extract all [FEAT]-NN IDs.
-  Optionally delegate deep graph building to the plan-worker subrecipe:
-    `use sub_recipe: plan-worker`
 
-  ## Step 3 — Delegate architecture decomposition
-  Delegate to `architect`:
-    load agent architect
+  ## Step 3 — Architecture decomposition
+  Decompose the spec ACs into implementation tasks and dependency edges.
 
   ## Step 4 — Create Beads task graph
-  For each task from the architect output:
+  For each task from the decomposition:
   - Run `bd create` with `--assignee`, `--deps "partOf:<epic-id>,needs:<pred-id>"`, and `--acceptance "<AC ID>: <outcome>"`.
   - Record each bead ID before creating the next one.
 
   ## Step 5 — Validate graph
   Run `bd graph --json`. Confirm no cycles.
   Run `bd ready --json`. Confirm at least one task has no blockers.
-  If >10 nodes or cycles found: delegate to `planner`.
+  If >10 nodes or cycles are found, perform an additional reachability and cycle review.
 
   ## Step 6 — Completion Gate (MUST pass before handoff)
   Verify ALL before proceeding:

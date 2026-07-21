@@ -7,10 +7,19 @@
     "agents": [
       "planner"
     ],
-    "query": "Plan implementation for feature X",
+    "query": "Plan the implementation of a feature from .specs/features/feature-x/spec.md. Orient with Beads first, map every acceptance criterion to executable work, validate the graph, and identify the first claimable task.",
     "difficulty": "normal",
-    "expected_skill_contribution": "Creates Beads dependency graph",
-    "max_turns": 100
+    "expected_skill_contribution": "Runs bd prime, translates spec AC IDs into acceptance-linked Beads tasks, validates the dependency graph, and hands off the first claimable task.",
+    "max_turns": 100,
+    "expected_behavior": [
+      "Runs bd prime before reading planning state or creating tasks",
+      "Maps each spec AC ID to a task acceptance criterion with an assignee and priority",
+      "Creates and validates a dependency graph, then reports the first claimable task in the implementation handoff"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline may mention planning steps, but the plan recipe requires the ordered chain bd prime \u2192 AC extraction from spec.md \u2192 Beads task graph creation \u2192 bd graph/bd ready validation \u2192 implementation handoff.",
+      "Layer 2 agents+skills baseline does not require the recipe handoff fields: plan table, first claimable bead, and recommended /implement next step."
+    ]
   },
   {
     "skills": [
@@ -20,10 +29,20 @@
     "agents": [
       "planner"
     ],
-    "query": "Plan a multi-component feature",
+    "query": "Plan a multi-component feature whose spec has several AC IDs, architecture work, implementation slices, review, and verification. Produce an ordered Beads graph without duplicate or unreachable work.",
     "difficulty": "difficult",
-    "expected_skill_contribution": "Creates tasks with dependencies",
-    "max_turns": 100
+    "expected_skill_contribution": "Decomposes multiple AC IDs into phased tasks with needs/partOf dependencies and verifies graph reachability.",
+    "max_turns": 100,
+    "expected_behavior": [
+      "Runs bd prime and checks existing ready work before creating any task",
+      "Preserves acceptance traceability by linking every task to a spec AC ID",
+      "Uses dependency needs-language across architecture, implementation, review, and verification",
+      "Runs graph validation to reject cycles and unreachable nodes before handoff"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline may produce a task list, but the plan recipe requires dependencies to use needs: and partOf: semantics across architecture, implementation, review, and verification.",
+      "Layer 2 agents+skills baseline does not enforce the recipe validation gate that rejects cycles or unreachable nodes before handoff."
+    ]
   },
   {
     "skills": [
@@ -33,9 +52,20 @@
     "agents": [
       "planner"
     ],
-    "query": "Break down a large epic into stories and tasks",
+    "query": "Break down a large cross-cutting epic from its formal spec. Include architecture constraints, more than ten graph nodes, implementation ownership boundaries, review and verification, and require approval before implementation begins.",
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "Hierarchical task structure",
-    "max_turns": 100
+    "expected_skill_contribution": "Builds and validates a large spec-anchored task graph, adds the human approval gate, and emits a complete implementation handoff.",
+    "max_turns": 100,
+    "expected_behavior": [
+      "Runs bd prime and checks the constitution before decomposing the epic",
+      "Maps all acceptance criteria and AC IDs to assigned tasks with explicit dependencies and non-overlapping implementation scopes",
+      "Performs an additional graph validation pass for more than ten nodes and fixes any cycle or unreachable node",
+      "Creates a human approval gate that blocks the first implementation task",
+      "Produces the required plan table and implementation handoff with epic ID, task count, and first claimable bead"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline may decompose a large epic, but the plan recipe escalates graphs with more than ten nodes to an additional reachability and cycle review before handoff.",
+      "Layer 2 agents+skills baseline does not require a human approval gate that blocks the first implementation task for Large/Complex scope."
+    ]
   }
 ]

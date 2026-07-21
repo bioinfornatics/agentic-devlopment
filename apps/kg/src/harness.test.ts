@@ -83,6 +83,43 @@ describe("AC-EVAL-01/02/04/05: eval coverage and layer-delta contracts", () => {
     expect(problems, "Recipe eval coverage problems: " + problems.join("; ")).toHaveLength(0);
   });
 
+  it("AC-EVAL-02: plan recipe eval covers its spec-anchored planning gates", async () => {
+    const scenarios = await readJsonArray(join(REPO, "evals", "recipes", "plan.json"));
+    const problems: string[] = [];
+    const expectedDifficulties = ["normal", "difficult", "very_difficult"];
+
+    for (const difficulty of expectedDifficulties) {
+      const scenario = scenarios.find(item => item.difficulty === difficulty);
+      if (!scenario) {
+        problems.push("missing " + difficulty + " scenario");
+        continue;
+      }
+      if (!Array.isArray(scenario.agents) || scenario.agents.length !== 1 || scenario.agents[0] !== "planner")
+        problems.push(difficulty + ": agents must contain only planner");
+      if (!Array.isArray(scenario.skills) || !scenario.skills.includes("beads") || !scenario.skills.includes("sdd"))
+        problems.push(difficulty + ": skills must include beads and sdd");
+    }
+
+    const behavior = scenarios.flatMap(scenario => scenario.expected_behavior ?? []).join(" ").toLowerCase();
+    for (const required of ["bd prime", "acceptance", "ac id", "dependency", "graph", "gate", "handoff"]) {
+      if (!behavior.includes(required)) problems.push("expected_behavior does not cover " + required);
+    }
+
+    const memoryLines = (await readFile(join(REPO, ".knowledge", "memory.jsonl"), "utf8"))
+      .split("\n")
+      .filter(Boolean)
+      .map(line => JSON.parse(line));
+    const hasAnchor = memoryLines.some(record =>
+      record.type === "relation" &&
+      record.from === "test:harness-test-ts" &&
+      record.to === "AC-EVAL-02" &&
+      record.relationType === "ANCHORS"
+    );
+    if (!hasAnchor) problems.push("test:harness-test-ts must ANCHOR AC-EVAL-02 in the knowledge graph");
+
+    expect(problems, "Plan recipe eval coverage problems: " + problems.join("; ")).toHaveLength(0);
+  });
+
   it("AC-EVAL-04: agent evals declare Layer 1 skills-only baseline and layer-delta expectations", async () => {
     const evalsDir = join(REPO, "evals", "agents");
     const files = (await readdir(evalsDir)).filter(f => f.endsWith(".json"));
@@ -222,43 +259,29 @@ describe("AC-BEADS-01: Beads workflow structure", () => {
 });
 
 // ── AC-RECIPE-03: slash command registration ─────────────────────────────
-describe("AC-RECIPE-03: slash command registration", () => {
-  it("all 12 expected recipe yaml files exist", async () => {
-    const expectedRecipes = [
-      "dev", "discover", "spec", "plan", "implement",
-      "review", "verify", "design", "sdd", "release", "remember", "explore"
-    ];
+describe("AC-RECIPE-03 / HAR-02: slash command registration", () => {
+  it("workflow metadata advertises exactly the recipes that exist", async () => {
     const recipesDir = join(REPO, ".goose", "recipes");
-    const recipeFiles = (await readdir(recipesDir))
-      .filter(f => f.endsWith(".yaml"))
-      .map(f => f.replace(".yaml", ""));
-    for (const cmd of expectedRecipes) {
-      expect(recipeFiles, `Missing recipe: ${cmd}.yaml`).toContain(cmd);
+    const onDisk = (await readdir(recipesDir)).filter(f => f.endsWith(".yaml")).map(f => f.replace(".yaml", "")).sort();
+    const metadata = JSON.parse(await readFile(join(REPO, ".specs", "harness", "recipe-workflow-metadata.json"), "utf8"));
+    expect(Object.keys(metadata.recipes).sort()).toEqual(onDisk);
+    for (const [name, record] of Object.entries(metadata.recipes) as [string, any][]) {
+      expect(record.source_path).toBe(`.goose/recipes/${name}.yaml`);
+      await expect(access(join(REPO, record.source_path))).resolves.toBeUndefined();
     }
   });
 
-  it("install.sh references all 12 slash command names", async () => {
+  it("every dev subrecipe path resolves", async () => {
+    const dev = await readFile(join(REPO, ".goose", "recipes", "dev.yaml"), "utf8");
+    const paths = [...dev.matchAll(/^    path: "([^"]+)"$/gm)].map(m => m[1]);
+    expect(paths.length).toBeGreaterThan(0);
+    for (const path of paths) await expect(access(join(REPO, ".goose", "recipes", path))).resolves.toBeUndefined();
+  });
+
+  it("installer derives managed commands from recipe files", async () => {
     const installSh = await readFile(join(REPO, "scripts", "install.sh"), "utf8");
-    const commands = ["dev", "discover", "spec", "plan", "implement",
-                      "review", "verify", "design", "sdd", "release", "remember", "explore"];
-    const missing = commands.filter(c => !installSh.includes(c));
-    expect(missing, "Commands not referenced in install.sh: " + missing.join(", ")).toHaveLength(0);
-  });
-
-  it("installed recipes dir contains all 12 recipes", async () => {
-    const installedDir = join("/home", "jmercier", ".config", "goose", "recipes");
-    try {
-      const files = await readdir(installedDir);
-      const recipes = files.filter(f => f.endsWith(".yaml")).map(f => f.replace(".yaml", ""));
-      const expected = ["dev", "discover", "spec", "plan", "implement",
-                        "review", "verify", "design", "sdd", "release", "remember", "explore"];
-      for (const cmd of expected) {
-        expect(recipes, `Recipe not installed: ${cmd}.yaml`).toContain(cmd);
-      }
-    } catch {
-      // Installed dir may not exist in CI — skip gracefully
-      expect(true).toBe(true);
-    }
+    expect(installSh).toContain('recipe_dir.glob("*.yaml")');
+    expect(installSh).not.toContain('("discover", "discover.yaml")');
   });
 });
 

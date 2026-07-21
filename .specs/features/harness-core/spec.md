@@ -48,7 +48,7 @@ AND it delegates to the correct agent(s) per the following wiring table:
 |-----------------|-------------------------------------------------------------------------------------------------------|----------------------------------------------------------------|
 | dev             | agentic-devlopment, beads                                                                             | orchestrator (in-session, then delegates by task type)         |
 | spec            | sdd, beads                                                                                            | architect, tdd-guide                                           |
-| plan            | beads, sdd                                                                                            | planner, architect                                             |
+| plan            | beads, sdd                                                                                            | planner                                                        |
 | implement       | beads, sdd, agentic-devlopment                                                                        | implementation-worker, tdd-guide                               |
 | review          | code-review                                                                                           | review-critic                                                  |
 | verify          | agentic-devlopment, webapp-testing                                                                    | qa-automation (in-session); ui-designer (summon, ui/web path)  |
