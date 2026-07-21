@@ -9,7 +9,7 @@ description: >
   correct output. Use when asked to review, audit, or critique any code change.
   Do NOT use for planning, architecture decisions, or sessions where no reviewable diff, code, or YAML artifact exists.
 metadata:
-  version: 4.0.0
+  version: 4.1.0
 ---
 
 # Code Review Skill
@@ -64,6 +64,20 @@ Always check, always report if violated:
 A clean review returning zero findings with a clear diff is correct output, not a failure.
 Do not manufacture findings to justify the invocation.
 
+### Scope boundary and discovered work
+
+Review the requested artifact and its necessary context only. When the review reveals work outside
+the active bead's acceptance criteria:
+
+1. Do **not** implement, fix, or expand into that work inline.
+2. Confirm it survives the confidence and false-positive gates.
+3. Create a follow-up bead immediately with `--deps discovered-from:<active-bead-id>`.
+4. Record the new bead ID in the final handoff.
+
+If no active bead ID is available, state that the discovery cannot yet be linked and ask for or
+create the scoped review bead before continuing. A suggested `bd create` command is not a filed
+follow-up.
+
 ### Output format (use in every type)
 
 ```markdown
@@ -79,7 +93,13 @@ Do not manufacture findings to justify the invocation.
 [list or "None identified"]
 
 ## Beads follow-ups
-[bd create commands or "None"]
+[filed bead IDs with one-line scope, or "None"]
+
+## Handoff
+- Active bead: [ID and final disposition]
+- Validation: [exact commands and pass/fail results]
+- Repository state: [relevant changed files plus any pre-existing unrelated changes]
+- Follow-ups: [filed bead IDs, or "None"]
 ```
 
 ---
@@ -161,7 +181,11 @@ For Beads workflow commands (prime, ready, claim, close, remember), load skill: 
 Skill-specific commands:
     bd create "Review: <title>" --assignee review-critic       → file the review as a bead
     bd close <id> --reason "APPROVE|PASS-WITH-NITS|BLOCK: <summary>"
-    bd create "Follow-up: <issue>" --deps discovered-from:<id> → file regressions
+    bd create "Follow-up: <issue>" --deps discovered-from:<id> → file discovered work; capture the returned ID
+
+Before ending the session, load `beads/references/session-close.md` and complete its checklist.
+The handoff is incomplete unless it reports the active bead's disposition, exact validation results,
+relevant git status, and every filed follow-up bead ID.
 ## Maker/Checker
 
 Code review IS the checker role. The implementation-worker is the maker.
