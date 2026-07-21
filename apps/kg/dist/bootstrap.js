@@ -150,7 +150,7 @@ export async function collectBootstrapRecords(opts = {}) {
         const skills = await extractAgentSkills(agentFile);
         for (const skill of skills) {
             if (skillNames.includes(skill)) {
-                recs.push(rel("agent:" + agentName, "skill:" + skill, "USES_SKILL", { confidence: 1.0, rule: "bootstrap:agent-skill-extract" }));
+                recs.push(rel("agent:" + agentName, "skill:" + skill, "LOADS_SKILL", { confidence: 1.0, rule: "bootstrap:agent-skill-extract" }));
             }
         }
     }
@@ -165,7 +165,7 @@ export async function collectBootstrapRecords(opts = {}) {
         }
         for (const skill of skills) {
             if (skillNames.includes(skill)) {
-                recs.push(rel("recipe:" + recipeName, "skill:" + skill, "USES_SKILL", { confidence: 1.0, rule: "bootstrap:recipe-skill-extract" }));
+                recs.push(rel("recipe:" + recipeName, "skill:" + skill, "LOADS_SKILL", { confidence: 1.0, rule: "bootstrap:recipe-skill-extract" }));
             }
         }
     }
