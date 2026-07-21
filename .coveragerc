@@ -1,0 +1,15 @@
+[run]
+branch = True
+
+[report]
+fail_under = 65
+include =
+    */scripts/analyze-skill-eval-results.py
+show_missing = True
+skip_covered = True
+
+[html]
+directory = test-results/coverage-html
+
+[xml]
+output = test-results/coverage.xml

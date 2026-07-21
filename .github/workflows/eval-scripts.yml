@@ -1,0 +1,97 @@
+---
+name: Harness eval script tests
+
+"on":
+  pull_request:
+    paths: ["scripts/**", "evals/**", "requirements-ci.txt", ".coveragerc", ".github/workflows/eval-scripts.yml"]
+  push:
+    branches: [main]
+    paths: ["scripts/**", "evals/**", "requirements-ci.txt", ".coveragerc", ".github/workflows/eval-scripts.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.14"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+          allow-prereleases: true
+      - name: Install test dependencies
+        run: python -m pip install --requirement requirements-ci.txt
+      - name: Create report directories
+        run: mkdir -p test-results/unit test-results/integration
+      - name: Run unit tests with branch coverage
+        id: unit
+        continue-on-error: true
+        run: >-
+          python -m coverage run -m xmlrunner discover -s scripts/tests/unit
+          -p 'test_*.py' -o test-results/unit
+      - name: Run eval corpus integration tests
+        id: integration
+        continue-on-error: true
+        run: >-
+          python -m xmlrunner discover -s scripts/tests/integration
+          -p 'test_*.py' -o test-results/integration
+      - name: Generate coverage reports
+        id: coverage-reports
+        if: always()
+        continue-on-error: true
+        run: |
+          python -m coverage xml
+          python -m coverage html
+      - name: Enforce configured 65% branch coverage gate
+        id: coverage-gate
+        if: always()
+        continue-on-error: true
+        run: python -m coverage report
+      - name: Upload JUnit test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-script-test-reports-py${{ matrix.python-version }}
+          path: |
+            test-results/unit/**/*.xml
+            test-results/integration/**/*.xml
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Upload coverage report
+        if: ${{ always() && matrix.python-version == '3.14' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-script-coverage
+          path: |
+            test-results/coverage.xml
+            test-results/coverage-html/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Enforce test and report results
+        if: always()
+        env:
+          UNIT_OUTCOME: ${{ steps.unit.outcome }}
+          INTEGRATION_OUTCOME: ${{ steps.integration.outcome }}
+          COVERAGE_REPORTS_OUTCOME: ${{ steps.coverage-reports.outcome }}
+          COVERAGE_GATE_OUTCOME: ${{ steps.coverage-gate.outcome }}
+        run: |
+          failures=()
+          [[ "$UNIT_OUTCOME" == "success" ]] || failures+=("unit tests: $UNIT_OUTCOME")
+          [[ "$INTEGRATION_OUTCOME" == "success" ]] || failures+=("integration tests: $INTEGRATION_OUTCOME")
+          [[ "$COVERAGE_REPORTS_OUTCOME" == "success" ]] || failures+=("coverage reports: $COVERAGE_REPORTS_OUTCOME")
+          [[ "$COVERAGE_GATE_OUTCOME" == "success" ]] || failures+=("coverage gate: $COVERAGE_GATE_OUTCOME")
+          if (( ${#failures[@]} )); then
+            printf 'CI failure: %s\n' "${failures[@]}" >&2
+            exit 1
+          fi

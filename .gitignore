@@ -24,3 +24,7 @@ apps/node_modules/
 
 # Ephemeral audit outputs
 .audit/
+
+# Python CI test outputs
+.coverage
+test-results/
