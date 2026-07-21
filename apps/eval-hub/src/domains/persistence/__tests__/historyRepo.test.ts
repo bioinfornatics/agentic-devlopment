@@ -68,7 +68,7 @@ describe("SqliteHistoryRepository", () => {
   });
 
   afterEach(async () => {
-    repo.close();
+    repo?.close();
     await fs.rm(tmpDir, { recursive: true, force: true });
   });
 

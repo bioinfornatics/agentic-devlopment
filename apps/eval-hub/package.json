@@ -14,6 +14,7 @@
     "start:tui": "node dist/index.js --tui",
     "start:server": "node dist/index.js --server --port 7331",
     "test": "vitest run",
+    "test:native": "node scripts/check-native-deps.mjs",
     "test:unit": "vitest run --reporter=verbose",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

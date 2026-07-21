@@ -1,0 +1,59 @@
+---
+name: Eval Hub
+
+"on":
+  pull_request:
+    paths:
+      - "apps/**"
+      - ".github/workflows/eval-hub.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/**"
+      - ".github/workflows/eval-hub.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read Node version
+        id: node-version
+        shell: bash
+        run: echo "version=$(cat .node-version)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.node-version.outputs.version }}
+          cache: pnpm
+          cache-dependency-path: apps/pnpm-lock.yaml
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check native binding
+        run: pnpm --filter @harness/eval-hub test:native
+
+      - name: Typecheck
+        run: pnpm --filter @harness/eval-hub typecheck
+
+      - name: Build
+        run: pnpm --filter @harness/eval-hub build
+
+      - name: Test
+        run: pnpm --filter @harness/eval-hub test
