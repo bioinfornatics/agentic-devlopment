@@ -9,9 +9,7 @@ export class GooseProcessRunner implements IGooseRunner {
 
   async *run(config: GooseRunConfig): AsyncGenerator<GooseRawEvent> {
     const proc = spawn(config.gooseCli, [...config.args], {
-      cwd:   config.cwd,
-      env:   { ...process.env, ...(config.env ?? {}) },
-      stdio: ["ignore", "pipe", "pipe"],
+      cwd: config.cwd, env: { ...process.env, ...(config.env ?? {}) }, stdio: ["ignore", "pipe", "pipe"],
     });
 
     const queue: GooseRawEvent[]  = [];
@@ -77,12 +75,22 @@ export class GooseProcessRunner implements IGooseRunner {
   }
 
   async version(cli: string): Promise<string> {
-    return new Promise((res, rej) => {
-      const proc = spawn(cli, ["--version"], { stdio: ["ignore", "pipe", "pipe"] });
+    return (await this.identity(cli)).version;
+  }
+
+  async identity(cli: string): Promise<import("./ports.js").GooseRuntimeIdentity> {
+    return new Promise((resolve, reject) => {
+      const proc = spawn(cli, ["info", "--verbose"], { stdio: ["ignore", "pipe", "pipe"] });
       let out = "";
-      proc.stdout.on("data", (c: Buffer) => { out += c.toString(); });
-      proc.on("close", () => res(out.trim()));
-      proc.on("error", rej);
+      let err = "";
+      proc.stdout.on("data", (chunk: Buffer) => { out += chunk.toString(); });
+      proc.stderr.on("data", (chunk: Buffer) => { err += chunk.toString(); });
+      proc.on("close", code => {
+        if (code !== 0) { reject(new Error(`goose info failed: ${err.trim()}`)); return; }
+        const value = (name: string) => out.match(new RegExp(`^\\s*${name}:\\s*(.+)$`, "m"))?.[1]?.trim() ?? null;
+        resolve({ version: value("Version") ?? "unknown", provider: value("GOOSE_PROVIDER") ?? value("active_provider"), model: value("GOOSE_MODEL") });
+      });
+      proc.on("error", reject);
     });
   }
 }

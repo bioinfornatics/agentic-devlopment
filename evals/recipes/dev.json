@@ -17,7 +17,9 @@
     ],
     "baseline_gaps": [
       "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "task"
   },
   {
     "skills": [
@@ -37,7 +39,9 @@
     ],
     "baseline_gaps": [
       "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "task"
   },
   {
     "skills": [
@@ -57,6 +61,8 @@
     ],
     "baseline_gaps": [
       "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "task"
   }
 ]

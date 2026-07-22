@@ -21,6 +21,14 @@ describe("EVAL-INT-02/03 layered provenance and pairing", () => {
     expect(pairedSubjectDelta(rows, "with_agent", "skills_only")).toBe(.75);
   });
 
+  it("pairs repetitions independently instead of overwriting by eval ID", () => {
+    const rows = [
+      { ...row(0, "agent_l2", 1), run: 1 }, { ...row(0, "agent_l1", 0), run: 1 },
+      { ...row(0, "agent_l2", 0.25), run: 2 }, { ...row(0, "agent_l1", 0.75), run: 2 },
+    ];
+    expect(pairedSubjectDelta(rows, "agent_l2", "agent_l1")).toBe(.25);
+  });
+
   it("returns null when no numeric pair exists", () => {
     expect(pairedSubjectDelta([row(0, "with_agent", 1)], "with_agent", "skills_only")).toBeNull();
   });

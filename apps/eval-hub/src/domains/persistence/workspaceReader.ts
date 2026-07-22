@@ -10,6 +10,11 @@ import type {
   IWorkspaceReader, RunManifest, GradingRecord, BenchmarkFile, LayeredState,
 } from "./ports.js";
 import type { EvalKind, ContentHash, SubjectName } from "../../shared/types.js";
+import {
+  EvalIntegrityV2Store,
+  INTEGRITY_SCHEMA_V2,
+  type IntegrityCompatibility,
+} from "./integrityV2Store.js";
 
 export class FsWorkspaceReader implements IWorkspaceReader {
 
@@ -51,9 +56,13 @@ export class FsWorkspaceReader implements IWorkspaceReader {
         const evalDir = path.join(hashDir, ed.name);
         const configs = await fs.readdir(evalDir, { withFileTypes: true });
         for (const cd of configs.filter(e => e.isDirectory())) {
-          const runDir = path.join(evalDir, cd.name, "run-1");
-          try {
-            const raw = await fs.readFile(path.join(runDir, "grading.json"), "utf8");
+          const configDir = path.join(evalDir, cd.name);
+          const runDirs = (await fs.readdir(configDir, { withFileTypes: true }))
+            .filter(entry => entry.isDirectory() && /^run-\d+$/.test(entry.name))
+            .sort((a, b) => Number(a.name.slice(4)) - Number(b.name.slice(4)));
+          for (const rd of runDirs) try {
+            const run = Number(rd.name.slice(4));
+            const raw = await fs.readFile(path.join(configDir, rd.name, "grading.json"), "utf8");
             const g   = JSON.parse(raw) as {
               passed?: boolean;
               score?: number;
@@ -67,7 +76,7 @@ export class FsWorkspaceReader implements IWorkspaceReader {
             records.push({
               evalId,
               config: cd.name,
-              run: 1,
+              run,
               passed: passRate >= 1,
               score: passRate,
               ...(g.feedback !== undefined ? { feedback: g.feedback } : {}),
@@ -99,5 +108,62 @@ export class FsWorkspaceReader implements IWorkspaceReader {
     try {
       return JSON.parse(await fs.readFile(p, "utf8")) as LayeredState;
     } catch { return null; }
+  }
+
+  /**
+   * Classify a hash-directory for integrity eligibility without mutating any files.
+   * [EVAL-INT-05/06/12/13/20] Delegates to EvalIntegrityV2Store.inspectCompatibility().
+   *
+   * Decision tree:
+   *  - manifest.json absent → legacy-v1  (inspectCompatibility returns, never throws)
+   *  - manifest.json present but loadManifest() fails (hash mismatch, corrupt JSON,
+   *    or missing sha256 sidecar) → incompleteReason: "manifest_invalid"
+   *  - manifest.json loads cleanly but inspectCompatibility() subsequently throws
+   *    (e.g. report-state.json is corrupt or structurally invalid) →
+   *    incompleteReason: "report_state_inconsistent"
+   *  - inspectCompatibility() returns without throwing → pass its value through unchanged
+   *
+   * Two-phase approach: probe loadManifest() first (read-only), then run the full
+   * inspection. The pre-probe result tells the catch handler which failure occurred,
+   * keeping manifest_invalid strictly scoped to unreadable manifests.
+   */
+  async classifyHashDir(hashDir: string): Promise<IntegrityCompatibility> {
+    const store = new EvalIntegrityV2Store(hashDir);
+
+    // Phase 1: probe manifest readability (read-only, no side effects).
+    // loadManifest() also throws when manifest.json is absent, but in that case
+    // inspectCompatibility() returns legacy-v1 without throwing, so the outer
+    // catch in Phase 2 is never triggered for the absent-manifest path.
+    let manifestLoaded = false;
+    try {
+      await store.loadManifest();
+      manifestLoaded = true;
+    } catch { /* absent or unreadable — classified below */ }
+
+    // Phase 2: run the full compatibility check and route any throw by its origin.
+    try {
+      return await store.inspectCompatibility();
+    } catch {
+      if (manifestLoaded) {
+        // loadManifest() succeeded; the throw originated from a later stage
+        // (e.g. assertValidReportState failed on a corrupt/invalid report-state.json).
+        return {
+          schema: INTEGRITY_SCHEMA_V2,
+          historicalOnly: false,
+          integrityEligible: false,
+          subjectFailureReason: null,
+          incompleteReason: "report_state_inconsistent",
+        };
+      }
+      // manifest.json is present but loadManifest() failed
+      // (hash mismatch, corrupt JSON, or incomplete sha256 sidecar).
+      return {
+        schema: INTEGRITY_SCHEMA_V2,
+        historicalOnly: false,
+        integrityEligible: false,
+        subjectFailureReason: null,
+        incompleteReason: "manifest_invalid",
+      };
+    }
   }
 }

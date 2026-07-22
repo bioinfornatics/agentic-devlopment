@@ -3,13 +3,18 @@
 export type EvalKind = "skills" | "agents" | "recipes";
 export const EVAL_KINDS: readonly EvalKind[] = ["skills", "agents", "recipes"];
 
+export type TreatmentId =
+  | "skill_l1" | "skill_l0"
+  | "agent_l2" | "agent_l1"
+  | "recipe_l3" | "recipe_l2";
+
 export const LAYER_META: Record<EvalKind, {
   level: string; comparison: string; baseline: string;
-  configs: readonly string[];
+  configs: readonly [TreatmentId, TreatmentId];
 }> = {
-  skills:  { level: "L1", comparison: "with_skill vs without_skill",               baseline: "L0 — plain Goose",        configs: ["with_skill", "without_skill"] },
-  agents:  { level: "L2", comparison: "with_agent+skills vs skills_only",          baseline: "L1 — skills",             configs: ["with_agent", "skills_only"] },
-  recipes: { level: "L3", comparison: "with_recipe+agents+skills vs agents+skills", baseline: "L2 — agents + skills",    configs: ["with_recipe", "agents_only"] },
+  skills:  { level: "L1", comparison: "skill_l1 vs skill_l0", baseline: "L0 — plain Goose", configs: ["skill_l1", "skill_l0"] },
+  agents:  { level: "L2", comparison: "agent_l2 vs agent_l1", baseline: "L1 — skills", configs: ["agent_l2", "agent_l1"] },
+  recipes: { level: "L3", comparison: "recipe_l3 vs recipe_l2", baseline: "L2 — agents + skills", configs: ["recipe_l3", "recipe_l2"] },
 };
 
 export type IsoTimestamp = string;   // "2026-07-18T00:00:00Z"
@@ -41,6 +46,10 @@ export interface EvalScenario {
   readonly fixture_patch?:                 string;
   readonly fixture_description?:           string;
   readonly fixture_intent?:                string;
+  /** Explicit recipe namespace. Omitted means a top-level recipe eval subject. */
+  readonly recipe_source_type?:             "top_level" | "subrecipe";
+  /** Declared recipe parameter that receives the exact invariant query bytes. */
+  readonly recipe_task_parameter?:           string;
   /** Typed parameters passed to a recipe candidate. */
   readonly recipe_params?:                  Readonly<Record<string, string>>;
   /** Per-scenario turn cap (overrides global --max-turns when set). */

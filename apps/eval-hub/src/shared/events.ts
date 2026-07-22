@@ -2,7 +2,7 @@
  * Domain events — the shared language across bounded contexts.
  * Published by the execution domain, consumed by TUI, HTTP, persistence.
  */
-import type { EvalKind, SubjectName, ContentHash, ExecStatus } from "./types.js";
+import type { EvalKind, SubjectName, ContentHash, ExecStatus, TreatmentId } from "./types.js";
 
 // ── Execution events ────────────────────────────────────────────────────────
 
@@ -12,7 +12,9 @@ export interface SubjectStarted {
   readonly subject: SubjectName;
   readonly hash:    ContentHash;
   readonly evalId:  number;
-  readonly config:  string;
+  readonly config:  TreatmentId;
+  readonly treatmentId: TreatmentId;
+  readonly repetition: number;
   readonly run:     number;
 }
 
@@ -41,9 +43,13 @@ export interface SubjectCompleted {
   readonly subject:   SubjectName;
   readonly hash:      ContentHash;
   readonly evalId:    number;
-  readonly config:    string;
+  readonly config:    TreatmentId;
+  readonly treatmentId: TreatmentId;
+  readonly repetition: number;
   readonly run:       number;
-  readonly rc:        number;
+  readonly status:    ExecStatus;
+  readonly rc:        number | null;
+  readonly signal:    string | null;
   readonly turns:     number;
   readonly durationMs: number;
 }
@@ -54,7 +60,7 @@ export interface SubjectGraded {
   readonly evalId:  number;
   readonly config:  string;
   readonly passed:  boolean;
-  readonly score:   number;
+  readonly score:   number | null;
 }
 
 // ── Suite events ────────────────────────────────────────────────────────────
@@ -91,7 +97,8 @@ export interface LayerCompleted {
   readonly type:      "layer.completed";
   readonly level:     string;
   readonly kind:      EvalKind;
-  readonly avgDelta:  number;
+  /** null when no valid pairs were found (no measurement possible). */
+  readonly avgDelta:  number | null;
   readonly n:         number;
   readonly durationMs: number;
 }
@@ -107,7 +114,8 @@ export interface EarlyStop {
   readonly type:      "early_stop";
   readonly level:     string;
   readonly kind:      EvalKind;
-  readonly avgDelta:  number;
+  /** null when no valid pairs (early-stop is never triggered with null avgDelta). */
+  readonly avgDelta:  number | null;
   readonly threshold: number;
   readonly skipping:  readonly string[];
 }

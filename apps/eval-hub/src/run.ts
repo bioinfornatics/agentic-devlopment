@@ -15,6 +15,7 @@
  *   --subjects <s1,s2>         Comma/space-separated subject filter
  *   --workers <n>              Parallel subjects (default: 3)
  *   --max-turns <n>            Max turns per goose run (default: 8)
+ *   --repetitions <n>          Paired repetitions, integer >= 1 (default: 1)
  *   --timeout <s>              Per-run timeout in seconds (default: 900)
  *   --ambient-goose            Hide user skill dirs for clean isolation
  *   --continue-on-failure      Don't abort on first failure
@@ -22,11 +23,19 @@
  *   --early-stop-threshold <d> Avg Δ threshold (default: 0)
  *   --resume <runId>           Resume a previous layered run
  */
+import path from "node:path";
 import type { EvalKind } from "./shared/types.js";
 import type { LayeredConfig } from "./domains/execution/ports.js";
 import type { DomainEvent } from "./shared/events.js";
 import { LayeredRunner } from "./domains/execution/layeredRunner.js";
 import { EventBus }      from "./shared/eventBus.js";
+import { LAYERED_ROOT }  from "./shared/paths.js";
+import {
+  buildIntegrityArtifactsFromStore,
+  persistIntegrityArtifacts,
+  integrityJsonPath,
+  integrityHtmlPath,
+} from "./domains/reporting/integrityArtifacts.js";
 
 // ── ANSI color helpers (no deps) ──────────────────────────────────────────────
 
@@ -68,9 +77,9 @@ function fmtMs(ms: number): string {
  *   <name 22>  [<config 13>]  t<turn 4>  <dur 6>
  *
  * Examples (ANSI stripped):
- *   atomic-design-fundamen  [with_skill   ]  t 98   732s
- *   sdd                     [without_skill]   t 7    45s
- *   agentic-devlopment      [with_agent   ]  t 14   1m32s
+ *   atomic-design-fundamen  [skill_l1    ]  t 98   732s
+ *   sdd                     [skill_l0    ]   t 7    45s
+ *   agentic-devlopment      [agent_l2    ]  t 14   1m32s
  */
 function fmtActiveSlot(subj: string, config: string, turn: number, elapsedSec: number): string {
   // Name: 22 chars (truncate with ellipsis if longer)
@@ -129,12 +138,14 @@ export async function startRun(args: string[]): Promise<void> {
   const gooseCli   = opt(args, "--goose-cli", "goose");
   const workers    = optInt(args, "--workers", 3);
   const maxTurns   = optInt(args, "--max-turns", 8);
+  const repetitions = Number(opt(args, "--repetitions", "1"));
   const timeoutMs  = optInt(args, "--timeout", 900) * 1000;
   const ambient    = flag(args, "--ambient-goose");
   const noEarlyStop         = flag(args, "--no-early-stop");
   const continueOnFail      = flag(args, "--continue-on-failure");
   const earlyStopThreshold  = parseFloat(opt(args, "--early-stop-threshold", "0"));
   const resumeId    = flag(args, "--resume") ? opt(args, "--resume", "") : undefined;
+  const jsonOutArg  = opt(args, "--json", "");
   const layersRaw   = opt(args, "--layers", "skills,agents,recipes");
   const layers      = layersRaw.split(",").map(s => s.trim()).filter(Boolean) as EvalKind[];
   const subjectsRaw = opt(args, "--subjects", "");
@@ -142,7 +153,13 @@ export async function startRun(args: string[]): Promise<void> {
     ? subjectsRaw.split(/[, ]+/).map(s => s.trim()).filter(Boolean)
     : undefined;
 
-  const threshold = Number.isFinite(earlyStopThreshold) ? earlyStopThreshold : 0;
+  // Always resolve a stable runId so we can compute the integrity store path
+  // after layer.completed without touching the runner internals.
+  // Algorithm mirrors LayeredRunner's default: ISO timestamp, 15 chars + "Z".
+  const runId = resumeId ?? new Date().toISOString().replace(/[:\-.]/g, "").slice(0, 15) + "Z";
+
+  const threshold  = Number.isFinite(earlyStopThreshold) ? earlyStopThreshold : 0;
+  const baseWs     = path.join(LAYERED_ROOT, runId);
 
   // ── Header ──────────────────────────────────────────────────────────────────
   const sep = C.heading + "══════════════════════════════════════════════════════" + C.reset;
@@ -153,9 +170,11 @@ export async function startRun(args: string[]): Promise<void> {
   console.log(`  ${C.dim}Layers     :${C.reset} ${layers.join(", ")}`);
   console.log(`  ${C.dim}Workers    :${C.reset} ${workers}`);
   console.log(`  ${C.dim}Max turns  :${C.reset} ${maxTurns}`);
+  console.log(`  ${C.dim}Repetitions:${C.reset} ${repetitions}`);
   console.log(`  ${C.dim}Timeout    :${C.reset} ${timeoutMs / 1000}s`);
   console.log(`  ${C.dim}Ambient    :${C.reset} ${ambient}`);
   if (resumeId)      console.log(`  ${C.dim}Resuming   :${C.reset} ${resumeId}`);
+  if (jsonOutArg)    console.log(`  ${C.dim}JSON out   :${C.reset} ${jsonOutArg}`);
   if (subjectFilter) console.log(`  ${C.dim}Subjects   :${C.reset} ${subjectFilter.join(", ")}`);
   console.log();
 
@@ -176,7 +195,7 @@ export async function startRun(args: string[]): Promise<void> {
         { const a = active.get(ev.subject); if (a) a.turn = ev.turn; }
         break;
       case "subject.graded":
-        scores.set(`${ev.subject}:${ev.config}`, ev.score);
+        if (ev.score !== null) scores.set(`${ev.subject}:${ev.config}`, ev.score);
         break;
       case "subject.completed":
         active.delete(ev.subject);
@@ -207,16 +226,17 @@ export async function startRun(args: string[]): Promise<void> {
 
   // ── Layer/suite state ────────────────────────────────────────────────────────
   const cfg: LayeredConfig = {
-    layers, workers, gooseCli, maxTurns, timeoutMs, ambient,
+    layers, workers, gooseCli, maxTurns, repetitions, timeoutMs, ambient,
     continueOnFail, earlyStopThreshold: threshold, noEarlyStop,
-    ...(resumeId      ? { layeredRunId: resumeId }  : {}),
-    ...(subjectFilter ? { subjectFilter }            : {}),
+    // Always pass the resolved runId so the runner uses our stable ID.
+    layeredRunId: runId,
+    ...(subjectFilter ? { subjectFilter } : {}),
   };
 
   const runner  = new LayeredRunner();
   const overall = Date.now();
   const summary: Array<{
-    level: string; kind: string; avgDelta: number; n: number;
+    level: string; kind: string; avgDelta: number | null; n: number;
     elapsedMs: number; skipped: boolean; reason?: string;
   }> = [];
 
@@ -241,20 +261,74 @@ export async function startRun(args: string[]): Promise<void> {
       if (ev.type === "layer.skipped") {
         const reason = ev.reason === "already_done" ? "already done (resume)" : ev.reason;
         console.log(`  ${C.dim}⏭  ${ev.level ?? ""} ${ev.kind} — ${reason}${C.reset}`);
-        summary.push({ level: ev.level ?? "", kind: ev.kind, avgDelta: 0, n: 0, elapsedMs: 0, skipped: true, reason });
+        summary.push({ level: ev.level ?? "", kind: ev.kind, avgDelta: null, n: 0, elapsedMs: 0, skipped: true, reason });
         continue;
       }
 
       if (ev.type === "layer.completed") {
-        const sign   = ev.avgDelta >= 0 ? "+" : "";
-        const dcolor = ev.avgDelta > threshold ? C.green : ev.avgDelta < 0 ? C.red : C.yellow;
-        const note   = ev.avgDelta <= threshold ? C.yellow + " [no improvement]" + C.reset : "";
-        console.log(
-          `\n  ${C.bold}Layer result:${C.reset}`
-          + ` avg Δ = ${dcolor}${sign}${ev.avgDelta.toFixed(4)}${C.reset}`
-          + `  ${C.dim}(${ev.n} subjects · ${fmtMs(ev.durationMs)})${C.reset}${note}`,
-        );
-        summary.push({ level: ev.level, kind: ev.kind, avgDelta: ev.avgDelta, n: ev.n, elapsedMs: ev.durationMs, skipped: false });
+        // ── Load integrity bundle from persisted store ─────────────────────
+        //
+        // integrityRoot mirrors the path SuiteRunner writes:
+        //   LAYERED_ROOT / <runId> / <kind> / _integrity-v2 / <kind>
+        // buildIntegrityArtifactsFromStore is offline (filesystem only, no provider).
+        // All display and summary values are sourced from bundle.report (the
+        // persisted NormalizedIntegrityReportStateV2), never from ev.avgDelta/n.
+        // ev.avgDelta/n serve only as the timing/kind trigger for this block.
+        const integrityRoot = path.join(baseWs, ev.kind, "_integrity-v2", ev.kind);
+        const scopeLabel    = `${ev.level} ${ev.kind}`;
+        const bundle = await buildIntegrityArtifactsFromStore(integrityRoot, {
+          generatedAt: new Date().toISOString(),
+          scope:       scopeLabel,
+        });
+
+        // Projected values come exclusively from the persisted report.
+        const reportedDelta = bundle.report?.subjectMacro.meanDeltaPp ?? null;
+        const reportedN     = bundle.report?.includedSubjectCount     ?? 0;
+
+        // ── "Layer result" line — use persisted projection ──────────────────
+        if (reportedDelta === null) {
+          console.log(
+            `\n  ${C.bold}Layer result:${C.reset}`
+            + ` avg Δ = ${C.dim}— no measurable${C.reset}`
+            + `  ${C.dim}(${reportedN} subjects · ${fmtMs(ev.durationMs)})${C.reset}`,
+          );
+        } else {
+          const sign   = reportedDelta >= 0 ? "+" : "";
+          const dcolor = reportedDelta > threshold ? C.green : reportedDelta < 0 ? C.red : C.yellow;
+          const note   = reportedDelta <= threshold ? C.yellow + " [no improvement]" + C.reset : "";
+          console.log(
+            `\n  ${C.bold}Layer result:${C.reset}`
+            + ` avg Δ = ${dcolor}${sign}${reportedDelta.toFixed(4)}${C.reset}`
+            + `  ${C.dim}(${reportedN} subjects · ${fmtMs(ev.durationMs)})${C.reset}${note}`,
+          );
+        }
+
+        // ── Print CLI text (always present, carries explicit compat message if null) ─
+        console.log();
+        console.log(bundle.cli);
+
+        // ── Persist JSON + HTML beside state.json when report is available ──
+        if (bundle.report !== null) {
+          await persistIntegrityArtifacts(
+            baseWs, ev.kind, bundle,
+            jsonOutArg ? { jsonTarget: jsonOutArg } : undefined,
+          );
+          console.log(`  ${C.dim}Integrity JSON : ${integrityJsonPath(baseWs, ev.kind)}${C.reset}`);
+          console.log(`  ${C.dim}Integrity HTML : ${integrityHtmlPath(baseWs, ev.kind)}${C.reset}`);
+          if (jsonOutArg) {
+            console.log(`  ${C.dim}Integrity JSON : ${jsonOutArg}${C.reset}`);
+          }
+        }
+
+        // ── Summary row — use persisted values, never ev.avgDelta/n ─────────
+        summary.push({
+          level:     ev.level,
+          kind:      ev.kind,
+          avgDelta:  reportedDelta,
+          n:         reportedN,
+          elapsedMs: ev.durationMs,
+          skipped:   false,
+        });
         continue;
       }
 
@@ -281,9 +355,10 @@ export async function startRun(args: string[]): Promise<void> {
 
       // ── Early stop ────────────────────────────────────────────────────────
       if (ev.type === "early_stop") {
+        const deltaStr = ev.avgDelta !== null ? fmtDelta(ev.avgDelta) : C.dim + "—" + C.reset;
         console.log(
           `\n  ${C.warn}⚠  EARLY STOP${C.reset}`
-          + `  ${ev.level} avg Δ = ${fmtDelta(ev.avgDelta)} ≤ threshold ${threshold}`,
+          + `  ${ev.level} avg Δ = ${deltaStr} ≤ threshold ${threshold}`,
         );
         const skipping = ev.skipping as readonly string[];
         console.log(`     ${C.dim}Skipping: ${skipping.join(", ")}${C.reset}`);
@@ -320,10 +395,10 @@ export async function startRun(args: string[]): Promise<void> {
         + (r.reason ? `  (${r.reason})` : "") + C.reset,
       );
     } else {
-      const ok   = r.avgDelta > threshold;
+      const ok   = r.avgDelta !== null && r.avgDelta > threshold;
       const mark = ok ? C.ok + "[✓]" + C.reset : C.fail + "[✗]" + C.reset;
       const lvl  = `${r.level} ${r.kind}`.padEnd(14);
-      const dlt  = fmtDelta(r.avgDelta).padEnd(18);  // colored string + padding
+      const dlt  = (r.avgDelta !== null ? fmtDelta(r.avgDelta) : C.dim + "—" + C.reset).padEnd(18);  // colored string + padding
       const subj = C.dim + String(r.n).padEnd(colW[3]!) + C.reset;
       const time = C.dim + fmtMs(r.elapsedMs) + C.reset;
       console.log(`  ${mark} ${C.bold}${lvl}${C.reset} ${dlt} ${subj} ${time}`);

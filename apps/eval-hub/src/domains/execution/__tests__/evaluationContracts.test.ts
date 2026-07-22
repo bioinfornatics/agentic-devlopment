@@ -6,19 +6,16 @@ import type { GooseRunConfig, IGooseRunner, GooseRawEvent } from "../ports.js";
 
 const scenario: EvalScenario = { query: "task", expected_behavior: ["works"], skills: ["sdd"], agents: ["architect"] };
 
-describe("AC-EVAL-04/05 layer-delta baselines", () => {
+describe("EVAL-INT-01/19 invariant user-task boundary", () => {
   const builder = new SkillPromptBuilder();
-  it("AC-EVAL-04 skills_only injects skills but not agent", () => {
-    const prompt = builder.build(scenario, "skills_only");
-    expect(prompt).toContain("load skill: sdd"); expect(prompt).not.toContain("load agent:");
-  });
-  it("AC-EVAL-05 agents_only injects agents and skills", () => {
-    const prompt = builder.build(scenario, "agents_only");
-    expect(prompt).toContain("load skill: sdd"); expect(prompt).toContain("load agent: architect");
-  });
-  it("EVAL-INT-01 with_recipe leaves layer loading to the recipe", () => {
-    expect(builder.build(scenario, "with_recipe")).toBe("task");
-  });
+  it.each(["skill_l1", "skill_l0", "agent_l2", "agent_l1", "recipe_l3", "recipe_l2"])(
+    "keeps treatment %s out of task payload bytes", config => {
+      const prompt = builder.build(scenario, config);
+      expect(prompt).toBe("task");
+      expect(prompt).not.toContain("load skill:");
+      expect(prompt).not.toContain("load agent:");
+    },
+  );
 });
 
 class CapturingGoose implements IGooseRunner {
@@ -29,6 +26,7 @@ class CapturingGoose implements IGooseRunner {
     yield { type: "exit", code: 0, signal: null };
   }
   async version() { return "test"; }
+  async identity() { return { version: "test", provider: "test-provider", model: "test-model" }; }
 }
 
 describe("AC-EVAL-03 complete event transcript grading", () => {

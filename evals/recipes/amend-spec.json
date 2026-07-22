@@ -29,7 +29,9 @@
       "drafts one evidence-backed Accept or Reject recommendation in WHEN/THEN/SHALL or bd create SPEC_REVERT form",
       "explicitly asks 'Accept (amend spec) or Reject (create SPEC_REVERT bead)?' before any file write or Beads mutation",
       "does not write files, create Beads issues, or store memory before an explicit decision"
-    ]
+    ],
+    "recipe_source_type": "subrecipe",
+    "recipe_task_parameter": "deviation"
   },
   {
     "agents": [],
@@ -62,6 +64,8 @@
       "produces an evidence-backed Accept or Reject recommendation without claiming that it was executed",
       "asks for explicit Accept or Reject before any file, Beads, or memory mutation",
       "does not fabricate a source annotation when no source_file parameter was supplied"
-    ]
+    ],
+    "recipe_source_type": "subrecipe",
+    "recipe_task_parameter": "deviation"
   }
 ]

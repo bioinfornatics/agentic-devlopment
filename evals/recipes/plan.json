@@ -17,9 +17,11 @@
       "Creates and validates a dependency graph, then reports the first claimable task in the implementation handoff"
     ],
     "baseline_gaps": [
-      "Layer 2 agents+skills baseline may mention planning steps, but the plan recipe requires the ordered chain bd prime \u2192 AC extraction from spec.md \u2192 Beads task graph creation \u2192 bd graph/bd ready validation \u2192 implementation handoff.",
+      "Layer 2 agents+skills baseline may mention planning steps, but the plan recipe requires the ordered chain bd prime → AC extraction from spec.md → Beads task graph creation → bd graph/bd ready validation → implementation handoff.",
       "Layer 2 agents+skills baseline does not require the recipe handoff fields: plan table, first claimable bead, and recommended /implement next step."
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "feature"
   },
   {
     "skills": [
@@ -42,7 +44,9 @@
     "baseline_gaps": [
       "Layer 2 agents+skills baseline may produce a task list, but the plan recipe requires dependencies to use needs: and partOf: semantics across architecture, implementation, review, and verification.",
       "Layer 2 agents+skills baseline does not enforce the recipe validation gate that rejects cycles or unreachable nodes before handoff."
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "feature"
   },
   {
     "skills": [
@@ -66,6 +70,8 @@
     "baseline_gaps": [
       "Layer 2 agents+skills baseline may decompose a large epic, but the plan recipe escalates graphs with more than ten nodes to an additional reachability and cycle review before handoff.",
       "Layer 2 agents+skills baseline does not require a human approval gate that blocks the first implementation task for Large/Complex scope."
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "feature"
   }
 ]

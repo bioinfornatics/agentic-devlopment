@@ -13,6 +13,24 @@ import type { IGrader, GradingResult, IGooseRunner } from "./ports.js";
 import type { EvalScenario } from "../../shared/types.js";
 import { GooseProcessRunner } from "./gooseRunner.js";
 
+
+export interface DescriptorV1 {
+  readonly id: string;
+  readonly version: string;
+}
+
+export function defaultGraderDescriptor(): DescriptorV1 {
+  return { id: "llm-grader", version: "v1" };
+}
+
+export function defaultRubricDescriptor(): DescriptorV1 {
+  return { id: "expected_behavior_index", version: "v1" };
+}
+
+export function expectedCriterionIdsFor(scenario: EvalScenario): readonly string[] {
+  return (scenario.expected_behavior ?? []).map((_, index) => `expected_behavior[${index}]`);
+}
+
 // ── Null grader (grading unavailable, no bias) ────────────────────────────────
 
 export class NullGrader implements IGrader {
@@ -65,7 +83,6 @@ export class LlmGrader implements IGrader {
     const expectations = scenario.expected_behavior ?? [];
     return `Grade this A/B skill evaluation run. Return JSON only — no markdown fences, no explanation.
 
-Configuration: ${config}
 User query: ${scenario.query ?? ""}
 
 Expected behaviors to grade (each independently):

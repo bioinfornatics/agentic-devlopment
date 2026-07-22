@@ -30,7 +30,9 @@
       "emits verdict BLOCK with one-sentence justification",
       "proposes an exact `bd create` command for the CRITICAL finding",
       "does not modify any file"
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "task"
   },
   {
     "agents": [
@@ -65,7 +67,9 @@
       "severity-ranks all findings as CRITICAL/HIGH/MEDIUM/LOW with exact file paths",
       "proposes exact `bd create` commands for all CRITICAL and HIGH findings",
       "does not modify any file"
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "task"
   },
   {
     "agents": [
@@ -104,6 +108,8 @@
       "emits a single unified verdict (APPROVE | PASS-WITH-NITS | BLOCK) with one-sentence justification covering both passes",
       "ends with a memory checkpoint: proposes one `bd remember` if a durable harness quality fact was discovered, or explicitly states none found",
       "does not modify any file"
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "task"
   }
 ]

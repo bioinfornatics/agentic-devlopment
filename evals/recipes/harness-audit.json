@@ -29,7 +29,9 @@
       "Scores applicable domains with file-path evidence for each score.",
       "Does not modify files, Beads, or memory.",
       "Emits final PASS, PARTIAL, or FAIL only after score table."
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "focus"
   },
   {
     "agents": [
@@ -63,7 +65,9 @@
       "Checks eval JSON agents and skills layer declarations.",
       "Does not modify files, Beads, or memory.",
       "Emits final PASS, PARTIAL, or FAIL only after score table."
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "focus"
   },
   {
     "agents": [
@@ -91,7 +95,7 @@
       "Agent reviews only artifact formatting and omits frameworks.",
       "Agent produces recommendations without score table evidence.",
       "Agent modifies files or Beads during the audit.",
-      "Agent spot-checks 2-3 agents for skill contracts instead of verifying all 13 \u2014 produces a PASS for Domain C despite 9 agents having no Required Skill Load section.",
+      "Agent spot-checks 2-3 agents for skill contracts instead of verifying all 13 — produces a PASS for Domain C despite 9 agents having no Required Skill Load section.",
       "Agent does not run check-consistency.py and misses mechanical AC-AGENT-02 violations."
     ],
     "expected_behavior": [
@@ -102,9 +106,11 @@
       "Does not modify files, Beads, or memory.",
       "Emits final PASS, PARTIAL, or FAIL only after score table.",
       "Checks orchestration flow logic: agents ask to load mandatory skills, recipes route to mandatory agents or delegated specialists, and validation/handoff are reachable.",
-      "Verifies ALL agents (not a sample) have a '## Required Skill Load' section with a stop-if-missing guard \u2014 partial roster checks are insufficient for Domain C.",
+      "Verifies ALL agents (not a sample) have a '## Required Skill Load' section with a stop-if-missing guard — partial roster checks are insufficient for Domain C.",
       "Runs or references python3 scripts/check-consistency.py as mechanical evidence for AC-AGENT-02 compliance across the full roster.",
       "Runs or cites node apps/kg/dist/cli.js pipeline, node apps/kg/dist/cli.js reason --rules, and .knowledge/derived.jsonl before scoring Domain G."
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "focus"
   }
 ]

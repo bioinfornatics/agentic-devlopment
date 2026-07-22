@@ -29,7 +29,9 @@
       "flags missing sub_recipes paths as CRITICAL",
       "emits a final APPROVE | PASS-WITH-NITS | BLOCK verdict",
       "does not modify any file, Beads issue, or memory"
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "constraints"
   },
   {
     "agents": [
@@ -61,7 +63,9 @@
       "quotes evidence with exact file paths",
       "proposes Beads issues for actionable fixes rather than TODO text",
       "keeps the workflow read-only and does not call bd remember"
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "constraints"
   },
   {
     "agents": [
@@ -97,6 +101,8 @@
       "includes proposed bd create commands for every CRITICAL/HIGH finding",
       "emits a single unified verdict with one-sentence justification",
       "ends with read-only confirmation and a memory checkpoint decision"
-    ]
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "constraints"
   }
 ]

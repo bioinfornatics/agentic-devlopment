@@ -14,15 +14,8 @@ export class SkillPromptBuilder implements IPromptBuilder {
   build(scenario: EvalScenario, config: string): string {
     const lines: string[] = [];
 
-    const skills = scenario.skills ?? [];
-    const agents = scenario.agents ?? [];
-    // Layer-delta baselines retain lower-layer context: L1 skills for agents,
-    // and L2 agents + skills for recipes.
-    const loadSkills = config === "with_skill" || config === "with_agent" || config === "skills_only" || config === "agents_only";
-    const loadAgents = config === "with_agent" || config === "agents_only";
-    if (loadSkills && skills.length) lines.push(`load skill: ${skills.join(", ")}`);
-    if (loadAgents && agents.length) lines.push(`load agent: ${agents.join(", ")}`);
-    if ((loadSkills && skills.length) || (loadAgents && agents.length)) lines.push("");
+    // EVAL-INT-01/19: treatment bootstrap is passed separately by the runner.
+    // This builder owns only the invariant user-task payload.
 
     const files = scenario.files ?? [];
     if (files.length) {

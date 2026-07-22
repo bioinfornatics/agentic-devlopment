@@ -98,7 +98,8 @@ export interface BenchmarkFile {
 export interface LayeredState {
   readonly layers: Partial<Record<EvalKind, {
     status:    "done";
-    avgDelta:  number;
+    /** null when no valid pairs were found for this layer. */
+    avgDelta:  number | null;
     n:         number;
     elapsedMs: number;
   }>>;
