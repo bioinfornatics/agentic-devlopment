@@ -11,6 +11,7 @@ Install project-local harness files into:
   ~/.config/goose/recipes
   ~/.agents/skills
   ~/.agents/agents
+  ~/.agents/plugins
 
 The installer also adds/upserts harness slash commands in:
   ~/.config/goose/config.yaml
@@ -321,4 +322,4 @@ if [[ -d "$SRC_PLUGINS" ]]; then
   done
 fi
 
-echo "Install complete. Try: goose session, then /dev <task>"
+echo "Install complete. Try: goose recipe run loop-engineering"

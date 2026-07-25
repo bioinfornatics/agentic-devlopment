@@ -34,6 +34,7 @@ DOCS=(
   README.md
   INSTALL.md
   USE_CASES.md
+  docs/reference/getting-started.md
   docs/reference/00-index.md
   docs/reference/use-cases/01-init-project.md
   docs/reference/use-cases/02-code-review.md
@@ -67,7 +68,7 @@ pandoc "${DOCS[@]}" \
   -o "$HTML_OUT"
 
 # WCAG: wrap body content in <main> landmark + fix lang attr
-python3 .agents/skills/wcag-accessibility-audit/scripts/wcag-postprocess.py "$HTML_OUT"
+python3 scripts/wcag-postprocess.py "$HTML_OUT"
 
 cp "$HTML_OUT" "$HTML_INDEX"
 

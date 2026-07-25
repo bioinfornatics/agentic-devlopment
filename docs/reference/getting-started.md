@@ -21,41 +21,41 @@ goose skills list | grep -c '|'  # Should show 17+
 ## First Session
 
 ```bash
-# Start development workflow
-goose run dev
+# Run the governed engineering loop (orchestrates research → build → verify)
+goose recipe run loop-engineering
 
-# Or use slash commands in any session
-/dev       # Main entry, routes to specialists
-/review    # Code review
-/doc-review # Read-only harness documentation review
-/implement # TDD implementation
+# Or target a specific phase directly
+goose recipe run research    # Read-only codebase research and planning
+goose recipe run implement   # TDD implementation of a claimed Beads task
+goose recipe run verify      # Independent verification against spec ACs
 ```
 
 ## Slash Commands
 
-| Command | Recipe | Purpose |
-|---------|--------|---------|
-| `/dev` | dev | Main entry point, routes to specialists |
-| `/spec` | spec | Write formal spec with ACs |
-| `/plan` | plan | Spec→Beads task graph |
-| `/implement` | implement | Bead→Code with TDD |
-| `/review` | review | Code→Approval/Block |
-| `/doc-review` | doc-review | Docs→Approval/Block (read-only) |
-| `/verify` | verify | Code→Test evidence |
-| `/explore` | explore | Read-only codebase research |
-| `/design` | design | UX research + UI design |
-| `/release` | release | Gated release workflow |
+Active recipes installed by this harness (use the recipe name as the slash command):
+
+| Slash command | Recipe file | Purpose |
+|---|---|---|
+| `/loop-engineering` | loop-engineering | Full governed loop: research → build → verify → control |
+| `/research` | research | Read-only research and task framing |
+| `/implement` | implement | TDD implementation of a Beads task |
+| `/verify` | verify | Independent spec-anchored verification |
 
 ## Workflow Overview
 
 ```
-┌──────┐    ┌──────┐    ┌───────────┐    ┌────────┐    ┌────────┐
-│ spec │───▶│ plan │───▶│ implement │───▶│ review │───▶│ verify │
-└──────┘    └──────┘    └───────────┘    └────────┘    └────────┘
-    │           │             │              │             │
-    ▼           ▼             ▼              ▼             ▼
- Spec.md    Beads graph    Code+Tests    Approval     Evidence
+┌──────────┐    ┌─────────┐    ┌───────────┐    ┌────────┐
+│ research │───▶│ Beads   │───▶│ implement │───▶│ verify │
+│ /research│    │ bd prime│    │ /implement│    │/verify │
+└──────────┘    └─────────┘    └───────────┘    └────────┘
+      │               │               │               │
+      ▼               ▼               ▼               ▼
+  Context +       Task graph       Code+Tests      Evidence
+  task-framing    bd ready         RED→GREEN       AC proven
 ```
+
+> **Canonical sequence:** research → claim (bd) → implement → verify.
+> The `/loop-engineering` recipe orchestrates this full sequence automatically.
 
 ## Key Concepts
 

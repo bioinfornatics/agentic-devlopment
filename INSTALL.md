@@ -63,11 +63,10 @@ Useful flags:
 
 #### Slash command installation
 
-By default, the installer upserts these slash commands in `~/.config/goose/config.yaml`:
+By default, the installer upserts slash commands for every top-level recipe in `.goose/recipes/*.yaml`. The active minimal harness installs:
 
 ```text
-/dev /discover /spec /explore /plan /implement /review /doc-review
-/verify /design /sdd /release /remember
+/implement  /loop-engineering  /research  /verify
 ```
 
 The update is idempotent: existing entries for those command names are replaced, not duplicated. Other user-defined slash commands are preserved. Use `--skip-slash-commands` or `-SkipSlashCommands` to opt out.

@@ -6,29 +6,22 @@ Use this chapter to choose the correct scenario playbook.
 
 ```mermaid
 flowchart LR
-    E(["/explore\nread-only research"]) --> P(["/plan\nBeads graph"])
-    P --> T(["TDD\nRED — write failing test"])
-    T --> I(["/implement\nGREEN + REFACTOR"])
-    I --> O{observe\ntest result}
-    O -- PASS --> V(["/verify\napi · web · cli · lib · ui"])
-    O -- "FAIL (max 3×)" --> I
-    V -- "✅ AC met" --> R(["/review\nAPPROVE / BLOCK"])
-    R --> L(["/release\ngated + rollback"])
-    V -- "❌ findings" --> FIX(["fix → re-verify"])
+    R(["/research\nread-only research"]) --> B(["/implement\nclaim + TDD build"])
+    B --> O{observe\ntest result}
+    O -- PASS --> V(["/verify\nspec-anchored evidence"])
+    O -- "FAIL (max 3×)" --> B
+    V -- "✅ AC proven" --> C(["bd close\nrecord evidence"])
+    V -- "❌ findings" --> FIX(["REWORK: fix → re-verify"])
     FIX --> V
 
-    style E fill:#e8f5e9,stroke:#388e3c
-    style P fill:#e3f2fd,stroke:#1976d2
-    style T fill:#fff3e0,stroke:#f57c00
-    style I fill:#fce4ec,stroke:#c62828
+    style R fill:#e8f5e9,stroke:#388e3c
+    style B fill:#fce4ec,stroke:#c62828
     style O fill:#f3e5f5,stroke:#7b1fa2
     style V fill:#e0f2f1,stroke:#00796b
-    style R fill:#fff9c4,stroke:#f9a825
-    style L fill:#e8eaf6,stroke:#3949ab
+    style C fill:#e8eaf6,stroke:#3949ab
 ```
 
-> **Flowchart → table mapping:** `/explore` + `/plan` = discovery phase;
-> `TDD` + `/implement` = implementation phase; `/verify` is embedded in `/release`.
+> **Canonical sequence:** `/research` (research + task framing) → `bd` (claim task) → `/implement` (TDD build) → `/verify` (independent evidence). The `/loop-engineering` recipe orchestrates the full sequence automatically.
 
 ## Mental model
 
@@ -36,7 +29,7 @@ The harness combines three layers:
 
 1. **Goose runtime** — recipes, skills, extensions, subagents, sessions.
 2. **Beads durable control plane** — issues, dependencies, claims, gates, memory, molecules/wisps.
-3. **SDD method** — intent → spec → Beads graph → tests → implementation → review → verification.
+3. **SDD method** — intent → research → Beads graph → tests → implementation → verification → release.
 
 ## Decision table
 
@@ -51,9 +44,14 @@ The harness combines three layers:
 
 ### Phase 1 — Setup *(once per project)*
 
-| Recipe | What you want to do |
-|---|---|
-| `/sdd` then `/plan` | Set this repo up for agentic development |
+```bash
+# Clone and install harness
+git clone <repo> && cd agentic-devlopment
+./scripts/install.sh
+
+# Verify: active recipes
+ls .goose/recipes/    # implement  loop-engineering  research  verify
+```
 
 ---
 
@@ -61,20 +59,18 @@ The harness combines three layers:
 
 > **Start here.** Run all four steps in sequence for every feature.
 
-| Recipe | What you want to do |
-|---|---|
-| ⭐ `/discover` | Start a new feature |
-| ⭐ `/spec` | Write the spec |
-| ⭐ `/implement` | Implement this bead |
-| ⭐ `/release` | Prepare a release |
+| Step | Command | What you want to do |
+|---|---|---|
+| ⭐ 1 | `goose recipe run research` | Frame the task, read context |
+| ⭐ 2 | `bd ready` then `bd update <id> --claim` | Claim the Beads task |
+| ⭐ 3 | `goose recipe run implement` | TDD implementation |
+| ⭐ 4 | `goose recipe run verify` | Independent spec-anchored verification |
 
-**Run it now:**
+**Or run the full orchestrated loop:**
 
 ```bash
-bd prime || true
-bd ready --json || true
-
-goose run --recipe dev --params task="<goal>" --params repo_path="$PWD" --params constraints="<optional constraints>"
+bd prime           # load context and see ready work
+goose recipe run loop-engineering   # research → build → verify → control
 ```
 
 ---
@@ -83,39 +79,35 @@ goose run --recipe dev --params task="<goal>" --params repo_path="$PWD" --params
 
 | Recipe | What you want to do |
 |---|---|
-| `/review` | Review changes, audit security, or check test coverage |
-| `/spec` then `/sdd` | Validate the spec |
-| `/explore` then `/review` | Score this project |
-
-> **`/review` modes:** pass `constraints="security"` for a security audit,
-> `constraints="tests"` for test-coverage review, or omit for general code review.
+| `goose recipe run verify` | Review changes and verify against spec ACs |
+| `goose recipe run research` | Read-only investigation: security, coverage, scoring |
 
 ---
 
 ### Phase 4 — Design & UX
 
-| Recipe | What you want to do |
+| Command | What you want to do |
 |---|---|
-| `/design` then `/sdd` | Test UX with simulated users |
-| `/design` then `/verify` | Review UI / check accessibility |
+| `goose recipe run research` then `goose recipe run implement` | UX research → implementation |
+| `goose recipe run verify` | Review UI / check accessibility |
 
 ---
 
 ### Phase 5 — Operations
 
-| Recipe | What you want to do |
+| Command | What you want to do |
 |---|---|
-| `/explore` then `/plan` | Investigate outage / flaky CI |
-| `/dev` (mode=explore) | Research modules in parallel |
+| `goose recipe run research` | Investigate outage / flaky CI |
+| `goose recipe run loop-engineering` | Full governed loop: research modules in parallel |
 
 ---
 
 ### Phase 6 — Maintenance
 
-| Recipe | What you want to do |
+| Command | What you want to do |
 |---|---|
-| `/doc-review` | Improve docs / onboarding |
-| `/remember` | Save a repo convention for future sessions |
+| `goose recipe run research` | Improve docs / onboarding investigation |
+| `bd remember "<insight>"` | Save a repo convention for future sessions |
 
 ---
 
