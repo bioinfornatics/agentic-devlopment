@@ -7,7 +7,7 @@ Restore deterministic coherence across lifecycle recipes, declared recipe invent
 ## Acceptance criteria
 
 ### [HAR-01] Canonical lifecycle
-WHEN `/dev` runs a non-trivial change THEN it SHALL order RED test → code → local validation → review → gated verification → memory, and gated verification SHALL require `env:reviewed`.
+WHEN `/loop-engineering` runs a non-trivial change THEN it SHALL order RED test → code → local validation → review → gated verification → memory, and gated verification SHALL require `env:reviewed`.
 
 ### [HAR-02] Recipe path consistency
 WHEN recipe declarations, installer metadata, workflow metadata, or tests advertise an entrypoint THEN the corresponding top-level recipe file SHALL exist and every subrecipe path SHALL resolve.

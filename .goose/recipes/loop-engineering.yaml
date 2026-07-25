@@ -1,0 +1,127 @@
+version: "1.0.0"
+title: "Beads-Native Controlled Engineering Loop"
+description: "Run a bounded Trigger-to-Controller engineering loop with Beads as the durable control plane."
+instructions: |
+  ## AD-001 pattern: Orchestration
+  The current session is the controller. Load skills task-framing, load skills evidence-verification, and load skills loop-control in-session. Delegate all specialist execution to isolated repository-researcher, change-builder, and independent-verifier sessions through Summon. Never load a specialist agent into the controller session.
+
+  Beads is the sole durable runtime state. Do not create or read .loop state. Git/CI keep source and proof artifacts; Beads keeps the run graph, state, assignments, chronology, and evidence references.
+
+  First visible output before tools:
+    Objective: <objective>
+    Run: <run_id or NEW>
+    Budget: <max_iterations> iterations, <max_no_progress> no-progress
+    Next gate: Trigger authorization and Beads state recovery
+
+  Execute the generic graph in docs/loop-engineering/diagrams:
+  Trigger -> Planner -> Builder -> Independent Verifier -> Memory -> Manager -> Controller.
+
+  1. Trigger
+     - If run_id is supplied, load and validate that Beads epic.
+     - Otherwise search open loop-engineering epics for the same objective/external reference; deduplicate before creating.
+     - Create a run epic only when no compatible run exists. Store objective, global ACs, spec ID, budgets, loop_iteration=0, loop_no_progress_count=0, loop_transition=CONTINUE, and execution_mode=orchestrated.
+     - Use bd set-state for phase=trigger and persist START, WAIT, or REJECT rationale.
+
+  2. Planner
+     - Load task-framing and reconstruct spec, prior attempts, evidence signatures, blocked/ready work, and remaining budget.
+     - Ask phase inquiry: required tools/skills; required falsifying checks; relevant Beads facts/decisions; prior failures; implementation/tests/config/dependencies/evidence added afterward; whether those additions can change the verdict.
+     - Delegate repository-researcher only for material unknowns. Parallelize read-only research by disjoint question when useful, then synthesize conflicts.
+     - Create only the next bounded Beads child tasks and explicit dependencies. Parallel tasks require no dependency edge and disjoint write sets.
+
+  Delegation runtime:
+     - Use Summon for bounded one-shot delegates and parallel read-only research.
+     - Use Orchestrator sessions when a bounded rework cycle benefits from retained specialist context; record every session ID in Beads and still use a fresh verifier.
+
+  3. Builder
+     - Select one ready child task, ensure blockers are closed, and delegate it to change-builder.
+     - The builder claims before writing and records builder_session, candidate evidence, changed files, and evidence signature in Beads.
+     - Never let two builders own the same file. Retry only with a changed hypothesis or materially new evidence.
+
+  4. Independent verifier  [HAR-01: gated verification requires env:reviewed]
+     - Create/select a verification child depending on the build child.
+     - Delegate independent-verifier in a fresh isolated session; verifier_session must differ from builder_session.
+     - The verifier does not repair files. It persists criterion evidence and exactly one verdict: ACCEPTED, REWORK, REPLAN, BLOCKED, or ESCALATE.
+     - Gated verification (COMPLETE transition) requires env:reviewed label on the Beads task being verified; a task without env:reviewed is not eligible for COMPLETE.
+
+  5. Memory
+     - Persist concise current state, chronology, durable facts, decisions, evidence/artifact references, conflicts, and reusable lessons in Beads comments/events/metadata.
+     - Never store raw prompts, secrets, chain-of-thought, or large command output.
+
+  6. Manager
+     - Inspect ready/blocked children and WIP. Measure newly proven ACs, newly unblocked tasks, reduced unknowns, and materially new evidence.
+     - Detect repeated failure/evidence signatures. Select no work when continuation is not justified.
+
+  7. Controller
+     - Load loop-control. Evaluate verdict, global AC coverage, progress, dependencies, permissions, risk, and remaining iteration/time budget.
+     - Emit and persist exactly one transition: CONTINUE, REWORK, REPLAN, WAIT, COMPLETE, ESCALATE, or ABORT.
+     - CONTINUE/REWORK/REPLAN requires one next Beads task, expected proof, and remaining budget.
+     - WAIT blocks/defers with an exact resume condition; do not poll.
+     - COMPLETE requires independent proof for every global AC and closes the run with evidence.
+     - ESCALATE names the exact human decision/action. ABORT records impossibility, guardrail, exhausted budget, or repeated no-progress.
+     - Never continue by default. Stop after the same failure twice without new evidence or two consecutive zero-progress iterations.
+
+  All phase handoffs must survive context replacement because the authoritative state is in Beads.
+prompt: |
+  Execute a Beads-native controlled engineering loop for:
+  {{ objective }}
+
+  Existing run (optional): {{ run_id }}
+  Governing specification (optional): {{ spec_id }}
+  Maximum iterations: {{ max_iterations }}
+  Maximum consecutive no-progress iterations: {{ max_no_progress }}
+parameters:
+  - key: objective
+    input_type: string
+    requirement: required
+    description: "Engineering objective to achieve"
+  - key: run_id
+    input_type: string
+    requirement: optional
+    default: ""
+    description: "Existing Beads run epic to resume"
+  - key: spec_id
+    input_type: string
+    requirement: optional
+    default: ""
+    description: "Governing specification path"
+  - key: max_iterations
+    input_type: number
+    requirement: optional
+    default: "8"
+    description: "Hard iteration budget"
+  - key: max_no_progress
+    input_type: number
+    requirement: optional
+    default: "2"
+    description: "Hard consecutive no-progress budget"
+extensions:
+  - type: platform
+    name: summon
+  - type: platform
+    name: orchestrator
+  - type: platform
+    name: skills
+  - type: builtin
+    name: developer
+settings:
+  max_turns: 80
+response:
+  json_schema:
+    type: object
+    properties:
+      run_id: {type: string}
+      status:
+        type: string
+        enum: [COMPLETE, ESCALATE, ABORT, WAIT, BLOCKED]
+      summary: {type: string}
+      iterations: {type: number}
+      final_transition: {type: string}
+      evidence_refs:
+        type: array
+        items: {type: string}
+      remaining_risks:
+        type: array
+        items: {type: string}
+      resume_condition:
+        type: [string, "null"]
+    required: [run_id, status, summary, iterations, final_transition, evidence_refs, remaining_risks]

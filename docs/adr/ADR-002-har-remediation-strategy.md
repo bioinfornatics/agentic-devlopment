@@ -1,7 +1,9 @@
 # ADR-002 — HAR Remediation Strategy
 
-> Status: Proposed
+> Status: Accepted — Option B
 > Created: 2026-07-25
+> Decided: 2026-07-25
+> Decided-by: product-owner
 > Covers: AD-001, AD-002, AD-003
 > Spec: .specs/features/harness-audit-remediation/spec.md
 > Beads: agentic-devlopment-36ws.2
@@ -97,7 +99,13 @@ fix each group with one build + verify cycle.
 
 ---
 
-## Recommendation: Option A
+## Decision: Option B — Big-bang patch *(human-approved 2026-07-25)*
+
+Product-owner chose Option B: all HAR criteria (HAR-01..06) implemented in a single coordinated commit. Rationale: the codebase is clean after the minimal harness migration; a single-pass big-bang is lower coordination overhead at this stage than six incremental RED/GREEN cycles.
+
+---
+
+## Original Recommendation: Option A (superseded)
 
 **Rationale:**
 1. Smallest blast radius per step; every slice is independently testable.
