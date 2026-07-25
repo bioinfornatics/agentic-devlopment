@@ -1,0 +1,5 @@
+{
+  "name": "loop-gate",
+  "version": "1.0.0",
+  "description": "HAR-01 gate: blocks bd close/complete transitions on tasks missing the env:reviewed label. Enforces human review before COMPLETE."
+}

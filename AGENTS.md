@@ -20,7 +20,7 @@ Generic sequence: Trigger → Planner → Builder → independent Verifier → M
 | **Subrecipe** | Encapsulates a sub-loop or delegated step |
 | **Subagent** | Executes an isolated task (`change-builder`, `independent-verifier`, `repository-researcher`) |
 | **Skill** | Provides a method or expertise (`task-framing`, `evidence-verification`, `loop-control`) |
-| **Plugin** | Distributes skills, hooks, and scripts (`loop-engineering`) |
+| **Plugin** | Distributes hooks and scripts by domain (`prevent-catastrophe`, `loop-telemetry`, `loop-gate`, `beads-telemetry`) |
 | **Hook** | Triggers checks around lifecycle events (PreToolUse, PostToolUse, Stop) |
 | **MCP** | Acts on external systems (Beads Dolt, eval-hub server) |
 | **Memory / KG** | Persists state and learnings (`.knowledge/`, `apps/kg/`) |
@@ -51,7 +51,7 @@ Never use Markdown TODO files. Never run sudo. Never overwrite unrelated user ch
 - Skills: task-framing, evidence-verification, loop-control.
 - Agents: repository-researcher, change-builder, independent-verifier.
 - Recipes: research, implement, verify, loop-engineering.
-- Plugin: loop-engineering.
+- Plugins: prevent-catastrophe (safety), loop-telemetry (lifecycle telemetry, loop-aware), loop-gate (HAR-01 env:reviewed gate), beads-telemetry (generic telemetry).
 - Spec: .specs/features/loop-engineering/spec.md.
 - Sequence model: docs/loop-engineering/diagrams/.
 
@@ -103,7 +103,7 @@ Recipe eval agents arrays list only in-session agents. Summoned agents are not L
 
 ~~~bash
 find .goose/recipes -name '*.yaml' -exec goose recipe validate {} \;
-bash .agents/plugins/loop-engineering/tests/test-plugin.sh
+for p in prevent-catastrophe loop-telemetry loop-gate beads-telemetry; do sh .agents/plugins/$p/tests/test-plugin.sh; done
 python3 scripts/check-recipe-metadata.py
 python3 scripts/check-consistency.py
 node apps/kg/dist/cli.js bootstrap --dry-run
