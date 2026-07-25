@@ -103,6 +103,16 @@ extensions:
     name: skills
   - type: builtin
     name: developer
+retry:
+  max_retries: 3
+  checks:
+    - type: shell
+      command: "test -f .beads/issues.jsonl"
+    - type: shell
+      command: "python3 -c \"import json; [json.loads(l) for l in open('.beads/issues.jsonl') if l.strip()]\"  # Beads JSONL integrity"
+  on_failure: abort
+session:
+  max_tool_repetitions: 5
 settings:
   max_turns: 80
 response:

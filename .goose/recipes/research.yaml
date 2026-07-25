@@ -1,0 +1,51 @@
+version: "1.0.0"
+title: "Beads-Backed Repository Research"
+description: "Build an evidence-backed repository map for a Loop Engineering run without mutation."
+instructions: |
+  ## AD-001 pattern: Specialist orchestration boundary
+  This phase delegates to repository-researcher in an isolated read-only session. Load skill task-framing in the phase controller; the delegated agent also loads it as required methodology.
+
+  First visible output before tools:
+    Run/task: <run_id>/<task_id>
+    Research question: <objective>
+    Mutation policy: read-only
+
+  Load the Beads run/task, spec, prior transitions, failures, evidence signatures, and budget. Ask which tools/checks are required, what is already known, what failed, and which later code/test/config/dependency/evidence changes may alter the conclusion.
+
+  Partition independent read-only questions and delegate them in parallel only when useful. Synthesize conflicting evidence. Do not modify files or Beads. Return observed facts, inferences, constraints, tools/skills, verification commands, failure chronology, later-added evidence, risks, unknowns, and the smallest bounded task contract.
+prompt: |
+  Research objective: {{ objective }}
+  Run: {{ run_id }}
+  Task: {{ task_id }}
+parameters:
+  - key: objective
+    input_type: string
+    requirement: required
+    description: "Question or objective to research"
+  - key: run_id
+    input_type: string
+    requirement: optional
+    default: ""
+    description: "Optional Beads run epic"
+  - key: task_id
+    input_type: string
+    requirement: optional
+    default: ""
+    description: "Optional Beads research task"
+extensions:
+  - type: platform
+    name: summon
+  - type: platform
+    name: skills
+  - type: builtin
+    name: developer
+retry:
+  max_retries: 3
+  checks:
+    - type: shell
+      command: "test -f .beads/issues.jsonl"
+  on_failure: abort
+session:
+  max_tool_repetitions: 5
+settings:
+  max_turns: 25

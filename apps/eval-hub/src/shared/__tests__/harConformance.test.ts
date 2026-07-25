@@ -357,3 +357,32 @@ describe("HAR-06 evaluation traceability — AC-EVAL-03/04/05 have executable te
     }
   });
 });
+
+// ── AC-LE-08: Runtime loop prevention ────────────────────────────────────────
+
+describe("AC-LE-08 runtime loop prevention — every active recipe has retry + session guards", () => {
+  const ACTIVE_RECIPES = ["implement.yaml", "loop-engineering.yaml", "research.yaml", "verify.yaml"];
+
+  for (const name of ACTIVE_RECIPES) {
+    it(`${name} declares session.max_tool_repetitions`, async () => {
+      const content = await fs.readFile(path.join(PROJECT_RECIPES_DIR, name), "utf8");
+      expect(content, `${name}: missing session.max_tool_repetitions`).toMatch(/max_tool_repetitions\s*:\s*\d+/);
+    });
+
+    it(`${name} declares retry.max_retries`, async () => {
+      const content = await fs.readFile(path.join(PROJECT_RECIPES_DIR, name), "utf8");
+      expect(content, `${name}: missing retry.max_retries`).toMatch(/max_retries\s*:\s*\d+/);
+    });
+
+    it(`${name} declares retry.checks with at least one shell type`, async () => {
+      const content = await fs.readFile(path.join(PROJECT_RECIPES_DIR, name), "utf8");
+      expect(content, `${name}: missing retry.checks`).toContain("checks:");
+      expect(content, `${name}: missing type: shell in retry.checks`).toContain("type: shell");
+    });
+
+    it(`${name} declares retry.on_failure: abort`, async () => {
+      const content = await fs.readFile(path.join(PROJECT_RECIPES_DIR, name), "utf8");
+      expect(content, `${name}: missing on_failure: abort`).toContain("on_failure: abort");
+    });
+  }
+});
