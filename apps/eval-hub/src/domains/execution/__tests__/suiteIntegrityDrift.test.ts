@@ -74,18 +74,18 @@ describe("EVAL-INT-04/05/19 — treatment drift: manifest-frozen treatment used 
       runtime: testRuntime,
       evalHubRuntimeVersion: () => "eval-hub-test-1.0.0",
       runProvenanceId: () => "drift-agent-provenance",
-      // scenario[0].skills = ["ux-quality"]
-      // scenario[1].skills = ["ux-quality", "code-review"]  ← extra skill → different hash if rebuilt
+      // scenario[0].skills = ["task-framing"]
+      // scenario[1].skills = ["task-framing", "evidence-verification"]  ← extra skill → different hash if rebuilt
       scenariosOverride: new Map([
-        ["ux-researcher", [
-          { query: "task A", skills: ["ux-quality"],              agents: [], expected_behavior: ["b1"] },
-          { query: "task B", skills: ["ux-quality", "code-review"], agents: [], expected_behavior: ["b2"] },
+        ["change-builder", [
+          { query: "task A", skills: ["task-framing"],              agents: [], expected_behavior: ["b1"] },
+          { query: "task B", skills: ["task-framing", "evidence-verification"], agents: [], expected_behavior: ["b2"] },
         ]],
       ]),
     });
 
     for await (const _ of suite.run({
-      kind: "agents", subjects: ["ux-researcher"], workspace,
+      kind: "agents", subjects: ["change-builder"], workspace,
       gooseCli: "goose", workers: 1, mode: "layer-delta",
       maxTurns: 8, timeoutMs: 5_000, ambient: false,
       continueOnFail: false, repetitions: 1,
@@ -102,7 +102,7 @@ describe("EVAL-INT-04/05/19 — treatment drift: manifest-frozen treatment used 
     expect(fake.calls.length).toBe(4);
 
     // EVAL-INT-04/05/19: every call's treatment must match the manifest-frozen definitionHash.
-    // RED: evalId=1 calls are built with scenario.skills=["ux-quality","code-review"]
+    // RED: evalId=1 calls are built with scenario.skills=["task-framing","evidence-verification"]
     //      → treatmentContentHash differs from the manifest's planned hash (firstScenario skills).
     for (const call of fake.calls) {
       const frozen = manifest.treatments.find(
@@ -127,15 +127,15 @@ describe("EVAL-INT-04/05/19 — treatment drift: manifest-frozen treatment used 
       runProvenanceId: () => "drift-recipe-provenance",
       // recipe_l2 baseline uses declared skills — if rebuilt per-scenario, the definition drifts
       scenariosOverride: new Map([
-        ["dev", [
-          { query: "task A", skills: ["beads"],        agents: [], expected_behavior: ["b1"], recipe_source_type: "top_level" },
-          { query: "task B", skills: ["beads", "sdd"], agents: [], expected_behavior: ["b2"], recipe_source_type: "top_level" },
+        ["implement", [
+          { query: "task A", skills: ["loop-control"],        agents: [], expected_behavior: ["b1"], recipe_source_type: "top_level" },
+          { query: "task B", skills: ["loop-control", "evidence-verification"], agents: [], expected_behavior: ["b2"], recipe_source_type: "top_level" },
         ]],
       ]),
     });
 
     for await (const _ of suite.run({
-      kind: "recipes", subjects: ["dev"], workspace,
+      kind: "recipes", subjects: ["implement"], workspace,
       gooseCli: "goose", workers: 1, mode: "layer-delta",
       maxTurns: 8, timeoutMs: 5_000, ambient: false,
       continueOnFail: false, repetitions: 1,
@@ -194,15 +194,15 @@ describe("EVAL-INT-01/05/11 — fixture drift: runCfg fixtureHashes equal manife
       runProvenanceId: () => "drift-fixture-provenance",
       // Two scenarios both referencing the same fixture — gives ≥2 calls per treatment
       scenariosOverride: new Map([
-        ["ux-researcher", [
-          { query: "task A", skills: ["ux-quality"], agents: [], expected_behavior: ["b1"], files: [relFixturePath] },
-          { query: "task B", skills: ["ux-quality"], agents: [], expected_behavior: ["b2"], files: [relFixturePath] },
+        ["change-builder", [
+          { query: "task A", skills: ["task-framing"], agents: [], expected_behavior: ["b1"], files: [relFixturePath] },
+          { query: "task B", skills: ["task-framing"], agents: [], expected_behavior: ["b2"], files: [relFixturePath] },
         ]],
       ]),
     });
 
     for await (const _ of suite.run({
-      kind: "agents", subjects: ["ux-researcher"], workspace,
+      kind: "agents", subjects: ["change-builder"], workspace,
       gooseCli: "goose", workers: 1, mode: "layer-delta",
       maxTurns: 8, timeoutMs: 5_000, ambient: false,
       continueOnFail: false, repetitions: 1,

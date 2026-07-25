@@ -27,6 +27,21 @@ import {
   integrityValueHash,
   type IntegrityManifestV2,
 } from "../../persistence/integrityV2Store.js";
+function toolRequestLine(id: string, name: string, args: Record<string, string>): string {
+  return JSON.stringify({ message: { role: "assistant", content: [
+    { type: "toolRequest", id, toolCall: { value: { name, arguments: args } } },
+  ] } });
+}
+
+function toolResponseLine(id: string, text: string, failed = false): string {
+  return JSON.stringify({ message: { role: "user", content: [
+    { type: "toolResponse", id, toolResult: {
+      status: failed ? "error" : "success",
+      value: { content: [{ type: "text", text }], isError: failed },
+    } },
+  ] } });
+}
+
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
@@ -35,6 +50,8 @@ class TrackingGoose implements IGooseRunner {
   constructor(private readonly exitCode: number | null = 0) {}
   async *run(_config: GooseRunConfig): AsyncGenerator<GooseRawEvent> {
     this.calls++;
+    yield { type: "line", stream: "stdout", text: toolRequestLine("skill-1", "load_skill", { name: "task-framing" }) };
+    yield { type: "line", stream: "stdout", text: toolResponseLine("skill-1", "# Loaded Skill: task-framing (skill)") };
     yield { type: "exit", code: this.exitCode, signal: this.exitCode === null ? "SIGKILL" : null };
   }
   async version() { return "test-goose"; }
@@ -54,7 +71,7 @@ class StubWriter implements IWorkspaceWriter {
 // ── Scenario & criterion setup ────────────────────────────────────────────────
 
 const BEHAVIORS = ["check the auth flow works", "check rate limiting is applied"];
-const scenario = { query: "run auth tests", expected_behavior: BEHAVIORS, skills: ["sdd"] };
+const scenario = { query: "run auth tests", expected_behavior: BEHAVIORS, skills: ["task-framing"] };
 const CRITERION_IDS = expectedCriterionIdsFor(scenario); // ["expected_behavior[0]", "expected_behavior[1]"]
 
 /** A grader that returns fully valid grading matching CRITERION_IDS */
@@ -93,7 +110,7 @@ let store: EvalIntegrityV2Store;
 let storedManifestHash: string;
 
 const KIND       = "skills" as const;
-const SUBJECT    = "sdd";
+const SUBJECT    = "task-framing";
 const EVAL_ID    = 0;
 const TASK_TEXT  = "run auth tests";
 const FIXTURE_H  = { "fixtures/auth.ts": "auth-fixture-hash" };
@@ -102,7 +119,7 @@ const MODEL      = "test-model";
 const GOOSE_VER  = "test-goose";
 const HUB_VER    = "test-eval-hub";
 
-/** Stable treatment pair for skills/sdd */
+/** Stable treatment pair for skills/task-framing */
 function pair() {
   return buildTreatmentPair({
     kind: KIND, subject: SUBJECT,
@@ -131,6 +148,7 @@ function buildManifest(): IntegrityManifestV2 {
       },
     ],
     taskPayloadHashes: { [`${KIND}/${SUBJECT}/${EVAL_ID}`]: hashUtf8(TASK_TEXT) },
+    maxTurnsByTask: { [`${KIND}/${SUBJECT}/${EVAL_ID}`]: 5 },
     fixtureHashes: FIXTURE_H,
     executionEnvelope: {
       provider: PROVIDER, model: MODEL,
@@ -146,6 +164,9 @@ function buildManifest(): IntegrityManifestV2 {
 
 beforeEach(async () => {
   workspace     = await fs.mkdtemp(path.join(os.tmpdir(), "eval-terminal-integrity-"));
+  // AC-1: create minimal synthetic stub so materialisation finds the declared skill
+  await fs.mkdir(path.join(workspace, ".agents", "skills", "task-framing"), { recursive: true });
+  await fs.writeFile(path.join(workspace, ".agents", "skills", "task-framing", "SKILL.md"), "# task-framing stub");
   integrityRoot = await fs.mkdtemp(path.join(os.tmpdir(), "eval-terminal-store-"));
   store         = new EvalIntegrityV2Store(integrityRoot);
   const stored  = await store.createManifest(buildManifest());
@@ -225,7 +246,7 @@ describe("1. valid terminal — succeeded run with valid grading", () => {
       side: "candidate" as const, treatmentId: candidate.id,
       status: "succeeded" as const,
       pairKey: {
-        taskPayloadHash: hashUtf8(TASK_TEXT), fixtureHashes: FIXTURE_H,
+        taskPayloadHash: hashUtf8(TASK_TEXT), maxTurns: 5, fixtureHashes: FIXTURE_H,
         executionEnvelopeHash: integrityValueHash(buildManifest().executionEnvelope),
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
@@ -273,7 +294,7 @@ describe("2. failed terminal before throw — execution_failed recorded before r
       side: "baseline" as const, treatmentId: baseline.id,
       status: "succeeded" as const,
       pairKey: {
-        taskPayloadHash: hashUtf8(TASK_TEXT), fixtureHashes: FIXTURE_H,
+        taskPayloadHash: hashUtf8(TASK_TEXT), maxTurns: 5, fixtureHashes: FIXTURE_H,
         executionEnvelopeHash: integrityValueHash(buildManifest().executionEnvelope),
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
@@ -316,7 +337,7 @@ describe("3. grader-invalid null — grader throw / mismatch → grader_invalid,
       side: "candidate" as const, treatmentId: candidate.id,
       status: "succeeded" as const,
       pairKey: {
-        taskPayloadHash: hashUtf8(TASK_TEXT), fixtureHashes: FIXTURE_H,
+        taskPayloadHash: hashUtf8(TASK_TEXT), maxTurns: 5, fixtureHashes: FIXTURE_H,
         executionEnvelopeHash: integrityValueHash(buildManifest().executionEnvelope),
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
@@ -348,7 +369,7 @@ describe("3. grader-invalid null — grader throw / mismatch → grader_invalid,
       side: "candidate" as const, treatmentId: candidate.id,
       status: "succeeded" as const,
       pairKey: {
-        taskPayloadHash: hashUtf8(TASK_TEXT), fixtureHashes: FIXTURE_H,
+        taskPayloadHash: hashUtf8(TASK_TEXT), maxTurns: 5, fixtureHashes: FIXTURE_H,
         executionEnvelopeHash: integrityValueHash(buildManifest().executionEnvelope),
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
@@ -517,7 +538,7 @@ describe("10. zero expected criteria — succeeded terminal with grader_invalid 
       side: "candidate" as const, treatmentId: candidate.id,
       status: "succeeded" as const,
       pairKey: {
-        taskPayloadHash: hashUtf8(TASK_TEXT), fixtureHashes: FIXTURE_H,
+        taskPayloadHash: hashUtf8(TASK_TEXT), maxTurns: 5, fixtureHashes: FIXTURE_H,
         executionEnvelopeHash: integrityValueHash(buildManifest().executionEnvelope),
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
@@ -579,7 +600,7 @@ describe("7. duplicate never overwritten — second store write is rejected", ()
       side: "candidate" as const, treatmentId: candidate.id,
       status: "succeeded" as const,
       pairKey: {
-        taskPayloadHash: hashUtf8(TASK_TEXT), fixtureHashes: FIXTURE_H,
+        taskPayloadHash: hashUtf8(TASK_TEXT), maxTurns: 5, fixtureHashes: FIXTURE_H,
         executionEnvelopeHash: integrityValueHash(mani.executionEnvelope),
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),

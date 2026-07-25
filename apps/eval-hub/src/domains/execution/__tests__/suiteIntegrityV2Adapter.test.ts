@@ -51,7 +51,7 @@ describe("EVAL-INT-01/03/04/05/11/15/19/20 SuiteRunner v2 planning boundary", ()
 
     for await (const _event of suite.run({
       kind: "skills",
-      subjects: ["atomic-design"],
+      subjects: ["task-framing"],
       workspace,
       gooseCli: "goose-test",
       workers: 1,
@@ -84,6 +84,7 @@ describe("EVAL-INT-01/03/04/05/11/15/19/20 SuiteRunner v2 planning boundary", ()
       treatments: ReadonlyArray<{ id: string; kind: string; subject: string; side: string; definitionHash: string; bootstrapHash: string }>;
       taskPayloadHashes: Record<string, string>;
       fixtureHashes: Record<string, string>;
+      maxTurnsByTask: Record<string, number>;
       executionEnvelope: { provider: string; model: string; gooseRuntimeVersion: string; evalHubRuntimeVersion: string; timeBudgetMs: number | null; tokenBudget: number | null; decoding: { temperature: number | null; seed: number | null } };
       grader: { id: string; version: string };
       rubric: { id: string; version: string };
@@ -91,10 +92,10 @@ describe("EVAL-INT-01/03/04/05/11/15/19/20 SuiteRunner v2 planning boundary", ()
     expect(canonicalize(manifest)).toBe(manifestBytes);
     expect(manifest.schema).toBe(INTEGRITY_SCHEMA_V2);
     expect(manifest.runProvenanceId).toBe("run-provenance-test");
-    expect(manifest.cliArguments).toEqual(["kind=skills", "subjects=atomic-design", "mode=with-without", "repetitions=2", "maxTurns=8", "timeoutMs=12000", "ambient=false"]);
+    expect(manifest.cliArguments).toEqual(["kind=skills", "subjects=task-framing", "mode=with-without", "repetitions=2", "maxTurns=8", "timeoutMs=12000", "ambient=false"]);
 
     // EVAL-INT-05: source/eval identity is recorded from the planned subject under this run.
-    expect(manifest.subjects).toEqual([{ kind: "skills", subject: "atomic-design", sourceHash: expect.any(String), evalIds: [0, 1, 2] }]);
+    expect(manifest.subjects).toEqual([{ kind: "skills", subject: "task-framing", sourceHash: expect.any(String), evalIds: [0, 1, 2] }]);
     expect(manifest.subjects[0]?.sourceHash).toHaveLength(16);
     expect(manifest.repetitions).toBe(2);
 
@@ -105,11 +106,12 @@ describe("EVAL-INT-01/03/04/05/11/15/19/20 SuiteRunner v2 planning boundary", ()
     ]);
     expect(manifest.treatments.map(treatment => treatment.definitionHash)).toEqual([expect.any(String), expect.any(String)]);
     expect(manifest.treatments.map(treatment => treatment.bootstrapHash)).toEqual([
-      hashUtf8("load skill: atomic-design"),
+      hashUtf8("load skill: task-framing"),
       hashUtf8(""),
     ]);
 
     // EVAL-INT-01/11: runtime identity and budgets are probed during planning.
+    expect(Object.values(manifest.maxTurnsByTask)).toEqual([15, 20, 20]);
     expect(manifest.executionEnvelope).toEqual({
       provider: "test-provider",
       model: "test-model",
@@ -125,9 +127,9 @@ describe("EVAL-INT-01/03/04/05/11/15/19/20 SuiteRunner v2 planning boundary", ()
     expect(manifest.rubric).toEqual({ id: "expected_behavior_index", version: "v1" });
 
     const firstCall = fake.calls[0]!;
-    expect(firstCall.plannedTaskPayload).toContain("Classify the UI elements described in the KG visualizer README");
+    expect(firstCall.plannedTaskPayload).toContain("Turn this objective into a task contract: improve login error handling.");
     expect(firstCall.plannedTaskPayloadHash).toBe(hashUtf8(firstCall.plannedTaskPayload));
-    expect(manifest.taskPayloadHashes["skills/atomic-design/0"]).toBe(firstCall.plannedTaskPayloadHash);
+    expect(manifest.taskPayloadHashes["skills/task-framing/0"]).toBe(firstCall.plannedTaskPayloadHash);
     expect(firstCall.integrity).toEqual({
       schema: INTEGRITY_SCHEMA_V2,
       root: path.join(workspace, "_integrity-v2", "skills"),
@@ -139,7 +141,7 @@ describe("EVAL-INT-01/03/04/05/11/15/19/20 SuiteRunner v2 planning boundary", ()
       candidateTreatmentHash: manifest.treatments[0]!.definitionHash,
       baselineTreatmentHash: manifest.treatments[1]!.definitionHash,
       grader: { id: "llm-grader", version: "v1" },
-      rubric: { id: "expected_behavior_index", version: "v1", expectedCriterionIds: ["expected_behavior[0]", "expected_behavior[1]", "expected_behavior[2]", "expected_behavior[3]"] },
+      rubric: { id: "expected_behavior_index", version: "v1", expectedCriterionIds: ["expected_behavior[0]", "expected_behavior[1]", "expected_behavior[2]", "expected_behavior[3]", "expected_behavior[4]"] },
     });
 
     const evalZeroCalls = fake.calls.filter(call => call.evalId === 0);
@@ -150,7 +152,7 @@ describe("EVAL-INT-01/03/04/05/11/15/19/20 SuiteRunner v2 planning boundary", ()
       [1, "baseline", "skill_l0"],
       [1, "candidate", "skill_l1"],
     ]);
-    expect(new Set(evalZeroCalls.map(call => call.plannedTaskPayloadHash))).toEqual(new Set([manifest.taskPayloadHashes["skills/atomic-design/0"]]));
+    expect(new Set(evalZeroCalls.map(call => call.plannedTaskPayloadHash))).toEqual(new Set([manifest.taskPayloadHashes["skills/task-framing/0"]]));
   });
 });
 
@@ -169,13 +171,13 @@ describe("EVAL-INT-PLAN plan() row contract — exact treatment and fixture hash
     const suite = new SuiteRunner(fake, {
       runtime: { identity: async () => ({ version: "test-1", provider: "p", model: "m" }) },
       scenariosOverride: new Map([
-        ["atomic-design", [
+        ["task-framing", [
           { query: "q", skills: [], agents: [], expected_behavior: ["b"], files: [relFixturePath] },
         ]],
       ]),
     });
     const plan = await suite.plan({
-      kind: "skills", subjects: ["atomic-design"], workspace, gooseCli: "goose",
+      kind: "skills", subjects: ["task-framing"], workspace, gooseCli: "goose",
       workers: 1, mode: "with-without", maxTurns: 8, timeoutMs: 1_000,
       ambient: false, continueOnFail: false, repetitions: 1,
     });
@@ -225,13 +227,13 @@ describe("EVAL-INT-PLAN plan() row contract — exact treatment and fixture hash
     const suite = new SuiteRunner(fake, {
       runtime: { identity: async () => ({ version: "test-1", provider: "p", model: "m" }) },
       scenariosOverride: new Map([
-        ["atomic-design", [
+        ["task-framing", [
           { query: "q", skills: [], agents: [], expected_behavior: ["b"], files: [relFixturePath] },
         ]],
       ]),
     });
     const plan = await suite.plan({
-      kind: "skills", subjects: ["atomic-design"], workspace, gooseCli: "goose",
+      kind: "skills", subjects: ["task-framing"], workspace, gooseCli: "goose",
       workers: 1, mode: "with-without", maxTurns: 8, timeoutMs: 1_000,
       ambient: false, continueOnFail: false, repetitions: 1,
     });
@@ -242,5 +244,37 @@ describe("EVAL-INT-PLAN plan() row contract — exact treatment and fixture hash
       for await (const _ of suite.runPlan(plan)) {}
     }).rejects.toThrow(/input_mismatch/i);
     expect(fake.calls).toHaveLength(0);
+  });
+});
+
+
+describe("AC-EVAL-09 per-task maxTurns provenance", () => {
+  it("freezes scenario max_turns in the manifest and every planned row", async () => {
+    const workspace = await fs.mkdtemp(path.join(os.tmpdir(), "suite-turn-provenance-")); roots.push(workspace);
+    const fake = new CapturingEvalRunner();
+    const suite = new SuiteRunner(fake, {
+      runtime: { identity: async () => ({ version: "test", provider: "p", model: "m" }) },
+      scenariosOverride: new Map([["task-framing", [
+        { query: "a", skills: [], expected_behavior: ["a"], max_turns: 13 },
+        { query: "b", skills: [], expected_behavior: ["b"], max_turns: 21 },
+      ]]]),
+    });
+    const plan = await suite.plan({
+      kind: "skills", subjects: ["task-framing"], workspace, gooseCli: "goose", workers: 1,
+      mode: "with-without", maxTurns: 8, timeoutMs: 1000, ambient: false, continueOnFail: false, repetitions: 1,
+    });
+    const manifest = JSON.parse(await fs.readFile(path.join(workspace, "_integrity-v2", "skills", "manifest.json"), "utf8"));
+    expect(manifest.maxTurnsByTask).toEqual({ "skills/task-framing/0": 13, "skills/task-framing/1": 21 });
+    expect(plan.rows.filter(row => row.evalId === 0).every(row => row.runCfg.maxTurns === 13)).toBe(true);
+    expect(plan.rows.filter(row => row.evalId === 1).every(row => row.runCfg.maxTurns === 21)).toBe(true);
+  });
+
+  it("rejects invalid per-scenario turn limits during planning", async () => {
+    const workspace = await fs.mkdtemp(path.join(os.tmpdir(), "suite-turn-invalid-")); roots.push(workspace);
+    const suite = new SuiteRunner(new CapturingEvalRunner(), {
+      runtime: { identity: async () => ({ version: "test", provider: "p", model: "m" }) },
+      scenariosOverride: new Map([["task-framing", [{ query: "a", skills: [], expected_behavior: ["a"], max_turns: 0 }]]]),
+    });
+    await expect(suite.plan({ kind: "skills", subjects: ["task-framing"], workspace, gooseCli: "goose", workers: 1, mode: "with-without", maxTurns: 8, timeoutMs: 1000, ambient: false, continueOnFail: false, repetitions: 1 })).rejects.toThrow(/maxTurns.*integer.*at least 1/i);
   });
 });
