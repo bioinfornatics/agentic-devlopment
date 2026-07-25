@@ -10,6 +10,7 @@
 
 ```bash
 # Clone and install harness
+# Replace <repo> with the actual repository URL (ask your team lead).
 git clone <repo>
 cd agentic-devlopment
 ./scripts/install.sh
@@ -29,6 +30,8 @@ goose recipe run research    # Read-only codebase research and planning
 goose recipe run implement   # TDD implementation of a claimed Beads task
 goose recipe run verify      # Independent verification against spec ACs
 ```
+
+> **How to start a session:** Run `goose` in your terminal to enter an interactive session, then type slash commands. Or run `goose recipe run <name>` directly from the terminal for non-interactive execution.
 
 ## Slash Commands
 

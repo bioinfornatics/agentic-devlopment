@@ -73,6 +73,27 @@ bd prime           # load context and see ready work
 goose recipe run loop-engineering   # research → build → verify → control
 ```
 
+#### Status signals
+
+| Step | Success signal |
+|------|---------------|
+| `bd prime` | prints workflow context (no error) |
+| `bd ready` | lists ≥1 issue without "Error:" |
+| `bd update <id> --claim` | "✓ Updated issue: ..." |
+| `goose recipe run implement` | session completes, test suite green |
+| `goose recipe run verify` | "ACCEPTED" verdict in Beads note |
+| `bd close <id>` | "✓ Closed issue: ..." |
+
+#### Recovery
+
+| Failure | Action |
+|---------|--------|
+| `bd prime` fails | Check Beads DB exists: `ls .beads/*.db` |
+| `bd update --claim` fails | Another agent holds it; wait or run `bd show <id>` |
+| 3 REWORK cycles reached | Set state to ESCALATE, stop, create a Beads note: `bd note <id> "ESCALATE: <reason>"` |
+
+**Terminal escalation:** run `bd note <id> "ESCALATE: <reason>"` then stop — do not attempt further retries.
+
 ---
 
 ### Phase 3 — Review & quality
@@ -140,5 +161,10 @@ Do not delegate overlapping write scopes.
 ## Ready? Copy and run
 
 ```bash
-goose run --recipe dev --params task="<goal>" --params repo_path="$PWD" --params constraints="<optional constraints>"
+bd prime                            # load context, confirm DB is healthy
+bd ready                            # list claimable issues
+bd update <id> --claim              # claim your task
+goose recipe run implement          # TDD build
+goose recipe run verify             # independent verification
+bd close <id>                       # record evidence and close
 ```
