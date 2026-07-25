@@ -24,6 +24,7 @@
 import path from "node:path";
 import os   from "node:os";
 import fs   from "node:fs/promises";
+import { assertNotArchive } from "./archiveBoundary.js";
 
 // ── Project root ──────────────────────────────────────────────────────────────
 export const PROJECT_ROOT: string = process.env["PROJECT_ROOT"] ?? await findProjectRoot(process.cwd());
@@ -96,6 +97,8 @@ export function subjectSourcePath(kind: string, subject: string): string {
  */
 export async function resolveSubjectPath(kind: string, subject: string): Promise<string> {
   const projectPath = subjectSourcePath(kind, subject);
+  // AC-2: fail fast if the project-space path would resolve into an archive.
+  assertNotArchive(projectPath, PROJECT_ROOT);
   try {
     await fs.access(projectPath);
     return projectPath;
