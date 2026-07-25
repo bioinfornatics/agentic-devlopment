@@ -71,16 +71,19 @@ bd close <id>         # Mark complete
 ```
 
 ### Delegation
-```
-# Transient (short tasks)
-delegate(source: "codebase-researcher", instructions: "Map auth module")
 
-# Persistent (long builds)
-orchestrator__start_agent(working_dir: "./app", name: "Builder")
-```
+Goose agents are discovered automatically from `.agents/agents/`. Active agents:
+
+| Name | Role |
+|---|---|
+| `repository-researcher` | Read-only research, context mapping |
+| `change-builder` | Bounded implementation (claims before writing) |
+| `independent-verifier` | Spec-anchored verification (never repairs) |
+
+The `/loop-engineering` recipe delegates to all three automatically.
 
 ## Next Steps
 
 1. Read [Architecture Overview](architecture-overview.md)
 2. Review [Recipe Guide](recipe-guide.md)
-3. Explore [SDD Workflow](02-sdd-workflow.md)
+3. Explore [Workflow Chooser](00-index.md)
