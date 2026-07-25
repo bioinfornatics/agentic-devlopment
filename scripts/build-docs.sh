@@ -73,6 +73,9 @@ python3 scripts/wcag-postprocess.py "$HTML_OUT"
 # Bug zyq4 – add accessible name to TOC nav element
 sed -i 's|<nav id="TOC"|<nav id="TOC" aria-label="Table of contents"|g' "$HTML_OUT"
 
+# Bug twjj – inject Mermaid.js so workflow diagrams render client-side
+sed -i 's|</body>|<script type="module">import mermaid from '"'"'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs'"'"'; mermaid.initialize({startOnLoad:true,theme:'"'"'neutral'"'"'});</script>\n</body>|' "$HTML_OUT"
+
 cp "$HTML_OUT" "$HTML_INDEX"
 
 if command -v xelatex >/dev/null 2>&1; then
