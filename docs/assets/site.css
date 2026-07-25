@@ -36,6 +36,11 @@ body {
   line-height: 1.75;
 }
 
+/* Bug 4774 – inherit box-sizing globally */
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
 body::before {
   content: "Goose + Beads + SDD";
   display: inline-flex;
@@ -106,7 +111,7 @@ p.date {
   text-underline-offset: 0.2em;
 }
 
-main,
+/* Bug qi82 – max-width on flow content; main is the grid container so excluded */
 body > h1:not(.title),
 body > h2,
 body > h3,
@@ -197,7 +202,10 @@ code {
 }
 
 pre {
-  max-width: min(100%, 58rem);
+  /* Bug 4774 – contain code blocks at narrow viewports */
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: pre;
   border: 1px solid rgb(255 255 255 / 0.12);
   border-radius: var(--radius);
   background: var(--code-bg);
@@ -212,15 +220,29 @@ pre code {
   color: inherit;
   padding: 1.1rem 1.2rem;
   overflow-x: auto;
+  max-width: 100%;
+  white-space: pre;
 }
 
+/* Bug u726 – Pandoc syntax-highlight contrast against #101828 (≥4.5:1 WCAG AA) */
+pre code .kw, pre code .ot { color: #93c5fd; }  /* blue-300   ~7:1   */
+pre code .dt               { color: #fca5a5; }  /* red-300    ~5.5:1 */
+pre code .st, pre code .ss { color: #86efac; }  /* green-300  ~5.8:1 */
+pre code .fu               { color: #c4b5fd; }  /* violet-300 ~7.2:1 */
+pre code .va, pre code .dv { color: #f9a8d4; }  /* pink-300   ~5.2:1 */
+pre code .op, pre code .cf { color: #fde68a; }  /* amber-200  ~9:1   */
+pre code .co, pre code .in { color: #94a3b8; }  /* slate-400  ~4.6:1 */
+
 table {
+  /* Bug 4774 – contain tables at narrow viewports */
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
   width: 100%;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   border-spacing: 0;
   border-collapse: separate;
-  overflow: hidden;
   background: var(--surface);
   box-shadow: 0 10px 30px rgb(15 23 42 / 0.06);
 }
@@ -247,24 +269,43 @@ hr {
   border-top: 1px solid var(--border);
 }
 
+/* Bug zyq4 – skip link and WCAG focus states */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  overflow: hidden;
+}
+.skip-link:focus {
+  position: static;
+  left: auto;
+  overflow: visible;
+}
+a:focus-visible, button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 img,
 svg {
   border-radius: calc(var(--radius) / 1.5);
 }
 
 @media (min-width: 72rem) {
-  body {
+  /* Bug qi82 – Pandoc wraps output in <main>; grid must be on main not body */
+  main {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 18rem;
     column-gap: 3rem;
     align-items: start;
   }
 
-  body::before,
   h1.title {
     grid-column: 1 / -1;
   }
 
+  /* Bug qi82 – use permissive #TOC selector (not body > #TOC) */
   #TOC {
     position: sticky;
     top: 1rem;
@@ -273,7 +314,7 @@ svg {
     margin-top: 0;
   }
 
-  body > :not(#TOC):not(script):not(style) {
+  main > :not(#TOC):not(script):not(style) {
     grid-column: 1;
   }
 }

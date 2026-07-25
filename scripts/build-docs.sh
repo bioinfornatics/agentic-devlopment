@@ -63,12 +63,15 @@ pandoc "${DOCS[@]}" \
   --toc-depth=2 \
   --standalone \
   --metadata title="Agentic Development Harness" \
-  --metadata lang=fr \
+  --metadata lang=en \
   --css assets/site.css \
   -o "$HTML_OUT"
 
 # WCAG: wrap body content in <main> landmark + fix lang attr
 python3 scripts/wcag-postprocess.py "$HTML_OUT"
+
+# Bug zyq4 – add accessible name to TOC nav element
+sed -i 's|<nav id="TOC"|<nav id="TOC" aria-label="Table of contents"|g' "$HTML_OUT"
 
 cp "$HTML_OUT" "$HTML_INDEX"
 
