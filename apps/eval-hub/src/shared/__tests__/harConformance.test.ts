@@ -179,17 +179,30 @@ describe("HAR-04 read-only Beads evidence adapter", () => {
     await expect(fs.access(issuesPath)).resolves.toBeUndefined();
   });
 
-  it("adapter returns records with all required fields", async () => {
+  it("adapter exposes all canonical Beads Issue fields", async () => {
     const records = await readBeadsEvidence(issuesPath);
     expect(records.length).toBeGreaterThan(0);
     for (const r of records.slice(0, 5)) {
-      expect(typeof r.id,        `${r.id}.id`        ).toBe("string");
-      expect(typeof r.issueType, `${r.id}.issueType`  ).toBe("string");
-      expect(typeof r.status,    `${r.id}.status`     ).toBe("string");
-      expect(Array.isArray(r.dependencies), `${r.id}.dependencies`).toBe(true);
-      expect(typeof r.ready,    `${r.id}.ready`      ).toBe("boolean");
-      expect(typeof r.blocked,  `${r.id}.blocked`    ).toBe("boolean");
-      expect(Array.isArray(r.dependents), `${r.id}.dependents`   ).toBe(true);
+      // Identity
+      expect(typeof r.id,                  `${r.id}.id`                ).toBe("string");
+      // Content
+      expect(typeof r.title,               `${r.id}.title`             ).toBe("string");
+      expect(typeof r.description,         `${r.id}.description`       ).toBe("string");
+      expect(typeof r.design,              `${r.id}.design`            ).toBe("string");
+      expect(typeof r.acceptanceCriteria,  `${r.id}.acceptanceCriteria`).toBe("string");
+      expect(typeof r.notes,               `${r.id}.notes`             ).toBe("string");
+      // Classification
+      expect(typeof r.issueType,           `${r.id}.issueType`         ).toBe("string");
+      expect(typeof r.status,              `${r.id}.status`            ).toBe("string");
+      expect(Array.isArray(r.labels),      `${r.id}.labels`            ).toBe(true);
+      // Graph
+      expect(Array.isArray(r.dependencies),`${r.id}.dependencies`      ).toBe(true);
+      expect(Array.isArray(r.dependents),  `${r.id}.dependents`        ).toBe(true);
+      // Derived
+      expect(typeof r.ready,               `${r.id}.ready`             ).toBe("boolean");
+      expect(typeof r.blocked,             `${r.id}.blocked`           ).toBe("boolean");
+      // Journal
+      expect(Array.isArray(r.comments),    `${r.id}.comments`          ).toBe(true);
     }
   });
 

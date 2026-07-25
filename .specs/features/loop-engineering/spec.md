@@ -8,6 +8,27 @@
 
 Goose provides recipes, Skills, Open Plugin hooks, isolated Summon delegates, and long-lived Orchestrator sessions. Beads provides the durable work graph. Conversation context and local trace files are not authoritative state.
 
+### Goose primitive taxonomy
+
+| Primitive | Role in the loop |
+|---|---|
+| Recipe | Describes the initial loop flow |
+| Subrecipe | Encapsulates a sub-loop or delegated step |
+| Subagent | Executes an isolated task |
+| Skill | Provides a method or expertise |
+| Plugin | Distributes skills, hooks, and scripts |
+| Hook | Triggers checks around lifecycle events |
+| MCP | Acts on external systems |
+| Memory / KG | Persists state and learnings |
+| Beads | Maintains backlog, dependencies, and states |
+| Tests / evals | Produce proof |
+| Human gate | Retains human judgement |
+| Scheduler / external runner | Launches or resumes the loop |
+
+### Beads canonical Issue fields
+
+`title` · `description` · `design` · `acceptance_criteria` · `notes` · `spec_id` · `status` · `priority` · `issue_type` · `assignee` · `owner` · `estimated_minutes` · `started_at` · `closed_at` · `close_reason` · `metadata` · `labels` · `dependencies` · `comments`
+
 ## Acceptance Criteria
 
 ### AC-LE-01 — Durable control plane

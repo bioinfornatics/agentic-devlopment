@@ -12,6 +12,27 @@ This repository implements a governed engineering loop for Goose. Child AGENTS.m
 
 Generic sequence: Trigger → Planner → Builder → independent Verifier → Memory → Manager → Controller.
 
+### Goose primitive roles in the loop
+
+| Primitive | Role |
+|---|---|
+| **Recipe** | Describes the initial loop flow (`loop-engineering`, `implement`, `research`, `verify`) |
+| **Subrecipe** | Encapsulates a sub-loop or delegated step |
+| **Subagent** | Executes an isolated task (`change-builder`, `independent-verifier`, `repository-researcher`) |
+| **Skill** | Provides a method or expertise (`task-framing`, `evidence-verification`, `loop-control`) |
+| **Plugin** | Distributes skills, hooks, and scripts (`loop-engineering`) |
+| **Hook** | Triggers checks around lifecycle events (PreToolUse, PostToolUse, Stop) |
+| **MCP** | Acts on external systems (Beads Dolt, eval-hub server) |
+| **Memory / KG** | Persists state and learnings (`.knowledge/`, `apps/kg/`) |
+| **Beads** | Maintains backlog, dependencies, and states (canonical control plane) |
+| **Tests / evals** | Produce proof (577+ TypeScript tests, 36-protocol eval catalog) |
+| **Human gate** | Retains human judgement (APPROVE/BLOCK at `36ws.5`-style gates) |
+| **Scheduler / external runner** | Launches or resumes the loop (CI, `goose recipe run loop-engineering`) |
+
+### Beads canonical Issue fields
+
+Every durable work item stores: `title`, `description`, `design`, `acceptance_criteria`, `notes`, `spec_id`, `status`, `priority`, `issue_type`, `assignee`, `owner`, `estimated_minutes`, `started_at`, `closed_at`, `close_reason`, `metadata`, `labels`, `dependencies`, `comments`. The `beadsAdapter.ts` read-only adapter exposes all of these.
+
 ## Work protocol
 
 1. Run bd prime and inspect ready/blocked work.
