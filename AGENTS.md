@@ -18,7 +18,7 @@ Generic sequence: Trigger → Planner → Builder → independent Verifier → M
 |---|---|
 | **Recipe** | Describes the initial loop flow (`loop-engineering`, `implement`, `research`, `verify`) |
 | **Subrecipe** | Encapsulates a sub-loop or delegated step |
-| **Subagent** | Executes an isolated task (`change-builder`, `independent-verifier`, `repository-researcher`) |
+| **Subagent** | Executes an isolated task (`change-builder`, `change-builder-premium`, `independent-verifier`, `independent-verifier-premium`, `repository-researcher`) |
 | **Skill** | Provides a method or expertise (`task-framing`, `evidence-verification`, `loop-control`) |
 | **Plugin** | Distributes hooks and scripts by domain (`prevent-catastrophe`, `loop-telemetry`, `loop-gate`, `beads-telemetry`) |
 | **Hook** | Triggers checks around lifecycle events (PreToolUse, PostToolUse, Stop) |
@@ -71,7 +71,7 @@ Never use Markdown TODO files. Never run sudo. Never overwrite unrelated user ch
 ## Pack artifacts
 
 - Skills: task-framing, evidence-verification, loop-control.
-- Agents: repository-researcher, change-builder, independent-verifier.
+- Agents: repository-researcher, change-builder, change-builder-premium (model: gpt-5.6-sol, rework_count ≥ 2), independent-verifier, independent-verifier-premium (model: gpt-5.6-sol, rework_count ≥ 2).
 - Recipes: research, implement, verify, loop-engineering.
 - Plugins: prevent-catastrophe (safety), loop-telemetry (lifecycle telemetry, loop-aware), loop-gate (HAR-01 env:reviewed gate), beads-telemetry (generic telemetry).
 - Spec: .specs/features/loop-engineering/spec.md.

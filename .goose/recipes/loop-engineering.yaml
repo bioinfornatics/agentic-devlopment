@@ -34,11 +34,13 @@ instructions: |
 
   3. Builder
      - Select one ready child task, ensure blockers are closed, and delegate it to change-builder.
+     - Check task metadata for rework_count. If rework_count >= 2, delegate to change-builder-premium instead of change-builder. Record the escalation and rework_count in a Beads comment.
      - The builder claims before writing and records builder_session, candidate evidence, changed files, and evidence signature in Beads.
      - Never let two builders own the same file. Retry only with a changed hypothesis or materially new evidence.
 
   4. Independent verifier  [HAR-01: gated verification requires env:reviewed]
      - Create/select a verification child depending on the build child.
+     - Check task metadata for rework_count. If rework_count >= 2, delegate to independent-verifier-premium instead of independent-verifier. Record the escalation in a Beads comment.
      - Delegate independent-verifier in a fresh isolated session; verifier_session must differ from builder_session.
      - The verifier does not repair files. It persists criterion evidence and exactly one verdict: ACCEPTED, REWORK, REPLAN, BLOCKED, or ESCALATE.
      - Gated verification (COMPLETE transition) requires env:reviewed label on the Beads task being verified; a task without env:reviewed is not eligible for COMPLETE.
