@@ -29,6 +29,7 @@ import { PROJECT_SKILLS_DIR, PROJECT_AGENTS_DIR } from "../../shared/paths.js";
 import { buildGooseInvocation, hashUtf8, inspectRuntimeHealth, inspectTreatmentActivation, terminalExecutionResult, treatmentContentHash } from "./executionIntegrity.js";
 import { analyzeGooseLogs, gooseLogCaptureForWorkspace } from "./gooseLogAnalyzer.js";
 import { analyzeSessionChain } from "./sessionChainAnalyzer.js";
+import { checkPhaseCompliance } from "./phaseComplianceChecker.js";
 import {
   EvalIntegrityV2Store, INTEGRITY_SCHEMA_V2, integrityValueHash,
   type IntegrityTerminalRecordV2,
@@ -377,6 +378,12 @@ export class SkillEvalRunner implements IEvalRunner {
     await fs.writeFile(
       path.join(cfg.workspace, "session-chain.json"),
       JSON.stringify(sessionChain, null, 2),
+    );
+    // Evaluate loop-engineering phase compliance from the chain (deterministic, LLM-free).
+    const phaseCompliance = checkPhaseCompliance(sessionChain);
+    await fs.writeFile(
+      path.join(cfg.workspace, "phase-compliance.json"),
+      JSON.stringify(phaseCompliance, null, 2),
     );
     // The analysis is the bounded durable artifact. Remove raw LLM request logs
     // because they can contain complete prompts and model responses.
