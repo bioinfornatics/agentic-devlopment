@@ -28,6 +28,7 @@ import { NULL_SINK }           from "../../shared/eventBus.js";
 import { PROJECT_SKILLS_DIR, PROJECT_AGENTS_DIR } from "../../shared/paths.js";
 import { buildGooseInvocation, hashUtf8, inspectRuntimeHealth, inspectTreatmentActivation, terminalExecutionResult, treatmentContentHash } from "./executionIntegrity.js";
 import { analyzeGooseLogs, gooseLogCaptureForWorkspace } from "./gooseLogAnalyzer.js";
+import { analyzeSessionChain } from "./sessionChainAnalyzer.js";
 import {
   EvalIntegrityV2Store, INTEGRITY_SCHEMA_V2, integrityValueHash,
   type IntegrityTerminalRecordV2,
@@ -223,7 +224,12 @@ export class SkillEvalRunner implements IEvalRunner {
     // formats as ~/.local/state/goose/logs, but concurrent workers can now be
     // attributed without time-window guesses or historical contamination.
     const gooseLogCapture = gooseLogCaptureForWorkspace(cfg.workspace);
-    const env: Record<string, string> = { XDG_STATE_HOME: gooseLogCapture.stateHome };
+    const env: Record<string, string> = {
+      XDG_STATE_HOME: gooseLogCapture.stateHome,
+      // Isolate sessions DB so delegation chain is attributable to this run only.
+      // Goose writes sessions.db to $XDG_DATA_HOME/goose/sessions/sessions.db.
+      XDG_DATA_HOME: gooseLogCapture.stateHome,
+    };
 
     // ── Build invocation ──────────────────────────────────────────────────────
     const maxTurns = cfg.maxTurns;
@@ -363,6 +369,14 @@ export class SkillEvalRunner implements IEvalRunner {
     await fs.writeFile(
       path.join(cfg.workspace, "goose-log-analysis.json"),
       JSON.stringify(gooseLogAnalysis, null, 2),
+    );
+    // Reconstruct delegation chain from the isolated sessions DB before cleanup.
+    const sessionChain = analyzeSessionChain(
+      path.join(gooseLogCapture.stateHome, "goose", "sessions", "sessions.db")
+    );
+    await fs.writeFile(
+      path.join(cfg.workspace, "session-chain.json"),
+      JSON.stringify(sessionChain, null, 2),
     );
     // The analysis is the bounded durable artifact. Remove raw LLM request logs
     // because they can contain complete prompts and model responses.
