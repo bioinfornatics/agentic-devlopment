@@ -34,7 +34,7 @@ instructions: |
 
   3. Builder
      - Select one ready child task, ensure blockers are closed, and delegate it to change-builder.
-     - Check task metadata for rework_count. If rework_count >= 2, delegate to change-builder-premium instead of change-builder. Record the escalation and rework_count in a Beads comment.
+     - Check task metadata for rework_count. If rework_count >= 4, do not delegate; emit ABORT with reason "premium builder exhausted after rework_count attempts — no agent tier remaining". If rework_count >= 2, delegate to change-builder-premium instead of change-builder. Record the escalation and rework_count in a Beads comment.
      - The builder claims before writing and records builder_session, candidate evidence, changed files, and evidence signature in Beads.
      - Never let two builders own the same file. Retry only with a changed hypothesis or materially new evidence.
 
@@ -61,6 +61,7 @@ instructions: |
      - COMPLETE requires independent proof for every global AC and closes the run with evidence.
      - ESCALATE names the exact human decision/action. ABORT records impossibility, guardrail, exhausted budget, or repeated no-progress.
      - Never continue by default. Stop after the same failure twice without new evidence or two consecutive zero-progress iterations.
+     - Escalation ceiling: rework_count 0–1 uses change-builder (standard), rework_count 2–3 uses change-builder-premium (gpt-5.6-sol), rework_count >= 4 triggers ABORT — no further builder tier exists.
 
   All phase handoffs must survive context replacement because the authoritative state is in Beads.
 prompt: |
