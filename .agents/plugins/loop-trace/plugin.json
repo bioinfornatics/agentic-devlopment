@@ -1,0 +1,7 @@
+{
+  "name": "loop-trace",
+  "version": "1.0.0",
+  "description": "Structured tracing of loop-engineering stages, agent delegations, and recipe calls. Writes JSONL to ~/.local/state/goose/logs/loop-trace/<date>/<session_id>.jsonl",
+  "author": "agentic-devlopment",
+  "hooks": "hooks/hooks.json"
+}

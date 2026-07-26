@@ -108,6 +108,26 @@ Active values:
 
 These work **alongside** (not instead of) the Beads `loop_max_attempts` metadata and the controller's REWORK→ESCALATE→ABORT transitions. Beads tracks logical attempts; Goose enforces the runtime floor.
 
+## Plugin token budget
+
+Each active plugin injects hook stubs into every session context. Current overhead with all 6 loop-engineering plugins enabled:
+
+| Plugin | Active hooks | Est. tokens |
+|---|---|---|
+| `prevent-catastrophe` | 1 | ~800 |
+| `loop-gate` | 1 | ~600 |
+| `loop-telemetry` | 6 | ~400 |
+| `beads-telemetry` | 1 | ~300 |
+| `loop-breaker` | 2 | ~400 |
+| `loop-trace` | 4 | ~500 |
+| **Total** | **15 hooks** | **~3 000** |
+
+> ⚠️ SOTA signal: 10 plugins ≈ 40k tokens. Keep active plugin count ≤ 6 and total hook overhead ≤ 5k tokens. See `docs/loop-engineering/MAPPING.md` for the full breakdown.
+
+## Memory and Manager stages — inline design decision
+
+Stages 04 (Memory) and 05 (Manager) are **intentionally handled inline** in the `loop-engineering.yaml` controller session, without dedicated subagents. This reduces latency and token cost for two low-cognitive-complexity steps. A dedicated agent would be justified only if backlog management complexity grows significantly.
+
 ## Structural change workflow
 
 For skill/agent/recipe changes:

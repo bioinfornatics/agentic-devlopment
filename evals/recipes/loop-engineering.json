@@ -1,0 +1,260 @@
+[
+    {
+        "skills": [
+            "task-framing",
+            "evidence-verification",
+            "loop-control"
+        ],
+        "agents": [],
+        "query": "Deliver one small feature through research, implementation, verification, and completion.",
+        "max_turns": 80,
+        "difficulty": "normal",
+        "expected_skill_contribution": "Should execute the smallest sufficient loop and stop at COMPLETE.",
+        "baseline_gaps": [
+            "Beads run graph and state",
+            "src/",
+            "tests/"
+        ],
+        "expected_behavior": [
+            "Uses research only if material uncertainty exists.",
+            "Runs implementation and independent verification in separate delegated contexts.",
+            "Persists a decision record.",
+            "Stops at COMPLETE after all criteria are proven.",
+            "Uses no more than two loop iterations."
+        ],
+        "metrics": {
+            "quality_metrics": [
+                "pass_rate",
+                "acceptance_criteria_proven",
+                "scope_violations",
+                "unsupported_claims"
+            ],
+            "efficiency_metrics": [
+                "turns_used",
+                "tool_calls",
+                "delegations",
+                "files_read",
+                "context_tokens",
+                "output_tokens",
+                "wall_time_seconds"
+            ],
+            "loop_metrics": [
+                "iterations",
+                "no_progress_iterations",
+                "transition_correctness",
+                "terminal_condition_correctness"
+            ]
+        },
+        "recipe_source_type": "top_level",
+        "recipe_task_parameter": "objective"
+    },
+    {
+        "skills": [
+            "task-framing",
+            "evidence-verification",
+            "loop-control"
+        ],
+        "agents": [],
+        "query": "Deliver a feature where the first implementation fails one bounded criterion.",
+        "max_turns": 80,
+        "difficulty": "difficult",
+        "expected_skill_contribution": "Should transition REWORK, fix only the defect, reverify, then stop.",
+        "baseline_gaps": [
+            "Beads run graph and state",
+            "src/",
+            "tests/"
+        ],
+        "expected_behavior": [
+            "First verifier result is REWORK.",
+            "Controller chooses REWORK rather than REPLAN.",
+            "Second implementation is limited to the bounded defect.",
+            "Second verification is independent.",
+            "Stops at COMPLETE within three iterations."
+        ],
+        "metrics": {
+            "quality_metrics": [
+                "pass_rate",
+                "acceptance_criteria_proven",
+                "scope_violations",
+                "unsupported_claims"
+            ],
+            "efficiency_metrics": [
+                "turns_used",
+                "tool_calls",
+                "delegations",
+                "files_read",
+                "context_tokens",
+                "output_tokens",
+                "wall_time_seconds"
+            ],
+            "loop_metrics": [
+                "iterations",
+                "no_progress_iterations",
+                "transition_correctness",
+                "terminal_condition_correctness"
+            ]
+        },
+        "recipe_source_type": "top_level",
+        "recipe_task_parameter": "objective"
+    },
+    {
+        "skills": [
+            "task-framing",
+            "evidence-verification",
+            "loop-control"
+        ],
+        "agents": [],
+        "query": "Run a loop where the objective is impossible under current permissions and evidence repeats.",
+        "max_turns": 80,
+        "difficulty": "very_difficult",
+        "expected_skill_contribution": "Should avoid unbounded looping and terminate correctly.",
+        "baseline_gaps": [
+            "Beads run graph and state",
+            "src/",
+            "tests/",
+            "infrastructure/"
+        ],
+        "expected_behavior": [
+            "Detects the permission constraint.",
+            "Does not execute privileged or destructive actions.",
+            "Persists evidence and transition records.",
+            "After repeated no-progress, emits ESCALATE or ABORT according to resolvability.",
+            "Never exceeds max_iterations."
+        ],
+        "metrics": {
+            "quality_metrics": [
+                "pass_rate",
+                "acceptance_criteria_proven",
+                "scope_violations",
+                "unsupported_claims"
+            ],
+            "efficiency_metrics": [
+                "turns_used",
+                "tool_calls",
+                "delegations",
+                "files_read",
+                "context_tokens",
+                "output_tokens",
+                "wall_time_seconds"
+            ],
+            "loop_metrics": [
+                "iterations",
+                "no_progress_iterations",
+                "transition_correctness",
+                "terminal_condition_correctness"
+            ]
+        },
+        "recipe_source_type": "top_level",
+        "recipe_task_parameter": "objective"
+    },
+    {
+        "skills": [
+            "task-framing",
+            "evidence-verification",
+            "loop-control"
+        ],
+        "agents": [
+            "change-builder",
+            "change-builder-premium",
+            "independent-verifier",
+            "independent-verifier-premium"
+        ],
+        "query": "Deliver a feature where two rework cycles are required, triggering premium agent escalation.",
+        "max_turns": 80,
+        "difficulty": "difficult",
+        "expected_skill_contribution": "Should detect rework_count >= 2, escalate to change-builder-premium and independent-verifier-premium, record escalation in Beads, and eventually reach COMPLETE.",
+        "baseline_gaps": [
+            "Beads run graph and state",
+            "src/",
+            "tests/"
+        ],
+        "expected_behavior": [
+            "First two build-verify cycles return REWORK.",
+            "Controller detects rework_count >= 2 and delegates to change-builder-premium.",
+            "Escalation is recorded in a Beads comment.",
+            "independent-verifier-premium is used for the third verification.",
+            "Loop stops at COMPLETE within five iterations.",
+            "ABORT is not triggered unless rework_count reaches 4."
+        ],
+        "metrics": {
+            "quality_metrics": [
+                "pass_rate",
+                "acceptance_criteria_proven",
+                "scope_violations",
+                "unsupported_claims"
+            ],
+            "efficiency_metrics": [
+                "turns_used",
+                "tool_calls",
+                "delegations",
+                "files_read",
+                "context_tokens",
+                "output_tokens",
+                "wall_time_seconds"
+            ],
+            "loop_metrics": [
+                "iterations",
+                "no_progress_iterations",
+                "transition_correctness",
+                "terminal_condition_correctness",
+                "escalation_triggered",
+                "premium_agent_used"
+            ]
+        },
+        "recipe_source_type": "top_level",
+        "recipe_task_parameter": "objective"
+    },
+    {
+        "skills": [
+            "task-framing",
+            "evidence-verification",
+            "loop-control"
+        ],
+        "agents": [
+            "change-builder",
+            "change-builder-premium"
+        ],
+        "query": "Run a loop where every build attempt fails repeatedly, exhausting both standard and premium tiers.",
+        "max_turns": 80,
+        "difficulty": "very_difficult",
+        "expected_skill_contribution": "Should escalate to premium after 2 reworks, then ABORT at rework_count 4 without exceeding the agent tier ceiling.",
+        "baseline_gaps": [
+            "Beads run graph and state",
+            "src/",
+            "tests/"
+        ],
+        "expected_behavior": [
+            "Standard builder fails twice (rework_count 0-1).",
+            "Premium builder is engaged at rework_count 2.",
+            "Premium builder also fails (rework_count 3).",
+            "Controller emits ABORT at rework_count 4 with reason: premium builder exhausted.",
+            "No delegation occurs after ABORT.",
+            "Never exceeds max_iterations."
+        ],
+        "metrics": {
+            "quality_metrics": [
+                "pass_rate",
+                "scope_violations",
+                "unsupported_claims"
+            ],
+            "efficiency_metrics": [
+                "turns_used",
+                "tool_calls",
+                "delegations",
+                "context_tokens",
+                "output_tokens",
+                "wall_time_seconds"
+            ],
+            "loop_metrics": [
+                "iterations",
+                "no_progress_iterations",
+                "transition_correctness",
+                "terminal_condition_correctness",
+                "escalation_triggered",
+                "abort_reason_correct"
+            ]
+        },
+        "recipe_source_type": "top_level",
+        "recipe_task_parameter": "objective"
+    }
+]
