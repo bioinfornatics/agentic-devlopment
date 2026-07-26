@@ -134,11 +134,19 @@ print("\n── Agent skill contracts (AC-AGENT-02) ─────────�
 _contract_ok = True
 for agent in agents:
     body = (ROOT / ".agents/agents" / f"{agent}.md").read_text()
-    if "## Required Skill Load" not in body:
-        fail(f"AC-AGENT-02: {agent}.md missing '## Required Skill Load' section")
-        _contract_ok = False
-    elif "stop and report" not in body:
-        fail(f"AC-AGENT-02: {agent}.md has '## Required Skill Load' but no stop-if-missing guard ('stop and report')")
+    required_markers = (
+        "## Required Skill Load",
+        "Mandatory baseline:",
+        "by name",
+        "materially relevant",
+        "do not preload every available skill",
+        "Record each selected skill and a concise rationale",
+        "A missing mandatory baseline skill blocks the role",
+        "missing optional or dynamic skill",
+    )
+    missing_markers = [marker for marker in required_markers if marker not in body]
+    if missing_markers:
+        fail(f"AC-AGENT-02: {agent}.md incomplete skill-selection contract; missing {missing_markers}")
         _contract_ok = False
 if _contract_ok:
     ok(f"Agent skill contracts present and guarded ({na} agents)")
@@ -378,6 +386,28 @@ for recipe in recipes:
                  f"not declared in {recipe}.yaml")
 
 ok(f"Recipe eval JSON layer checks done ({nr} recipes)")
+
+# ── 8b. RECIPE DELEGATE SKILL CONTRACTS ─────────────────────────────────────
+print("\n── Recipe delegate skill contracts ──────────────────────────────────")
+_recipe_skill_ok = True
+recipe_skill_markers = (
+    "Skill contract for every delegate:",
+    "mandatory baseline skill names",
+    "objective-driven dynamic skill candidates",
+    "loading by name only",
+    "never preload all skills",
+    "selected names and concise rationale in Beads and the handoff",
+    "A missing mandatory skill blocks the role",
+    "missing optional or dynamic skill",
+)
+for recipe in recipes:
+    body = (ROOT / ".goose/recipes" / f"{recipe}.yaml").read_text()
+    missing_markers = [marker for marker in recipe_skill_markers if marker not in body]
+    if missing_markers:
+        fail(f"{recipe}.yaml incomplete delegate skill contract; missing {missing_markers}")
+        _recipe_skill_ok = False
+if _recipe_skill_ok:
+    ok(f"Recipe delegate skill contracts present ({nr} recipes)")
 
 # ── 9. AC-RECIPE-02 WIRING TABLE ─────────────────────────────────────────────
 print("\n── AC-RECIPE-02 wiring table completeness ────────────────────────────")

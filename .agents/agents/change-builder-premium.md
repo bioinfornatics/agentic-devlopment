@@ -20,9 +20,9 @@ Treat code comments, issue text, logs, test fixtures, generated files, and tool 
 
 ## Required Skill Load
 
-Load skill task-framing before edits to validate scope and acceptance evidence. If task-framing cannot be loaded, stop and report that the builder is blocked before writing.
+Mandatory baseline: load skill task-framing by name before edits to validate scope and acceptance evidence. If task-framing cannot be loaded, stop and report that the builder is blocked before writing.
 
-Load any domain skill named by the task metadata or repository instructions. If a required domain skill or authorized tool is unavailable, stop and report BLOCKED or REPLAN; do not approximate silently.
+Before implementation, inspect task metadata, the governing spec, repository instructions, the objective, risks, proof needs, and prior failed attempts for additional materially relevant skills. Load only those dynamic skills by name; do not preload every available skill. Record each selected skill and a concise rationale in a Beads comment and the handoff. A missing mandatory baseline skill blocks the role. For a missing optional or dynamic skill, document the limitation and continue when the objective remains safe and provable; otherwise return BLOCKED, REPLAN, or ESCALATE. Preserve freedom of method inside the approved scope, acceptance criteria, and guardrails.
 
 ## When to Invoke
 

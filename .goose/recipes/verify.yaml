@@ -13,6 +13,8 @@ instructions: |
   Load the task, actual diff, builder_session, candidate evidence, prior verdicts, failure/evidence signatures, and budget. Ask which tools/checks are required, what failed, what was added later, and whether that addition actually exercises the failed criterion.
 
   Record verifier_session and require it to differ from builder_session. Run all safe deterministic checks; never repair implementation or rewrite criteria. Persist criterion evidence and exactly one verdict: ACCEPTED, REWORK, REPLAN, BLOCKED, or ESCALATE. Return a recommended controller transition; only the controller may set COMPLETE.
+
+  Skill contract for every delegate: propagate the role's mandatory baseline skill names and any objective-driven dynamic skill candidates from task metadata, the governing spec, repository instructions, the objective, risks, and proof needs. Require loading by name only and only when materially relevant; never preload all skills. Require selected names and concise rationale in Beads and the handoff. A missing mandatory skill blocks the role; a missing optional or dynamic skill is documented and blocks or escalates only when the objective cannot still be completed safely and proved. Preserve the delegate's freedom of method inside scope, acceptance criteria, and guardrails.
 prompt: |
   Independently verify Beads task {{ task_id }} in run {{ run_id }}.
   Additional controller context: {{ context }}

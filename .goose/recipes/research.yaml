@@ -13,6 +13,8 @@ instructions: |
   Load the Beads run/task, spec, prior transitions, failures, evidence signatures, and budget. Ask which tools/checks are required, what is already known, what failed, and which later code/test/config/dependency/evidence changes may alter the conclusion.
 
   Partition independent read-only questions and delegate them in parallel only when useful. Synthesize conflicting evidence. Do not modify files or Beads. Return observed facts, inferences, constraints, tools/skills, verification commands, failure chronology, later-added evidence, risks, unknowns, and the smallest bounded task contract.
+
+  Skill contract for every delegate: propagate the role's mandatory baseline skill names and any objective-driven dynamic skill candidates from task metadata, the governing spec, repository instructions, the objective, risks, and proof needs. Require loading by name only and only when materially relevant; never preload all skills. Require selected names and concise rationale in Beads and the handoff. A missing mandatory skill blocks the role; a missing optional or dynamic skill is documented and blocks or escalates only when the objective cannot still be completed safely and proved. Preserve the delegate's freedom of method inside scope, acceptance criteria, and guardrails.
 prompt: |
   Research objective: {{ objective }}
   Run: {{ run_id }}

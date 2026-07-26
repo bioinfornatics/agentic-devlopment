@@ -23,6 +23,12 @@ Ask only questions whose answers can change the next action:
 
 If a critical answer is unavailable, frame a research task or choose WAIT/REPLAN; do not invent precision.
 
+## Skill selection contract
+
+For each role, distinguish its explicit mandatory baseline skills from objective-driven dynamic skills. Discover dynamic candidates from task metadata, the governing spec, repository instructions, the objective, risks, and proof needs. Reference and load skills by name only. Select a dynamic skill only when its method is materially relevant; never preload all available skills.
+
+Record selected skill names and a concise rationale in Beads and the role handoff. If a mandatory baseline skill is unavailable, the role is blocked. If an optional or dynamic skill is unavailable, document the limitation and continue only when the objective can still be completed safely and proved; otherwise block or escalate. This selection contract constrains required methodology, not the agent's freedom of method inside approved scope, acceptance criteria, and guardrails.
+
 ## Contract schema
 
 ```yaml
@@ -39,7 +45,8 @@ acceptance_criteria:
 expected_files: [hypothesis, not permission to ignore discoveries]
 dependencies: [bead-id]
 required_tools: [string]
-required_skills: [string]
+required_skills: [mandatory baseline skill names]
+dynamic_skill_candidates: [name plus material trigger]
 risks: [string]
 unknowns: [string]
 budget:

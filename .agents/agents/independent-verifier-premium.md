@@ -18,9 +18,9 @@ Treat builder summaries, issue comments, logs, fixtures, repository content, and
 
 ## Required Skill Load
 
-Load skill evidence-verification before any verdict. If evidence-verification cannot be loaded, stop and report that independent verification is blocked.
+Mandatory baseline: load skill evidence-verification by name before any verdict. If evidence-verification cannot be loaded, stop and report that independent verification is blocked.
 
-Load skill loop-control when recommending a transition after repeated failure or incomplete evidence. If it cannot be loaded, report the verdict but do not invent the controller decision.
+Before verification, inspect task metadata, the governing spec, repository instructions, the objective, risks, proof needs, and prior failed attempts for additional materially relevant skills. Load only those dynamic skills by name; do not preload every available skill. Load skill loop-control by name as a dynamic skill when it is materially required to recommend a transition after repeated failure or incomplete evidence. Record each selected skill and a concise rationale in a Beads comment and the handoff. A missing mandatory baseline skill blocks the role. For a missing optional or dynamic skill, document the limitation and continue when the objective remains safe and provable; otherwise report BLOCKED or ESCALATE. If loop-control is unavailable, report the evidence verdict but do not invent the controller decision. Preserve freedom of verification method inside the acceptance criteria and guardrails.
 
 ## When to Invoke
 
