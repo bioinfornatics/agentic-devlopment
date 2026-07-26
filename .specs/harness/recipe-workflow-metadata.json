@@ -28,7 +28,23 @@
       },
       "session": {
         "max_tool_repetitions": 5
-      }
+      },
+      "controller_skills": [
+        {
+          "skill": "task-framing",
+          "applicability": "always"
+        }
+      ],
+      "delegates": [
+        {
+          "agent": "change-builder",
+          "mandatory_skills": [
+            "task-framing"
+          ],
+          "condition": "ready bounded implementation task"
+        }
+      ],
+      "skills_extension_required": true
     },
     "loop-engineering": {
       "source_path": ".goose/recipes/loop-engineering.yaml",
@@ -56,7 +72,59 @@
       },
       "session": {
         "max_tool_repetitions": 5
-      }
+      },
+      "controller_skills": [
+        {
+          "skill": "task-framing",
+          "applicability": "planning and building"
+        },
+        {
+          "skill": "evidence-verification",
+          "applicability": "verification"
+        },
+        {
+          "skill": "loop-control",
+          "applicability": "controller transition"
+        }
+      ],
+      "delegates": [
+        {
+          "agent": "repository-researcher",
+          "mandatory_skills": [
+            "task-framing"
+          ],
+          "condition": "material unknowns"
+        },
+        {
+          "agent": "change-builder",
+          "mandatory_skills": [
+            "task-framing"
+          ],
+          "condition": "rework_count below 2"
+        },
+        {
+          "agent": "change-builder-premium",
+          "mandatory_skills": [
+            "task-framing"
+          ],
+          "condition": "rework_count 2 through 3"
+        },
+        {
+          "agent": "independent-verifier",
+          "mandatory_skills": [
+            "evidence-verification"
+          ],
+          "condition": "rework_count below 2"
+        },
+        {
+          "agent": "independent-verifier-premium",
+          "mandatory_skills": [
+            "evidence-verification"
+          ],
+          "condition": "rework_count 2 through 3"
+        }
+      ],
+      "skills_extension_required": true
     },
     "research": {
       "source_path": ".goose/recipes/research.yaml",
@@ -80,7 +148,23 @@
       },
       "session": {
         "max_tool_repetitions": 5
-      }
+      },
+      "controller_skills": [
+        {
+          "skill": "task-framing",
+          "applicability": "always"
+        }
+      ],
+      "delegates": [
+        {
+          "agent": "repository-researcher",
+          "mandatory_skills": [
+            "task-framing"
+          ],
+          "condition": "material repository unknowns"
+        }
+      ],
+      "skills_extension_required": true
     },
     "verify": {
       "source_path": ".goose/recipes/verify.yaml",
@@ -108,7 +192,54 @@
       },
       "session": {
         "max_tool_repetitions": 5
-      }
+      },
+      "controller_skills": [
+        {
+          "skill": "evidence-verification",
+          "applicability": "always"
+        },
+        {
+          "skill": "loop-control",
+          "applicability": "recovery recommendation after failure"
+        }
+      ],
+      "delegates": [
+        {
+          "agent": "independent-verifier",
+          "mandatory_skills": [
+            "evidence-verification"
+          ],
+          "condition": "independent evidence verdict"
+        }
+      ],
+      "skills_extension_required": true
+    }
+  },
+  "agents": {
+    "change-builder": {
+      "mandatory_skills": [
+        "task-framing"
+      ]
+    },
+    "change-builder-premium": {
+      "mandatory_skills": [
+        "task-framing"
+      ]
+    },
+    "independent-verifier": {
+      "mandatory_skills": [
+        "evidence-verification"
+      ]
+    },
+    "independent-verifier-premium": {
+      "mandatory_skills": [
+        "evidence-verification"
+      ]
+    },
+    "repository-researcher": {
+      "mandatory_skills": [
+        "task-framing"
+      ]
     }
   }
 }

@@ -20,7 +20,7 @@ Generic sequence: Trigger → Planner → Builder → independent Verifier → M
 | **Subrecipe** | Encapsulates a sub-loop or delegated step |
 | **Subagent** | Executes an isolated task (`change-builder`, `change-builder-premium`, `independent-verifier`, `independent-verifier-premium`, `repository-researcher`) |
 | **Skill** | Provides a method or expertise (`task-framing`, `evidence-verification`, `loop-control`) |
-| **Plugin** | Distributes hooks and scripts by domain (`prevent-catastrophe`, `loop-telemetry`, `loop-gate`, `beads-telemetry`) |
+| **Plugin** | Distributes hooks and scripts by domain (`prevent-catastrophe`, `loop-gate`, `beads-telemetry`, `loop-breaker`) |
 | **Hook** | Triggers checks around lifecycle events (PreToolUse, PostToolUse, Stop) |
 | **MCP** | Acts on external systems (Beads Dolt, eval-hub server) |
 | **Memory / KG** | Persists state and learnings (`.knowledge/`, `apps/kg/`) |
@@ -73,7 +73,7 @@ Never use Markdown TODO files. Never run sudo. Never overwrite unrelated user ch
 - Skills: task-framing, evidence-verification, loop-control.
 - Agents: repository-researcher, change-builder, change-builder-premium (model: gpt-5.6-sol, rework_count ≥ 2), independent-verifier, independent-verifier-premium (model: gpt-5.6-sol, rework_count ≥ 2).
 - Recipes: research, implement, verify, loop-engineering.
-- Plugins: prevent-catastrophe (safety), loop-telemetry (lifecycle telemetry, loop-aware), loop-gate (HAR-01 env:reviewed gate), beads-telemetry (generic telemetry).
+- Plugins: prevent-catastrophe (safety), loop-gate (HAR-01 env:reviewed gate), beads-telemetry (generic lifecycle telemetry), loop-breaker (consecutive tool-failure safety).
 - Spec: .specs/features/loop-engineering/spec.md.
 - Sequence model: docs/loop-engineering/diagrams/.
 
@@ -110,16 +110,15 @@ These work **alongside** (not instead of) the Beads `loop_max_attempts` metadata
 
 ## Plugin token budget
 
-Each active plugin injects hook stubs into every session context. Current overhead with all 6 loop-engineering plugins enabled:
+Each active plugin injects hook stubs into every session context. Current overhead with all 4 loop-engineering plugins enabled:
 
 | Plugin | Active hooks | Est. tokens |
 |---|---|---|
 | `prevent-catastrophe` | 1 | ~800 |
 | `loop-gate` | 1 | ~600 |
-| `loop-telemetry` | 6 | ~400 |
-| `beads-telemetry` | 1 | ~300 |
+| `beads-telemetry` | 6 | ~300 |
 | `loop-breaker` | 2 | ~400 |
-| **Total** | **13 hooks** | **~2 500** |
+| **Total** | **10 hooks** | **~2 100** |
 
 > ⚠️ SOTA signal: 10 plugins ≈ 40k tokens. Keep active plugin count ≤ 6 and total hook overhead ≤ 5k tokens. See `docs/loop-engineering/MAPPING.md` for the full breakdown.
 
@@ -144,7 +143,7 @@ Recipe eval agents arrays list only in-session agents. Summoned agents are not L
 
 ~~~bash
 find .goose/recipes -name '*.yaml' -exec goose recipe validate {} \;
-for p in prevent-catastrophe loop-telemetry loop-gate beads-telemetry; do sh .agents/plugins/$p/tests/test-plugin.sh; done
+for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker; do sh .agents/plugins/$p/tests/test-plugin.sh; done
 python3 scripts/check-recipe-metadata.py
 python3 scripts/check-consistency.py
 node apps/kg/dist/cli.js bootstrap --dry-run

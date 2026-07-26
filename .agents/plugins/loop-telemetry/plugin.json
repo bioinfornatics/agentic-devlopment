@@ -1,5 +1,0 @@
-{
-  "name": "loop-telemetry",
-  "version": "1.0.0",
-  "description": "Lifecycle telemetry into Beads for runs labelled loop-engineering. Silently skips runs without that label."
-}

@@ -82,7 +82,7 @@ else:
 expected_skills = {"task-framing", "evidence-verification", "loop-control"}
 expected_agents = {"repository-researcher", "change-builder", "change-builder-premium", "independent-verifier", "independent-verifier-premium"}
 expected_recipes = {"loop-engineering", "implement", "research", "verify"}
-expected_plugins = {"prevent-catastrophe", "loop-telemetry", "loop-gate", "beads-telemetry", "loop-breaker"}
+expected_plugins = {"prevent-catastrophe", "loop-gate", "beads-telemetry", "loop-breaker"}
 if set(skills) != expected_skills:
     fail(f"Active skills drift: {skills}")
 else:
@@ -91,7 +91,7 @@ plugins = sorted(p.parent.name for p in (ROOT / ".agents/plugins").glob("*/plugi
 if set(plugins) != expected_plugins:
     fail(f"Active plugins drift: {plugins}")
 else:
-    ok("Active plugin inventory = 5")
+    ok("Active plugin inventory = 4")
 
 # ── 2. README SKILLS TABLE ────────────────────────────────────────────────────
 print("\n── README skills table ───────────────────────────────────────────────")
