@@ -31,7 +31,29 @@ Generic sequence: Trigger → Planner → Builder → independent Verifier → M
 
 ### Beads canonical Issue fields
 
-Every durable work item stores: `title`, `description`, `design`, `acceptance_criteria`, `notes`, `spec_id`, `status`, `priority`, `issue_type`, `assignee`, `owner`, `estimated_minutes`, `started_at`, `closed_at`, `close_reason`, `metadata`, `labels`, `dependencies`, `comments`. The `beadsAdapter.ts` read-only adapter exposes all of these.
+Every durable work item stores the following fields. The `beadsAdapter.ts` read-only adapter exposes all of them.
+
+| Need | Native Beads field |
+|---|---|
+| Objective | `title`, `description` |
+| Design | `design` |
+| Acceptance criteria | `acceptance_criteria` |
+| Working notes and context | `notes` |
+| Specification reference | `spec_id` |
+| State | `status` |
+| Priority | `priority` |
+| Work type | `issue_type` |
+| Assignment | `assignee` |
+| Human owner | `owner` |
+| Time budget | `estimated_minutes` |
+| Start and end timestamps | `started_at`, `closed_at` |
+| Close reason | `close_reason` |
+| Session that closed the item | `closed_by_session` |
+| Deadline and deferral | `due_at`, `defer_until` |
+| Additional structured data | `metadata` |
+| Labels | `labels` |
+| Dependencies | `dependencies` |
+| Narrative log | `comments` |
 
 ## Work protocol
 
