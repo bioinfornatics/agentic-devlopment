@@ -65,6 +65,7 @@ export interface IGrader {
     gooseOutput: string,
     runDir:      string,
     gooseCli:    string,
+    runtime?: Readonly<{ provider: string | null; model: string | null }>,
   ): Promise<GradingResult>;
 }
 

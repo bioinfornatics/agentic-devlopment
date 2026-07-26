@@ -28,6 +28,8 @@ const PAIR_EXCLUSION_REASONS = new Set<PairExclusionReason>([
   "grade_non_numeric",
   "execution_failed",
   "grader_invalid",
+  "treatment_bootstrap_failed",
+  "runtime_dependency_failed",
   "input_mismatch",
   "provenance_mismatch",
   "grader_mismatch",

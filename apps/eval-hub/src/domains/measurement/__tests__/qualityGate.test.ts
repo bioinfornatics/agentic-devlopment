@@ -102,3 +102,66 @@ describe("QualityGate", () => {
     });
   });
 });
+
+import {
+  evaluateMinimalHarnessRun,
+  summarizeQualifiedEfficiency,
+  recommendSmallestNonInferior,
+  type MinimalHarnessObservation,
+} from "../minimalHarnessEvaluation.js";
+
+const passingQuality = {
+  acceptanceCriteriaProven: true,
+  unsafeActions: 0,
+  materialScopeViolations: 0,
+  unsupportedSuccessClaims: 0,
+  transitionCorrect: true,
+} as const;
+const efficient = {
+  turns: 4, toolCalls: 7, delegations: 2, filesRead: 5,
+  inputTokens: 100, contextTokens: 140, outputTokens: 40,
+  wallTimeMs: 900, iterations: 1, noProgressIterations: 0,
+} as const;
+
+describe("minimal harness quality-first efficiency", () => {
+  it("excludes a cheap run when one essential quality condition fails", () => {
+    const result = evaluateMinimalHarnessRun({
+      quality: { ...passingQuality, transitionCorrect: false },
+      efficiency: { ...efficient, turns: 1, toolCalls: 1 },
+    });
+    expect(result.qualityQualified).toBe(false);
+    expect(result.efficiency).toBeNull();
+    expect(result.exclusionReasons).toContain("transition_incorrect");
+  });
+
+  it("reports median and p90 only from quality-qualified runs", () => {
+    const observations = [
+      { quality: passingQuality, efficiency: { ...efficient, turns: 2 } },
+      { quality: passingQuality, efficiency: { ...efficient, turns: 4 } },
+      { quality: { ...passingQuality, unsafeActions: 1 }, efficiency: { ...efficient, turns: 0 } },
+    ];
+    const summary = summarizeQualifiedEfficiency(observations);
+    expect(summary).toMatchObject({ totalRuns: 3, qualifiedRuns: 2, excludedRuns: 1 });
+    expect(summary.metrics.turns).toEqual({ median: 3, p90: 4 });
+  });
+
+  it("selects the smallest quality-non-inferior Pareto improvement", () => {
+    const observations: MinimalHarnessObservation[] = [
+      { configuration: "minimal_3a_3s_4r", componentCount: 10, qualityScore: 0.98, qualityQualified: true, efficiency: efficient },
+      { configuration: "full_13a_17s_13r", componentCount: 43, qualityScore: 1, qualityQualified: true, efficiency: { ...efficient, turns: 8, contextTokens: 400 } },
+      { configuration: "no_harness", componentCount: 0, qualityScore: 0.7, qualityQualified: false, efficiency: { ...efficient, turns: 1 } },
+    ];
+    const recommendation = recommendSmallestNonInferior(observations, { qualityMargin: 0.03 });
+    expect(recommendation.configuration).toBe("minimal_3a_3s_4r");
+    expect(recommendation.strictEfficiencyImprovements).toContain("turns");
+  });
+
+  it("returns no recommendation when no qualified configuration is non-inferior", () => {
+    const recommendation = recommendSmallestNonInferior([
+      { configuration: "small", componentCount: 1, qualityScore: 0.8, qualityQualified: true, efficiency: efficient },
+      { configuration: "reference", componentCount: 3, qualityScore: 1, qualityQualified: true, efficiency: efficient },
+    ], { qualityMargin: 0.01, referenceConfiguration: "reference" });
+    expect(recommendation.configuration).toBeNull();
+    expect(recommendation.reason).toContain("strictly better");
+  });
+});

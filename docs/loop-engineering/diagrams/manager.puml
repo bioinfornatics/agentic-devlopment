@@ -1,0 +1,56 @@
+@startuml manager
+!include ../includes/theme.iuml
+!include ../includes/common-artifacts.iuml
+
+title <b>05 · GESTIONNAIRE</b> — prochain travail
+left to right direction
+
+package "Entrées" {
+  $InputArtifact(remaining, "Travail restant")
+  $InputArtifact(findings, "Écarts et blocages")
+  $InputArtifact(knowledge, "Connaissances disponibles")
+  $InputArtifact(capacity, "Capacité et limites WIP")
+  $InputArtifact(progress, "Progrès depuis l'itération précédente")
+}
+
+component "Gestionnaire" as manager #141A21 {
+  rectangle "Normaliser le backlog" as normalize
+  rectangle "Évaluer valeur, risque et urgence" as assess
+  rectangle "Identifier dépendances et attentes" as dependencies
+  rectangle "Détecter stagnation et répétition" as stagnation
+  rectangle "Appliquer les limites WIP" as wip
+  rectangle "Sélectionner ou différer le prochain lot" as select
+}
+
+package "Sorties" {
+  $OutputArtifact(priority, "Backlog priorisé")
+  $OutputArtifact(next, "Prochain lot de travail")
+  $OutputArtifact(deferred, "Éléments différés ou en attente")
+  $OutputArtifact(escalations, "Escalades nécessaires")
+  $OutputArtifact(progressSignal, "Signal de progrès ou stagnation")
+}
+
+remaining --> normalize
+findings --> assess
+knowledge --> assess
+capacity --> wip
+progress --> stagnation
+normalize --> assess
+assess --> dependencies
+dependencies --> stagnation
+stagnation --> wip
+wip --> select
+assess --> priority
+select --> next
+select --> deferred
+assess --> escalations
+stagnation --> progressSignal
+
+note bottom of manager
+Le gestionnaire peut décider qu'aucune tâche ne doit être lancée.
+Une absence de progrès répétée doit être transmise au contrôleur, pas masquée par plus d'activité.
+end note
+
+$BackLink(back)
+back .. manager
+@enduml

@@ -1,0 +1,54 @@
+@startuml verifier
+!include ../includes/theme.iuml
+!include ../includes/common-artifacts.iuml
+
+title <b>03 · VÉRIFICATEUR INDÉPENDANT</b> — preuve
+left to right direction
+
+package "Entrées" {
+  $InputArtifact(result, "Résultat produit")
+  $InputArtifact(criteria, "Critères de succès")
+  $InputArtifact(proofs, "Preuves candidates")
+  $InputArtifact(reference, "Référentiel attendu")
+  $InputArtifact(change, "Diff ou artefact produit")
+}
+
+component "Vérificateur indépendant" as verifier #141A21 {
+  rectangle "Reconstituer le périmètre vérifié" as scope
+  rectangle "Exécuter des contrôles reproductibles" as tests
+  rectangle "Comparer au référentiel" as compare
+  rectangle "Mesurer écarts et régressions" as gaps
+  rectangle "Qualifier confiance et inconnues" as confidence
+  rectangle "Émettre un verdict motivé" as verdict
+}
+
+package "Sorties" {
+  $OutputArtifact(decision, "ACCEPTED, REJECTED ou UNCERTAIN")
+  $OutputArtifact(findings, "Écarts et régressions")
+  $OutputArtifact(validation, "Preuves de validation")
+  $OutputArtifact(followup, "Actions correctives proposées")
+}
+
+result --> scope
+change --> scope
+proofs --> tests
+criteria --> tests
+reference --> compare
+scope --> tests
+tests --> compare
+compare --> gaps
+gaps --> confidence
+confidence --> verdict
+verdict --> decision
+gaps --> findings
+tests --> validation
+verdict --> followup
+
+note bottom of verifier
+Le vérificateur utilise des critères définis avant l'exécution et des preuves reproductibles.
+Un résultat non prouvé reste incertain, même s'il paraît plausible.
+end note
+
+$BackLink(back)
+back .. verifier
+@enduml

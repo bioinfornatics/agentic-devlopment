@@ -1,3 +1,12 @@
+export { loadMinimalHarnessCatalog, MINIMAL_HARNESS_SUBJECTS } from "./domains/execution/minimalHarnessCatalog.js";
+export {
+  evaluateMinimalHarnessRun, summarizeQualifiedEfficiency, recommendSmallestNonInferior,
+} from "./domains/measurement/minimalHarnessEvaluation.js";
+export type {
+  EssentialQualityEvidence, EfficiencyMetrics, MinimalHarnessObservation, MinimalHarnessRecommendation,
+  QualifiedEfficiencySummary, QualityExclusionReason,
+} from "./domains/measurement/minimalHarnessEvaluation.js";
+
 /**
  * --export-history CLI mode.
  * Replaces the legacy Python script: scripts/export-eval-history.py

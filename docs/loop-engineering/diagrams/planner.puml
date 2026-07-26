@@ -1,0 +1,56 @@
+@startuml planner
+!include ../includes/theme.iuml
+!include ../includes/common-artifacts.iuml
+
+title <b>01 · PLANIFICATEUR</b> — stratégie
+left to right direction
+
+package "Entrées" {
+  $InputArtifact(objective, "Objectif utilisateur")
+  $InputArtifact(context, "Contexte du projet")
+  $InputArtifact(constraints, "Contraintes et politiques")
+  $InputArtifact(history, "Historique de la boucle")
+  $InputArtifact(budget, "Budget disponible")
+}
+
+component "Planificateur" as planner #141A21 {
+  rectangle "Clarifier l'objectif" as clarify
+  rectangle "Définir les critères de succès" as success
+  rectangle "Décomposer en changements vérifiables" as decompose
+  rectangle "Identifier dépendances et inconnues" as dependencies
+  rectangle "Évaluer risques et autorisations" as risks
+  rectangle "Choisir le plus petit incrément utile" as slice
+  rectangle "Définir preuves et points de contrôle" as gates
+}
+
+package "Sorties" {
+  $OutputArtifact(plan, "Plan d'exécution borné")
+  $OutputArtifact(criteria, "Critères de succès observables")
+  $OutputArtifact(riskRegister, "Registre des risques")
+  $OutputArtifact(checkpoints, "Preuves et points de contrôle")
+}
+
+objective --> clarify
+context --> clarify
+constraints --> success
+history --> decompose
+budget --> slice
+clarify --> success
+success --> decompose
+decompose --> dependencies
+dependencies --> risks
+risks --> slice
+slice --> gates
+slice --> plan
+success --> criteria
+risks --> riskRegister
+gates --> checkpoints
+
+note bottom of planner
+Le planificateur prépare une action testable et proportionnée au risque.
+Il ne planifie pas tout le projet lorsqu'un incrément plus petit peut produire une preuve utile.
+end note
+
+$BackLink(back)
+back .. planner
+@enduml

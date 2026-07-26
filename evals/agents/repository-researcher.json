@@ -1,0 +1,139 @@
+[
+  {
+    "skills": [
+      "task-framing",
+      "loop-control"
+    ],
+    "query": "Map the execution path from loop-engineering.yaml to its subrecipes and agents. Read only.",
+    "max_turns": 40,
+    "difficulty": "normal",
+    "expected_skill_contribution": "Should produce an evidence-backed map while stopping when additional exploration has low information value.",
+    "baseline_gaps": [
+      ".goose/recipes/",
+      ".agents/agents/",
+      ".agents/skills/"
+    ],
+    "expected_behavior": [
+      "Remains read-only and makes no repository or Beads mutations.",
+      "Identifies all four recipes and the three delegated agents with exact paths.",
+      "Separates observed facts from inferences.",
+      "Reads no more than 12 files and explains why each was selected.",
+      "Returns a smallest plausible implementation boundary for one improvement."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "task-framing",
+      "loop-control"
+    ],
+    "query": "Trace the blast radius of changing the verifier verdict enum to add DEFERRED. Read only.",
+    "max_turns": 40,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "Should trace schema, skill, agent, recipe, docs, and eval impacts without broad scanning.",
+    "baseline_gaps": [
+      ".goose/recipes/verify.yaml",
+      ".goose/recipes/loop-engineering.yaml",
+      ".agents/agents/independent-verifier.md",
+      ".agents/skills/evidence-verification/SKILL.md",
+      "README.md",
+      "evals/"
+    ],
+    "expected_behavior": [
+      "Traces every explicit verdict enum and textual contract reference.",
+      "Lists affected paths with rationale and distinguishes required from optional changes.",
+      "Does not edit files or propose unrelated redesign.",
+      "Stops after evidence saturation and reports unresolved unknowns."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "task-framing",
+      "loop-control"
+    ],
+    "query": "Investigate why a controlled loop repeatedly reaches REWORK without progress. Produce a diagnostic packet, no edits.",
+    "max_turns": 40,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Should combine run state, evidence, task contract, and repository inspection to identify whether the problem is framing, implementation, or verification.",
+    "baseline_gaps": [
+      "Beads run graph and state",
+      ".goose/recipes/",
+      ".agents/"
+    ],
+    "expected_behavior": [
+      "Builds a chronology from Beads state events, comments, and evidence records.",
+      "Detects repeated failure signatures and identifies whether new evidence appeared.",
+      "Classifies root cause as task framing, implementation, verification, external blocker, or unknown.",
+      "Recommends exactly one next transition with evidence.",
+      "Avoids reading unrelated repository areas."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  }
+]

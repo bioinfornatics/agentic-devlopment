@@ -1,388 +1,285 @@
-# Agentic Development Harness
+# Agentic Development Harness — Loop Engineering Pack
 
 ## Why
 
-AI agents can already write code, but reliable software development requires more than code generation: they must understand context, preserve intent, write specifications, prove behavior with tests, verify results, and remember durable lessons. This harness exists to make that loop explicit, auditable, and repeatable.
+AI agents can write code, but reliable software development requires more than code generation. A dependable harness must preserve intent, bound the work, produce reproducible evidence, maintain durable state, and stop or escalate when progress is no longer justified.
+
+This pack makes that **loop explicit, auditable, interruptible, and repeatable** in Goose.
 
 ## What
 
-Agentic Development Harness is a layered Goose framework for autonomous software development. Recipes define workflows, agents perform specialist phases, skills provide methodology, Beads records durable state, and the knowledge graph preserves traceability.
+This repository is a minimal Loop Engineering extension for Goose. It deliberately avoids reproducing a human organisation chart as a collection of agents.
+
+It contains only three agents, each justified by a distinct execution property:
+
+- **repository-researcher** — read-only exploration and evidence gathering;
+- **change-builder** — bounded implementation with explicit scope;
+- **independent-verifier** — verification separated from the agent that made the change.
+
+The orchestration itself is not represented as another persona. It is implemented through **recipes**, **skills**, **hooks**, persistent state, budgets, evidence, and explicit transition decisions.
 
 ## How
 
-The default development path is:
+The default controlled loop is:
 
 ```text
-Explore source + web -> Intent -> Spec -> AC -> Bead -> Test -> Code -> Verification -> Memory
+Trigger
+  -> Research
+  -> Frame one bounded task
+  -> Build
+  -> Collect deterministic evidence
+  -> Verify independently
+  -> Persist state
+  -> Decide: CONTINUE | REPLAN | WAIT | COMPLETE | ESCALATE | ABORT
 ```
 
 ```mermaid
 flowchart LR
-    YOU((You)) --> DEV["/dev"]
-    DEV --> |"explore"| EXPLORE["Source + Web Research"]
-    EXPLORE --> SPEC["Spec + AC"]
-    SPEC --> BEAD["Beads Graph"]
-    BEAD --> TEST["RED Test"]
-    TEST --> CODE["Code"]
-    CODE --> VERIFY["Verification"]
-    VERIFY --> |"medium or lower"| SPEC
-    VERIFY --> |"pass"| MEMORY["Memory + Handoff"]
+    T([Trigger]) --> R[Read-only research]
+    R --> F[Task framing]
+    F --> B[Bounded build]
+    B --> E[Evidence collection]
+    E --> V[Independent verification]
+    V --> D{Decision}
+    D -->|CONTINUE| F
+    D -->|REPLAN| R
+    D -->|WAIT| W[External gate]
+    W --> D
+    D -->|COMPLETE| M[Memory + handoff]
+    D -->|ESCALATE| H[Human decision]
+    D -->|ABORT| A[Stop with evidence]
 ```
 
-## Quick Start
-
-```bash
-./scripts/install.sh    # Install
-goose run dev           # Use
-```
-
-That's it. Describe what you want. The system handles the rest.
-
-📖 **[Full Getting Started Guide](docs/START-HERE.md)**
-
----
-
-## Documentation
-
-| Audience | Start Here |
-|----------|------------|
-| **New users** | [START-HERE.md](docs/START-HERE.md) |
-| **Learning** | [Tutorials](docs/tutorials/) |
-| **Understanding** | [Concepts](docs/concepts/) |
-| **Power users** | [Reference](docs/reference/) |
-| **Contributors** | [Internal](docs/internal/) |
-
----
-
-## Architecture (For the Curious)
-
-```
-Layer 3: RECIPES      Workflow orchestration (dev, sdd, review...)
-Layer 2: AGENTS       Specialist personas (architect, reviewer...)
-Layer 1: SKILLS       Reusable methodology (sdd, beads, code-review...)
-Layer 0: GOOSE        Runtime with extensions and tools
-```
-
-<details>
-<summary>Repository Structure</summary>
-
-```
-.agents/
-├── skills/     # 17 domain skills (methodology)
-├── agents/     # 13 specialist agents (personas)
-└── plugins/    # Consistency checking
-
-.goose/
-└── recipes/    # 11 workflow recipes
-
-.specs/         # SDD specifications
-docs/           # Documentation (tiered)
-evals/          # A/B evaluation scenarios
-```
-
-</details>
-
-## Core idea
-
-- **Goose** is the runtime: extensions, skills, recipes, subrecipes, sessions, and subagents.
-- **Beads (`bd`)** is the durable control plane: issues, dependencies, gates, molecules/wisps, memory, and handoffs.
-- **SDD** is the development method: spec first, encode work in Beads, implement with tests, review, verify, and remember learnings.
+## Architecture
 
 ```text
-intent → spec → Beads graph → TDD/implementation → review → validation → handoff
+Layer 4: LOOP CONTROL   State transitions, budgets, stagnation and stop conditions
+Layer 3: RECIPES        Executable workflows and delegated phases
+Layer 2: AGENTS         Isolated execution contexts with distinct permissions
+Layer 1: SKILLS         Reusable methods and decision rules
+Layer 0: GOOSE          Runtime, tools, sessions, extensions and subagents
 ```
 
-## Development workflow
+### Responsibility mapping
 
-```mermaid
-flowchart LR
-    E(["/explore\nread-only research"]) --> P(["/plan\nBeads graph"])
-    P --> T(["TDD\nRED — write failing test"])
-    T --> I(["/implement\nGREEN + REFACTOR"])
-    I --> O{observe\ntest result}
-    O -- PASS --> V(["/verify\napi · web · cli · lib · ui"])
-    O -- "FAIL (max 3×)" --> I
-    V -- "✅ AC met" --> R(["/review\nAPPROVE / BLOCK"])
-    R --> L(["/release\ngated + rollback"])
-    V -- "❌ findings" --> FIX(["fix → re-verify"])
-    FIX --> V
+| Mechanism      | Responsibility                                                                 |
+|----------------|--------------------------------------------------------------------------------|
+| **Agent**      | Isolated execution context with a specific permission or independence boundary |
+| **Skill**      | Reusable method loaded when relevant                                           |
+| **Recipe**     | Executable workflow and phase sequencing                                       |
+| **Plugin**     | Distribution unit for hooks and support scripts                                |
+| **Hook**       | Event-driven guard or trace action                                             |
+| **Evidence**   | Deterministic proof produced by tests, linters, builds or inspections          |
+| **State**      | Durable iteration status, decisions, budgets and evidence references           |
+| **Controller** | Transition logic implemented by the loop recipe and loop-control skill         |
 
-    style E fill:#e8f5e9,stroke:#388e3c
-    style P fill:#e3f2fd,stroke:#1976d2
-    style T fill:#fff3e0,stroke:#f57c00
-    style I fill:#fce4ec,stroke:#c62828
-    style O fill:#f3e5f5,stroke:#7b1fa2
-    style V fill:#e0f2f1,stroke:#00796b
-    style R fill:#fff9c4,stroke:#f9a825
-    style L fill:#e8eaf6,stroke:#3949ab
-```
-
-## SDD loop — Spec-Driven Development
-
-```mermaid
-flowchart TD
-    D(["/discover\nuser stories · personas\n9-dimension sweep\n→ Beads epic"]) --> S
-    S(["/spec\nWHEN / THEN / SHALL\n[FEAT]-NN IDs\n→ spec.md + Beads stories"]) --> G
-    G(["/plan\nBeads task graph\nAC-linked deps\n→ executable tasks"]) --> T
-    T(["TDD — RED\nwrite failing test first\ncite [FEAT]-NN AC ID\nconfirm FAIL"]) --> I
-    I(["/implement\nGREEN: min code to pass\nREFACTOR: clean without breaking\nclaim bead before write"]) --> Ve
-
-    Ve{"/verify\nAC check\napi · web · cli · lib · ui"}
-    Ve -- "✅ all AC met" --> Le(["learn\nbd remember\npointer memory"])
-    Le --> CL(["close bead\ngit push"])
-
-    Ve -- "❌ test fail\n(iteration N of 3)" --> I
-    Ve -- "❌ spec gap\ndiscovered" --> S
-    Ve -- "⚠️ after 3 loops" --> ESC(["escalate to user\nfile blocker bead"])
-
-    CL --> NXT{next bead?}
-    NXT -- yes --> G
-    NXT -- no --> REL(["/release\ngated · CI · rollback"])
-
-    style D fill:#e8f5e9,stroke:#2e7d32
-    style S fill:#e3f2fd,stroke:#1565c0
-    style G fill:#fff3e0,stroke:#e65100
-    style T fill:#fce4ec,stroke:#b71c1c
-    style I fill:#fff8e1,stroke:#f57f17
-    style Ve fill:#f3e5f5,stroke:#6a1b9a
-    style Le fill:#e0f2f1,stroke:#004d40
-    style CL fill:#e8eaf6,stroke:#283593
-    style REL fill:#e8eaf6,stroke:#283593
-    style ESC fill:#ffebee,stroke:#c62828
-```
-
-**Branch at Verify:**
-
-| Result                     | Action                            |
-|----------------------------|-----------------------------------|
-| ✅ All AC met               | → Learn → close bead → next       |
-| ❌ Test failure             | → loop back to Implement (max 3×) |
-| ❌ Spec gap                 | → loop back to Spec               |
-| ⚠️ 3 iterations unresolved | → escalate to user                |
-
-## Repository layout
+## Repository structure
 
 ```text
 .agents/
-  agents/                 # Named Goose subagents discoverable by Summon
-  skills/                 # Portable Goose skills
+├── agents/
+│   ├── repository-researcher.md
+│   ├── change-builder.md
+│   └── independent-verifier.md
+├── skills/
+│   ├── task-framing/
+│   │   └── SKILL.md
+│   ├── evidence-verification/
+│   │   └── SKILL.md
+│   └── loop-control/
+│       └── SKILL.md
+└── plugins/
+    └── loop-engineering/
+        ├── plugin.json
+        ├── hooks/
+        │   └── hooks.json
+        └── scripts/
+            ├── guard-shell.sh
+            └── record-event.sh
 
 .goose/
-  recipes/                # Goose recipes and subrecipes
-    subrecipes/           # Reusable delegated workflow units
-    templates/            # Small helper scripts/templates
+└── recipes/
+    ├── research.yaml
+    ├── implement.yaml
+    ├── verify.yaml
+    └── loop-engineering.yaml
 ```
-
-## Recipes — SDD workflow verbs
-
-| Recipe      | `/slash`     | Purpose                                                                       |
-|-------------|--------------|-------------------------------------------------------------------------------|
-| `dev`       | `/dev`       | Master entry — routes any task to the right specialist                        |
-| `discover`  | `/discover`  | Discovery: user stories, personas, 9-dimension sweep → Beads epic             |
-| `spec`      | `/spec`      | Formal spec: WHEN/THEN/SHALL `[FEAT]-NN` IDs → `.specs/` + Beads stories      |
-| `explore`   | `/explore`   | Read-only codebase research, blast-radius mapping                             |
-| `plan`      | `/plan`      | Spec-anchored Beads task graph, AC-linked dependencies                        |
-| `implement` | `/implement` | TDD-first: RED → GREEN → REFACTOR, minimal blast radius                       |
-| `review`    | `/review`    | Adaptive code review: PR / feature / security / global / hotfix               |
-| `doc-review`| `/doc-review`| Read-only harness documentation review: skills, recipes, AGENTS.md, memory hygiene |
-| `verify`    | `/verify`    | Adaptive verification: API (Bruno) / web (Playwright) / CLI / library / UX-UI |
-| `design`    | `/design`    | UX research → UI design → WCAG 2.2 AA → browser evidence                      |
-| `sdd`       | `/sdd`       | SDD governance: full discover → spec → plan → TDD → implement → verify        |
-| `release`   | `/release`   | Gated release with CI waits and rollback plan                                 |
-| `remember`  | `/remember`  | Beads memory stewardship: remember / search / recall / forget                 |
-
-**SDD on-ramp:** `/discover` → `/spec` → `/plan` → `/implement` → `/review` → `/verify` → `/release`
-
-<!-- BEGIN GENERATED: skills-table -->
-## Skills (17)
-
-| Skill | Purpose |
-|-------|---------|
-| `agentic-devlopment` | Load for any software development, feature implementation, debugging, code review, release |
-| `agentic-ux` | Load when designing, evaluating, or critiquing interfaces for AI-powered or agentic applications. |
-| `atomic-design` | Load when building, auditing, or organizing UI components and design systems using Brad Fr |
-| `beads` | Load when managing tasks, dependencies, or work state that must persist across sessions. |
-| `code-review` | Load when reviewing code, pull requests, architecture changes, or any diff. |
-| `cognitive-ux` | Load when evaluating usability, designing user flows, or explaining why users struggle wit |
-| `design-systems-arch` | Load when architecting, auditing, or evolving a design system at scale. |
-| `frontend-blueprint` | Load when starting or reviewing any frontend implementation task where visual fidelity and |
-| `goose-orchestration` | Load before any call to delegate(), or when deciding which specialist to summon. |
-| `harness-judge` | Evidence-first, read-only evaluation methodology for auditing completed agentic-developmen |
-| `knowledge-graph` | Create, query, validate, and update the project knowledge graph for Spec-Driven Developmen |
-| `sdd` | Load when implementing features using Spec-Driven Development: spec before code, requireme |
-| `systematic-debugging` | Load at the first sign of any bug, test failure, unexpected behavior, or failing hypothesi |
-| `ui-quality` | Load when evaluating the visual and technical quality of a rendered UI: design system toke |
-| `ux-quality` | Load when evaluating user experience quality of an interface: user intent alignment, infor |
-| `wcag-accessibility-audit` | Load when conducting a formal web accessibility audit against WCAG 2. |
-| `webapp-testing` | Load when writing, running, or reviewing automated tests for a web application using Playw |
-<!-- END GENERATED: skills-table -->
 
 <!-- BEGIN GENERATED: agents-table -->
-## Named agents (13)
+## Named agents (3)
 
 Named agents in `.agents/agents/` — invoke with Goose Summon natural language:
 `load agent <name>` (in-session) or `delegate task bd-xxx and into those task load agent <name>` (isolated).
 
-| Agent | Role | Model |
-|-------|------|-------|
-| `architect` | Use PROACTIVELY when planning a new feature, making a technology choice, or touc | gpt-5.5 |
-| `codebase-researcher` | Read-only codebase researcher. | gpt-5.5 |
-| `harness-judge` | Evidence-first LLM-as-judge for the Goose agentic development harness. | gpt-5.5 |
-| `implementation-worker` | Implementation specialist for scoped Beads issues. | gpt-5.5 |
-| `orchestrator` | Lead orchestrator for the SDD+TDD loop. | gpt-5.5 |
-| `planner` | Beads dependency graph specialist. | gpt-5.5 |
-| `principal-engineer` | Use when a change touches shared infrastructure, public APIs, breaking changes,  | gpt-5.5 |
-| `product-owner` | Product Owner — owns the full backlog lifecycle: user story definition, PRD qual | gpt-5.5 |
-| `qa-automation` | QA automation engineer. | gpt-5.5 |
-| `review-critic` | Critical code and Beads handoff reviewer. | gpt-5.5 |
-| `tdd-guide` | Use PROACTIVELY before any new feature implementation or bug fix. | gpt-5.5 |
-| `ui-designer` | User interface designer. | gpt-5.5 |
-| `ux-researcher` | User experience researcher. | gpt-5.5 |
+| Agent                   | Role                                                                             | Model |
+|-------------------------|----------------------------------------------------------------------------------|-------|
+| `change-builder`        | Implements one claimed bounded Beads task and produces candidate evidence withou |       |
+| `independent-verifier`  | Independently judges a Beads task against predefined acceptance criteria and rep |       |
+| `repository-researcher` | Builds an evidence-backed repository and Beads state map before implementation w |       |
 <!-- END GENERATED: agents-table -->
 
-## Quick start
+<!-- BEGIN GENERATED: skills-table -->
+## Skills (3)
 
-Install/copy the harness into your Goose config:
+| Skill                   | Purpose                                                                                          |
+|-------------------------|--------------------------------------------------------------------------------------------------|
+| `evidence-verification` | Evaluate engineering work against predefined acceptance criteria using reproducible eviden       |
+| `loop-control`          | Govern a Beads-backed engineering loop with explicit progress, budgets, dependencies, and        |
+| `task-framing`          | Convert an engineering objective into the smallest independently verifiable Beads task contract. |
+<!-- END GENERATED: skills-table -->
+
+## Recipes
+
+| Recipe             | Purpose                                                                                          |
+|--------------------|--------------------------------------------------------------------------------------------------|
+| `research`         | Delegate read-only repository and failure research; return a bounded task contract               |
+| `implement`        | Claim one ready Beads child task, delegate bounded writes, and collect candidate evidence        |
+| `verify`           | Delegate independent read-only verification and persist criterion evidence plus verdict          |
+| `loop-engineering` | Control Trigger → Planner → Builder → Verifier → Memory → Manager → Controller using Beads state |
+
+## Loop decisions
+
+Each iteration must end with exactly one typed decision:
+
+| Decision   | Meaning                                                                           |
+|------------|-----------------------------------------------------------------------------------|
+| `CONTINUE` | A justified next bounded task exists                                              |
+| `REPLAN`   | Current assumptions or task decomposition are invalid                             |
+| `WAIT`     | Progress depends on an external gate or event                                     |
+| `COMPLETE` | All acceptance criteria are supported by evidence                                 |
+| `ESCALATE` | A human decision, permission or risk acceptance is required                       |
+| `ABORT`    | A budget, safety limit, impossibility or repeated stagnation requires termination |
+
+Completion must never be accepted solely because the builder reports that the work is done.
+
+## Stop and escalation conditions
+
+The loop must stop or escalate when at least one of these conditions applies:
+
+- all acceptance criteria are proven;
+- the maximum iteration, duration, or token budget is reached;
+- the same failure repeats without a materially different hypothesis;
+- no measurable progress occurs across consecutive iterations;
+- required evidence cannot be produced;
+- a destructive or privileged action requires approval;
+- constraints conflict or the objective is impossible under the current conditions.
+
+## Loop state x Harness
+
+| Étape             | Diagramme         | Recipe                                      | Agent                                      | Skill                                                                        | Plugin                                                    |
+|-------------------|-------------------|---------------------------------------------|--------------------------------------------|------------------------------------------------------------------------------|-----------------------------------------------------------|
+| **00 Trigger**    | `trigger.puml`    | `loop-engineering.yaml` (entrée)            | —                                          | —                                                                            | `loop-engineering` (SessionStart, UserPromptSubmit hooks) |
+| **01 Planner**    | `planner.puml`    | `research.yaml` (sous-boucle)               | `repository-researcher` (lecture seule)    | `task-framing` (décomposition contrat)                                       | —                                                         |
+| **02 Builder**    | `builder.puml`    | `implement.yaml` (sous-boucle)              | `change-builder` (session isolée)          | `task-framing` (restate contract)                                            | `loop-engineering` + `prevent-catastrophe` (guard-shell)  |
+| **03 Verifier**   | `verifier.puml`   | `verify.yaml` (sous-boucle)                 | `independent-verifier` (session ≠ builder) | `evidence-verification` (verdicts typés)                                     | `loop-engineering` (guard-shell)                          |
+| **04 Memory**     | `memory.puml`     | —                                           | ⚠️ **aucun agent dédié**                   | `loop-control` (beads-control-plane.md)                                      | `beads-telemetry` (PostToolUse hooks)                     |
+| **05 Manager**    | `manager.puml`    | —                                           | ⚠️ **aucun agent dédié**                   | `loop-control` (priorité, no-progress)                                       | —                                                         |
+| **06 Controller** | `controller.puml` | `loop-engineering.yaml` (décisions finales) | —                                          | `loop-control` (6 transitions: CONTINUE/REPLAN/WAIT/COMPLETE/ESCALATE/ABORT) | —                                                         
+
+
+## Installation
+
+### Project-local installation
+
+Copy the directories into the target repository while preserving hidden paths:
 
 ```bash
-./scripts/install.sh
+cp -a .agents /path/to/project/
+cp -a .goose /path/to/project/
 ```
 
-PowerShell:
-
-```powershell
-./scripts/install.ps1
-```
-
-The installer also upserts slash commands (`/dev`, `/discover`, `/spec`, `/explore`, `/plan`, `/implement`, `/review`, `/doc-review`, `/verify`, `/design`, `/sdd`, `/release`, `/remember`) in `~/.config/goose/config.yaml` without duplicating existing managed entries.
-
-Or manually copy:
+### User-level installation
 
 ```bash
-mkdir -p ~/.config/goose ~/.agents
-cp -a .goose/recipes ~/.config/goose/recipes
-cp -a .agents/skills ~/.agents/skills
-cp -a .agents/agents ~/.agents/agents
+mkdir -p ~/.agents/agents ~/.agents/skills ~/.agents/plugins
+mkdir -p ~/.config/goose/recipes
+
+cp -a .agents/agents/. ~/.agents/agents/
+cp -a .agents/skills/. ~/.agents/skills/
+cp -a .agents/plugins/. ~/.agents/plugins/
+cp -a .goose/recipes/. ~/.config/goose/recipes/
 ```
 
-Validate recipes:
+## Validation
+
+Validate each recipe with the installed Goose CLI:
 
 ```bash
-goose recipe validate .goose/recipes/dev.yaml
+goose recipe validate .goose/recipes/research.yaml
+goose recipe validate .goose/recipes/implement.yaml
+goose recipe validate .goose/recipes/verify.yaml
+goose recipe validate .goose/recipes/loop-engineering.yaml
+```
+
+Validate all recipes:
+
+```bash
 find .goose/recipes -name '*.yaml' -print -exec goose recipe validate {} \;
 ```
 
-List skills:
+Check custom-agent frontmatter:
 
 ```bash
-goose skills list
+find .agents/agents -name '*.md' -maxdepth 1 -print
 ```
 
-Run the master harness:
+## Example execution
+
+Run the complete loop:
 
 ```bash
-goose run --recipe dev \
-  --params task="Review the current diff" \
-  --params repo_path="$PWD"
+goose run --recipe loop-engineering \
+  --params objective="Implement the requested change" \
+  --params max_iterations=8
 ```
 
-## Use-case playbooks
-
-Detailed scenario documentation lives in [`USE_CASES.md`](USE_CASES.md) and [`docs/`](docs/). Start there for init project, code review, security review, UXR simulation, UI review, test review, spec review, project scoring, implementation, release, incident, multi-agent research, and documentation review, and Beads memory stewardship.
-
-## Common workflows
-
-### Code review
+Run an isolated phase:
 
 ```bash
-goose run --recipe review \
-  --params task="review current diff" \
-  --params repo_path="$PWD" \
-  --params constraints="Read-only. Focus on correctness, tests, security, and Beads hygiene."
+goose run --recipe research \
+  --params objective="Map the affected components" \
+  --params run_id="<optional-beads-run-id>"
 ```
 
-### Research
+## Integration with a larger harness
 
-```bash
-goose run --recipe explore \
-  --params task="understand the sync architecture" \
-  --params repo_path="$PWD"
-```
+This pack can be merged into a broader Agentic Development Harness using Beads, SDD, TDD, a knowledge graph, CI gates, or organisation-specific skills.
 
-### Planning
-
-```bash
-goose run --recipe plan \
-  --params task="add feature X" \
-  --params repo_path="$PWD"
-```
-
-### Implementation
-
-```bash
-goose run --recipe implement \
-  --params task="bd-123" \
-  --params repo_path="$PWD"
-```
-
-### UI / accessibility verification
-
-```bash
-goose run --recipe design \
-  --params target="settings page" \
-  --params repo_path="$PWD"
-```
-
-## Build documentation bundle
-
-Generate a single HTML/PDF bundle from the Markdown docs:
-
-```bash
-./scripts/build-docs.sh
-```
-
-Outputs:
+Recommended mapping:
 
 ```text
-dist/docs/html/agentic-development-harness.html
-dist/docs/pdf/agentic-development-harness.pdf
+Intent -> Spec/AC -> Beads task -> Loop Engineering -> Evidence -> Memory/Handoff
 ```
 
-Requires `pandoc`; PDF generation uses `xelatex` when available, otherwise tries `chromium`.
+In a larger harness:
 
-### Beads memory
+- keep **Beads** as the durable work and dependency control plane;
+- keep specifications and acceptance criteria as the source of intent;
+- use the three agents only where isolation or independent verification is useful;
+- express domain expertise through skills;
+- use recipes for orchestration;
+- keep deterministic verification outside the model whenever possible.
 
-Use memory for durable facts, not work tracking:
+## Design principles
 
-```bash
-goose run --recipe remember --params action="remember: default validation is make test" --params repo_path="$PWD"
-```
+1. **Few agents, strong boundaries.** Create an agent only when isolation, permissions, context, or independence justify it.
+2. **Evidence over declarations.** Tests and reproducible commands establish completion.
+3. **State outside conversation.** Durable decisions and progress must survive session compaction or restart.
+4. **One bounded change per build iteration.** Reduce blast radius and simplify verification.
+5. **Explicit terminal states.** Every loop must be able to complete, escalate, wait, or abort.
+6. **Improve the loop deliberately.** Update skills, recipes, and guards only from observed evidence, not from uncontrolled self-modification.
 
-Interactive slash command:
+## Evaluation strategy
 
-```text
-/remember remember: default validation is make test
-```
+The bundled `evals/` suite targets this minimal architecture directly:
+**3 agents, 3 skills, and 4 recipes**.
 
-See [`docs/14-memory.md`](docs/14-memory.md).
+It includes 30 graded scenarios and architecture-ablation benchmarks
+against a larger harness. Component count is not a success metric;
+the preferred configuration is the smallest one that meets the quality
+gate and lies on the quality/cost Pareto frontier.
 
-Memory as a navigation index: prefer short pointer memories that tell future agents which canonical file/section to read, when to read it, and the one-line invariant.
-
-## Beads operating rules
-
-When working in a Beads-enabled repository:
-
-1. Start with `bd prime`.
-2. Inspect work with `bd ready --json` and `bd blocked --json`.
-3. Claim before durable edits: `bd update <id> --claim --json`.
-4. Encode dependencies with needs language: `bd dep add <issue> <depends-on>`.
-5. Create discovered work with `--deps discovered-from:<parent>`.
-6. Use `bd remember --key <key> "fact"` for durable memory.
-7. Use `bd gate` for async waits.
-8. Close completed work with `bd close <id> --reason "Done" --json`.
-
-Do not use markdown TODO files as the source of truth for durable agentic work.
-
+See [`evals/README.md`](evals/README.md).
 ## License / ownership
 
-This harness is a local operational configuration. Adapt freely for your projects.
+This pack is a local operational configuration. Adapt it to the governance, security, and delivery constraints of each project.

@@ -1,0 +1,56 @@
+' Thème commun de Loop Engineering
+
+!define TriggerColor #F0A35E
+!define PlannerColor #E7B94C
+!define BuilderColor #54C2D3
+!define VerifierColor #70C8AA
+!define MemoryColor #A98DDA
+!define ManagerColor #909BA8
+!define ControllerColor #D67B9D
+!define TerminalColor #C96D6D
+
+skinparam backgroundColor #0B0F12
+skinparam defaultFontName Monospaced
+skinparam defaultFontColor #E7EBF0
+skinparam shadowing false
+skinparam roundcorner 10
+skinparam linetype ortho
+skinparam ArrowColor #93A0AE
+skinparam ArrowThickness 1.6
+skinparam NoteBackgroundColor #151B22
+skinparam NoteBorderColor #3D4754
+skinparam NoteFontColor #C8D0D9
+
+skinparam rectangle {
+  BackgroundColor #141A21
+  BorderColor #303946
+  FontColor #E7EBF0
+  RoundCorner 10
+  Shadowing false
+}
+
+skinparam component {
+  BackgroundColor #141A21
+  BorderColor #303946
+  FontColor #E7EBF0
+  RoundCorner 10
+}
+
+skinparam artifact {
+  BackgroundColor #141A21
+  BorderColor #566170
+  FontColor #E7EBF0
+  RoundCorner 6
+}
+
+skinparam package {
+  BackgroundColor #10161C
+  BorderColor #303946
+  FontColor #E7EBF0
+}
+
+skinparam legend {
+  BackgroundColor #10161C
+  BorderColor #303946
+  FontColor #C8D0D9
+}

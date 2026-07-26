@@ -99,7 +99,7 @@ export class SuiteRunner implements ISuiteRunner {
               kind: cfg.kind, subject, hash, scenario, evalId,
               config: treatment.id, treatment, repetition,
               workspace: pairWorkspace,
-              gooseCli: cfg.gooseCli, maxTurns: cfg.maxTurns, timeoutMs: cfg.timeoutMs, ambient: cfg.ambient,
+              gooseCli: cfg.gooseCli, maxTurns: intPlan.manifest.maxTurnsByTask[taskKey]!, timeoutMs: cfg.timeoutMs, ambient: cfg.ambient,
               fixtureHashes,
               plannedTaskPayload:     subjectPlan.taskPayloads.get(evalId)!,
               plannedTaskPayloadHash: intPlan.manifest.taskPayloadHashes[taskKey]!,
@@ -297,6 +297,7 @@ export class SuiteRunner implements ISuiteRunner {
     const subjects: IntegrityManifestV2["subjects"][number][] = [];
     const treatments: IntegrityManifestV2["treatments"][number][] = [];
     const taskPayloadHashes: Record<string, string> = {};
+    const maxTurnsByTask: Record<string, number> = {};
     const fixtureHashes: Record<string, string> = {};
     const plannedSubjects = new Map<string, {
       readonly sourceHash: string;
@@ -336,6 +337,11 @@ export class SuiteRunner implements ISuiteRunner {
         const payload = this.prompt.build(scenario, pair.candidate.id);
         taskPayloads.set(evalId, payload);
         taskPayloadHashes[`${cfg.kind}/${subject}/${evalId}`] = hashUtf8(payload);
+        const effectiveMaxTurns = scenario.max_turns ?? cfg.maxTurns;
+        if (!Number.isInteger(effectiveMaxTurns) || effectiveMaxTurns < 1) {
+          throw new Error(`maxTurns must be an integer of at least 1 for ${cfg.kind}/${subject}/${evalId}`);
+        }
+        maxTurnsByTask[`${cfg.kind}/${subject}/${evalId}`] = effectiveMaxTurns;
         const evalFixtureHashes = await this.hashFixtures(scenario.files ?? []);
         fixtureHashesByEvalId.set(evalId, evalFixtureHashes);
         for (const [relative, hash] of Object.entries(evalFixtureHashes)) {
@@ -358,6 +364,7 @@ export class SuiteRunner implements ISuiteRunner {
       repetitions,
       treatments,
       taskPayloadHashes,
+      maxTurnsByTask,
       fixtureHashes,
       executionEnvelope: {
         provider, model,

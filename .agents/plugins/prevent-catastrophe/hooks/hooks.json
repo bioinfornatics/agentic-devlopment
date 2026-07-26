@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^developer__shell$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${PLUGIN_ROOT}/scripts/guard-shell.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -162,6 +162,23 @@ describe("HtmlReportBuilder", () => {
     expect(html).not.toContain("Update the skills contract or scenario fixture");
   });
 
+  it("[AC-EVAL-11] renders escaped correlated runtime insight and targeted remediation", async () => {
+    const html = await builder.build({
+      runs: [], results: [], feedback: [], generatedAt: "",
+      runtimeInsights: [{
+        runId: "run-42", kind: "agents", subject: "planner", evalId: 2, configuration: "agent_l2",
+        severity: "fatal", code: "runtime_model_mismatch", message: "used <wrong-model>",
+        source: "goose-log-analysis.json#correlated-model-provenance",
+        recommendation: "Align the runtime model with the frozen evaluation envelope.",
+      }],
+    });
+    expect(html).toContain("Correlated Goose runtime insights");
+    expect(html).toContain("runtime_model_mismatch");
+    expect(html).toContain("used &lt;wrong-model&gt;");
+    expect(html).toContain("frozen evaluation envelope");
+    expect(html).not.toContain("used <wrong-model>");
+  });
+
   it("[EVAL-FB-05] shows an explicit empty feedback state", async () => {
     const html = await builder.build({ runs: [], results: [], feedback: [], generatedAt: "" });
     expect(html).toContain("No grader feedback is available");

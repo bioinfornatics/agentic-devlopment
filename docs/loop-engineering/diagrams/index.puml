@@ -1,0 +1,45 @@
+@startuml index
+!include ../includes/theme.iuml
+!include ../includes/loop-nodes.iuml
+!include ../includes/legend.iuml
+
+title <b>LOOP.MAP · LOOP ENGINEERING GOUVERNÉ</b>
+
+$LoopNode(trigger, "00", "DÉCLENCHEMENT", "Trigger", "Démarre ou reprend une boucle justifiée", TriggerColor, "trigger.svg")
+$LoopNode(planner, "01", "STRATÉGIE", "Planificateur", "Découpe l'objectif en changements vérifiables", PlannerColor, "planner.svg")
+$LoopNode(builder, "02", "EXÉCUTION", "Builder", "Applique le plus petit changement utile", BuilderColor, "builder.svg")
+$LoopNode(verifier, "03", "PREUVE", "Vérificateur indépendant", "Évalue le résultat avec des preuves reproductibles", VerifierColor, "verifier.svg")
+$LoopNode(memory, "04", "EXPÉRIENCE", "Mémoire", "Conserve état, faits, décisions et apprentissages", MemoryColor, "memory.svg")
+$LoopNode(manager, "05", "PRIORITÉS", "Gestionnaire", "Sélectionne le prochain travail à valeur démontrable", ManagerColor, "manager.svg")
+$LoopNode(controller, "06", "DÉCISION", "Contrôleur", "Décide de continuer, replanifier, escalader ou arrêter", ControllerColor, "controller.svg")
+
+rectangle "<size:18><b>BOUCLE CONTRÔLÉE</b></size>\n\n<size:11><color:#AEB7C2>Continuer uniquement si\nune prochaine action est justifiée</color></size>" as center #0B0F12
+
+$TerminalNode(completed, "COMPLETE", "Critères de succès prouvés")
+$TerminalNode(escalated, "ESCALATE", "Décision ou autorisation humaine requise")
+$TerminalNode(aborted, "ABORT", "Budget, sécurité ou absence de progrès")
+
+trigger -[#F0A35E,thickness=2]-> planner : objectif + état
+planner -[#E7B94C,thickness=2]-> builder : plan borné
+builder -[#54C2D3,thickness=2]-> verifier : résultat + preuves
+verifier -[#70C8AA,thickness=2]-> memory : verdict + écarts
+memory -[#A98DDA,thickness=2]-> manager : faits + apprentissages
+manager -[#909BA8,thickness=2]-> controller : priorité + capacité
+controller -[#D67B9D,dashed,thickness=2]-> planner : REPLAN
+controller -[#D67B9D,thickness=2]-> trigger : CONTINUE / WAIT
+controller -[#C96D6D,thickness=2]-> completed
+controller -[#C96D6D,thickness=2]-> escalated
+controller -[#C96D6D,thickness=2]-> aborted
+
+planner -[hidden]-> center
+center -[hidden]-> verifier
+manager -[hidden]-> center
+
+note bottom of center
+Chaque étape produit des artefacts observables.
+La boucle s'arrête lorsque l'objectif est prouvé,
+qu'une intervention humaine est nécessaire,
+qu'un garde-fou est déclenché ou qu'aucun progrès n'est mesurable.
+end note
+
+@enduml

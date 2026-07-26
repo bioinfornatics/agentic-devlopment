@@ -1,0 +1,60 @@
+@startuml controller
+!include ../includes/theme.iuml
+!include ../includes/common-artifacts.iuml
+
+title <b>06 · CONTRÔLEUR</b> — décision de boucle
+left to right direction
+
+package "Entrées" {
+  $InputArtifact(metrics, "Métriques du cycle")
+  $InputArtifact(patterns, "Apprentissages accumulés")
+  $InputArtifact(blockers, "Blocages récurrents")
+  $InputArtifact(outcome, "Écart global à l'objectif")
+  $InputArtifact(budgets, "Budgets temps, coût et itérations")
+  $InputArtifact(risk, "Risque et niveau d'autorisation")
+}
+
+component "Contrôleur" as controller #141A21 {
+  rectangle "Évaluer le progrès mesurable" as progress
+  rectangle "Détecter stagnation et dérive" as drift
+  rectangle "Contrôler budgets et garde-fous" as guardrails
+  rectangle "Réviser hypothèses et méthode" as assumptions
+  rectangle "Choisir une transition typée" as decide
+  rectangle "Persister la décision" as persist
+}
+
+package "Transitions" {
+  $DecisionArtifact(continueState, "CONTINUE — prochaine action justifiée")
+  $DecisionArtifact(replanState, "REPLAN — méthode ou plan à revoir")
+  $DecisionArtifact(waitState, "WAIT — dépendance ou événement attendu")
+  $DecisionArtifact(completeState, "COMPLETE — succès prouvé")
+  $DecisionArtifact(escalateState, "ESCALATE — décision humaine requise")
+  $DecisionArtifact(abortState, "ABORT — garde-fou ou absence de progrès")
+}
+
+metrics --> progress
+patterns --> progress
+blockers --> drift
+outcome --> drift
+budgets --> guardrails
+risk --> guardrails
+progress --> assumptions
+drift --> assumptions
+guardrails --> decide
+assumptions --> decide
+decide --> persist
+persist --> continueState
+persist --> replanState
+persist --> waitState
+persist --> completeState
+persist --> escalateState
+persist --> abortState
+
+note bottom of controller
+Le contrôleur ne prolonge jamais la boucle par défaut.
+Toute continuation doit citer une prochaine action, une preuve attendue et un budget restant.
+end note
+
+$BackLink(back)
+back .. controller
+@enduml

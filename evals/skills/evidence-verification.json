@@ -1,0 +1,125 @@
+[
+  {
+    "skills": [
+      "evidence-verification"
+    ],
+    "agents": [],
+    "query": "Evaluate evidence for two acceptance criteria from test output and a diff.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "normal",
+    "expected_skill_contribution": "Should map evidence to criteria and issue a typed verdict.",
+    "baseline_gaps": [],
+    "expected_behavior": [
+      "Uses the required criterion schema.",
+      "Does not treat a diff as runtime proof when behavior requires execution.",
+      "Returns exactly one verdict.",
+      "Identifies missing artifacts explicitly."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "evidence-verification"
+    ],
+    "agents": [],
+    "query": "A test command exits 0 but the output shows zero tests discovered. Decide whether the criterion is proven.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "Should reject superficial exit-code evidence.",
+    "baseline_gaps": [],
+    "expected_behavior": [
+      "Marks the criterion missing or disproven.",
+      "Explains why exit code 0 is insufficient.",
+      "Requests or runs a test-discovery check when available.",
+      "Does not return ACCEPTED."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "evidence-verification"
+    ],
+    "agents": [],
+    "query": "Conflicting evidence: unit tests pass, integration test fails, static analysis is clean.",
+    "files": [],
+    "max_turns": 20,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Should prioritize evidence according to the claimed behavior and avoid averaging contradictory signals.",
+    "baseline_gaps": [],
+    "expected_behavior": [
+      "Preserves all conflicting evidence.",
+      "Identifies which evidence is most directly tied to the acceptance criterion.",
+      "Returns REWORK unless the failing integration test is proven irrelevant.",
+      "Does not hide the conflict in a summary score."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  }
+]

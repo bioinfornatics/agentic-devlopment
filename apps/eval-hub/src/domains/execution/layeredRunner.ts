@@ -228,7 +228,11 @@ export class LayeredRunner implements ILayeredRunner {
   /** Convert a stored terminal record to IntegrityEvidence for evaluatePair. */
   private toEvidence(record: IntegrityTerminalRecordV2): IntegrityEvidence {
     let terminalStatus: TerminalEvidenceStatus;
-    if (record.status === "failed" || record.exclusion?.reason === "execution_failed") {
+    if (record.exclusion?.reason === "treatment_bootstrap_failed") {
+      terminalStatus = "treatment_bootstrap_failed";
+    } else if (record.exclusion?.reason === "runtime_dependency_failed") {
+      terminalStatus = "runtime_dependency_failed";
+    } else if (record.status === "failed" || record.exclusion?.reason === "execution_failed") {
       terminalStatus = "execution_failed";
     } else if (
       record.exclusion?.reason === "grader_invalid"
@@ -246,6 +250,7 @@ export class LayeredRunner implements ILayeredRunner {
       repetition:             record.repetition,
       side:                   record.side,
       taskPayloadHash:        record.pairKey.taskPayloadHash,
+      maxTurns:               record.pairKey.maxTurns,
       fixtureHashes:          record.pairKey.fixtureHashes,
       executionEnvelopeHash:  record.pairKey.executionEnvelopeHash,
       candidateTreatmentId:   record.pairKey.candidateTreatmentId,

@@ -1,0 +1,52 @@
+@startuml trigger
+!include ../includes/theme.iuml
+!include ../includes/common-artifacts.iuml
+
+title <b>00 · TRIGGER</b> — déclenchement
+left to right direction
+
+package "Sources" {
+  $InputArtifact(userRequest, "Demande utilisateur")
+  $InputArtifact(readyTask, "Tâche prête")
+  $InputArtifact(event, "Événement CI, Git ou métier")
+  $InputArtifact(schedule, "Échéance planifiée")
+  $InputArtifact(resume, "Reprise après attente")
+}
+
+component "Trigger" as trigger #141A21 {
+  rectangle "Identifier la cause" as identify
+  rectangle "Charger l'état durable" as load
+  rectangle "Vérifier les préconditions" as preconditions
+  rectangle "Évaluer urgence et valeur" as value
+  rectangle "Dédupliquer les déclenchements" as dedupe
+  rectangle "Autoriser le démarrage" as authorize
+}
+
+package "Sorties" {
+  $OutputArtifact(triggerContext, "Contexte de déclenchement")
+  $OutputArtifact(loopState, "État courant de la boucle")
+  $OutputArtifact(startDecision, "START, WAIT ou REJECT")
+}
+
+userRequest --> identify
+readyTask --> identify
+event --> identify
+schedule --> identify
+resume --> identify
+identify --> load
+load --> preconditions
+preconditions --> value
+value --> dedupe
+dedupe --> authorize
+authorize --> triggerContext
+load --> loopState
+authorize --> startDecision
+
+note bottom of trigger
+Un événement ne lance pas automatiquement une action.
+Le trigger vérifie qu'une exécution est utile, autorisée et non dupliquée.
+end note
+
+$BackLink(back)
+back .. trigger
+@enduml

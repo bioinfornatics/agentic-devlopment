@@ -60,6 +60,7 @@ const classifyManifest = (overrides: Partial<IntegrityManifestV2> = {}): Integri
     { id: "skill_l0", kind: "skills", subject: "sdd", side: "baseline", definitionHash: "base-hash", bootstrapHash: "base-boot" },
   ],
   taskPayloadHashes: { "skills/sdd/0": "task-payload-hash" },
+  maxTurnsByTask: { "skills/sdd/0": 8 },
   fixtureHashes: { "fixtures/auth.ts": "fixture-hash-1" },
   executionEnvelope: {
     provider: "azure_foundry", model: "gpt-test",
@@ -79,6 +80,7 @@ const classifyTerminal = (overrides: Partial<IntegrityTerminalRecordV2> = {}): I
   side: "candidate", treatmentId: "skill_l1", status: "succeeded",
   pairKey: {
     taskPayloadHash: "task-payload-hash",
+    maxTurns: 8,
     fixtureHashes: { "fixtures/auth.ts": "fixture-hash-1" },
     executionEnvelopeHash: integrityValueHash(classifyManifest().executionEnvelope),
     candidateTreatmentId: "skill_l1", baselineTreatmentId: "skill_l0",

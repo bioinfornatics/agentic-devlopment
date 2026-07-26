@@ -61,6 +61,7 @@ function buildManifest(
       { id: `base-${s}`, kind, subject: s, side: "baseline" as const, definitionHash: `def-base-${s}`, bootstrapHash: `boot-base-${s}` },
     ]),
     taskPayloadHashes,
+    maxTurnsByTask: Object.fromEntries(Object.keys(taskPayloadHashes).map(key => [key, 8])),
     fixtureHashes: {},
     executionEnvelope: TEST_ENVELOPE,
     grader: { id: "test-grader", version: "1" },
@@ -72,6 +73,7 @@ function buildPairKey(manifest: IntegrityManifestV2, subject: string, evalId: nu
   const kind = manifest.subjects[0]!.kind;
   return {
     taskPayloadHash:        manifest.taskPayloadHashes[`${kind}/${subject}/${evalId}`]!,
+    maxTurns:               manifest.maxTurnsByTask[`${kind}/${subject}/${evalId}`]!,
     fixtureHashes:          { ...manifest.fixtureHashes } as Record<string, string>,
     executionEnvelopeHash:  integrityValueHash(manifest.executionEnvelope),
     candidateTreatmentId:   `cand-${subject}`,

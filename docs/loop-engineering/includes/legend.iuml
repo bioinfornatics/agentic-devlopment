@@ -1,0 +1,11 @@
+legend bottom
+|= Couleur |= Étape |
+|<#F0A35E>   | Déclencheur |
+|<#E7B94C>   | Planificateur |
+|<#54C2D3>   | Builder |
+|<#70C8AA>   | Vérificateur indépendant |
+|<#A98DDA>   | Mémoire |
+|<#909BA8>   | Gestionnaire |
+|<#D67B9D>   | Contrôleur |
+|<#C96D6D>   | État terminal ou escalade |
+endlegend

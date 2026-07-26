@@ -10,13 +10,14 @@ import path from "node:path";
 import type { HistoryRow, ResultRow, GradingRecord, TimingRecord } from "../persistence/ports.js";
 import type { EvalKind } from "../../shared/types.js";
 import { EVAL_KINDS }   from "../../shared/types.js";
-import type { FeedbackRecord } from "./htmlBuilder.js";
+import type { FeedbackRecord, RuntimeInsightRecord } from "./htmlBuilder.js";
 import { DIST_EVALS }   from "../../shared/paths.js";
 
 export interface WorkspaceSnapshot {
   runs:     HistoryRow[];
   results:  ResultRow[];
   feedback: FeedbackRecord[];
+  runtimeInsights: RuntimeInsightRecord[];
 }
 
 export class WorkspaceDataCollector {
@@ -26,25 +27,35 @@ export class WorkspaceDataCollector {
     const runs:     HistoryRow[] = [];
     const results:  ResultRow[]  = [];
     const feedback: FeedbackRecord[] = [];
+    const runtimeInsights: RuntimeInsightRecord[] = [];
 
     for (const kind of kinds) {
       const subjects = await this.listSubjects(kind);
       for (const subject of subjects) {
         const hashes = await this.listHashes(kind, subject);
         for (const hash of hashes) {
-          const { row, resultRows, feedbackRows } = await this.collectSubject(kind, subject, hash);
+          const { row, resultRows, feedbackRows, runtimeInsightRows } = await this.collectSubject(kind, subject, hash);
           if (resultRows.length > 0) {
             runs.push(row);
             results.push(...resultRows);
             feedback.push(...feedbackRows);
+            runtimeInsights.push(...runtimeInsightRows);
           }
         }
       }
     }
 
+    // Layered v2 execution workspaces do not use the legacy run-1 layout. Scan
+    // bounded analysis artifacts directly so failed, ungraded executions still
+    // contribute runtime feedback.
+    runtimeInsights.push(...await this.collectRuntimeInsights(kinds));
+    const uniqueRuntimeInsights = [...new Map(runtimeInsights.map(item => [
+      [item.source, item.code, item.message].join("\0"), item,
+    ])).values()];
+
     // Sort newest first
     runs.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-    return { runs, results, feedback };
+    return { runs, results, feedback, runtimeInsights: uniqueRuntimeInsights };
   }
 
   private async listSubjects(kind: EvalKind): Promise<string[]> {
@@ -63,10 +74,11 @@ export class WorkspaceDataCollector {
 
   private async collectSubject(
     kind: EvalKind, subject: string, hash: string,
-  ): Promise<{ row: HistoryRow; resultRows: ResultRow[]; feedbackRows: FeedbackRecord[] }> {
+  ): Promise<{ row: HistoryRow; resultRows: ResultRow[]; feedbackRows: FeedbackRecord[]; runtimeInsightRows: RuntimeInsightRecord[] }> {
     const hashDir   = path.join(this.root, kind, subject, hash);
     const resultRows: ResultRow[] = [];
     const feedbackRows: FeedbackRecord[] = [];
+    const runtimeInsightRows: RuntimeInsightRecord[] = [];
 
     // Discover eval dirs
     let evalDirs: string[] = [];
@@ -96,6 +108,26 @@ export class WorkspaceDataCollector {
           expectations?: Array<{ text?: unknown; passed?: unknown; evidence?: unknown }>;
         }>(gradingPath);
         if (!grading) continue;
+
+        const executionResult = await this.readJson<{
+          gooseLogAnalysis?: {
+            fatalDiagnostics?: Array<{ code?: unknown; message?: unknown; source?: unknown }>;
+            warnings?: Array<{ code?: unknown; message?: unknown; source?: unknown }>;
+            insights?: unknown[];
+          };
+        }>(path.join(evalPath, config, "execution-result.json"));
+        const analysis = executionResult?.gooseLogAnalysis;
+        for (const [severity, items] of [["fatal", analysis?.fatalDiagnostics], ["warning", analysis?.warnings]] as const) {
+          for (const item of items ?? []) {
+            if (typeof item.code !== "string" || typeof item.message !== "string" || typeof item.source !== "string") continue;
+            runtimeInsightRows.push({
+              runId: hash, kind, subject, evalId, configuration: config, severity,
+              code: item.code, message: item.message,
+              source: path.relative(process.cwd(), path.join(evalPath, config, "goose-log-analysis.json")) + "#" + item.source,
+              recommendation: this.runtimeRecommendation(item.code),
+            });
+          }
+        }
 
         const timing  = await this.readJson<TimingRecord>(path.join(runDir, "timing.json"));
         const passRate = grading.summary?.pass_rate ?? null;
@@ -147,7 +179,65 @@ export class WorkspaceDataCollector {
       createdAt:           modifiedAt || new Date().toISOString(),
     };
 
-    return { row, resultRows, feedbackRows };
+    return { row, resultRows, feedbackRows, runtimeInsightRows };
+  }
+
+  private async collectRuntimeInsights(kinds: readonly EvalKind[]): Promise<RuntimeInsightRecord[]> {
+    const analysisFiles: string[] = [];
+    const limit = 10_000;
+    const walk = async (directory: string): Promise<void> => {
+      let entries: import("node:fs").Dirent<string>[];
+      try { entries = await fs.readdir(directory, { encoding: "utf8", withFileTypes: true }); }
+      catch { return; }
+      for (const entry of entries) {
+        if (analysisFiles.length >= limit) return;
+        const candidate = path.join(directory, entry.name);
+        if (entry.isDirectory() && entry.name !== "report") await walk(candidate);
+        else if (entry.isFile() && (entry.name === "goose-log-analysis.json" || entry.name === "goose-grader-log-analysis.json")) analysisFiles.push(candidate);
+      }
+    };
+    await walk(this.root);
+
+    const rows: RuntimeInsightRecord[] = [];
+    for (const analysisPath of analysisFiles) {
+      const result = await this.readJson<{
+        kind?: unknown; subject?: unknown; evalId?: unknown; treatmentId?: unknown;
+      }>(path.join(path.dirname(analysisPath), "execution-result.json"));
+      const analysis = await this.readJson<{
+        fatalDiagnostics?: Array<{ code?: unknown; message?: unknown; source?: unknown }>;
+        warnings?: Array<{ code?: unknown; message?: unknown; source?: unknown }>;
+        insights?: unknown[];
+      }>(analysisPath);
+      if (!result || !analysis || typeof result.kind !== "string" || !kinds.includes(result.kind as EvalKind)
+        || typeof result.subject !== "string" || typeof result.evalId !== "number") continue;
+      const relative = path.relative(process.cwd(), analysisPath);
+      const runId = analysisPath.split(path.sep).find((part, index, all) => all[index - 1] === "layered") ?? path.basename(path.dirname(path.dirname(analysisPath)));
+      const configuration = typeof result.treatmentId === "string" ? result.treatmentId : path.basename(path.dirname(analysisPath));
+      const base = { runId, kind: result.kind, subject: result.subject, evalId: result.evalId, configuration };
+      for (const [severity, items] of [["fatal", analysis.fatalDiagnostics], ["warning", analysis.warnings]] as const) {
+        for (const item of items ?? []) {
+          if (typeof item.code !== "string" || typeof item.message !== "string" || typeof item.source !== "string") continue;
+          rows.push({ ...base, severity, code: item.code, message: item.message,
+            source: relative + "#" + item.source, recommendation: this.runtimeRecommendation(item.code) });
+        }
+      }
+      for (const insight of analysis.insights ?? []) {
+        if (typeof insight !== "string" || !insight.trim()) continue;
+        rows.push({ ...base, severity: "info", code: "runtime_observation", message: insight,
+          source: relative, recommendation: this.runtimeRecommendation("runtime_observation") });
+      }
+    }
+    return rows;
+  }
+
+  private runtimeRecommendation(code: string): string {
+    if (code === "provider_deployment_missing") return "Select a deployed provider/model pair and rerun this evaluation.";
+    if (code === "runtime_model_mismatch") return "Align the Goose runtime model with the frozen evaluation envelope before comparing results.";
+    if (code === "provider_authentication_failed") return "Repair provider credentials, then rerun; do not interpret the excluded score.";
+    if (code === "extension_failed") return "Restore the required Goose extension and verify its health before rerunning.";
+    if (code === "delegated_task_failed") return "Inspect the delegated task failure and rerun only after the subagent path is stable.";
+    if (code === "runtime_observation") return "Use this correlated runtime signal when interpreting latency, cost, and result stability.";
+    return "Inspect the correlated Goose log provenance, remediate the runtime dependency, and rerun.";
   }
 
   private async readJson<T>(p: string): Promise<T | null> {

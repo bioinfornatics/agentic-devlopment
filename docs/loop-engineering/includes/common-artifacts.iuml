@@ -1,0 +1,17 @@
+' Artefacts communs réutilisables dans les vues détaillées.
+
+!procedure $InputArtifact($alias, $label)
+artifact "$label" as $alias
+!endprocedure
+
+!procedure $OutputArtifact($alias, $label)
+artifact "$label" as $alias
+!endprocedure
+
+!procedure $DecisionArtifact($alias, $label)
+rectangle "$label" as $alias #1A212A
+!endprocedure
+
+!procedure $BackLink($alias)
+rectangle "[[index.svg Retour à la boucle globale]]" as $alias #10161C
+!endprocedure

@@ -20,6 +20,8 @@ export const ORGANISMS_CSS = `
     .feedback-panel { margin-top: 1rem; padding: 1rem; background: var(--surface); border: 1px solid var(--gray-bdr); border-radius: var(--radius); box-shadow: var(--shadow); }
     .feedback-panel h2 { margin-bottom: .4rem; }
     .feedback-item { margin-top: .8rem; padding: .8rem; border-left: 4px solid var(--amber); background: var(--gray-lt); }
+    .runtime-fatal { border-left-color: var(--red); }
+    .runtime-info { border-left-color: var(--blue); }
     .feedback-item h3 { font-size: .9rem; margin-bottom: .35rem; }
     .feedback-item p { margin-top: .3rem; }
     .severity { color: var(--red); }

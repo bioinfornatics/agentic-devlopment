@@ -1,0 +1,10 @@
+' Procédure de création d'un noeud du cycle.
+' Les couleurs et les styles proviennent de theme.iuml.
+
+!procedure $LoopNode($alias, $number, $category, $title, $description, $color, $link)
+rectangle "<color:$color><b>$number · $category</b></color>\n<size:16><b>[[$link $title]]</b></size>\n<color:#AEB7C2>$description</color>" as $alias
+!endprocedure
+
+!procedure $TerminalNode($alias, $title, $description)
+rectangle "<color:TerminalColor><b>$title</b></color>\n<color:#AEB7C2>$description</color>" as $alias #141A21
+!endprocedure

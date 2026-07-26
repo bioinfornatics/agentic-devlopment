@@ -1,0 +1,5 @@
+{
+  "name": "beads-telemetry",
+  "version": "1.0.0",
+  "description": "Best-effort Goose lifecycle telemetry into an active Beads run."
+}

@@ -1,65 +1,138 @@
 [
   {
     "skills": [
-      "sdd",
-      "beads"
+      "task-framing"
     ],
-    "agents": [
-      "implementation-worker"
-    ],
-    "query": "Implement bead BD-123",
+    "agents": [],
+    "query": "Implement a complete bounded task contract.",
+    "max_turns": 40,
     "difficulty": "normal",
-    "expected_skill_contribution": "Claims bead and implements with TDD",
-    "max_turns": 100,
-    "expected_behavior": [
-      "Claims bead and implements with TDD"
-    ],
+    "expected_skill_contribution": "Should delegate once to change-builder and return reproducible evidence.",
     "baseline_gaps": [
-      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+      "src/",
+      "tests/"
     ],
+    "expected_behavior": [
+      "Uses change-builder.",
+      "Preserves scope.",
+      "Updates tests.",
+      "Reports exact evidence.",
+      "Completes within 30 turns."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "task"
+    "recipe_task_parameter": "task_id"
   },
   {
     "skills": [
-      "sdd",
-      "beads"
+      "task-framing"
     ],
-    "agents": [
-      "implementation-worker"
-    ],
-    "query": "Add user validation with tests first",
+    "agents": [],
+    "query": "Implement a bounded task that becomes invalid after repository inspection.",
+    "max_turns": 40,
     "difficulty": "difficult",
-    "expected_skill_contribution": "RED-GREEN-REFACTOR cycle",
-    "max_turns": 100,
-    "expected_behavior": [
-      "RED-GREEN-REFACTOR cycle"
-    ],
+    "expected_skill_contribution": "Should return REPLAN instead of forcing a change.",
     "baseline_gaps": [
-      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+      "src/",
+      "tests/"
     ],
+    "expected_behavior": [
+      "Detects contract invalidation.",
+      "Avoids broad edits.",
+      "Returns evidence for REPLAN.",
+      "Does not declare success."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "task"
+    "recipe_task_parameter": "task_id"
   },
   {
     "skills": [
-      "sdd",
-      "beads"
+      "task-framing"
     ],
-    "agents": [
-      "implementation-worker"
-    ],
-    "query": "Implement authentication flow with multiple ACs",
+    "agents": [],
+    "query": "Implement with an unavailable test dependency.",
+    "max_turns": 40,
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "Handles multi-AC implementation",
-    "max_turns": 100,
-    "expected_behavior": [
-      "Handles multi-AC implementation"
-    ],
+    "expected_skill_contribution": "Should distinguish implementation completion from unproven completion.",
     "baseline_gaps": [
-      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+      "src/",
+      "tests/"
     ],
+    "expected_behavior": [
+      "Does not fabricate test results.",
+      "Attempts safe available checks.",
+      "Returns BLOCKED or a clearly incomplete handoff.",
+      "Lists the exact missing dependency and command to rerun."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "task"
+    "recipe_task_parameter": "task_id"
   }
 ]

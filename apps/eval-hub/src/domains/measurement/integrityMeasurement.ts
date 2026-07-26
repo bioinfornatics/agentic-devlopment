@@ -2,10 +2,10 @@
 
 export type PairExclusionReason =
   | "result_missing" | "grade_null" | "grade_non_numeric"
-  | "execution_failed" | "grader_invalid" | "input_mismatch"
+  | "execution_failed" | "treatment_bootstrap_failed" | "runtime_dependency_failed" | "grader_invalid" | "input_mismatch"
   | "provenance_mismatch" | "grader_mismatch" | "rubric_mismatch";
 
-export type TerminalEvidenceStatus = "graded" | "execution_failed" | "grader_invalid";
+export type TerminalEvidenceStatus = "graded" | "execution_failed" | "treatment_bootstrap_failed" | "runtime_dependency_failed" | "grader_invalid";
 
 export interface IntegrityEvidence {
   readonly kind: string;
@@ -14,6 +14,7 @@ export interface IntegrityEvidence {
   readonly repetition: number;
   readonly side: "candidate" | "baseline";
   readonly taskPayloadHash: string;
+  readonly maxTurns: number;
   readonly fixtureHashes: Readonly<Record<string, string>>;
   readonly executionEnvelopeHash: string;
   readonly candidateTreatmentId: string;
@@ -104,6 +105,8 @@ export function evaluatePair(
     || !Number.isInteger(candidate.evalId) || !Number.isInteger(baseline.evalId)
     || !Number.isInteger(candidate.repetition) || !Number.isInteger(baseline.repetition)
     || !hasText(candidate.taskPayloadHash) || !hasText(baseline.taskPayloadHash)
+    || !Number.isInteger(candidate.maxTurns) || !Number.isInteger(baseline.maxTurns)
+    || candidate.maxTurns < 1 || baseline.maxTurns < 1 || candidate.maxTurns !== baseline.maxTurns
     || candidate.fixtureHashes === null || candidate.fixtureHashes === undefined
     || baseline.fixtureHashes === null || baseline.fixtureHashes === undefined
     || !hasText(candidate.executionEnvelopeHash) || !hasText(baseline.executionEnvelopeHash)
@@ -142,6 +145,12 @@ export function evaluatePair(
     return { valid: false, reason: "rubric_mismatch" };
   }
 
+  if (candidate.terminalStatus === "treatment_bootstrap_failed" || baseline.terminalStatus === "treatment_bootstrap_failed") {
+    return { valid: false, reason: "treatment_bootstrap_failed" };
+  }
+  if (candidate.terminalStatus === "runtime_dependency_failed" || baseline.terminalStatus === "runtime_dependency_failed") {
+    return { valid: false, reason: "runtime_dependency_failed" };
+  }
   if (candidate.terminalStatus === "execution_failed" || baseline.terminalStatus === "execution_failed") {
     return { valid: false, reason: "execution_failed" };
   }

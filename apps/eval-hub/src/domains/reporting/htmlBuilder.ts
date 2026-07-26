@@ -41,10 +41,24 @@ export interface FeedbackRecord {
   source: string;
 }
 
+export interface RuntimeInsightRecord {
+  runId: string;
+  kind: string;
+  subject: string;
+  evalId: number;
+  configuration: string;
+  severity: "fatal" | "warning" | "info";
+  code: string;
+  message: string;
+  source: string;
+  recommendation: string;
+}
+
 export interface TrendReportData {
   runs:        HistoryRow[];
   results:     ResultRow[];
   feedback?:   FeedbackRecord[];
+  runtimeInsights?: RuntimeInsightRecord[];
   generatedAt: string;
 }
 
@@ -417,6 +431,10 @@ export class HtmlReportBuilder {
     };
 
     const feedback = data.feedback ?? [];
+    const runtimeInsights = data.runtimeInsights ?? [];
+    const runtimeHtml = runtimeInsights.length === 0
+      ? `<p>No correlated Goose runtime diagnostics require attention.</p>`
+      : `<h3>Correlated Goose runtime insights</h3>${runtimeInsights.map(item => `<article class="feedback-item runtime-${esc(item.severity)}"><h3>${esc(item.subject)} · ${esc(item.code)} · <span class="severity">${esc(item.severity.toUpperCase())}</span></h3><p><strong>Diagnostic:</strong> ${esc(item.message)}</p><p><strong>Recommendation:</strong> ${esc(item.recommendation)}</p><p class="provenance"><strong>Provenance:</strong> eval ${item.evalId}, ${esc(item.configuration)} · ${esc(item.source)}</p></article>`).join("")}`;
     const candidateFailures = feedback.filter(item => !item.passed && item.configuration.startsWith("with_"));
     const runDelta = new Map(summaries.map(item => [item.subject, item.delta]));
     const priority = (subject: string) => (runDelta.get(subject) ?? 0) < 0 ? "HIGH" : "MEDIUM";
@@ -430,7 +448,7 @@ export class HtmlReportBuilder {
           const signal = delta != null && delta < 0 ? "Regression" : delta === 0 ? "No improvement" : "Candidate failure";
           return `<article class="feedback-item"><h3>${esc(item.subject)} · ${signal} · <span class="severity">${priority(item.subject)}</span></h3><p><strong>Expectation:</strong> ${esc(item.expectation)}</p><p><strong>Evidence:</strong> ${esc(item.evidence)}</p><p><strong>Recommendation:</strong> Update the ${esc(item.kind)} contract or scenario fixture so the candidate emits the required artifact, then rerun this scenario.</p><p class="provenance"><strong>Provenance:</strong> eval ${item.evalId}, ${esc(item.configuration)} · ${esc(item.source)}</p></article>`;
         }).join("");
-    const feedbackHtml = `<section class="feedback-panel"><h2>Feedback, Insights &amp; Recommendations</h2><p>Deterministic insights from failed candidate expectations. Regressions are prioritized first.</p>${recommendationsHtml}${evidenceHtml}</section>`;
+    const feedbackHtml = `<section class="feedback-panel"><h2>Feedback, Insights &amp; Recommendations</h2><p>Deterministic insights from correlated Goose runtime logs and grader evidence. Runtime integrity failures are prioritized before behavioral remediation.</p>${runtimeHtml}${recommendationsHtml}${evidenceHtml}</section>`;
     return EvalReportPage(pageData, chartJs).replace("<!-- Runs table -->", feedbackHtml + "\n    <!-- Runs table -->");
   }
 

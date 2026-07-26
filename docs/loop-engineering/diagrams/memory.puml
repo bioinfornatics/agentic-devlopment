@@ -1,0 +1,54 @@
+@startuml memory
+!include ../includes/theme.iuml
+!include ../includes/common-artifacts.iuml
+
+title <b>04 · MÉMOIRE</b> — état et expérience
+left to right direction
+
+package "Entrées" {
+  $InputArtifact(verdict, "Verdict et écarts")
+  $InputArtifact(log, "Journal d'exécution")
+  $InputArtifact(decisions, "Décisions prises")
+  $InputArtifact(context, "Contexte et version")
+}
+
+component "Mémoire" as memory #141A21 {
+  rectangle "Mettre à jour l'état de travail" as working
+  rectangle "Conserver l'épisode d'exécution" as episodic
+  rectangle "Extraire les faits durables" as semantic
+  rectangle "Qualifier source, confiance et temporalité" as qualify
+  rectangle "Détecter conflits et obsolescence" as conflicts
+  rectangle "Rendre la connaissance retrouvable" as retrieve
+}
+
+package "Sorties" {
+  $OutputArtifact(loopState, "Working memory — état courant")
+  $OutputArtifact(runHistory, "Episodic memory — historique")
+  $OutputArtifact(knowledge, "Semantic memory — faits structurés")
+  $OutputArtifact(patterns, "Procedural feedback — méthodes utiles")
+  $OutputArtifact(conflictsOut, "Conflits ou éléments obsolètes")
+}
+
+verdict --> working
+log --> episodic
+decisions --> episodic
+context --> qualify
+working --> semantic
+episodic --> semantic
+semantic --> qualify
+qualify --> conflicts
+conflicts --> retrieve
+working --> loopState
+episodic --> runHistory
+retrieve --> knowledge
+retrieve --> patterns
+conflicts --> conflictsOut
+
+note bottom of memory
+La conversation n'est pas la source d'autorité.
+L'état, les décisions et les preuves sont persistés hors du contexte éphémère de l'agent.
+end note
+
+$BackLink(back)
+back .. memory
+@enduml

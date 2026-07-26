@@ -3,6 +3,137 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { EvalKind, TreatmentId } from "../../shared/types.js";
 
+export interface TreatmentActivation {
+  readonly requestedSkills: readonly string[];
+  readonly requestedAgents: readonly string[];
+  readonly materializedSkills: readonly string[];
+  readonly materializedAgents: readonly string[];
+  readonly failedSkills: readonly string[];
+  readonly failedAgents: readonly string[];
+  readonly status: "materialized" | "verified" | "failed";
+}
+
+interface GooseToolEvent {
+  readonly id: string;
+  readonly kind: "request" | "response";
+  readonly name?: string;
+  readonly arguments?: unknown;
+  readonly payload?: unknown;
+}
+
+function gooseToolEvents(lines: readonly string[]): GooseToolEvent[] {
+  const events: GooseToolEvent[] = [];
+  for (const line of lines) {
+    try {
+      const value = JSON.parse(line) as { message?: { role?: unknown; content?: unknown } };
+      if (!Array.isArray(value.message?.content)) continue;
+      for (const item of value.message.content) {
+        if (item === null || typeof item !== "object") continue;
+        const content = item as Record<string, unknown>;
+        if (content["type"] === "toolRequest" && typeof content["id"] === "string") {
+          const call = content["toolCall"] as Record<string, unknown> | undefined;
+          const callValue = call?.["value"] as Record<string, unknown> | undefined;
+          events.push({
+            id: content["id"], kind: "request",
+            ...(typeof callValue?.["name"] === "string" ? { name: callValue["name"] } : {}),
+            ...(Object.hasOwn(callValue ?? {}, "arguments") ? { arguments: callValue?.["arguments"] } : {}),
+          });
+        }
+        if (content["type"] === "toolResponse" && typeof content["id"] === "string") {
+          events.push({ id: content["id"], kind: "response", payload: content });
+        }
+      }
+    } catch { /* non-JSON output is not structured tool evidence */ }
+  }
+  return events;
+}
+
+function responseText(payload: unknown): string {
+  return JSON.stringify(payload ?? null);
+}
+
+function successfulResponseText(payload: unknown): string | null {
+  if (payload === null || typeof payload !== "object") return null;
+  const toolResult = (payload as Record<string, unknown>)["toolResult"] as Record<string, unknown> | undefined;
+  if (toolResult?.["status"] === "error") return null;
+  const value = toolResult?.["value"] as Record<string, unknown> | undefined;
+  if (value?.["isError"] === true) return null;
+  return responseText(payload);
+}
+
+function requestedName(value: unknown, key: string): string | null {
+  return value !== null && typeof value === "object" && typeof (value as Record<string, unknown>)[key] === "string"
+    ? String((value as Record<string, unknown>)[key]) : null;
+}
+
+/** AC-EVAL-08/10: derive activation evidence from materialization and correlated Goose load calls. */
+export function inspectTreatmentActivation(
+  outputLines: readonly string[],
+  requested: Readonly<{ skills: readonly string[]; agents: readonly string[] }>,
+  materialized: Readonly<{ skills: readonly string[]; agents: readonly string[] }> = { skills: [], agents: [] },
+  options: Readonly<{ runtimeComplete?: boolean }> = {},
+): TreatmentActivation {
+  const events = gooseToolEvents(outputLines);
+  const responses = new Map(events.filter(event => event.kind === "response").map(event => [event.id, event.payload]));
+  const loadResults = events.filter(event => event.kind === "request").map(event => ({
+    name: event.name, arguments: event.arguments, response: responses.get(event.id),
+  }));
+  const skillLoads = new Map(loadResults.filter(item => item.name === "load_skill")
+    .map(item => [requestedName(item.arguments, "name"), successfulResponseText(item.response)]));
+  const agentLoads = new Map(loadResults.filter(item => item.name === "load")
+    .map(item => [requestedName(item.arguments, "source"), successfulResponseText(item.response)]));
+  const runtimeComplete = options.runtimeComplete ?? outputLines.length > 0;
+  const explicitSkillFailures = requested.skills.filter(name => skillLoads.get(name)?.includes("Skill '" + name + "' not found.") ?? false);
+  const explicitAgentFailures = requested.agents.filter(name => agentLoads.get(name)?.includes("Agent '" + name + "' not found.") ?? false);
+  const missingSkills = requested.skills.filter(name => !materialized.skills.includes(name));
+  const missingAgents = requested.agents.filter(name => !materialized.agents.includes(name));
+  const unloadedSkills = runtimeComplete ? requested.skills.filter(name =>
+    !skillLoads.get(name)?.includes("# Loaded Skill: " + name + " (skill)"),
+  ) : [];
+  const unloadedAgents = runtimeComplete ? requested.agents.filter(name => {
+    const response = agentLoads.get(name);
+    return !response?.includes("# Loaded: " + name + " (agent)") && !response?.includes("# Loaded Agent: " + name);
+  }) : [];
+  const allFailedSkills = [...new Set([...explicitSkillFailures, ...missingSkills, ...unloadedSkills])];
+  const allFailedAgents = [...new Set([...explicitAgentFailures, ...missingAgents, ...unloadedAgents])];
+  const failed = allFailedSkills.length > 0 || allFailedAgents.length > 0;
+  return {
+    requestedSkills: [...requested.skills], requestedAgents: [...requested.agents],
+    materializedSkills: [...materialized.skills], materializedAgents: [...materialized.agents],
+    failedSkills: allFailedSkills, failedAgents: allFailedAgents,
+    status: failed ? "failed" : runtimeComplete ? "verified" : "materialized",
+  };
+}
+
+export interface RuntimeHealth {
+  readonly status: "healthy" | "failed";
+  readonly diagnostics: readonly string[];
+}
+
+/** AC-EVAL-10: classify fatal provider/delegation/extension diagnostics even on exit zero. */
+export function inspectRuntimeHealth(
+  outputLines: readonly string[],
+  stderrLines: readonly string[] = [],
+  gooseLogDiagnostics: readonly string[] = [],
+): RuntimeHealth {
+  const patterns = [
+    /DeploymentNotFound/i,
+    /API deployment .+ does not exist/i,
+    /Background task .+ panicked/i,
+    /Task panicked:/i,
+    /extension .+(?:disconnected|unavailable|failed to (?:start|connect))/i,
+  ];
+  const stdoutDiagnostics = gooseToolEvents(outputLines)
+    .filter(event => event.kind === "response")
+    .map(event => responseText(event.payload))
+    .filter(evidence => patterns.some(pattern => pattern.test(evidence)));
+  const stderrDiagnostics = stderrLines.filter(line => patterns.some(pattern => pattern.test(line)));
+  // Goose log diagnostics have already been correlated to this execution by
+  // its private XDG state root and classified by gooseLogAnalyzer.
+  const diagnostics = [...stdoutDiagnostics, ...stderrDiagnostics, ...gooseLogDiagnostics];
+  return { status: diagnostics.length > 0 ? "failed" : "healthy", diagnostics };
+}
+
 export interface TreatmentBootstrap {
   readonly kind: "none" | "system_instruction" | "recipe";
   readonly bytes: string;

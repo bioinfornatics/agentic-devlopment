@@ -411,3 +411,17 @@ No domain class imports from another domain (enforced by tsconfig paths if desir
 | `persist_analysis()` — writes to `analysis_runs` SQLite table | Depends on schema not yet in `historyRepo.ts`; add as part of `historyExporter.ts` extension |
 | `recommended_action()`, `ranked_recommendations()` — ML-style scoring | Defer; depends on LLM analysis first |
 | `scenario_quality()` — evaluates scenario design | Separate concern; belongs in `governance/` domain later |
+
+---
+
+## Minimal harness benchmark domain (implemented)
+
+The production benchmark catalog is loaded by `minimalHarnessCatalog.ts`. It validates the exact 3-agent, 3-skill, 4-recipe inventory and six architecture protocols before reporting the contractual total of 36.
+
+The pure measurement module `minimalHarnessEvaluation.ts` deliberately separates:
+
+1. essential quality eligibility;
+2. efficiency aggregation over qualified runs only;
+3. smallest non-inferior Pareto recommendation.
+
+The `--benchmark-minimal` CLI validates and exports the benchmark design without spending provider tokens. Runtime observations can be fed to the exported measurement functions after actual benchmark execution.

@@ -1,0 +1,5 @@
+{
+  "name": "prevent-catastrophe",
+  "version": "1.0.0",
+  "description": "PreToolUse shell safety guard that blocks catastrophic or privileged commands."
+}

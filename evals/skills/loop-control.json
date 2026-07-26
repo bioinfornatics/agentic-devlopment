@@ -1,0 +1,125 @@
+[
+  {
+    "skills": [
+      "loop-control"
+    ],
+    "agents": [],
+    "query": "Verifier returns ACCEPTED and every criterion is proven; budget remains. Choose transition.",
+    "files": [],
+    "max_turns": 10,
+    "difficulty": "normal",
+    "expected_skill_contribution": "Should emit COMPLETE, not continue searching for work.",
+    "baseline_gaps": [],
+    "expected_behavior": [
+      "Emits exactly COMPLETE.",
+      "References the acceptance evidence.",
+      "Sets next_task to null.",
+      "Records remaining budget without using it as a reason to continue."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "loop-control"
+    ],
+    "agents": [],
+    "query": "Verifier returns REWORK for one bounded defect and progress was positive. Choose transition.",
+    "files": [],
+    "max_turns": 10,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "Should distinguish REWORK from REPLAN.",
+    "baseline_gaps": [],
+    "expected_behavior": [
+      "Emits REWORK.",
+      "Names the bounded next task.",
+      "Keeps the existing contract unless evidence invalidated it.",
+      "Records progress_delta and evidence references."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "loop-control"
+    ],
+    "agents": [],
+    "query": "Two consecutive iterations repeat the same failure with no new evidence; budget remains.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Should terminate or escalate due to stagnation rather than consume the remaining budget.",
+    "baseline_gaps": [],
+    "expected_behavior": [
+      "Detects repeated non-progress.",
+      "Emits ABORT or ESCALATE according to whether human judgment can resolve it.",
+      "Does not emit CONTINUE or REWORK.",
+      "Cites both failed iterations and the unchanged evidence signature."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  }
+]

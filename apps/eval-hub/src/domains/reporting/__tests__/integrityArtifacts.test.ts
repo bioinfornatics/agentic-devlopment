@@ -80,6 +80,7 @@ async function buildEligibleStore(root: string): Promise<{
       { id: "base", kind: "skills", subject: "test-skill", side: "baseline",  definitionHash: "def-base", bootstrapHash: "boot-base" },
     ],
     taskPayloadHashes: { "skills/test-skill/1": "task-hash-001" },
+    maxTurnsByTask: { "skills/test-skill/1": 8 },
     fixtureHashes: { "fixture-a": "fix-hash-001" },
     executionEnvelope: ENVELOPE,
     grader: { id: "test-grader", version: "1.0" },
@@ -89,6 +90,7 @@ async function buildEligibleStore(root: string): Promise<{
   const stored  = await store.createManifest(manifest);
   const pairKey = {
     taskPayloadHash:        "task-hash-001",
+    maxTurns:               8,
     fixtureHashes:          { "fixture-a": "fix-hash-001" },
     executionEnvelopeHash:  integrityValueHash(ENVELOPE),
     candidateTreatmentId:   "cand",
@@ -169,6 +171,7 @@ async function buildExclusionStore(root: string): Promise<{
       { id: "base2", kind: "skills", subject: "excl-skill", side: "baseline",  definitionHash: "def-base2", bootstrapHash: "boot-base2" },
     ],
     taskPayloadHashes: { "skills/excl-skill/2": "task-hash-excl" },
+    maxTurnsByTask: { "skills/excl-skill/2": 8 },
     fixtureHashes: {},
     executionEnvelope: ENVELOPE,
     grader: { id: "g2", version: "2.0" },
@@ -450,6 +453,7 @@ describe("buildIntegrityArtifactsFromStore — missing/null store", () => {
         { id: "b", kind: "skills", subject: "s", side: "baseline",  definitionHash: "d2", bootstrapHash: "b2" },
       ],
       taskPayloadHashes: { "skills/s/0": "t" },
+      maxTurnsByTask: { "skills/s/0": 8 },
       fixtureHashes: {},
       executionEnvelope: ENVELOPE,
       grader: { id: "g", version: "1" },

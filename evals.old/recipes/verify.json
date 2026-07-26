@@ -1,0 +1,62 @@
+[
+  {
+    "skills": [
+      "webapp-testing"
+    ],
+    "agents": [
+      "qa-automation"
+    ],
+    "query": "Verify the login feature works",
+    "difficulty": "normal",
+    "expected_skill_contribution": "Runs tests, collects evidence",
+    "max_turns": 100,
+    "expected_behavior": [
+      "Runs tests, collects evidence"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "task"
+  },
+  {
+    "skills": [
+      "webapp-testing"
+    ],
+    "agents": [
+      "qa-automation"
+    ],
+    "query": "Verify API endpoints match spec",
+    "difficulty": "difficult",
+    "expected_skill_contribution": "API test evidence",
+    "max_turns": 100,
+    "expected_behavior": [
+      "API test evidence"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "task"
+  },
+  {
+    "skills": [
+      "webapp-testing"
+    ],
+    "agents": [
+      "qa-automation"
+    ],
+    "query": "Full end-to-end verification",
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Browser + API + unit evidence",
+    "max_turns": 100,
+    "expected_behavior": [
+      "Browser + API + unit evidence"
+    ],
+    "baseline_gaps": [
+      "Layer 2 agents+skills baseline lacks the recipe-specific ordered workflow and gates."
+    ],
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "task"
+  }
+]

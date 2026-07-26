@@ -469,7 +469,7 @@ async function buildEligibleStore(root: string): Promise<NormalizedIntegrityRepo
   const envelope = {
     provider: "test", model: "test",
     decoding: { temperature: null as null, seed: null as null },
-    timeBudgetMs: null as null, tokenBudget: null as null,
+    timeBudgetMs: null as null, tokenBudget: null as null, maxTurns: 8,
     gooseRuntimeVersion: "0.0.0", evalHubRuntimeVersion: "0.0.0",
   } as const;
   const manifest: IntegrityManifestV2 = {
@@ -483,6 +483,7 @@ async function buildEligibleStore(root: string): Promise<NormalizedIntegrityRepo
       { id: "base", kind: "skills", subject: "test-skill", side: "baseline",  definitionHash: "def-base", bootstrapHash: "boot-base" },
     ],
     taskPayloadHashes: { "skills/test-skill/1": "task-hash-1" },
+    maxTurnsByTask: { "skills/test-skill/1": 8 },
     fixtureHashes: {},
     executionEnvelope: envelope,
     grader:  { id: "test-grader", version: "1.0" },
@@ -491,6 +492,7 @@ async function buildEligibleStore(root: string): Promise<NormalizedIntegrityRepo
   const stored = await store.createManifest(manifest);
   const pairKey = {
     taskPayloadHash: "task-hash-1",
+    maxTurns: 8,
     fixtureHashes: {},
     executionEnvelopeHash: integrityValueHash(envelope),
     candidateTreatmentId: "cand",

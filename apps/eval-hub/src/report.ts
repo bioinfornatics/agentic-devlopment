@@ -67,9 +67,9 @@ export async function startReport(args: string[]): Promise<void> {
 
   // ── Merge: workspace wins on pass_rate; SQLite wins on metadata ───────────
   const merged = mergeData(wsData, dbRuns, dbResults, kinds, limit);
-  console.log(`  Merged     : ${merged.runs.length} run(s), ${merged.results.length} result(s)\n`);
+  console.log(`  Merged     : ${merged.runs.length} run(s), ${merged.results.length} result(s), ${wsData.runtimeInsights.length} runtime insight(s)\n`);
 
-  if (merged.runs.length === 0) {
+  if (merged.runs.length === 0 && wsData.runtimeInsights.length === 0) {
     console.error("  ✗  No eval data found.");
     console.error(`     Run an eval first:\n`);
     console.error(`       node apps/eval-hub/dist/index.js --run --layers ${kinds.join(",")} --ambient-goose\n`);
@@ -82,6 +82,7 @@ export async function startReport(args: string[]): Promise<void> {
     runs:        merged.runs,
     results:     merged.results,
     feedback:    wsData.feedback,
+    runtimeInsights: wsData.runtimeInsights,
     generatedAt: new Date().toISOString(),
   });
 

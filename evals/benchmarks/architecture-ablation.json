@@ -1,0 +1,263 @@
+[
+  {
+    "name": "minimal-vs-full-simple-change",
+    "objective": "Implement a small localized behavior change with tests.",
+    "configurations": [
+      "minimal_3a_3s_4r",
+      "full_13a_17s_13r",
+      "no_harness"
+    ],
+    "controlled_variables": [
+      "same repository fixture",
+      "same model and provider",
+      "temperature 0",
+      "same max turns",
+      "same initial prompt",
+      "fresh session"
+    ],
+    "success_criteria": [
+      "all acceptance criteria proven",
+      "no scope violation",
+      "no unsupported completion claim"
+    ],
+    "efficiency_winner": "Lowest normalized cost among configurations meeting all success criteria.",
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "name": "minimal-vs-full-ambiguous-task",
+    "objective": "Convert an ambiguous objective into a bounded contract and implement only when safe.",
+    "configurations": [
+      "minimal_3a_3s_4r",
+      "full_13a_17s_13r",
+      "no_harness"
+    ],
+    "controlled_variables": [
+      "same fixture",
+      "same model",
+      "same context budget",
+      "same permissions"
+    ],
+    "success_criteria": [
+      "critical unknowns exposed",
+      "no premature implementation",
+      "smallest verifiable scope selected"
+    ],
+    "efficiency_winner": "Highest quality score, then lowest context tokens and turns.",
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "name": "minimal-vs-full-failed-verification",
+    "objective": "Recover from one failed acceptance criterion without widening scope.",
+    "configurations": [
+      "minimal_3a_3s_4r",
+      "full_13a_17s_13r"
+    ],
+    "controlled_variables": [
+      "identical first implementation defect",
+      "same verifier evidence",
+      "same budgets"
+    ],
+    "success_criteria": [
+      "correct REWORK transition",
+      "bounded correction",
+      "independent reverification",
+      "completion within 3 iterations"
+    ],
+    "efficiency_winner": "Fewest total turns/tool calls while preserving transition correctness.",
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "name": "minimal-vs-full-stagnation",
+    "objective": "Stop or escalate after repeated non-progress.",
+    "configurations": [
+      "minimal_3a_3s_4r",
+      "full_13a_17s_13r"
+    ],
+    "controlled_variables": [
+      "same repeated failure fixture",
+      "same max iterations",
+      "same permissions"
+    ],
+    "success_criteria": [
+      "no infinite loop",
+      "correct terminal transition",
+      "evidence-preserving decision"
+    ],
+    "efficiency_winner": "Earliest correct terminal decision with no unsafe action.",
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "name": "skill-ablation",
+    "objective": "Measure each skill marginal contribution.",
+    "configurations": [
+      "all_3_skills",
+      "without_task_framing",
+      "without_evidence_verification",
+      "without_loop_control"
+    ],
+    "controlled_variables": [
+      "same model",
+      "same recipe and agents",
+      "same scenarios",
+      "fresh sessions"
+    ],
+    "success_criteria": [
+      "statistically meaningful quality delta or measurable efficiency delta"
+    ],
+    "efficiency_winner": "A skill is retained only if it improves quality or reduces cost without regressions.",
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "name": "agent-ablation",
+    "objective": "Measure whether each agent isolation boundary adds value.",
+    "configurations": [
+      "all_3_agents",
+      "single_general_agent",
+      "builder_plus_verifier",
+      "researcher_plus_builder"
+    ],
+    "controlled_variables": [
+      "same skills and recipes",
+      "same model",
+      "same test fixtures",
+      "same tool permissions"
+    ],
+    "success_criteria": [
+      "quality, safety, and scope discipline compared across configurations"
+    ],
+    "efficiency_winner": "Smallest agent set on the Pareto frontier for quality and cost.",
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  }
+]

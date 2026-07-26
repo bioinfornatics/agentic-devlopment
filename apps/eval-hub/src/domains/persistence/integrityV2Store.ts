@@ -28,6 +28,7 @@ export interface IntegrityManifestV2 {
     readonly bootstrapHash: string;
   }>;
   readonly taskPayloadHashes: Readonly<Record<string, string>>;
+  readonly maxTurnsByTask: Readonly<Record<string, number>>;
   readonly fixtureHashes: Readonly<Record<string, string>>;
   readonly executionEnvelope: {
     readonly provider: string;
@@ -50,6 +51,7 @@ export interface StoredIntegrityManifestV2 {
 
 export interface IntegrityPairKeyV2 {
   readonly taskPayloadHash: string;
+  readonly maxTurns: number;
   readonly fixtureHashes: Readonly<Record<string, string>>;
   readonly executionEnvelopeHash: string;
   readonly candidateTreatmentId: string;
@@ -65,7 +67,7 @@ export interface IntegrityPairKeyV2 {
 
 export type PairExclusionReason =
   | "result_missing" | "grade_null" | "grade_non_numeric" | "execution_failed"
-  | "grader_invalid" | "input_mismatch" | "provenance_mismatch"
+  | "grader_invalid" | "treatment_bootstrap_failed" | "runtime_dependency_failed" | "input_mismatch" | "provenance_mismatch"
   | "grader_mismatch" | "rubric_mismatch";
 export type SubjectFailureReason = "source_missing" | "schema_legacy_incomplete";
 
@@ -174,7 +176,7 @@ async function writeExclusive(file: string, bytes: string): Promise<void> {
 
 const PAIR_EXCLUSION_REASONS = new Set<PairExclusionReason>([
   "result_missing", "grade_null", "grade_non_numeric", "execution_failed", "grader_invalid",
-  "input_mismatch", "provenance_mismatch", "grader_mismatch", "rubric_mismatch",
+  "treatment_bootstrap_failed", "runtime_dependency_failed", "input_mismatch", "provenance_mismatch", "grader_mismatch", "rubric_mismatch",
 ]);
 const SUBJECT_FAILURE_REASONS = new Set<SubjectFailureReason>(["source_missing", "schema_legacy_incomplete"]);
 
@@ -259,6 +261,9 @@ export class EvalIntegrityV2Store {
   async createManifest(manifest: IntegrityManifestV2): Promise<StoredIntegrityManifestV2> {
     if (manifest.schema !== INTEGRITY_SCHEMA_V2) throw new Error("unsupported integrity manifest schema");
     assertNoDuplicateManifestSubjects(manifest);
+    if (!Object.values(manifest.maxTurnsByTask).every(value => Number.isInteger(value) && value >= 1)) {
+      throw new Error("integrity manifest maxTurnsByTask is invalid");
+    }
     const bytes = canonicalize(manifest);
     const hash = sha256(bytes);
     const [existing, existingHash] = await Promise.all([readOptional(this.manifestPath), readOptional(this.manifestHashPath)]);
@@ -290,6 +295,9 @@ export class EvalIntegrityV2Store {
       throw new Error("integrity manifest hash or canonical bytes invalid");
     }
     assertNoDuplicateManifestSubjects(manifest);
+    if (!isObject(manifest.maxTurnsByTask) || !Object.values(manifest.maxTurnsByTask).every(value => Number.isInteger(value) && value >= 1)) {
+      throw new Error("integrity manifest maxTurnsByTask is invalid");
+    }
     return { schema: INTEGRITY_SCHEMA_V2, hash: actual, manifest };
   }
 
@@ -323,6 +331,8 @@ export class EvalIntegrityV2Store {
     const pair = record.pairKey;
     const taskHash = manifest.taskPayloadHashes[`${record.kind}/${record.subject}/${record.evalId}`];
     if (taskHash === undefined || pair.taskPayloadHash !== taskHash) throw new Error("terminal task payload does not match manifest");
+    const maxTurns = manifest.maxTurnsByTask[`${record.kind}/${record.subject}/${record.evalId}`];
+    if (maxTurns === undefined || pair.maxTurns !== maxTurns) throw new Error("terminal maxTurns does not match manifest");
     if (canonicalize(pair.fixtureHashes) !== canonicalize(manifest.fixtureHashes)) throw new Error("terminal fixture hashes do not match manifest");
     if (pair.executionEnvelopeHash !== integrityValueHash(manifest.executionEnvelope)) throw new Error("terminal execution envelope does not match manifest");
     if (pair.candidateTreatmentId !== candidate.id || pair.baselineTreatmentId !== baseline.id

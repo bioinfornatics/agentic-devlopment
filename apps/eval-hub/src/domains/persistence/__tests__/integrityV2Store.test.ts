@@ -25,6 +25,7 @@ const manifest = (overrides: Partial<IntegrityManifestV2> = {}): IntegrityManife
     { id: "skill_l0", kind: "skills", subject: "sdd", side: "baseline", definitionHash: "baseline-hash", bootstrapHash: "baseline-bootstrap" },
   ],
   taskPayloadHashes: { "skills/sdd/0": "task-hash" },
+  maxTurnsByTask: { "skills/sdd/0": 8 },
   fixtureHashes: { "fixtures/auth.ts": "fixture-hash" },
   executionEnvelope: {
     provider: "azure_foundry", model: "gpt-test", decoding: { temperature: null, seed: null },
@@ -41,7 +42,7 @@ const terminal = (overrides: Partial<IntegrityTerminalRecordV2> = {}): Integrity
   kind: "skills", subject: "sdd", evalId: 0, repetition: 0,
   side: "candidate", treatmentId: "skill_l1", status: "succeeded",
   pairKey: {
-    taskPayloadHash: "task-hash", fixtureHashes: { "fixtures/auth.ts": "fixture-hash" },
+    taskPayloadHash: "task-hash", maxTurns: 8, fixtureHashes: { "fixtures/auth.ts": "fixture-hash" },
     executionEnvelopeHash: integrityValueHash(manifest().executionEnvelope), candidateTreatmentId: "skill_l1", baselineTreatmentId: "skill_l0",
     candidateTreatmentHash: "candidate-hash", baselineTreatmentHash: "baseline-hash", runProvenanceId: "run-001",
     graderId: "llm-judge", graderVersion: "2", rubricId: "expected-behavior", rubricVersion: "3",
@@ -172,6 +173,7 @@ describe("EVAL-INT-04/06/12/15/20 terminal records and resume", () => {
         { id: "agent_l1", kind: "agents", subject: "architect", side: "baseline", definitionHash: "agent-baseline", bootstrapHash: "skills-bootstrap" },
       ],
       taskPayloadHashes: { "skills/sdd/0": "task-hash", "agents/architect/0": "agent-task" },
+      maxTurnsByTask: { "skills/sdd/0": 8, "agents/architect/0": 8 },
     });
     const stored = await store.createManifest(multi);
     const base = terminal({ manifestHash: stored.hash });

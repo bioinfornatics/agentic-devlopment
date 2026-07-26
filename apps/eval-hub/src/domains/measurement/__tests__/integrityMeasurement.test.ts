@@ -9,7 +9,7 @@ import {
 
 const base = (side: "candidate" | "baseline", score: number | null = side === "candidate" ? 0.75 : 0.5): IntegrityEvidence => ({
   kind: "agents", subject: "architect", evalId: 2, repetition: 0, side,
-  taskPayloadHash: "task", fixtureHashes: { "input.md": "fixture" },
+  taskPayloadHash: "task", maxTurns: 8, fixtureHashes: { "input.md": "fixture" },
   executionEnvelopeHash: "execution", candidateTreatmentId: "agent_l2",
   baselineTreatmentId: "agent_l1", candidateTreatmentHash: "l2-hash",
   baselineTreatmentHash: "l1-hash", runProvenanceId: "run",
@@ -54,6 +54,7 @@ describe("eval integrity measurement", () => {
     [base("candidate", null), base("baseline"), "grade_null"],
     [{ ...base("candidate"), score: Number.NaN }, base("baseline"), "grade_non_numeric"],
     [{ ...base("candidate"), terminalStatus: "execution_failed" as const }, base("baseline"), "execution_failed"],
+    [{ ...base("candidate"), terminalStatus: "treatment_bootstrap_failed" as const }, base("baseline"), "treatment_bootstrap_failed"],
     [{ ...base("candidate"), terminalStatus: "grader_invalid" as const }, base("baseline"), "grader_invalid"],
   ] as const)("[EVAL-INT-06] excludes invalid evidence symmetrically", (candidate, baseline, reason) => {
     expect(evaluatePair(candidate, baseline)).toEqual({ valid: false, reason });

@@ -1,0 +1,56 @@
+@startuml builder
+!include ../includes/theme.iuml
+!include ../includes/common-artifacts.iuml
+
+title <b>02 · BUILDER</b> — exécution bornée
+left to right direction
+
+package "Entrées" {
+  $InputArtifact(plan, "Plan approuvé")
+  $InputArtifact(task, "Tâche prête")
+  $InputArtifact(context, "Contexte minimal nécessaire")
+  $InputArtifact(policies, "Politiques et garde-fous")
+  $InputArtifact(checkpoint, "Preuves attendues")
+}
+
+component "Builder" as builder #141A21 {
+  rectangle "Sélectionner l'incrément" as select
+  rectangle "Choisir les outils autorisés" as tools
+  rectangle "Exécuter le changement" as execute
+  rectangle "Gérer erreurs et reprises bornées" as recover
+  rectangle "Collecter les sorties brutes" as evidence
+  rectangle "Remettre le résultat au vérificateur" as produce
+}
+
+package "Sorties" {
+  $OutputArtifact(result, "Résultat concret")
+  $OutputArtifact(log, "Journal d'exécution")
+  $OutputArtifact(proofs, "Preuves candidates")
+  $OutputArtifact(blockers, "Blocages observés")
+  $OutputArtifact(diff, "Diff ou artefact produit")
+}
+
+plan --> select
+task --> select
+context --> tools
+policies --> tools
+checkpoint --> evidence
+select --> tools
+tools --> execute
+execute --> recover
+recover --> evidence
+evidence --> produce
+produce --> result
+execute --> log
+evidence --> proofs
+recover --> blockers
+execute --> diff
+
+note bottom of builder
+Le builder fournit les éléments permettant une vérification indépendante.
+Il ne décide ni de l'acceptation du résultat ni de la fin de la boucle.
+end note
+
+$BackLink(back)
+back .. builder
+@enduml

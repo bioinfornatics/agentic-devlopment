@@ -8,6 +8,8 @@ import {
   buildTreatmentPair,
   resolveTypedRecipeSource,
   terminalExecutionResult,
+  inspectRuntimeHealth,
+  inspectTreatmentActivation,
   validateRepetitionCount,
   type InvariantExecutionEnvelope,
 } from "../executionIntegrity.js";
@@ -125,5 +127,103 @@ describe("EVAL-INT-06 execution failure is terminal", () => {
     expect(terminalExecutionResult(2, null)).toEqual({ status: "failed", exitCode: 2, signal: null, score: null });
     expect(terminalExecutionResult(null, "SIGKILL")).toEqual({ status: "failed", exitCode: null, signal: "SIGKILL", score: null });
     expect(terminalExecutionResult(0, null)).toEqual({ status: "succeeded", exitCode: 0, signal: null, score: null });
+  });
+});
+
+
+describe("AC-EVAL-08/10 treatment activation evidence", () => {
+  const skillLoad = (name: string, text: string, id = "skill-load") => [
+    JSON.stringify({ message: { role: "assistant", content: [
+      { type: "toolRequest", id, toolCall: { value: { name: "load_skill", arguments: { name } } } },
+    ] } }),
+    JSON.stringify({ message: { role: "user", content: [
+      { type: "toolResponse", id, toolResult: { value: { content: [{ type: "text", text }] } } },
+    ] } }),
+  ];
+
+  it("detects explicit Goose load failures only for requested treatment artifacts", () => {
+    const result = inspectTreatmentActivation(
+      skillLoad("sdd", "Skill 'sdd' not found."), { skills: ["sdd"], agents: [] },
+    );
+    expect(result).toEqual({
+      requestedSkills: ["sdd"], requestedAgents: [], materializedSkills: [], materializedAgents: [],
+      failedSkills: ["sdd"], failedAgents: [], status: "failed",
+    });
+  });
+
+  it("does not treat unrelated tool errors as treatment bootstrap failures", () => {
+    const result = inspectTreatmentActivation([
+      ...skillLoad("other", "Skill 'other' not found.", "other-load"),
+      ...skillLoad("sdd", "# Loaded Skill: sdd (skill)"),
+    ], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] });
+    expect(result.status).toBe("verified");
+    expect(result.failedSkills).toEqual([]);
+  });
+
+  it("distinguishes copied artifacts from runtime-verified activation", () => {
+    expect(inspectTreatmentActivation(
+      [], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] },
+    ).status).toBe("materialized");
+    expect(inspectTreatmentActivation(
+      [], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] }, { runtimeComplete: true },
+    )).toMatchObject({ status: "failed", failedSkills: ["sdd"] });
+  });
+
+  it("does not accept assistant-authored load markers as activation evidence", () => {
+    const assistant = JSON.stringify({ type: "message", message: { role: "assistant", content: "# Loaded Skill: sdd (skill)" } });
+    expect(inspectTreatmentActivation(
+      [assistant], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] }, { runtimeComplete: true },
+    )).toMatchObject({ status: "failed", failedSkills: ["sdd"] });
+  });
+
+  it("does not accept nested transcript text returned by another tool as activation evidence", () => {
+    const shellResult = JSON.stringify({ message: { role: "user", content: [
+      { type: "toolResponse", id: "shell-1", toolResult: { value: { content: [
+        { type: "text", text: '{"toolResponse":"# Loaded Skill: sdd (skill)"}' },
+      ] } } },
+    ] } });
+    expect(inspectTreatmentActivation(
+      [shellResult], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] }, { runtimeComplete: true },
+    )).toMatchObject({ status: "failed", failedSkills: ["sdd"] });
+  });
+
+  it("does not verify activation when the correlated load response is marked as an error", () => {
+    const [request, response] = skillLoad("sdd", "# Loaded Skill: sdd (skill)");
+    const failedResponse = JSON.stringify({ message: { role: "user", content: [{ type: "toolResponse", id: "skill-load", toolResult: { status: "error", value: { content: [{ type: "text", text: "# Loaded Skill: sdd (skill)" }], isError: true } } }] } });
+    expect(inspectTreatmentActivation(
+      [request!, failedResponse], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] }, { runtimeComplete: true },
+    )).toMatchObject({ status: "failed", failedSkills: ["sdd"] });
+    expect(response).toBeDefined();
+  });
+});
+
+
+describe("AC-EVAL-10 runtime dependency health", () => {
+  it.each([
+    "DeploymentNotFound: The API deployment claude-sonnet-4-5 does not exist",
+    "Background task 20260722_193 panicked: task was cancelled",
+    "extension summon failed to connect",
+  ])("classifies a fatal runtime diagnostic from stderr: %s", diagnostic => {
+    expect(inspectRuntimeHealth([], [diagnostic])).toMatchObject({ status: "failed", diagnostics: [diagnostic] });
+  });
+
+  it("classifies a fatal runtime diagnostic in a structured tool response", () => {
+    const request = JSON.stringify({ message: { role: "assistant", content: [
+      { type: "toolRequest", id: "delegate-1", toolCall: { value: { name: "load", arguments: { source: "task" } } } },
+    ] } });
+    const response = JSON.stringify({ message: { role: "user", content: [
+      { type: "toolResponse", id: "delegate-1", toolResult: { value: { content: [
+        { type: "text", text: "Error: Task panicked: task was cancelled" },
+      ] } } },
+    ] } });
+    expect(inspectRuntimeHealth([request, response])).toMatchObject({ status: "failed" });
+  });
+
+  it("does not fail ordinary, assistant-authored, or nested transcript output", () => {
+    const assistant = JSON.stringify({ type: "message", message: { role: "assistant", content: "Task panicked: quoted as documentation" } });
+    const nested = JSON.stringify({ message: { role: "assistant", content: [
+      { type: "text", text: "Task panicked: quoted nested transcript" },
+    ] } });
+    expect(inspectRuntimeHealth(["completed normally", assistant, nested])).toEqual({ status: "healthy", diagnostics: [] });
   });
 });

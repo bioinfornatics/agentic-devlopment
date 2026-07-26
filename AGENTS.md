@@ -119,8 +119,7 @@ Each active plugin injects hook stubs into every session context. Current overhe
 | `loop-telemetry` | 6 | ~400 |
 | `beads-telemetry` | 1 | ~300 |
 | `loop-breaker` | 2 | ~400 |
-| `loop-trace` | 4 | ~500 |
-| **Total** | **15 hooks** | **~3 000** |
+| **Total** | **13 hooks** | **~2 500** |
 
 > ⚠️ SOTA signal: 10 plugins ≈ 40k tokens. Keep active plugin count ≤ 6 and total hook overhead ≤ 5k tokens. See `docs/loop-engineering/MAPPING.md` for the full breakdown.
 

@@ -12,6 +12,7 @@ import path from "node:path";
 import type { IGrader, GradingResult, IGooseRunner } from "./ports.js";
 import type { EvalScenario } from "../../shared/types.js";
 import { GooseProcessRunner } from "./gooseRunner.js";
+import { analyzeGooseLogs, gooseLogCaptureForWorkspace } from "./gooseLogAnalyzer.js";
 
 
 export interface DescriptorV1 {
@@ -50,6 +51,7 @@ export class LlmGrader implements IGrader {
     gooseOutput: string,
     runDir:      string,
     gooseCli:    string,
+    runtime: Readonly<{ provider: string | null; model: string | null }> = { provider: null, model: null },
   ): Promise<GradingResult> {
     const expectations = scenario.expected_behavior ?? [];
     if (expectations.length === 0) {
@@ -61,21 +63,32 @@ export class LlmGrader implements IGrader {
     await fs.writeFile(promptPath, prompt);
 
     let gradingOutput = "";
+    let processFailed = false;
+    const logCapture = gooseLogCaptureForWorkspace(path.join(runDir, ".grader"));
     try {
+      const runtimeArgs = [
+        ...(runtime.provider ? ["--provider", runtime.provider] : []),
+        ...(runtime.model ? ["--model", runtime.model] : []),
+      ];
       for await (const raw of this.goose.run({
         gooseCli,
-        args:      ["run", "--instructions", promptPath, "--no-session", "--max-turns", "1", "--quiet"],
+        args:      ["run", "--instructions", promptPath, ...runtimeArgs, "--no-session", "--max-turns", "1", "--quiet"],
+        env:       { XDG_STATE_HOME: logCapture.stateHome },
         cwd:       runDir,
         timeoutMs: 120_000,
       })) {
-        if (raw.type === "exit") break;
+        if (raw.type === "exit") { processFailed = raw.code !== 0 || raw.signal !== null; break; }
         if (raw.stream === "stdout") gradingOutput += raw.text + "\n";
       }
-    } catch {
-      // Goose failed — return null so result is excluded from delta, not biased
-      return this.nullResult(expectations, "grader process failed");
-    }
+    } catch { processFailed = true; }
 
+    const logAnalysis = await analyzeGooseLogs(logCapture.logsRoot, runtime.model);
+    await fs.writeFile(path.join(runDir, "goose-grader-log-analysis.json"), JSON.stringify(logAnalysis, null, 2));
+    await fs.rm(logCapture.stateHome, { recursive: true, force: true }).catch(() => undefined);
+    if (processFailed || logAnalysis.fatalDiagnostics.length > 0) {
+      // Grader runtime failures produce a null score, never a synthetic zero.
+      return this.nullResult(expectations, "grader runtime failed; inspect goose-grader-log-analysis.json");
+    }
     return this.parseOutput(gradingOutput, expectations);
   }
 

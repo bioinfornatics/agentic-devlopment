@@ -20,6 +20,12 @@
 
 const args = process.argv.slice(2);
 
+if (args.includes("--benchmark-minimal")) {
+  const { startBenchmark } = await import("./benchmark.js");
+  await startBenchmark(args);
+  process.exit(0);
+}
+
 if (args.includes("--run")) {
   const { startRun }    = await import("./run.js");
   await startRun(args);
@@ -67,6 +73,7 @@ if (!wantServer && !wantTui) {
     "  Usage: node apps/eval-hub/dist/index.js <mode> [options]",
     "",
     "  Modes:",
+    "    --benchmark-minimal Validate and print the 36-protocol minimal harness benchmark catalog",
     "    --run              Drive a layered eval (L1→L2→L3)",
     "    --report           Build HTML trend dashboard → dist/evals/report/index.html",
     "    --report --open    Build + open in browser",

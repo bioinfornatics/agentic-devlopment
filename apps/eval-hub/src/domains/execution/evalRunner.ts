@@ -25,7 +25,9 @@ import { LlmGrader }           from "./grader.js";
 import { FsWorkspaceWriter }   from "../persistence/workspaceWriter.js";
 import type { IWorkspaceWriter } from "../persistence/ports.js";
 import { NULL_SINK }           from "../../shared/eventBus.js";
-import { buildGooseInvocation, hashUtf8, terminalExecutionResult, treatmentContentHash } from "./executionIntegrity.js";
+import { PROJECT_SKILLS_DIR, PROJECT_AGENTS_DIR } from "../../shared/paths.js";
+import { buildGooseInvocation, hashUtf8, inspectRuntimeHealth, inspectTreatmentActivation, terminalExecutionResult, treatmentContentHash } from "./executionIntegrity.js";
+import { analyzeGooseLogs, gooseLogCaptureForWorkspace } from "./gooseLogAnalyzer.js";
 import {
   EvalIntegrityV2Store, INTEGRITY_SCHEMA_V2, integrityValueHash,
   type IntegrityTerminalRecordV2,
@@ -106,6 +108,12 @@ export class SkillEvalRunner implements IEvalRunner {
       );
     }
 
+    // Validate the per-task manifest-frozen turn budget before any provider call.
+    const expectedMaxTurns = stored.manifest.maxTurnsByTask[taskKey];
+    if (expectedMaxTurns === undefined || cfg.maxTurns !== expectedMaxTurns) {
+      throw new Error("integrity maxTurns mismatch: plan=" + cfg.maxTurns + " manifest=" + String(expectedMaxTurns));
+    }
+
     // Validate runtime context (goose version must match manifest envelope)
     if (cfg.gooseRuntimeVersion !== stored.manifest.executionEnvelope.gooseRuntimeVersion) {
       throw new Error(
@@ -153,6 +161,7 @@ export class SkillEvalRunner implements IEvalRunner {
     // ── B. Build pairKey exactly from manifest + integrity plan ───────────────
     const pairKey: IntegrityTerminalRecordV2["pairKey"] = {
       taskPayloadHash:        cfg.plannedTaskPayloadHash,
+      maxTurns:               cfg.maxTurns,
       fixtureHashes:          stored.manifest.fixtureHashes,
       executionEnvelopeHash:  integrityValueHash(stored.manifest.executionEnvelope),
       candidateTreatmentId:   cfg.integrity.candidateTreatmentId,
@@ -210,10 +219,14 @@ export class SkillEvalRunner implements IEvalRunner {
 
     // ── cwd / env ─────────────────────────────────────────────────────────────
     const cwd = cfg.workspace;
-    const env: Record<string, string> = {};
+    // Give each execution a private XDG state root. Goose writes the same log
+    // formats as ~/.local/state/goose/logs, but concurrent workers can now be
+    // attributed without time-window guesses or historical contamination.
+    const gooseLogCapture = gooseLogCaptureForWorkspace(cfg.workspace);
+    const env: Record<string, string> = { XDG_STATE_HOME: gooseLogCapture.stateHome };
 
     // ── Build invocation ──────────────────────────────────────────────────────
-    const maxTurns = (scenario.max_turns ?? cfg.maxTurns) || cfg.maxTurns;
+    const maxTurns = cfg.maxTurns;
     const provider = cfg.provider;
     const model    = cfg.model;
     const args = buildGooseInvocation(
@@ -225,6 +238,35 @@ export class SkillEvalRunner implements IEvalRunner {
     const gooseRuntimeVersion = cfg.gooseRuntimeVersion;
 
     // Legacy execution-evidence.json (preserves compatibility with reporting/workspace reader)
+    // Materialize only the active side's requested artifacts. Goose discovers these by walking up from cwd.
+    for (const name of treatment.definition.skills) {
+      const source = path.join(PROJECT_SKILLS_DIR, name);
+      const target = path.join(cfg.workspace, ".agents", "skills", name);
+      try {
+        await fs.access(path.join(source, "SKILL.md"));
+        await fs.mkdir(path.dirname(target), { recursive: true });
+        await fs.cp(source, target, { recursive: true, force: true });
+      } catch { /* captured by activation inventory below */ }
+    }
+    for (const name of treatment.definition.agents) {
+      const source = path.join(PROJECT_AGENTS_DIR, name + ".md");
+      const target = path.join(cfg.workspace, ".agents", "agents", name + ".md");
+      try {
+        await fs.access(source);
+        await fs.mkdir(path.dirname(target), { recursive: true });
+        await fs.copyFile(source, target);
+      } catch { /* captured by activation inventory below */ }
+    }
+
+    const materialized = {
+      skills: (await Promise.all(treatment.definition.skills.map(async name =>
+        fs.access(path.join(cfg.workspace, ".agents", "skills", name, "SKILL.md")).then(() => name).catch(() => null),
+      ))).filter((name): name is string => name !== null),
+      agents: (await Promise.all(treatment.definition.agents.map(async name =>
+        fs.access(path.join(cfg.workspace, ".agents", "agents", name + ".md")).then(() => name).catch(() => null),
+      ))).filter((name): name is string => name !== null),
+    };
+    const initialActivation = inspectTreatmentActivation([], treatment.definition, materialized);
     const executionEvidence = {
       schema: "eval-integrity-execution-v1" as const,
       kind, subject, evalId, repetition,
@@ -238,6 +280,8 @@ export class SkillEvalRunner implements IEvalRunner {
       timeBudgetMs: cfg.timeoutMs, tokenBudget: null, maxTurns,
       provider, model, decoding: cfg.decoding,
       gooseRuntimeVersion, evalHubRuntimeVersion: cfg.evalHubRuntimeVersion,
+      treatmentActivation: initialActivation,
+      gooseLogs: { schema: "goose-log-capture-v1" as const, source: "isolated_xdg_state" as const },
       gooseArgs: args,
     };
     await fs.mkdir(cfg.workspace, { recursive: true });
@@ -246,18 +290,44 @@ export class SkillEvalRunner implements IEvalRunner {
       JSON.stringify(executionEvidence, null, 2),
     );
 
+    if (initialActivation.status === "failed") {
+      await fs.writeFile(
+        path.join(cfg.workspace, "execution-result.json"),
+        JSON.stringify({
+          status: "failed", exitCode: null, signal: null, score: null,
+          ...executionEvidence, failureReason: "treatment_bootstrap_failed",
+        }, null, 2),
+      );
+      const failedTerminal: IntegrityTerminalRecordV2 = {
+        ...terminalTemplate,
+        status: "failed",
+        grading: null,
+        exclusion: { level: "pair", reason: "treatment_bootstrap_failed" },
+      };
+      await store.recordTerminal(failedTerminal);
+      const failedEvent = {
+        type: "subject.completed" as const, kind, subject, hash, evalId, config,
+        treatmentId: treatment.id, repetition, run, status: "failed" as const,
+        rc: null, signal: null, turns: 0, durationMs: 0,
+      };
+      yield failedEvent; sink.emit(failedEvent);
+      throw new Error("Treatment bootstrap failed for " + subject + " eval-" + evalId + "/" + config);
+    }
+
     // ── Run Goose ─────────────────────────────────────────────────────────────
     const startMs     = Date.now();
     let   turns       = 0;
     let   rc: number | null = null;
     let   signal: string | null = null;
     const outputLines: string[] = [];
+    const stderrLines: string[] = [];
     let   gooseError: unknown   = null;
 
     try {
       for await (const raw of this.goose.run({ gooseCli, args, env, cwd, timeoutMs: cfg.timeoutMs })) {
         if (raw.type === "exit") { rc = raw.code; signal = raw.signal; break; }
-        if (raw.stream !== "stdout" || !raw.text.trim()) continue;
+        if (!raw.text.trim()) continue;
+        if (raw.stream === "stderr") { stderrLines.push(raw.text); continue; }
         outputLines.push(raw.text);
         await this.writer.appendEvent(kind, subject, hash, evalId, config, run, raw.text);
         const parsed = parseStreamLine(raw.text);
@@ -286,32 +356,60 @@ export class SkillEvalRunner implements IEvalRunner {
       ? { status: "failed" as const, exitCode: null as number | null, signal: null as string | null, score: null }
       : terminalExecutionResult(rc, signal);
 
+    const treatmentActivation = inspectTreatmentActivation(
+      outputLines, treatment.definition, materialized, { runtimeComplete: terminal.status === "succeeded" },
+    );
+    const gooseLogAnalysis = await analyzeGooseLogs(gooseLogCapture.logsRoot, model);
+    await fs.writeFile(
+      path.join(cfg.workspace, "goose-log-analysis.json"),
+      JSON.stringify(gooseLogAnalysis, null, 2),
+    );
+    // The analysis is the bounded durable artifact. Remove raw LLM request logs
+    // because they can contain complete prompts and model responses.
+    await fs.rm(gooseLogCapture.stateHome, { recursive: true, force: true }).catch(() => undefined);
+    const runtimeHealth = inspectRuntimeHealth(
+      outputLines, stderrLines,
+      gooseLogAnalysis.fatalDiagnostics.map(item => item.message),
+    );
+    const failureReason = treatmentActivation.status === "failed"
+      ? "treatment_bootstrap_failed" as const
+      : runtimeHealth.status === "failed" ? "runtime_dependency_failed" as const : null;
+    const effectiveTerminal = failureReason === null ? terminal : {
+      status: "failed" as const, exitCode: terminal.exitCode, signal: terminal.signal, score: null,
+    };
+
     // Legacy execution-result.json (always written, even on failure — for compatibility)
     await fs.writeFile(
       path.join(cfg.workspace, "execution-result.json"),
-      JSON.stringify({ ...terminal, ...executionEvidence }, null, 2),
+      JSON.stringify({ ...effectiveTerminal, ...executionEvidence, treatmentActivation, runtimeHealth, gooseLogAnalysis, failureReason }, null, 2),
     );
 
     const ev1 = {
       type: "subject.completed" as const, kind, subject, hash, evalId, config, treatmentId: treatment.id, repetition, run,
-      status: terminal.status === "succeeded" ? "done" as const : "failed" as const,
-      rc: terminal.exitCode, signal: terminal.signal, turns, durationMs,
+      status: effectiveTerminal.status === "succeeded" ? "done" as const : "failed" as const,
+      rc: effectiveTerminal.exitCode, signal: effectiveTerminal.signal, turns, durationMs,
     };
     yield ev1; sink.emit(ev1);
 
     // ── E. Record exactly one failed terminal BEFORE rethrowing ───────────────
-    if (terminal.status === "failed") {
+    if (effectiveTerminal.status === "failed") {
       const failedTerminal: IntegrityTerminalRecordV2 = {
         ...terminalTemplate,
         status:    "failed",
         grading:   null,
-        exclusion: { level: "pair", reason: "execution_failed" },
+        exclusion: { level: "pair", reason: failureReason ?? "execution_failed" },
       };
       await store.recordTerminal(failedTerminal);
 
       if (gooseError !== null) throw gooseError;
+      if (failureReason === "treatment_bootstrap_failed") {
+        throw new Error("Treatment bootstrap failed for " + subject + " eval-" + evalId + "/" + config);
+      }
+      if (failureReason === "runtime_dependency_failed") {
+        throw new Error("Runtime dependency failed for " + subject + " eval-" + evalId + "/" + config);
+      }
       throw new Error(
-        `Goose run failed for ${subject} eval-${evalId}/${config} (exit ${String(terminal.exitCode)}, signal ${String(terminal.signal)})`,
+        "Goose run failed for " + subject + " eval-" + evalId + "/" + config + " (exit " + String(effectiveTerminal.exitCode) + ", signal " + String(effectiveTerminal.signal) + ")",
       );
     }
 
@@ -319,7 +417,9 @@ export class SkillEvalRunner implements IEvalRunner {
     const expectedCriterionIds = cfg.integrity.rubric.expectedCriterionIds;
     let rawGrading: GradingResult | null = null;
     try {
-      rawGrading = await this.grader.grade(scenario, config, outputLines.join("\n"), cfg.workspace, gooseCli);
+      rawGrading = await this.grader.grade(
+        scenario, config, outputLines.join("\n"), cfg.workspace, gooseCli, { provider, model },
+      );
     } catch {
       rawGrading = null;
     }
