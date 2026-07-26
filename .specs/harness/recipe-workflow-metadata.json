@@ -1,0 +1,114 @@
+{
+  "$schema": "../schemas/recipe-workflow-metadata.schema.json",
+  "contract": "loop-engineering-active-v1",
+  "recipes": {
+    "implement": {
+      "source_path": ".goose/recipes/implement.yaml",
+      "phase": "The delegated builder must atomically claim the task before any write",
+      "ad001_pattern": "specialist-orchestration-boundary",
+      "entry_criteria": [
+        "Load the Beads task and confirm it is ready, blockers are closed"
+      ],
+      "exit_criteria": [
+        "persist compact candidate evidence references."
+      ],
+      "retry": {
+        "max_retries": 3,
+        "checks": [
+          {
+            "type": "shell",
+            "command": "test -f .beads/issues.jsonl"
+          },
+          {
+            "type": "shell",
+            "command": "bd list --json >/dev/null"
+          }
+        ],
+        "on_failure": "abort"
+      },
+      "session": {
+        "max_tool_repetitions": 5
+      }
+    },
+    "loop-engineering": {
+      "source_path": ".goose/recipes/loop-engineering.yaml",
+      "phase": "Trigger -> Planner -> Builder -> Independent Verifier -> Memory -> Manager -> Controller.",
+      "ad001_pattern": "orchestration",
+      "entry_criteria": [
+        "Beads is the sole durable runtime state."
+      ],
+      "exit_criteria": [
+        "Emit and persist exactly one transition: CONTINUE, REWORK, REPLAN, WAIT, COMPLETE, ESCALATE, or ABORT."
+      ],
+      "retry": {
+        "max_retries": 3,
+        "checks": [
+          {
+            "type": "shell",
+            "command": "test -f .beads/issues.jsonl"
+          },
+          {
+            "type": "shell",
+            "command": "python3 -c \"import json; [json.loads(l) for l in open('.beads/issues.jsonl') if l.strip()]\"  # Beads JSONL integrity"
+          }
+        ],
+        "on_failure": "abort"
+      },
+      "session": {
+        "max_tool_repetitions": 5
+      }
+    },
+    "research": {
+      "source_path": ".goose/recipes/research.yaml",
+      "phase": "This phase delegates to repository-researcher in an isolated read-only session.",
+      "ad001_pattern": "specialist-orchestration-boundary",
+      "entry_criteria": [
+        "Load the Beads run/task, spec, prior transitions, failures, evidence signatures, and budget."
+      ],
+      "exit_criteria": [
+        "Return observed facts, inferences, constraints, tools/skills, verification commands, failure chronology, later-added evidence, risks, unknowns, and the smallest bounded task contract."
+      ],
+      "retry": {
+        "max_retries": 3,
+        "checks": [
+          {
+            "type": "shell",
+            "command": "test -f .beads/issues.jsonl"
+          }
+        ],
+        "on_failure": "abort"
+      },
+      "session": {
+        "max_tool_repetitions": 5
+      }
+    },
+    "verify": {
+      "source_path": ".goose/recipes/verify.yaml",
+      "phase": "Delegate to independent-verifier in a new isolated session.",
+      "ad001_pattern": "specialist-orchestration-boundary",
+      "entry_criteria": [
+        "Load the task, actual diff, builder_session, candidate evidence, prior verdicts, failure/evidence signatures, and budget."
+      ],
+      "exit_criteria": [
+        "Persist criterion evidence and exactly one verdict: ACCEPTED, REWORK, REPLAN, BLOCKED, or ESCALATE."
+      ],
+      "retry": {
+        "max_retries": 2,
+        "checks": [
+          {
+            "type": "shell",
+            "command": "test -f .beads/issues.jsonl"
+          },
+          {
+            "type": "shell",
+            "command": "bd list --json >/dev/null"
+          }
+        ],
+        "on_failure": "abort"
+      },
+      "session": {
+        "max_tool_repetitions": 5
+      }
+    }
+  }
+}

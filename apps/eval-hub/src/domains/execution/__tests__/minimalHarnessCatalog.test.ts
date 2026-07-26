@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { loadMinimalHarnessCatalog } from "../minimalHarnessCatalog.js";
 
-describe("minimal harness 36-protocol catalog", () => {
-  it("contains exactly 9 agent, 9 skill, 12 recipe, and 6 architecture protocols", async () => {
+describe("minimal harness 38-protocol catalog", () => {
+  it("contains exactly 9 agent, 9 skill, 14 recipe, and 6 architecture protocols", async () => {
     const catalog = await loadMinimalHarnessCatalog();
-    expect(catalog.counts).toEqual({ agents: 9, skills: 9, recipes: 12, architecture: 6, total: 36 });
+    expect(catalog.counts).toEqual({ agents: 9, skills: 9, recipes: 14, architecture: 6, total: 38 });
     expect(catalog.subjects).toEqual({
       agents: ["change-builder", "independent-verifier", "repository-researcher"],
       skills: ["evidence-verification", "loop-control", "task-framing"],

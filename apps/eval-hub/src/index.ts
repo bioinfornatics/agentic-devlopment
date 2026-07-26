@@ -73,7 +73,7 @@ if (!wantServer && !wantTui) {
     "  Usage: node apps/eval-hub/dist/index.js <mode> [options]",
     "",
     "  Modes:",
-    "    --benchmark-minimal Validate and print the 36-protocol minimal harness benchmark catalog",
+    "    --benchmark-minimal Validate and print the 38-protocol minimal harness benchmark catalog",
     "    --run              Drive a layered eval (L1→L2→L3)",
     "    --report           Build HTML trend dashboard → dist/evals/report/index.html",
     "    --report --open    Build + open in browser",

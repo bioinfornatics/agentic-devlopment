@@ -30,6 +30,8 @@ import { buildGooseInvocation, hashUtf8, inspectRuntimeHealth, inspectTreatmentA
 import { analyzeGooseLogs, gooseLogCaptureForWorkspace } from "./gooseLogAnalyzer.js";
 import { analyzeSessionChain } from "./sessionChainAnalyzer.js";
 import { checkPhaseCompliance } from "./phaseComplianceChecker.js";
+import { projectPhaseEvidence } from "./beadsPhaseEvidence.js";
+import { readBeadsEvidence, beadsIssuesPath } from "../../shared/beadsAdapter.js";
 import {
   EvalIntegrityV2Store, INTEGRITY_SCHEMA_V2, integrityValueHash,
   type IntegrityTerminalRecordV2,
@@ -380,7 +382,8 @@ export class SkillEvalRunner implements IEvalRunner {
       JSON.stringify(sessionChain, null, 2),
     );
     // Evaluate loop-engineering phase compliance from the chain (deterministic, LLM-free).
-    const phaseCompliance = checkPhaseCompliance(sessionChain);
+    const beadsEvidence = await readBeadsEvidence(beadsIssuesPath(cfg.workspace)).catch(() => []);
+    const phaseCompliance = checkPhaseCompliance(projectPhaseEvidence(sessionChain, beadsEvidence));
     await fs.writeFile(
       path.join(cfg.workspace, "phase-compliance.json"),
       JSON.stringify(phaseCompliance, null, 2),

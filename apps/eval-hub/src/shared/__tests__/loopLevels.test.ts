@@ -181,10 +181,14 @@ describe("AC-4 every level has successful-completion, REWORK, and WAIT-or-ESCALA
 // ── Structural: constants integrity ───────────────────────────────────────────
 
 describe("structural: CONTROLLER_TRANSITIONS and REQUIRED_SCENARIO_TYPES are complete", () => {
-  it("CONTROLLER_TRANSITIONS contains all seven standard transitions", () => {
+  it("projects all canonical controller transitions, including early REJECT", () => {
     expect([...CONTROLLER_TRANSITIONS].sort()).toEqual(
-      ["ABORT", "COMPLETE", "CONTINUE", "ESCALATE", "REPLAN", "REWORK", "WAIT"],
+      ["ABORT", "COMPLETE", "CONTINUE", "ESCALATE", "REJECT", "REPLAN", "REWORK", "WAIT"],
     );
+  });
+
+  it("declares incident REWORK when its scenario emits REWORK", () => {
+    expect(CONTRACT_BY_LEVEL.incident?.controllerTransitions).toContain("REWORK");
   });
 
   it("REQUIRED_SCENARIO_TYPES contains exactly three entries", () => {

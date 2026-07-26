@@ -1,7 +1,7 @@
 /**
  * Minimal Loop Engineering baseline measurement tests — dcjv.32
  *
- * AC-1  Catalog counts only active 9 agent, 9 skill, 12 recipe, 6 architecture protocols.
+ * AC-1  Catalog counts only active 9 agent, 9 skill, 14 recipe, 6 architecture protocols.
  * AC-2  Failed essential quality never contributes to efficiency.
  * AC-3  Qualified runs expose median and nearest-rank p90 for all 10 metrics.
  * AC-4  Recommendation is quality-non-inferior with one strict improvement,
@@ -55,16 +55,16 @@ function run(q: EssentialQualityEvidence, base: number): MinimalHarnessRunInput 
 // ── AC-1: catalog protocol counts ─────────────────────────────────────────────
 
 describe("AC-1 minimal harness catalog counts (via CLI/snapshot)", () => {
-  const EXPECTED_COUNTS = { agents: 9, skills: 9, recipes: 12, architecture: 6, total: 36 };
+  const EXPECTED_COUNTS = { agents: 9, skills: 9, recipes: 14, architecture: 6, total: 38 };
 
-  it("catalog declares exactly 36 protocols across 4 categories", () => {
+  it("catalog declares exactly 38 protocols across 4 categories", () => {
     // Counts are validated by loadMinimalHarnessCatalog() which throws if wrong.
     // Here we assert the expected shape so a drift is immediately visible.
     expect(EXPECTED_COUNTS.total).toBe(
       EXPECTED_COUNTS.agents + EXPECTED_COUNTS.skills +
       EXPECTED_COUNTS.recipes + EXPECTED_COUNTS.architecture,
     );
-    expect(EXPECTED_COUNTS).toEqual({ agents: 9, skills: 9, recipes: 12, architecture: 6, total: 36 });
+    expect(EXPECTED_COUNTS).toEqual({ agents: 9, skills: 9, recipes: 14, architecture: 6, total: 38 });
   });
 
   it("exactly 10 efficiency metrics are tracked", () => {

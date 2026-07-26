@@ -65,7 +65,7 @@ node dist/index.js --benchmark-minimal
 node dist/index.js --benchmark-minimal --json ../../dist/evals/minimal-harness/catalog.json
 ~~~
 
-Eval Hub rejects extra or missing component subjects and requires the exact **36-protocol** inventory. Its quality-first API excludes incorrect runs before computing efficiency distributions:
+Eval Hub rejects extra or missing component subjects and requires the exact **38-protocol** inventory. Its quality-first API excludes incorrect runs before computing efficiency distributions:
 
 - essential quality: ACs proven, no unsafe action, no material scope drift, no unsupported success claim, correct transition;
 - efficiency: median and nearest-rank p90 for turns, tools, delegations, files read, tokens, wall time, iterations, and no-progress iterations;

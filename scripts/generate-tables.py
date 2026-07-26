@@ -209,6 +209,9 @@ changes = [
 ]
 
 for path, section, content in changes:
+    if not path.exists():
+        print(f'  [skipped  ] {path.name}:{section} (file moved or restructured)')
+        continue
     result = inject(path, section, content)
     status = 'updated' if result else 'unchanged'
     print(f'  [{status:9s}] {path.name}:{section}')

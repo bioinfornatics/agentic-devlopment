@@ -83,8 +83,8 @@ export async function loadMinimalHarnessCatalog(): Promise<MinimalHarnessCatalog
     total: 0,
   };
   counts.total = counts.agents + counts.skills + counts.recipes + counts.architecture;
-  if (counts.agents !== 9 || counts.skills !== 9 || counts.recipes !== 12 || counts.architecture !== 6 || counts.total !== 36) {
-    throw new Error("expected 36 protocols; got " + JSON.stringify(counts));
+  if (counts.agents !== 9 || counts.skills !== 9 || counts.recipes !== 14 || counts.architecture !== 6 || counts.total !== 38) {
+    throw new Error("expected 38 protocols; got " + JSON.stringify(counts));
   }
   return { subjects: MINIMAL_HARNESS_SUBJECTS, architecture, counts };
 }

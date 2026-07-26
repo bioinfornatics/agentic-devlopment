@@ -1,0 +1,26 @@
+
+ RUN  v2.1.9 /home/jmercier/Codes/agentic-devlopment/apps/eval-hub
+
+ ✓ src/domains/execution/__tests__/beadsPhaseEvidence.test.ts > Beads phase projection > combines session identity with read-only run evidence
+ ✓ src/domains/execution/__tests__/beadsPhaseEvidence.test.ts > Beads phase projection > is unavailable without explicit task identity
+ ✓ src/domains/execution/__tests__/sessionChainAnalyzer.test.ts > analyzeSessionChain > returns unavailable when DB does not exist
+ ✓ src/domains/execution/__tests__/sessionChainAnalyzer.test.ts > analyzeSessionChain > schema field is always session-chain-v1
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > passes a complete nominal chain and reports seven results
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > fails when required trigger is omitted
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > fails when required planner is omitted
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > fails when required builder is omitted
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > fails when required verifier is omitted
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > fails when required memory is omitted
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > fails when required manager is omitted
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > fails reordered observations
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > fails reused builder/verifier identity
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > fails with 0 controller transitions
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > fails with 2 controller transitions
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > accepts explicit WAIT before build and marks later phases not applicable
+ ✓ src/domains/execution/__tests__/phaseComplianceChecker.test.ts > seven-phase compliance > is inconclusive when evidence is unavailable
+
+ Test Files  3 passed (3)
+      Tests  17 passed (17)
+   Start at  09:38:58
+   Duration  301ms (transform 46ms, setup 0ms, collect 67ms, tests 8ms, environment 0ms, prepare 114ms)
+

@@ -153,12 +153,7 @@
             "evidence-verification",
             "loop-control"
         ],
-        "agents": [
-            "change-builder",
-            "change-builder-premium",
-            "independent-verifier",
-            "independent-verifier-premium"
-        ],
+        "agents": [],
         "query": "Deliver a feature where two rework cycles are required, triggering premium agent escalation.",
         "max_turns": 80,
         "difficulty": "difficult",
@@ -210,10 +205,7 @@
             "evidence-verification",
             "loop-control"
         ],
-        "agents": [
-            "change-builder",
-            "change-builder-premium"
-        ],
+        "agents": [],
         "query": "Run a loop where every build attempt fails repeatedly, exhausting both standard and premium tiers.",
         "max_turns": 80,
         "difficulty": "very_difficult",

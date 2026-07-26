@@ -1,120 +1,16 @@
-import { describe, it, expect } from "vitest";
-import { checkPhaseCompliance } from "../phaseComplianceChecker.js";
-import type { SessionChainAnalysis } from "../sessionChainAnalyzer.js";
-
-// ── Fixtures ──────────────────────────────────────────────────────────────────
-
-function makeChain(events: SessionChainAnalysis["events"]): SessionChainAnalysis {
-  const stages = [...new Set(events.map(e => e.stage))] as SessionChainAnalysis["summary"]["stagesObserved"];
-  return {
-    schema: "session-chain-v1",
-    status: "complete",
-    dbPath: "/fake/sessions.db",
-    sessionsFound: 1,
-    events,
-    summary: {
-      totalDelegations: events.length,
-      agentDelegations: events.filter(e => e.event === "agent_delegated").length,
-      recipeDelegations: events.filter(e => e.event === "recipe_delegated").length,
-      stagesObserved: stages,
-      premiumEscalations: events.filter(e => e.modelTier === "premium").length,
-    },
-  };
-}
-
-const unavailable: SessionChainAnalysis = {
-  schema: "session-chain-v1", status: "unavailable", dbPath: "/x",
-  sessionsFound: 0, events: [],
-  summary: { totalDelegations: 0, agentDelegations: 0, recipeDelegations: 0, stagesObserved: [], premiumEscalations: 0 },
-};
-
-// ── Tests ─────────────────────────────────────────────────────────────────────
-
-describe("checkPhaseCompliance", () => {
-
-  it("returns inconclusive when chain is unavailable", () => {
-    const report = checkPhaseCompliance(unavailable);
-    expect(report.overall).toBe("inconclusive");
-    expect(report.chainStatus).toBe("unavailable");
-    expect(report.rules).toHaveLength(1);
-    expect(report.rules[0]!.status).toBe("skip");
-  });
-
-  it("passes for a correct Planner→Builder→Verifier chain", () => {
-    const chain = makeChain([
-      { ts: "T1", event: "agent_delegated", agent: "repository-researcher", stage: "01-planner", modelTier: "standard", status: "success", instructionsSummary: "explore" },
-      { ts: "T2", event: "agent_delegated", agent: "change-builder",        stage: "02-builder", modelTier: "standard", status: "success", instructionsSummary: "implement" },
-      { ts: "T3", event: "agent_delegated", agent: "independent-verifier",  stage: "03-verifier", modelTier: "standard", status: "success", instructionsSummary: "verify" },
-    ]);
-    const report = checkPhaseCompliance(chain);
-    expect(report.overall).toBe("pass");
-    expect(report.rules.every(r => r.status !== "fail")).toBe(true);
-  });
-
-  it("fails PC-01 when no builder observed", () => {
-    const chain = makeChain([
-      { ts: "T1", event: "agent_delegated", agent: "independent-verifier", stage: "03-verifier", modelTier: "standard", status: "success", instructionsSummary: "verify" },
-    ]);
-    const report = checkPhaseCompliance(chain);
-    const pc01 = report.rules.find(r => r.id === "PC-01");
-    expect(pc01?.status).toBe("fail");
-    expect(report.overall).toBe("fail");
-  });
-
-  it("fails PC-02 when no verifier observed", () => {
-    const chain = makeChain([
-      { ts: "T1", event: "agent_delegated", agent: "change-builder", stage: "02-builder", modelTier: "standard", status: "success", instructionsSummary: "implement" },
-    ]);
-    const report = checkPhaseCompliance(chain);
-    const pc02 = report.rules.find(r => r.id === "PC-02");
-    expect(pc02?.status).toBe("fail");
-  });
-
-  it("fails PC-03 and PC-04 when verifier precedes builder", () => {
-    const chain = makeChain([
-      { ts: "T1", event: "agent_delegated", agent: "independent-verifier", stage: "03-verifier", modelTier: "standard", status: "success", instructionsSummary: "verify" },
-      { ts: "T2", event: "agent_delegated", agent: "change-builder",       stage: "02-builder", modelTier: "standard", status: "success", instructionsSummary: "implement" },
-    ]);
-    const report = checkPhaseCompliance(chain);
-    const pc03 = report.rules.find(r => r.id === "PC-03");
-    const pc04 = report.rules.find(r => r.id === "PC-04");
-    expect(pc03?.status).toBe("fail");
-    expect(pc04?.status).toBe("fail");
-    expect(report.overall).toBe("fail");
-  });
-
-  it("passes PC-05 when premium follows standard", () => {
-    const chain = makeChain([
-      { ts: "T1", event: "agent_delegated", agent: "change-builder",         stage: "02-builder", modelTier: "standard", status: "success", instructionsSummary: "implement" },
-      { ts: "T2", event: "agent_delegated", agent: "independent-verifier",   stage: "03-verifier", modelTier: "standard", status: "success", instructionsSummary: "verify" },
-      { ts: "T3", event: "agent_delegated", agent: "change-builder-premium", stage: "02-builder", modelTier: "premium",  status: "success", instructionsSummary: "retry" },
-      { ts: "T4", event: "agent_delegated", agent: "independent-verifier-premium", stage: "03-verifier", modelTier: "premium", status: "success", instructionsSummary: "re-verify" },
-    ]);
-    const report = checkPhaseCompliance(chain);
-    const pc05 = report.rules.find(r => r.id === "PC-05");
-    expect(pc05?.status).toBe("pass");
-    expect(report.overall).toBe("pass");
-  });
-
-  it("fails PC-05 when premium is used without prior standard in same stage", () => {
-    const chain = makeChain([
-      { ts: "T1", event: "agent_delegated", agent: "change-builder-premium", stage: "02-builder", modelTier: "premium", status: "success", instructionsSummary: "implement" },
-      { ts: "T2", event: "agent_delegated", agent: "independent-verifier",   stage: "03-verifier", modelTier: "standard", status: "success", instructionsSummary: "verify" },
-    ]);
-    const report = checkPhaseCompliance(chain);
-    const pc05 = report.rules.find(r => r.id === "PC-05");
-    expect(pc05?.status).toBe("fail");
-  });
-
-  it("fails PC-06 when chain is empty", () => {
-    const chain = makeChain([]);
-    const report = checkPhaseCompliance(chain);
-    const pc06 = report.rules.find(r => r.id === "PC-06");
-    expect(pc06?.status).toBe("fail");
-    expect(report.overall).toBe("fail");
-  });
-
-  it("schema is always phase-compliance-v1", () => {
-    expect(checkPhaseCompliance(unavailable).schema).toBe("phase-compliance-v1");
-  });
+import { describe, expect, it } from "vitest";
+import { checkPhaseCompliance, LOOP_PHASES, type RunPhaseEvidence } from "../phaseComplianceChecker.js";
+const normal = (): RunPhaseEvidence => ({ status: "available", observations: LOOP_PHASES.filter(p => p !== "controller").map((phase, ordinal) => ({ phase, ordinal, source: phase, ...((phase === "builder" || phase === "verifier") ? { sessionId: phase } : {}) })), transitions: [{ value: "COMPLETE", ordinal: 99, source: "beads" }] });
+describe("seven-phase compliance", () => {
+ it("passes a complete nominal chain and reports seven results", () => { const r=checkPhaseCompliance(normal()); expect(r.overall).toBe("pass"); expect(r.phases.map(x=>x.phase)).toEqual(LOOP_PHASES); });
+ it.each(LOOP_PHASES.slice(0,6))("fails when required %s is omitted", phase => { const n=normal(); const r=checkPhaseCompliance({...n, observations:n.observations.filter(x=>x.phase!==phase)}); expect(r.overall).toBe("fail"); });
+ it("fails reordered observations", () => { const n=normal(); expect(checkPhaseCompliance({...n, observations:[...n.observations].reverse()}).rules.find(x=>x.id==="LE-ORDER-01")?.status).toBe("fail"); });
+ it("fails reused builder/verifier identity", () => { const n=normal(); expect(checkPhaseCompliance({...n, observations:n.observations.map(x => x.phase === "verifier" ? {...x, sessionId:"builder"}:x)}).rules.find(x=>x.id==="LE-IDENTITY-01")?.status).toBe("fail"); });
+ it.each([0,2])("fails with %i controller transitions", count => { const n=normal(); expect(checkPhaseCompliance({...n, transitions:Array.from({length:count},(_,i)=>({value:"COMPLETE",ordinal:9+i,source:String(i)}))}).overall).toBe("fail"); });
+ it("accepts explicit WAIT before build and marks later phases not applicable", () => { const r=checkPhaseCompliance({status:"available", observations:[{phase:"trigger",ordinal:0,source:"run"},{phase:"planner",ordinal:1,source:"task"}], transitions:[{value:"WAIT",ordinal:2,source:"beads"}]}); expect(r.overall).toBe("pass"); expect(r.terminalPath).toBe("early"); expect(r.phases.find(x=>x.phase==="builder")?.status).toBe("skip"); });
+ it.each(["builder", "verifier", "memory", "manager"] as const)("rejects early terminal when %s evidence exists, regardless of ordinal", phase => { const r=checkPhaseCompliance({status:"available",observations:[{phase:"trigger",ordinal:0,source:"run"},{phase:"planner",ordinal:1,source:"task"},{phase,ordinal:1.5,source:"downstream",...((phase === "builder" || phase === "verifier") ? {sessionId:"child"} : {})}],transitions:[{value:"WAIT",ordinal:2,source:"beads"}]}); expect(r.rules.find(x=>x.id==="LE-TERMINAL-02")?.status).toBe("fail"); expect(r.overall).toBe("fail"); });
+ it("rejects an early transition before Planner", () => { const r=checkPhaseCompliance({status:"available",observations:[{phase:"trigger",ordinal:0,source:"run"},{phase:"planner",ordinal:2,source:"task"}],transitions:[{value:"WAIT",ordinal:1,source:"beads"}]}); expect(r.rules.find(x=>x.id==="LE-TERMINAL-01")?.status).toBe("fail"); });
+ it("rejects premium bypass and accepts premium after standard", () => { const n=normal(); const bypass={...n,observations:n.observations.map(x=>x.phase==="builder"?{...x,modelTier:"premium" as const}:x)}; expect(checkPhaseCompliance(bypass).rules.find(x=>x.id==="PC-05")?.status).toBe("fail"); const promoted={...n,observations:[...n.observations.map(x=>x.phase==="builder"?{...x,modelTier:"standard" as const}:x),{phase:"builder" as const,ordinal:2.5,source:"premium",sessionId:"premium-child",modelTier:"premium" as const}]}; expect(checkPhaseCompliance(promoted).rules.find(x=>x.id==="PC-05")?.status).toBe("pass"); });
+ it("does not accept missing delegated child identities", () => { const n=normal(); const parentOnly={...n,observations:n.observations.map(x=>x.phase==="builder"||x.phase==="verifier"?(({sessionId:_discard,...rest})=>rest)(x):x)}; expect(checkPhaseCompliance(parentOnly).rules.find(x=>x.id==="LE-IDENTITY-01")?.status).toBe("fail"); });
+ it("is inconclusive when evidence is unavailable", () => expect(checkPhaseCompliance({status:"unavailable",observations:[],transitions:[],reason:"missing"}).overall).toBe("inconclusive"));
 });

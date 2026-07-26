@@ -25,7 +25,7 @@ Generic sequence: Trigger → Planner → Builder → independent Verifier → M
 | **MCP** | Acts on external systems (Beads Dolt, eval-hub server) |
 | **Memory / KG** | Persists state and learnings (`.knowledge/`, `apps/kg/`) |
 | **Beads** | Maintains backlog, dependencies, and states (canonical control plane) |
-| **Tests / evals** | Produce proof (577+ TypeScript tests, 36-protocol eval catalog) |
+| **Tests / evals** | Produce proof (577+ TypeScript tests, 38-protocol eval catalog) |
 | **Human gate** | Retains human judgement (APPROVE/BLOCK at `36ws.5`-style gates) |
 | **Scheduler / external runner** | Launches or resumes the loop (CI, `goose recipe run loop-engineering`) |
 

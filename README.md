@@ -106,26 +106,28 @@ Layer 0: GOOSE          Runtime, tools, sessions, extensions and subagents
 ```
 
 <!-- BEGIN GENERATED: agents-table -->
-## Named agents (3)
+## Named agents (5)
 
 Named agents in `.agents/agents/` — invoke with Goose Summon natural language:
 `load agent <name>` (in-session) or `delegate task bd-xxx and into those task load agent <name>` (isolated).
 
-| Agent                   | Role                                                                             | Model |
-|-------------------------|----------------------------------------------------------------------------------|-------|
-| `change-builder`        | Implements one claimed bounded Beads task and produces candidate evidence withou |       |
-| `independent-verifier`  | Independently judges a Beads task against predefined acceptance criteria and rep |       |
-| `repository-researcher` | Builds an evidence-backed repository and Beads state map before implementation w |       |
+| Agent | Role | Model |
+|-------|------|-------|
+| `change-builder` | Implements one claimed bounded Beads task and produces candidate evidence withou |  |
+| `change-builder-premium` | Premium implementation agent (gpt-5. | gpt-5.6-sol |
+| `independent-verifier` | Independently judges a Beads task against predefined acceptance criteria and rep |  |
+| `independent-verifier-premium` | Premium verification agent (gpt-5. | gpt-5.6-sol |
+| `repository-researcher` | Builds an evidence-backed repository and Beads state map before implementation w |  |
 <!-- END GENERATED: agents-table -->
 
 <!-- BEGIN GENERATED: skills-table -->
 ## Skills (3)
 
-| Skill                   | Purpose                                                                                          |
-|-------------------------|--------------------------------------------------------------------------------------------------|
-| `evidence-verification` | Evaluate engineering work against predefined acceptance criteria using reproducible eviden       |
-| `loop-control`          | Govern a Beads-backed engineering loop with explicit progress, budgets, dependencies, and        |
-| `task-framing`          | Convert an engineering objective into the smallest independently verifiable Beads task contract. |
+| Skill | Purpose |
+|-------|---------|
+| `evidence-verification` | Evaluate engineering work against predefined acceptance criteria using reproducible eviden |
+| `loop-control` | Govern a Beads-backed engineering loop with explicit progress, budgets, dependencies, and |
+| `task-framing` | Convert an engineering objective into the smallest independently verifiable Beads task contract. |
 <!-- END GENERATED: skills-table -->
 
 ## Recipes

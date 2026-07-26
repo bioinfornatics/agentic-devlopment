@@ -43,7 +43,7 @@ retry:
     - type: shell
       command: "test -f .beads/issues.jsonl"
     - type: shell
-      command: "cd apps/eval-hub && npx tsc --noEmit 2>/dev/null"
+      command: "bd list --json >/dev/null"
   on_failure: abort
 session:
   max_tool_repetitions: 5

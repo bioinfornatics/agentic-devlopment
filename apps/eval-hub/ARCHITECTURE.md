@@ -416,7 +416,7 @@ No domain class imports from another domain (enforced by tsconfig paths if desir
 
 ## Minimal harness benchmark domain (implemented)
 
-The production benchmark catalog is loaded by `minimalHarnessCatalog.ts`. It validates the exact 3-agent, 3-skill, 4-recipe inventory and six architecture protocols before reporting the contractual total of 36.
+The production benchmark catalog is loaded by `minimalHarnessCatalog.ts`. It validates the exact 3-agent, 3-skill, 4-recipe inventory and six architecture protocols before reporting the contractual total of 38. The recipe total is 14: three scenarios each for `implement`, `research`, and `verify`, plus five for `loop-engineering`, whose two additional protocols intentionally cover premium escalation after two reworks and terminal `ABORT` after all builder tiers are exhausted.
 
 The pure measurement module `minimalHarnessEvaluation.ts` deliberately separates:
 

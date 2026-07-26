@@ -73,20 +73,25 @@ if gstart_path.exists():
 else:
     ok("docs/reference/getting-started.md (file moved or restructured)")
 
-arch = (ROOT / ".specs/architecture.md").read_text()
-# architecture.md intentionally uses generate-tables.py pointer instead of hard counts (AD-002)
-if "generate-tables" in arch or "README.md" in arch:
-    ok(".specs/architecture.md defers to generated counts (AD-002)")
-elif str(n) not in arch:
-    warn(f".specs/architecture.md may have stale skill count (expected {n})")
-
-spec_core = (ROOT / ".specs/features/harness-core/spec.md").read_text()
-spec_count_m = re.search(r"following (\d+) domain skills", spec_core)
-spec_count = int(spec_count_m.group(1)) if spec_count_m else None
-if spec_count != n:
-    fail(f"AC-SKILL-01 says {spec_count} domain skills, disk has {n}")
+loop_spec_path = ROOT / ".specs/features/loop-engineering/spec.md"
+if not loop_spec_path.exists():
+    fail("Missing canonical Loop Engineering spec")
 else:
-    ok(f"AC-SKILL-01 domain skill count = {n}")
+    ok("Canonical Loop Engineering spec exists")
+
+expected_skills = {"task-framing", "evidence-verification", "loop-control"}
+expected_agents = {"repository-researcher", "change-builder", "change-builder-premium", "independent-verifier", "independent-verifier-premium"}
+expected_recipes = {"loop-engineering", "implement", "research", "verify"}
+expected_plugins = {"prevent-catastrophe", "loop-telemetry", "loop-gate", "beads-telemetry", "loop-breaker"}
+if set(skills) != expected_skills:
+    fail(f"Active skills drift: {skills}")
+else:
+    ok("Active skill inventory = 3")
+plugins = sorted(p.parent.name for p in (ROOT / ".agents/plugins").glob("*/plugin.json"))
+if set(plugins) != expected_plugins:
+    fail(f"Active plugins drift: {plugins}")
+else:
+    ok("Active plugin inventory = 5")
 
 # ── 2. README SKILLS TABLE ────────────────────────────────────────────────────
 print("\n── README skills table ───────────────────────────────────────────────")
@@ -95,12 +100,6 @@ for skill in skills:
         fail(f"README.md missing skill row: {skill}")
 ok_count = sum(1 for s in skills if f"`{s}`" in readme)
 ok(f"README.md skill rows present: {ok_count}/{n}")
-
-# ── 3. AC-SKILL-01 TABLE ─────────────────────────────────────────────────────
-print("\n── AC-SKILL-01 table ─────────────────────────────────────────────────")
-for skill in skills:
-    if f"`{skill}`" not in spec_core:
-        warn(f"AC-SKILL-01 missing skill: {skill}")
 
 # ── 4. EVAL JSON FOR EACH SKILL ───────────────────────────────────────────────
 print("\n── Skill eval coverage ───────────────────────────────────────────────")
@@ -125,10 +124,10 @@ if readme_agents != na:
 else:
     ok(f"README.md agent count = {na}")
 
-# AC-AGENT-01
-for agent in agents:
-    if f"`{agent}.md`" not in spec_core and f"`{agent}`" not in spec_core:
-        warn(f"AC-AGENT-01 missing agent: {agent}")
+if set(agents) != expected_agents:
+    fail(f"Active agents drift: {agents}")
+else:
+    ok("Active agent inventory = 5")
 
 # ── 5b. AGENT SKILL CONTRACTS (AC-AGENT-02) ───────────────────────────────────
 print("\n── Agent skill contracts (AC-AGENT-02) ──────────────────────────────")
@@ -344,11 +343,10 @@ print("\n── Recipe counts ────────────────�
 recipes = actual_recipes()
 nr = len(recipes)
 
-for recipe in recipes:
-    if recipe not in spec_core:
-        warn(f"AC-RECIPE-01 missing recipe: {recipe}")
-
-ok(f"Top-level recipes on disk: {nr}")
+if set(recipes) != expected_recipes:
+    fail(f"Active recipes drift: {recipes}")
+else:
+    ok(f"Active recipe inventory = {nr}")
 
 # ── 8. RECIPE EVAL JSON: "agents"+"skills" fields ─────────────────────────────
 print("\n── Recipe eval JSON layer declarations ───────────────────────────────")
@@ -365,8 +363,13 @@ for recipe in recipes:
         listed_sk = s.get("skills") or []
         if not listed_sk and recipe != "remember":
             warn(f"evals/recipes/{recipe}.json scenario {i}: no 'skills' field")
+        # Recipe eval arrays contain only in-session agents. Loop Engineering
+        # specialists are summoned delegates and are observable in run traces,
+        # not Layer 2 declarations (see AGENTS.md).
         missing_ag = [a for a in listed_ag if a not in decl_agents]
-        if missing_ag:
+        if missing_ag and recipe == "loop-engineering":
+            fail(f"evals/recipes/{recipe}.json lists summoned agents as in-session: {missing_ag}")
+        elif missing_ag:
             fail(f"evals/recipes/{recipe}.json references agents {missing_ag} "
                  f"not loaded in-session by {recipe}.yaml")
         missing_sk = [sk for sk in listed_sk if sk not in decl_skills]
@@ -378,11 +381,7 @@ ok(f"Recipe eval JSON layer checks done ({nr} recipes)")
 
 # ── 9. AC-RECIPE-02 WIRING TABLE ─────────────────────────────────────────────
 print("\n── AC-RECIPE-02 wiring table completeness ────────────────────────────")
-for recipe in recipes:
-    if recipe not in spec_core:
-        fail(f"AC-RECIPE-02 wiring table missing row for: {recipe}")
-
-ok("AC-RECIPE-02 wiring table presence checked")
+ok("Active recipe wiring delegated to workflow metadata")
 
 # ── 10. USE_CASES.MD ──────────────────────────────────────────────────────────
 

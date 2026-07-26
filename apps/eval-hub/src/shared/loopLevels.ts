@@ -1,7 +1,8 @@
 /**
- * Governed loop level contracts — dcjv.29
+ * Evaluation-only projection of the canonical Loop Engineering contract.
  *
- * Defines the bounded engineering loop contract for every Beads work level:
+ * Authority: .specs/features/loop-engineering/spec.md. This deterministic eval
+ * fixture cannot authorize runtime transitions. It describes every Beads level:
  * epic, feature (user story), task, bug, and incident.
  *
  * Each level is governed by the same generic sequence:
@@ -22,6 +23,7 @@
 /** Valid controller transitions in the loop. */
 export const CONTROLLER_TRANSITIONS = [
   "CONTINUE",
+  "REJECT",
   "REWORK",
   "REPLAN",
   "WAIT",
@@ -238,7 +240,7 @@ export const LOOP_LEVEL_CONTRACTS: readonly LoopLevelContract[] = [
       "Incident responder (builder role) applies mitigation.  " +
       "A second on-call (verifier role) independently confirms service restoration " +
       "before the incident is closed.  The incident controller records the transition.",
-    controllerTransitions: ["COMPLETE", "ESCALATE", "WAIT", "ABORT"],
+    controllerTransitions: ["COMPLETE", "REWORK", "ESCALATE", "WAIT", "ABORT"],
     stopConditions: {
       successful_completion:
         "Service restored, root cause recorded, post-incident task created → COMPLETE.",

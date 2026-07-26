@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "recipe-workflow-metadata.schema.json",
+  "title": "Active Loop Engineering recipe workflow metadata",
+  "type": "object",
+  "required": [
+    "contract",
+    "recipes"
+  ],
+  "properties": {
+    "contract": {
+      "const": "loop-engineering-active-v1"
+    },
+    "recipes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implement",
+        "loop-engineering",
+        "research",
+        "verify"
+      ],
+      "properties": {
+        "implement": {
+          "$ref": "#/$defs/recipe"
+        },
+        "loop-engineering": {
+          "$ref": "#/$defs/recipe"
+        },
+        "research": {
+          "$ref": "#/$defs/recipe"
+        },
+        "verify": {
+          "$ref": "#/$defs/recipe"
+        }
+      }
+    },
+    "$schema": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$defs": {
+    "recipe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_path",
+        "phase",
+        "ad001_pattern",
+        "entry_criteria",
+        "exit_criteria",
+        "retry",
+        "session"
+      ],
+      "properties": {
+        "source_path": {
+          "type": "string",
+          "pattern": "^\\.goose/recipes/[a-z-]+\\.yaml$"
+        },
+        "phase": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ad001_pattern": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entry_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "exit_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "retry": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "max_retries",
+            "checks",
+            "on_failure"
+          ],
+          "properties": {
+            "max_retries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "checks": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "type",
+                  "command"
+                ],
+                "properties": {
+                  "type": {
+                    "const": "shell"
+                  },
+                  "command": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "on_failure": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "session": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "max_tool_repetitions"
+          ],
+          "properties": {
+            "max_tool_repetitions": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
