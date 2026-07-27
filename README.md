@@ -10,11 +10,14 @@ This pack makes that **loop explicit, auditable, interruptible, and repeatable**
 
 This repository is a minimal Loop Engineering extension for Goose. It deliberately avoids reproducing a human organisation chart as a collection of agents.
 
-It contains only three agents, each justified by a distinct execution property:
+The core loop uses three agents, each justified by a distinct execution property:
 
 - **repository-researcher** — read-only exploration and evidence gathering;
 - **change-builder** — bounded implementation with explicit scope;
 - **independent-verifier** — verification separated from the agent that made the change.
+
+Premium variants (`change-builder-premium`, `independent-verifier-premium`) activate on rework.
+`error-analyzer` is summoned by `loop-breaker` on repeated tool failures; it is not part of the normal flow.
 
 The orchestration itself is not represented as another persona. It is implemented through **recipes**, **skills**, **hooks**, persistent state, budgets, evidence, and explicit transition decisions.
 
@@ -86,7 +89,15 @@ Layer 0: GOOSE          Runtime, tools, sessions, extensions and subagents
 │   │   └── SKILL.md
 │   ├── evidence-verification/
 │   │   └── SKILL.md
-│   └── loop-control/
+│   ├── loop-control/
+│   │   └── SKILL.md
+│   ├── interface-quality/
+│   │   └── SKILL.md
+│   ├── ui-design/
+│   │   └── SKILL.md
+│   ├── ux-principles/
+│   │   └── SKILL.md
+│   └── wcag-accessibility-audit/
 │       └── SKILL.md
 └── plugins/
     └── loop-engineering/
@@ -106,7 +117,7 @@ Layer 0: GOOSE          Runtime, tools, sessions, extensions and subagents
 ```
 
 <!-- BEGIN GENERATED: agents-table -->
-## Named agents (5)
+## Named agents (6)
 
 Named agents in `.agents/agents/` — invoke with Goose Summon natural language:
 `load agent <name>` (in-session) or `delegate task bd-xxx and into those task load agent <name>` (isolated).
@@ -115,19 +126,25 @@ Named agents in `.agents/agents/` — invoke with Goose Summon natural language:
 |-------|------|-------|
 | `change-builder` | Implements one claimed bounded Beads task and produces candidate evidence withou |  |
 | `change-builder-premium` | Premium implementation agent (gpt-5. | gpt-5.6-sol |
+| `error-analyzer` |  | claude-sonnet-4-20250514 |
 | `independent-verifier` | Independently judges a Beads task against predefined acceptance criteria and rep |  |
 | `independent-verifier-premium` | Premium verification agent (gpt-5. | gpt-5.6-sol |
 | `repository-researcher` | Builds an evidence-backed repository and Beads state map before implementation w |  |
 <!-- END GENERATED: agents-table -->
 
 <!-- BEGIN GENERATED: skills-table -->
-## Skills (3)
+## Skills (8)
 
 | Skill | Purpose |
 |-------|---------|
 | `evidence-verification` | Evaluate engineering work against predefined acceptance criteria using reproducible eviden |
+| `interface-quality` | Shared quality floor for UI evaluation: evidence labeling, anti-generic patterns, and stru |
 | `loop-control` | Govern a Beads-backed engineering loop with explicit progress, budgets, dependencies, and |
+| `output-discipline` | Keep tool outputs within token budget. |
 | `task-framing` | Convert an engineering objective into the smallest independently verifiable Beads task contract. |
+| `ui-design` | Evaluate visual design decisions: design system token compliance, visual hierarchy, spacin |
+| `ux-principles` | Evaluate user experience: journey completion, interaction state coverage (loading, empty, |
+| `wcag-accessibility-audit` | Formal WCAG 2. |
 <!-- END GENERATED: skills-table -->
 
 ## Recipes
@@ -257,7 +274,7 @@ In a larger harness:
 
 - keep **Beads** as the durable work and dependency control plane;
 - keep specifications and acceptance criteria as the source of intent;
-- use the three agents only where isolation or independent verification is useful;
+- use the core loop agents (researcher, builder, verifier) where isolation or independent verification is useful;
 - express domain expertise through skills;
 - use recipes for orchestration;
 - keep deterministic verification outside the model whenever possible.
@@ -274,9 +291,9 @@ In a larger harness:
 ## Evaluation strategy
 
 The bundled `evals/` suite targets this minimal architecture directly:
-**3 agents, 3 skills, and 4 recipes**.
+**4 agents, 7 skills, and 4 recipes** (53 graded scenarios total).
 
-It includes 30 graded scenarios and architecture-ablation benchmarks
+It includes component scenarios and architecture-ablation benchmarks
 against a larger harness. Component count is not a success metric;
 the preferred configuration is the smallest one that meets the quality
 gate and lies on the quality/cost Pareto frontier.

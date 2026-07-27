@@ -1,0 +1,105 @@
+[
+  {
+    "skills": [
+      "ux-principles",
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "Evaluate a form that shows 'Error' in red when email validation fails, with no other indication of what went wrong.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "normal",
+    "expected_skill_contribution": "Should identify multiple UX issues: vague error, color-only indication.",
+    "baseline_gaps": [
+      "Would identify the color-only issue but miss the non-actionable error message as a separate UX failure.",
+      "Would not reference specific error message quality criteria (specific, actionable, visible)."
+    ],
+    "expected_behavior": [
+      "Identifies error message as not actionable ('Error' vs 'Enter a valid email').",
+      "Identifies color-only error indication as problematic.",
+      "References error message quality criteria (specific, actionable, visible).",
+      "Recommends specific improvements.",
+      "Applies evidence labels appropriately."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "error_issues_identified",
+        "recommendations_specific"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "ux-principles",
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "Document the interaction states for a data table component. The table shows data when loaded but has no loading, empty, or error states implemented.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Should identify missing interaction states systematically.",
+    "baseline_gaps": [
+      "Would note 'some states are missing' without applying the structured checklist or distinguishing which specific states are absent.",
+      "Would not document which states were tested and how, leaving the finding unverifiable."
+    ],
+    "expected_behavior": [
+      "Uses the interaction state checklist (loading, empty, error, success, disabled, focus).",
+      "Flags loading state as missing.",
+      "Flags empty state as missing.",
+      "Flags error state as missing.",
+      "Documents which states were tested and how.",
+      "Provides evidence labels for observations."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "missing_states_identified",
+        "state_checklist_applied"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "ux-principles",
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "The checkout flow requires 7 clicks to complete a purchase, with the 'Place Order' button requiring scrolling to find. Evaluate the journey completion.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "Should identify journey friction and intent alignment issues.",
+    "baseline_gaps": [
+      "Would describe the flow as 'too many clicks' without referencing the intent alignment criteria or recommending specific structural changes.",
+      "Would not apply evidence labels based on how the journey was tested (observed vs. assumed)."
+    ],
+    "expected_behavior": [
+      "Identifies excessive clicks for primary action (7 vs recommended ≤2-3).",
+      "Identifies hidden CTA as intent alignment issue.",
+      "References user intent alignment criteria.",
+      "Recommends reducing steps or improving CTA visibility.",
+      "Applies evidence labels based on how journey was tested."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "journey_friction_identified",
+        "intent_issues_found"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  }
+]

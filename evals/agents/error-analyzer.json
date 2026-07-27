@@ -1,0 +1,74 @@
+[
+  {
+    "agents": ["error-analyzer"],
+    "skills": ["loop-control"],
+    "query": "execute_typescript fails with 'ReferenceError: run is not defined'. This is the 5th occurrence. Analyze and provide correction.",
+    "files": [],
+    "max_turns": 10,
+    "difficulty": "normal",
+    "expected_skill_contribution": "Should retrieve cached pattern from loop-breaker database and return the run() wrapper correction without re-analyzing from scratch.",
+    "baseline_gaps": [
+      "Without error-analyzer, the agent would retry the same failing call or escalate to ABORT.",
+      "No pattern caching or reuse of prior corrections without this agent."
+    ],
+    "expected_behavior": [
+      "Queries loop-breaker database for matching signature.",
+      "Finds cached correction for run() wrapper pattern.",
+      "Returns correction with run() wrapper example.",
+      "Pattern use_count is incremented by plugin."
+    ],
+    "metrics": {
+      "quality_metrics": ["pass_rate", "pattern_hit", "correction_accuracy"],
+      "efficiency_metrics": ["turns_used"]
+    }
+  },
+  {
+    "agents": ["error-analyzer"],
+    "skills": ["loop-control"],
+    "query": "shell command fails with 'EACCES: permission denied /etc/passwd'. No existing pattern. Create one.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "Should analyze a novel error, produce a complete pattern with signature, root_cause, correction, and anti_patterns fields, and insert it into the database for future reuse.",
+    "baseline_gaps": [
+      "Without error-analyzer, the novel permission error has no documented resolution and will recur.",
+      "No structured pattern creation — future occurrences cannot benefit from prior analysis."
+    ],
+    "expected_behavior": [
+      "Checks database - no match found.",
+      "Analyzes error (permission issue on system file).",
+      "Provides correction (use sudo or different path).",
+      "Documents pattern for database insertion.",
+      "Pattern includes signature, root_cause, correction."
+    ],
+    "metrics": {
+      "quality_metrics": ["pass_rate", "pattern_created", "fields_complete"],
+      "efficiency_metrics": ["turns_used"]
+    }
+  },
+  {
+    "agents": ["error-analyzer"],
+    "skills": ["loop-control"],
+    "query": "TypeError: Cannot read properties of undefined (reading 'map') in execute_typescript. 3rd occurrence. The prior two corrections suggested adding null checks but the error persists. Provide a definitive resolution.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Should recognize that prior corrections failed, identify the deeper root cause (wrong return structure, not null value), provide a different correction, and update the pattern with an anti_pattern entry for the failed attempts.",
+    "baseline_gaps": [
+      "Without error-analyzer, the loop repeats the same failed null-check correction indefinitely.",
+      "No mechanism to detect that a prior correction was applied but did not resolve the root cause.",
+      "Pattern quality degrades without anti_patterns documentation of failed remediation approaches."
+    ],
+    "expected_behavior": [
+      "Checks database - finds existing pattern with failed prior corrections noted.",
+      "Identifies that null-checks were applied but map is still undefined.",
+      "Determines root cause: run() returns an object without the expected array structure.",
+      "Provides corrected run() with explicit array return.",
+      "Updates pattern anti_patterns with 'adding null-checks without fixing return type'."
+    ],
+    "metrics": {
+      "quality_metrics": ["pass_rate", "root_cause_identified", "anti_pattern_documented", "prior_failure_acknowledged"],
+      "efficiency_metrics": ["turns_used"]
+    }
+  }
+]

@@ -55,16 +55,16 @@ function run(q: EssentialQualityEvidence, base: number): MinimalHarnessRunInput 
 // ── AC-1: catalog protocol counts ─────────────────────────────────────────────
 
 describe("AC-1 minimal harness catalog counts (via CLI/snapshot)", () => {
-  const EXPECTED_COUNTS = { agents: 9, skills: 9, recipes: 14, architecture: 6, total: 38 };
+  const EXPECTED_COUNTS = { agents: 12, skills: 21, recipes: 14, architecture: 6, total: 53 };
 
-  it("catalog declares exactly 38 protocols across 4 categories", () => {
+  it("catalog declares exactly 53 protocols across 4 categories", () => {
     // Counts are validated by loadMinimalHarnessCatalog() which throws if wrong.
     // Here we assert the expected shape so a drift is immediately visible.
     expect(EXPECTED_COUNTS.total).toBe(
       EXPECTED_COUNTS.agents + EXPECTED_COUNTS.skills +
       EXPECTED_COUNTS.recipes + EXPECTED_COUNTS.architecture,
     );
-    expect(EXPECTED_COUNTS).toEqual({ agents: 9, skills: 9, recipes: 14, architecture: 6, total: 38 });
+    expect(EXPECTED_COUNTS).toEqual({ agents: 12, skills: 21, recipes: 14, architecture: 6, total: 53 });
   });
 
   it("exactly 10 efficiency metrics are tracked", () => {

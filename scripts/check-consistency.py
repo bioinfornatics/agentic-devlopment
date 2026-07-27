@@ -6,7 +6,7 @@ Exits 0 if all checks pass, 1 if any FAIL (hard violations).
 WARNs are printed but do not affect exit code.
 """
 from __future__ import annotations
-import json, re, sys
+import json, re, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -79,14 +79,36 @@ if not loop_spec_path.exists():
 else:
     ok("Canonical Loop Engineering spec exists")
 
-expected_skills = {"task-framing", "evidence-verification", "loop-control"}
-expected_agents = {"repository-researcher", "change-builder", "change-builder-premium", "independent-verifier", "independent-verifier-premium"}
+# Core skills maintained in this repo
+expected_skills = {
+    "task-framing",
+    "evidence-verification",
+    "loop-control",
+    "output-discipline",
+    "interface-quality",
+    "ui-design",
+    "ux-principles",
+    "wcag-accessibility-audit",
+}
+
+# External skills (installed from plugins, may or may not be present)
+external_skills = {
+    "skill-creator",  # Meta-skill for creating new skills
+}
+expected_agents = {
+    "repository-researcher",
+    "change-builder",
+    "change-builder-premium",
+    "independent-verifier",
+    "independent-verifier-premium",
+    "error-analyzer",  # Support agent summoned by loop-breaker plugin
+}
 expected_recipes = {"loop-engineering", "implement", "research", "verify"}
 expected_plugins = {"prevent-catastrophe", "loop-gate", "beads-telemetry", "loop-breaker"}
 if set(skills) != expected_skills:
     fail(f"Active skills drift: {skills}")
 else:
-    ok("Active skill inventory = 3")
+    ok(f"Active skill inventory = {len(expected_skills)}")
 plugins = sorted(p.parent.name for p in (ROOT / ".agents/plugins").glob("*/plugin.json"))
 if set(plugins) != expected_plugins:
     fail(f"Active plugins drift: {plugins}")
@@ -112,6 +134,74 @@ for skill in skills:
         if len(scenarios) < 3:
             warn(f"evals/skills/{skill}.json has {len(scenarios)} scenario(s), expected 3")
 
+# ── 4b. SKILL DEPENDENCY VALIDATION ───────────────────────────────────────────
+print("\n── Skill dependency validation ───────────────────────────────────────")
+import yaml
+skill_deps = {}
+for skill in skills:
+    skill_path = ROOT / ".agents/skills" / skill / "SKILL.md"
+    if skill_path.exists():
+        content = skill_path.read_text()
+        # Extract YAML frontmatter
+        if content.startswith("---"):
+            parts = content.split("---", 2)
+            if len(parts) >= 3:
+                try:
+                    meta = yaml.safe_load(parts[1])
+                    deps = meta.get("metadata", {}).get("dependencies", [])
+                    skill_deps[skill] = deps if deps else []
+                except:
+                    skill_deps[skill] = []
+            else:
+                skill_deps[skill] = []
+        else:
+            skill_deps[skill] = []
+    else:
+        skill_deps[skill] = []
+
+# Check dependencies exist
+for skill, deps in skill_deps.items():
+    for dep in deps:
+        if dep not in skills:
+            fail(f"Skill {skill} depends on non-existent skill: {dep}")
+        if dep == skill:
+            fail(f"Skill {skill} has self-dependency")
+
+# Check for cycles (simple DFS)
+def has_cycle(skill, visited, stack):
+    visited.add(skill)
+    stack.add(skill)
+    for dep in skill_deps.get(skill, []):
+        if dep not in visited:
+            if has_cycle(dep, visited, stack):
+                return True
+        elif dep in stack:
+            return True
+    stack.remove(skill)
+    return False
+
+for skill in skills:
+    if has_cycle(skill, set(), set()):
+        fail(f"Skill dependency cycle detected involving: {skill}")
+
+# Check max depth (should be ≤1 for conditional loading)
+def dep_depth(skill, seen=None):
+    if seen is None:
+        seen = set()
+    if skill in seen:
+        return 0
+    seen.add(skill)
+    deps = skill_deps.get(skill, [])
+    if not deps:
+        return 0
+    return 1 + max(dep_depth(d, seen) for d in deps)
+
+max_depth = max(dep_depth(s) for s in skills)
+if max_depth > 1:
+    warn(f"Skill dependency depth {max_depth} > 1 may cause excessive loading")
+else:
+    ok(f"Skill dependency graph valid (depth={max_depth}, no cycles)")
+
 # ── 5. AGENT COUNTS ───────────────────────────────────────────────────────────
 print("\n── Agent counts ──────────────────────────────────────────────────────")
 agents = actual_agents()
@@ -127,7 +217,7 @@ else:
 if set(agents) != expected_agents:
     fail(f"Active agents drift: {agents}")
 else:
-    ok("Active agent inventory = 5")
+    ok("Active agent inventory = 6")
 
 # ── 5b. AGENT SKILL CONTRACTS (AC-AGENT-02) ───────────────────────────────────
 print("\n── Agent skill contracts (AC-AGENT-02) ──────────────────────────────")
@@ -437,16 +527,16 @@ meta_path = ROOT / ".specs/harness/recipe-workflow-metadata.json"
 if not meta_path.exists():
     fail("Missing .specs/harness/recipe-workflow-metadata.json")
 else:
-    meta = json.loads(meta_path.read_text())
-    for recipe in recipes:
-        m = meta.get("recipes", {}).get(recipe)
-        if not m:
-            fail(f"Recipe workflow metadata missing recipe: {recipe}")
-            continue
-        for key in ("phase", "ad001_pattern", "entry_criteria", "exit_criteria", "source_path"):
-            if not m.get(key):
-                fail(f"Recipe workflow metadata {recipe} missing {key}")
-    ok("Recipe workflow metadata checked")
+    # Full schema + agent + recipe contract validation via check-recipe-metadata.py
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/check-recipe-metadata.py")],
+        capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        for line in result.stdout.strip().splitlines():
+            fail(line)
+    else:
+        ok("Recipe workflow metadata checked")
 
 print("\n── USE_CASES.md stale recipe names ───────────────────────────────────")
 use_cases = (ROOT / "USE_CASES.md").read_text()

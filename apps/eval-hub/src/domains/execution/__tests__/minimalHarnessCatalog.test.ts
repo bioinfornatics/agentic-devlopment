@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { loadMinimalHarnessCatalog } from "../minimalHarnessCatalog.js";
 
-describe("minimal harness 38-protocol catalog", () => {
-  it("contains exactly 9 agent, 9 skill, 14 recipe, and 6 architecture protocols", async () => {
+describe("minimal harness 53-protocol catalog", () => {
+  it("contains exactly 12 agent, 21 skill, 14 recipe, and 6 architecture protocols", async () => {
     const catalog = await loadMinimalHarnessCatalog();
-    expect(catalog.counts).toEqual({ agents: 9, skills: 9, recipes: 14, architecture: 6, total: 38 });
+    expect(catalog.counts).toEqual({ agents: 12, skills: 21, recipes: 14, architecture: 6, total: 53 });
     expect(catalog.subjects).toEqual({
-      agents: ["change-builder", "independent-verifier", "repository-researcher"],
-      skills: ["evidence-verification", "loop-control", "task-framing"],
+      agents: ["change-builder", "error-analyzer", "independent-verifier", "repository-researcher"],
+      skills: ["evidence-verification", "interface-quality", "loop-control", "task-framing", "ui-design", "ux-principles", "wcag-accessibility-audit"],
       recipes: ["implement", "loop-engineering", "research", "verify"],
     });
   });

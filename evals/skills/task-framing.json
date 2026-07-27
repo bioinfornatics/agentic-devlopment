@@ -9,7 +9,10 @@
     "max_turns": 15,
     "difficulty": "normal",
     "expected_skill_contribution": "Should transform ambiguity into one small falsifiable contract.",
-    "baseline_gaps": [],
+    "baseline_gaps": [
+      "Would accept a vague objective and begin implementation without defining scope, constraints, or falsifiable acceptance criteria.",
+      "Would not identify that 'error handling' is multi-concern and needs decomposition before claiming a single task."
+    ],
     "expected_behavior": [
       "Produces every required contract field.",
       "Uses observable, falsifiable acceptance criteria.",
@@ -51,7 +54,10 @@
     "max_turns": 20,
     "difficulty": "difficult",
     "expected_skill_contribution": "Should split or bound the work rather than accepting a multi-concern mega-task.",
-    "baseline_gaps": [],
+    "baseline_gaps": [
+      "Would attempt to implement all concerns (copy, API, analytics, accessibility) in one task without isolating independent increments.",
+      "Would not identify dependency order or safe parallelism between the concerns."
+    ],
     "expected_behavior": [
       "Identifies independent concerns and dependencies.",
       "Selects the smallest independently verifiable slice.",
@@ -93,7 +99,10 @@
     "max_turns": 20,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "Should refuse false precision and make critical unknowns explicit.",
-    "baseline_gaps": [],
+    "baseline_gaps": [
+      "Would frame acceptance criteria from an ambiguous metric-free objective, producing criteria that cannot be independently proved.",
+      "Would not identify that a research task or WAIT transition is required before an implementation contract can be written."
+    ],
     "expected_behavior": [
       "Identifies missing baseline, target metric, workload, and measurement method.",
       "Does not invent a performance target.",

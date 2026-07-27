@@ -49,11 +49,6 @@ DOCS=(
   docs/reference/use-cases/11-incident-sre.md
   docs/reference/use-cases/12-multi-agent-research.md
   docs/reference/use-cases/13-documentation-review.md
-  docs/internal/14-memory.md
-  docs/internal/15-skill-evaluations.md
-  docs/internal/16-eval-analysis.md
-  docs/internal/knowledge-graph.md
-  docs/internal/kg-lifecycle.md
   AGENTS.md
 )
 

@@ -221,6 +221,11 @@
         "task-framing"
       ]
     },
+    "error-analyzer": {
+      "mandatory_skills": [
+        "loop-control"
+      ]
+    },
     "change-builder-premium": {
       "mandatory_skills": [
         "task-framing"

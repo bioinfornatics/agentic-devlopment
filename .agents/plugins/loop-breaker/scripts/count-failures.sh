@@ -1,70 +1,113 @@
 #!/usr/bin/env sh
-# loop-breaker: counts consecutive PostToolUseFailure events per session.
-# Emits {"decision":"block"} when count exceeds 3.
-# A single PostToolUse success resets the counter.
-# All technical errors exit 0 — never block Goose for infrastructure reasons.
+# loop-breaker v2.4: Shell trampoline to TypeScript/binary implementation
+# 
+# Execution order:
+#   1. Pre-compiled binary (fastest)
+#   2. bun (native TS)
+#   3. deno (native TS)
+#   4. Shell fallback (minimal, jq required)
+
 set -u
 
-payload=$(cat 2>/dev/null || printf '{}')
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="$(dirname "$SCRIPT_DIR")"
+BIN="$PLUGIN_ROOT/bin/loop-breaker"
+TS_SCRIPT="$PLUGIN_ROOT/src/index.ts"
 
-# Require jq
+# Cache stdin for potential fallback
+_stdin_cache=$(cat)
+
+# 1. Try pre-compiled binary
+if [ -x "$BIN" ]; then
+  result=$(printf '%s' "$_stdin_cache" | "$BIN" 2>/dev/null) && {
+    [ -n "$result" ] && printf '%s' "$result"
+    exit 0
+  }
+fi
+
+# 2. Try bun (native TS execution) - only if deps installed
+if command -v bun >/dev/null 2>&1 && [ -f "$TS_SCRIPT" ] && [ -d "$PLUGIN_ROOT/node_modules" ]; then
+  result=$(printf '%s' "$_stdin_cache" | bun run "$TS_SCRIPT" 2>/dev/null) && {
+    [ -n "$result" ] && printf '%s' "$result"
+    exit 0
+  }
+fi
+
+# 3. Try deno (native TS execution)
+if command -v deno >/dev/null 2>&1 && [ -f "$TS_SCRIPT" ]; then
+  result=$(printf '%s' "$_stdin_cache" | deno run --allow-read --allow-write --allow-env --quiet "$TS_SCRIPT" 2>/dev/null) && {
+    [ -n "$result" ] && printf '%s' "$result"
+    exit 0
+  }
+fi
+
+# ═══════════════════════════════════════════════════════════════════════════
+# FALLBACK: Pure shell implementation (when no TS runtime available)
+# ═══════════════════════════════════════════════════════════════════════════
+
+payload="$_stdin_cache"
+[ -z "$payload" ] && payload='{}'
 command -v jq >/dev/null 2>&1 || exit 0
 
-# Parse event type
 event=$(printf '%s' "$payload" | jq -r '.event // empty' 2>/dev/null) || exit 0
 [ -n "$event" ] || exit 0
 
-# Parse session_id with a safe default
 session_id=$(printf '%s' "$payload" | jq -r '.session_id // "unknown"' 2>/dev/null) || exit 0
-[ -n "$session_id" ] || session_id="unknown"
+tool_name=$(printf '%s' "$payload" | jq -r '.tool_name // .tool // empty' 2>/dev/null) || exit 0
+tool_output=$(printf '%s' "$payload" | jq -r '.output // .result // .stdout // .stderr // empty' 2>/dev/null) || exit 0
 
-# Validate session_id against safe character set to prevent path traversal
-case "$session_id" in
-  *[!A-Za-z0-9._-]*)
-    # Contains dangerous characters — fail safe
-    exit 0
-    ;;
-esac
+case "$session_id" in *[!A-Za-z0-9._-]*) exit 0 ;; esac
 
-COUNTER_FILE="/tmp/goose-fail-ctr-${session_id}"
+# Use temp directory for counters (plugin DB handles persistence in TS version)
+DATA_DIR="${TMPDIR:-/tmp}"
+
+FAIL_CTR="$DATA_DIR/goose-fail-ctr-${session_id}"
+ERR_CTR="$DATA_DIR/goose-err-ctr-${session_id}"
+TOOL_CTR="$DATA_DIR/goose-tool-ctr-${session_id}"
+LAST_TOOL="$DATA_DIR/goose-last-tool-${session_id}"
+
+is_err() {
+  case "$1" in
+    *"ReferenceError"*|*"is not defined"*|*"TypeError"*|*"SyntaxError"*|*"Error:"*|*"ENOENT"*|*"Permission denied"*|*"command not found"*) return 0 ;;
+  esac
+  return 1
+}
+
+read_ctr() { [ -f "$1" ] && read -r v < "$1" 2>/dev/null && printf '%s' "$v" || printf '0'; }
 
 case "$event" in
   PostToolUse)
-    # Successful tool use — reset the failure counter
-    rm -f "$COUNTER_FILE"
-    exit 0
+    if is_err "$tool_output"; then
+      c=$(read_ctr "$ERR_CTR"); lt=""; [ -f "$LAST_TOOL" ] && read -r lt < "$LAST_TOOL"
+      [ "$lt" = "$tool_name" ] && c=$((c + 1)) || c=1
+      printf '%s\n' "$c" > "$ERR_CTR"; printf '%s\n' "$tool_name" > "$LAST_TOOL"
+      
+      [ "$c" -ge 8 ] && jq -cn --argjson c "$c" --arg t "$tool_name" \
+        '{decision:"block",reason:("LOOP-BREAKER: "+$t+" failed "+($c|tostring)+" times. Hard stop.")}'
+      [ "$c" -ge 5 ] && [ "$c" -lt 8 ] && jq -cn --argjson c "$c" --arg t "$tool_name" \
+        '{decision:"pause",action:"delegate_correction",reason:("LOOP-BREAKER: "+$t+" failed "+($c|tostring)+" times.")}'
+      [ "$c" -ge 3 ] && [ "$c" -lt 5 ] && jq -cn --argjson c "$c" \
+        '{decision:"inject",message:"LOOP-BREAKER: Check code structure. Wrap in run() for execute_typescript."}'
+    else
+      rm -f "$FAIL_CTR" "$ERR_CTR" 2>/dev/null
+    fi
+    
+    c=$(read_ctr "$TOOL_CTR"); lt=""; [ -f "$LAST_TOOL" ] && read -r lt < "$LAST_TOOL"
+    [ "$lt" = "$tool_name" ] && c=$((c + 1)) || c=1
+    printf '%s\n' "$c" > "$TOOL_CTR"; printf '%s\n' "$tool_name" > "$LAST_TOOL"
+    [ "$c" -gt 10 ] && jq -cn --argjson c "$c" --arg t "$tool_name" \
+      '{decision:"block",reason:("LOOP-BREAKER: "+$t+" called "+($c|tostring)+" times. Loop detected.")}'
     ;;
-
+    
   PostToolUseFailure)
-    # Read existing count (default 0)
-    count=0
-    if [ -f "$COUNTER_FILE" ]; then
-      read -r count < "$COUNTER_FILE" 2>/dev/null || count=0
-      # Ensure count is a non-negative integer
-      case "$count" in
-        ''|*[!0-9]*) count=0 ;;
-      esac
-    fi
-
-    count=$((count + 1))
-
-    # Persist updated count
-    printf '%s\n' "$count" > "$COUNTER_FILE" 2>/dev/null || true
-
-    if [ "$count" -gt 3 ]; then
-      jq -cn \
-        --argjson c "$count" \
-        --arg sid "$session_id" \
-        '{
-          decision: "block",
-          reason: ("LOOP-BREAKER: " + ($c|tostring) + " consecutive tool failures in session " + $sid + ". Stopping to prevent infinite failure loop. Review the last tool error and adjust the approach.")
-        }'
-    fi
-    exit 0
+    c=$(read_ctr "$FAIL_CTR"); c=$((c + 1)); printf '%s\n' "$c" > "$FAIL_CTR"
+    [ "$c" -ge 6 ] && jq -cn --argjson c "$c" '{decision:"block",reason:("LOOP-BREAKER: "+($c|tostring)+" failures. Hard stop.")}'
+    [ "$c" -ge 4 ] && [ "$c" -lt 6 ] && jq -cn --argjson c "$c" '{decision:"pause",action:"delegate_correction"}'
     ;;
-
-  *)
-    # Unknown event — ignore
-    exit 0
+    
+  SessionEnd)
+    rm -f "$DATA_DIR/goose-"*"-${session_id}" 2>/dev/null
     ;;
 esac
+
+exit 0

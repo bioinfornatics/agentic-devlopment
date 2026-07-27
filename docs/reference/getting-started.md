@@ -78,9 +78,12 @@ Goose agents are discovered automatically from `.agents/agents/`. Active agents:
 |---|---|
 | `repository-researcher` | Read-only research, context mapping |
 | `change-builder` | Bounded implementation (claims before writing) |
+| `change-builder-premium` | Premium builder (gpt-5.6-sol), activates at rework_count ≥ 2 |
 | `independent-verifier` | Spec-anchored verification (never repairs) |
+| `independent-verifier-premium` | Premium verifier (gpt-5.6-sol), activates at rework_count ≥ 2 |
+| `error-analyzer` | Summoned by `loop-breaker` on repeated tool failures; not part of the normal flow |
 
-The `/loop-engineering` recipe delegates to all three automatically.
+The `/loop-engineering` recipe delegates to researcher, builder, and verifier automatically. Premium agents and `error-analyzer` are summoned conditionally, not in the standard flow.
 
 ## Next Steps
 

@@ -9,7 +9,10 @@
     "max_turns": 10,
     "difficulty": "normal",
     "expected_skill_contribution": "Should emit COMPLETE, not continue searching for work.",
-    "baseline_gaps": [],
+    "baseline_gaps": [
+      "Would default to CONTINUE without verifying that evidence satisfies all criteria or that budget permits another iteration.",
+      "Would conflate remaining budget with justification for continuing."
+    ],
     "expected_behavior": [
       "Emits exactly COMPLETE.",
       "References the acceptance evidence.",
@@ -50,7 +53,10 @@
     "max_turns": 10,
     "difficulty": "difficult",
     "expected_skill_contribution": "Should distinguish REWORK from REPLAN.",
-    "baseline_gaps": [],
+    "baseline_gaps": [
+      "Would retry the same approach without formally recording a REWORK transition or updating the evidence signature.",
+      "Would not distinguish between 'task done' and 'task verified' before emitting a transition."
+    ],
     "expected_behavior": [
       "Emits REWORK.",
       "Names the bounded next task.",
@@ -91,7 +97,10 @@
     "max_turns": 12,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "Should terminate or escalate due to stagnation rather than consume the remaining budget.",
-    "baseline_gaps": [],
+    "baseline_gaps": [
+      "Would not detect the repeated-failure pattern and would continue consuming iterations without recognizing the no-progress condition.",
+      "Would miss the ABORT or ESCALATE obligation when the same failure repeats without new evidence."
+    ],
     "expected_behavior": [
       "Detects repeated non-progress.",
       "Emits ABORT or ESCALATE according to whether human judgment can resolve it.",

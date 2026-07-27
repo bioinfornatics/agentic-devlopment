@@ -90,6 +90,7 @@ COMPLETE closes the accepted child tasks and run with explicit evidence. WAIT/ES
 
 ## Self-validation
 
+- [ ] Current run knowledge (epic, prior verdict, iteration count, evidence signature, budget) was loaded from Beads before deciding.
 - [ ] Beads only, is the durable state.
 - [ ] The generic seven-stage sequence and current stage artifacts are explicit.
 - [ ] Phase inquiry covered tools, checks, memory, failures, and later evidence.

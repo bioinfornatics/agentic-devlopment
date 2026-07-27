@@ -1,0 +1,104 @@
+[
+  {
+    "skills": [
+      "wcag-accessibility-audit",
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "An image has alt='' in the HTML. Based on code inspection alone, can you mark criterion 1.1.1 as PASS?",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "normal",
+    "expected_skill_contribution": "Should refuse to claim PASS based on code inspection alone.",
+    "baseline_gaps": [
+      "Would mark criterion 1.1.1 as PASS based on code inspection alone, producing a false conformance claim.",
+      "Would not distinguish between decorative and informative image contexts or require browser verification before a PASS verdict."
+    ],
+    "expected_behavior": [
+      "Recognizes that code inspection alone is [ASSUMPTION] evidence.",
+      "States that PASS verdict requires [VERIFIED] evidence.",
+      "Explains that alt='' may be correct (decorative) or incorrect (informative image).",
+      "Recommends browser/screen reader verification.",
+      "Marks as NOT TESTED if verification not possible."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "evidence_requirement_upheld",
+        "no_false_pass"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "wcag-accessibility-audit",
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "Keyboard testing reveals that a modal dialog traps focus - pressing Tab cycles within the modal but there is no way to close it with keyboard. Document this finding.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Should identify WCAG 2.1.2 violation with proper evidence.",
+    "baseline_gaps": [
+      "Would describe the keyboard trap informally without identifying the specific WCAG criterion or assigning the correct evidence label.",
+      "Would not include severity, remediation steps, or the [VERIFIED — browser-tested] label required for a keyboard-tested finding."
+    ],
+    "expected_behavior": [
+      "Identifies criterion 2.1.2 No Keyboard Trap as violated.",
+      "Labels evidence as [VERIFIED — browser-tested] since keyboard testing was performed.",
+      "Documents the specific failure (no keyboard escape from modal).",
+      "Recommends remediation (Escape key handler, close button in tab order).",
+      "Assigns appropriate severity (CRITICAL - blocks user task)."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "criterion_correctly_identified",
+        "evidence_labeled"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "wcag-accessibility-audit",
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "axe-core reports 0 violations on a page. Write the conformance statement for Level AA.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "Should not claim full conformance based on automated testing alone.",
+    "baseline_gaps": [
+      "Would claim full Level AA conformance from the zero-violation axe-core report without noting the 30% automation coverage limit.",
+      "Would not identify criteria requiring manual testing or use NOT TESTED for unchecked criteria."
+    ],
+    "expected_behavior": [
+      "Acknowledges axe-core results as partial evidence.",
+      "States that automated tools catch ~30% of issues.",
+      "Lists criteria that require manual testing (keyboard nav, focus order, meaningful sequence).",
+      "Uses NOT TESTED for criteria not covered by automated scan.",
+      "Does not claim 'CONFORMS at Level AA' without manual verification."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "automation_limits_acknowledged",
+        "no_false_conformance"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  }
+]

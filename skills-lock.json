@@ -13,6 +13,12 @@
       "skillPath": "skills/design-critique-case-studies/SKILL.md",
       "computedHash": "f7735b60d9debb9beddf96a324441b1e1327696254926179fbf21ea08b718a22"
     },
+    "skill-creator": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/skill-creator/SKILL.md",
+      "computedHash": "5ea13a6d9f0d4bb694405d79acd00cadec0d21bb138c4dd10fcf3c500cb835c2"
+    },
     "wcag-accessibility-audit": {
       "source": "mastepanoski/claude-skills",
       "sourceType": "github",

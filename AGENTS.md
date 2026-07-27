@@ -55,6 +55,10 @@ Every durable work item stores the following fields. The `beadsAdapter.ts` read-
 | Dependencies | `dependencies` |
 | Narrative log | `comments` |
 
+## Token budget discipline
+
+Every tool result stays in context for all subsequent API calls. Load skill `output-discipline` before any multi-step session: it covers Beads query filters (jq), shell output trimming, execute_typescript return rules (< 500 chars or structured summary), and the Beads-as-external-memory pattern. See also `loop-control/references/beads-control-plane.md` § "Beads as external memory".
+
 ## Work protocol
 
 1. Run bd prime and inspect ready/blocked work.

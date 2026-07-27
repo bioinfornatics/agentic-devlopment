@@ -1,0 +1,98 @@
+[
+  {
+    "skills": [
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "You found a contrast issue but only checked the hex values in CSS, not in the browser. Label this finding appropriately.",
+    "files": [],
+    "max_turns": 10,
+    "difficulty": "normal",
+    "expected_skill_contribution": "Should apply correct evidence labeling and note browser verification requirement.",
+    "baseline_gaps": [
+      "Would label a code-inspection finding as VERIFIED and proceed without noting the requirement for browser confirmation.",
+      "Would miss that ASSUMPTION evidence prevents HIGH/CRITICAL severity claims."
+    ],
+    "expected_behavior": [
+      "Labels finding as [ASSUMPTION — code-inspection].",
+      "Notes that browser verification is required.",
+      "Does not claim PASS or FAIL for accessibility without browser evidence.",
+      "Explains the difference between verified and assumption labels."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "evidence_labeling_correct",
+        "assumption_acknowledged"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "Write a finding for 'the button looks weird' observed during UI review.",
+    "files": [],
+    "max_turns": 10,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Should reject vague finding and demonstrate proper finding structure.",
+    "baseline_gaps": [
+      "Would attempt to refine 'looks weird' into a finding without rejecting the vague premise, producing a low-quality finding.",
+      "Would not apply anti-generic rules or request the required element, criterion, and observed/expected structure."
+    ],
+    "expected_behavior": [
+      "Identifies the input as vague and taste-based.",
+      "Requests or proposes specific element, criterion, and evidence.",
+      "Demonstrates the required finding structure (element, criterion, observed, expected).",
+      "Does not accept 'looks weird' as a valid criterion."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "anti_generic_applied",
+        "finding_structure_complete"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "You have a CRITICAL accessibility finding based on reading the source code. The code shows tabindex='-1' on a button. What evidence label and severity should this have?",
+    "files": [],
+    "max_turns": 10,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "Should recognize that CRITICAL findings require verified evidence and either downgrade or escalate to browser testing.",
+    "baseline_gaps": [
+      "Would assign CRITICAL severity based solely on code inspection, producing a finding that violates the evidence-severity contract.",
+      "Would not escalate to browser verification or downgrade severity when ASSUMPTION evidence cannot support CRITICAL."
+    ],
+    "expected_behavior": [
+      "Recognizes that code inspection alone produces [ASSUMPTION] evidence.",
+      "States that CRITICAL severity requires [VERIFIED] evidence.",
+      "Either downgrades severity or escalates to browser verification.",
+      "Does not claim CRITICAL severity with ASSUMPTION label."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "severity_evidence_alignment",
+        "escalation_correct"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  }
+]

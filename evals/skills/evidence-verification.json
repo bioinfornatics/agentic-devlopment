@@ -9,7 +9,10 @@
     "max_turns": 15,
     "difficulty": "normal",
     "expected_skill_contribution": "Should map evidence to criteria and issue a typed verdict.",
-    "baseline_gaps": [],
+    "baseline_gaps": [
+      "Would accept passing tests as full proof without checking for scope gaps, zero-discovery, or unverified claims in the diff.",
+      "Would not cross-reference multiple evidence sources to confirm AC coverage."
+    ],
     "expected_behavior": [
       "Uses the required criterion schema.",
       "Does not treat a diff as runtime proof when behavior requires execution.",
@@ -50,7 +53,10 @@
     "max_turns": 15,
     "difficulty": "difficult",
     "expected_skill_contribution": "Should reject superficial exit-code evidence.",
-    "baseline_gaps": [],
+    "baseline_gaps": [
+      "Would accept a zero-exit-code as conclusive success without examining actual test output for collection failures.",
+      "Would report ACCEPTED without detecting the zero-tests-discovered anomaly."
+    ],
     "expected_behavior": [
       "Marks the criterion missing or disproven.",
       "Explains why exit code 0 is insufficient.",
@@ -91,7 +97,10 @@
     "max_turns": 20,
     "difficulty": "very_difficult",
     "expected_skill_contribution": "Should prioritize evidence according to the claimed behavior and avoid averaging contradictory signals.",
-    "baseline_gaps": [],
+    "baseline_gaps": [
+      "Would not resolve conflicting evidence from multiple sources and would either pick arbitrarily or defer without a structured verdict.",
+      "Would lack a method to rank evidence reliability and identify which source should dominate the verdict."
+    ],
     "expected_behavior": [
       "Preserves all conflicting evidence.",
       "Identifies which evidence is most directly tied to the acceptance criterion.",

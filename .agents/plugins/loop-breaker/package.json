@@ -1,0 +1,23 @@
+{
+  "name": "@agentic-dev/loop-breaker",
+  "version": "2.4.0",
+  "type": "module",
+  "description": "Graduated response to tool failure loops with learned error patterns",
+  "scripts": {
+    "build": "bun build ./src/index.ts --compile --outfile ./bin/loop-breaker",
+    "build:deno": "deno compile --allow-read --allow-write --allow-env --output ./bin/loop-breaker ./src/index.ts",
+    "test": "bun test",
+    "audit": "bun run ./src/audit.ts",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate": "bun run ./src/db/migrate.ts"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.30.0",
+    "better-sqlite3": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "drizzle-kit": "^0.21.0",
+    "bun-types": "^1.0.0"
+  }
+}

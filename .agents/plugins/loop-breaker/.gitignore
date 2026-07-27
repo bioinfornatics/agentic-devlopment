@@ -1,0 +1,13 @@
+# Compiled binary
+bin/loop-breaker
+
+# Database (generated at runtime)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
+# Dependencies
+node_modules/
+
+# Drizzle
+drizzle/

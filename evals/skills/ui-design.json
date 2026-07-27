@@ -1,0 +1,104 @@
+[
+  {
+    "skills": [
+      "ui-design",
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "Evaluate the design token usage in this component that uses 'color: #3b82f6' instead of 'var(--color-action-primary)'.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "normal",
+    "expected_skill_contribution": "Should identify hardcoded value as token compliance violation.",
+    "baseline_gaps": [
+      "Would note the hardcoded value without referencing the three-layer token model or recommending the correct semantic token.",
+      "Would not apply the required finding structure (element, criterion, observed, expected) or evidence label."
+    ],
+    "expected_behavior": [
+      "Identifies hardcoded hex value as design token violation.",
+      "References the three-layer token model (reference/semantic/component).",
+      "Recommends using semantic token instead of hardcoded value.",
+      "Applies correct evidence label based on how the value was discovered.",
+      "Structures finding with element, criterion, observed, expected."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "token_violation_identified",
+        "finding_structure_complete"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "ui-design",
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "Review the visual hierarchy of a page where all headings are the same size (16px) and the CTA button is smaller than secondary buttons.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Should identify hierarchy violations in both typography and component sizing.",
+    "baseline_gaps": [
+      "Would describe the visual issues informally without identifying each as a separate hierarchy violation with evidence.",
+      "Would not structure recommendations as specific actionable changes to typography scale and button sizing hierarchy."
+    ],
+    "expected_behavior": [
+      "Identifies flat heading hierarchy as a violation.",
+      "Identifies inverted button sizing hierarchy.",
+      "Recommends clear size progression for headings.",
+      "Recommends primary CTA be visually prominent.",
+      "Applies evidence labels appropriately."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "hierarchy_issues_found",
+        "recommendations_actionable"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "ui-design",
+      "interface-quality"
+    ],
+    "agents": [],
+    "query": "A design review shows consistent 8px spacing throughout, proper token usage, clear typography scale, and intentional color palette. Document this as a passing review.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "Should document a PASS review with evidence of what was verified.",
+    "baseline_gaps": [
+      "Would invent findings to fill the review template rather than documenting a genuine PASS with evidence.",
+      "Would not apply evidence labels per dimension or note what was checked and how."
+    ],
+    "expected_behavior": [
+      "Documents PASS verdict.",
+      "Lists what was checked (tokens, spacing, typography, color).",
+      "Provides evidence labels for each dimension checked.",
+      "Does not invent findings when none exist.",
+      "Follows the output format structure."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "pass_documented_with_evidence",
+        "no_invented_findings"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  }
+]

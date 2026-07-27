@@ -3,8 +3,8 @@ import path from "node:path";
 import { EVALS_DIR } from "../../shared/paths.js";
 
 export const MINIMAL_HARNESS_SUBJECTS = {
-  agents: ["change-builder", "independent-verifier", "repository-researcher"],
-  skills: ["evidence-verification", "loop-control", "task-framing"],
+  agents: ["change-builder", "error-analyzer", "independent-verifier", "repository-researcher"],
+  skills: ["evidence-verification", "interface-quality", "loop-control", "task-framing", "ui-design", "ux-principles", "wcag-accessibility-audit"],
   recipes: ["implement", "loop-engineering", "research", "verify"],
 } as const;
 
@@ -83,8 +83,8 @@ export async function loadMinimalHarnessCatalog(): Promise<MinimalHarnessCatalog
     total: 0,
   };
   counts.total = counts.agents + counts.skills + counts.recipes + counts.architecture;
-  if (counts.agents !== 9 || counts.skills !== 9 || counts.recipes !== 14 || counts.architecture !== 6 || counts.total !== 38) {
-    throw new Error("expected 38 protocols; got " + JSON.stringify(counts));
+  if (counts.agents !== 12 || counts.skills !== 21 || counts.recipes !== 14 || counts.architecture !== 6 || counts.total !== 53) {
+    throw new Error("expected 53 protocols; got " + JSON.stringify(counts));
   }
   return { subjects: MINIMAL_HARNESS_SUBJECTS, architecture, counts };
 }

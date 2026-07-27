@@ -53,7 +53,7 @@ describe("EVAL-INT-01/02/03/17/19 production SuiteRunner schedule", () => {
   });
 
   it("rejects an untyped recipe subject before scheduling either side", async () => {
-    const evalPath = path.join(process.cwd(), "../../evals/recipes/implement.json");
+    const evalPath = path.join(PROJECT_ROOT, "evals/recipes/implement.json");
     const original = await fs.readFile(evalPath, "utf8");
     try {
       const scenarios = JSON.parse(original).map(({ recipe_source_type: _, ...scenario }: Record<string, unknown>) => scenario);

@@ -1,13 +1,13 @@
 # Evaluation Suite — Minimal Loop Engineering Harness
 
-This suite evaluates the **3 agents, 3 skills, and 4 recipes** in this pack. It does not reward component count. It tests whether the smaller harness is on the quality/cost Pareto frontier.
+This suite evaluates the **4 agents, 7 skills, and 4 recipes** in this pack. It does not reward component count. It tests whether the smaller harness is on the quality/cost Pareto frontier.
 
 ## Inventory
 
-- Agents: `repository-researcher`, `change-builder`, `independent-verifier`
-- Skills: `task-framing`, `evidence-verification`, `loop-control`
+- Agents: `repository-researcher`, `change-builder`, `independent-verifier`, `error-analyzer`
+- Skills: `task-framing`, `evidence-verification`, `loop-control`, `interface-quality`, `ui-design`, `ux-principles`, `wcag-accessibility-audit`
 - Recipes: `research`, `implement`, `verify`, `loop-engineering`
-- Scenarios: 30 component scenarios (normal, difficult, very difficult)
+- Scenarios: 53 component scenarios (normal, difficult, very difficult) + 6 architecture benchmarks
 - Architecture benchmarks: 6 ablation/comparison protocols
 
 ## Scoring

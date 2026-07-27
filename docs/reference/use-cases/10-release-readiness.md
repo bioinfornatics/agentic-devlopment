@@ -2,31 +2,50 @@
 
 Prepare and verify a release with gates and durable handoff.
 
+> **Note:** There is no standalone `release` recipe in the active pack. Release readiness is
+> orchestrated through the standard `loop-engineering` recipe with a release-scoped Beads epic,
+> or executed manually using the verification gate commands below.
+
 ## User scenario
 
 > "Prepare release 1.2.3, wait for CI, verify packages, and hand off."
 
-## Run methods
-
-### Method A — headless recipe
+## Run method — loop-engineering recipe
 
 ```bash
-goose run --recipe release \
-  --params task="release 1.2.3" \
-  --params repo_path="$PWD" \
-  --params constraints="Do not tag or push without explicit approval."
+# Create a release epic in Beads, then run the loop-engineering recipe
+bd create --title "Release gate: 1.2.3" --type epic
+goose recipe run loop-engineering
 ```
 
-### Method B — slash command in an interactive Goose session
+## Manual release verification sequence
 
-```text
-/release release 1.2.3; do not tag or push without explicit approval
-```
-
-## Recommended command
+When release is blocked, run these checks directly:
 
 ```bash
-goose run --recipe release   --params task="release 1.2.3"   --params repo_path="$PWD"   --params constraints="Do not tag or push without explicit approval."
+# 1. Recipe validation
+find .goose/recipes -name '*.yaml' -exec goose recipe validate {} \;
+
+# 2. Plugin tests
+for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker; do
+  sh .agents/plugins/$p/tests/test-plugin.sh
+done
+
+# 3. KG bootstrap dry-run
+node apps/kg/dist/cli.js bootstrap --dry-run
+
+# 4. Check consistency (metadata, recipe contracts)
+python3 scripts/check-recipe-metadata.py
+python3 scripts/check-consistency.py
+
+# 5. Full test suite
+cd apps && pnpm -r test
+
+# 6. Python corpus tests
+python3 -m pytest scripts/tests/ -q
+
+# 7. Docs build
+./scripts/build-docs.sh
 ```
 
 ## Release phases
@@ -35,7 +54,7 @@ goose run --recipe release   --params task="release 1.2.3"   --params repo_path=
 2. Verify clean or intentionally dirty state.
 3. Confirm versions/changelog.
 4. Run tests/build.
-5. Commit/tag/push only with authority.
+5. Commit/tag/push only with explicit authority.
 6. Create Beads gate for CI wait.
 7. Verify artifacts/packages/docs.
 8. Close release bead or create follow-ups.
@@ -55,20 +74,7 @@ bd gate check --type gh:run
 - CI green;
 - artifacts published;
 - install smoke passes;
-- rollback notes written;
-- stale wisps cleaned if release used ephemeral workflow.
-
-## Output format
-
-```text
-Release readiness: ready | blocked | partial
-Preflight state:
-Commands run:
-Gates created/resolved:
-Artifacts verified:
-Rollback notes:
-Follow-up beads:
-```
+- rollback notes written.
 
 ## Done criteria
 

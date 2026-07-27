@@ -1,7 +1,20 @@
 {
   "name": "loop-breaker",
-  "version": "1.0.0",
-  "description": "Detects repeating tool-failure loops (>3 consecutive PostToolUseFailure) and blocks execution to prevent infinite error spirals.",
+  "version": "2.4.0",
+  "description": "Graduated response to tool failure loops with SQLite-backed error pattern learning. Compiles to standalone binary.",
   "author": "agentic-devlopment",
-  "hooks": "hooks/hooks.json"
+  "hooks": "hooks/hooks.json",
+  "scripts": {
+    "build": "bun build ./src/index.ts --compile --outfile ./bin/loop-breaker",
+    "audit": "bun run ./src/audit.ts"
+  },
+  "runtime": {
+    "primary": "binary",
+    "fallback": ["bun", "deno", "shell"],
+    "compile_with": ["bun build --compile", "deno compile"]
+  },
+  "data": {
+    "database": "data/loop-breaker.db",
+    "cleanup_policy": "6_months_unused"
+  }
 }

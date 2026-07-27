@@ -63,6 +63,24 @@ Update loop_evidence_signature, set the verdict state with a reason, then set th
 
 COMPLETE closes remaining control tasks and then the epic. WAIT and ESCALATE block or defer rather than busy-loop. ABORT closes with an explicit reason and preserved evidence.
 
+## Beads as external memory
+
+Beads replaces in-context state for anything durable. Apply this pattern after every large tool result:
+
+1. **Extract** — identify the decision, evidence reference, or outcome (one sentence or structured key–value).
+2. **Persist** — `bd comment TASK_ID "EVIDENCE AC-1 cmd=<cmd> exit=0 finding=<one line>"`.
+3. **Return** — pass only the Beads task ID and the one-line summary to the next step.
+4. **Discard** — do not forward the raw output; it is now in Beads, not in the context.
+
+```bash
+# Pattern
+FINDING=$(bd show ID --json | jq -r '.status')
+bd comment ID "STATE status=$FINDING session=$SESSION"
+# → next turn receives "status=in_progress" not the full JSON object
+```
+
+Context size stays constant regardless of loop length when every durable fact lives in Beads.
+
 ## Recovery inquiry
 
 Before each phase, answer only the questions that can change the next action:
