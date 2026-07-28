@@ -1,0 +1,89 @@
+[
+  {
+    "skills": [
+      "grill-me"
+    ],
+    "agents": [],
+    "query": "Use grill-me to sharpen a proposal to add a cache. Start the grilling session and ask only one question.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "normal",
+    "expected_skill_contribution": "grill-me should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Delegates method to grilling.",
+      "Asks exactly one question.",
+      "Provides a recommendation.",
+      "Does not implement cache.",
+      "Waits for feedback."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "grill-me"
+    ],
+    "agents": [],
+    "query": "Use grill-me on a release plan with no rollback strategy.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "grill-me should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Surfaces rollback first.",
+      "Asks exactly one question.",
+      "Provides recommended answer.",
+      "Does not produce final plan prematurely.",
+      "Does not act."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "grill-me"
+    ],
+    "agents": [],
+    "query": "Use grill-me to examine whether a feature flag is necessary.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "grill-me should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Frames the key decision.",
+      "Asks one question only.",
+      "Recommends a default.",
+      "Waits for user feedback.",
+      "Does not claim shared understanding yet."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  }
+]

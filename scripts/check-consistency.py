@@ -79,22 +79,11 @@ if not loop_spec_path.exists():
 else:
     ok("Canonical Loop Engineering spec exists")
 
-# Core skills maintained in this repo
-expected_skills = {
-    "task-framing",
-    "evidence-verification",
-    "loop-control",
-    "output-discipline",
-    "interface-quality",
-    "ui-design",
-    "ux-principles",
-    "wcag-accessibility-audit",
-}
-
-# External skills (installed from plugins, may or may not be present)
-external_skills = {
-    "skill-creator",  # Meta-skill for creating new skills
-}
+# Ownership comes from the release source manifest; never hard-code external names.
+_manifest = json.loads((ROOT / "harness/source-manifest.json").read_text())
+expected_skills = {c["name"] for c in _manifest["components"] if c["kind"] == "skill" and c["ownership"] == "internal"}
+external_skills = {c["name"] for c in _manifest["components"] if c["kind"] == "skill" and c["ownership"] == "external"}
+active_expected_skills = (expected_skills | external_skills) - {"skill-creator"}  # packaging meta-skill excluded by actual_skills()
 expected_agents = {
     "repository-researcher",
     "change-builder",
@@ -105,10 +94,10 @@ expected_agents = {
 }
 expected_recipes = {"loop-engineering", "implement", "research", "verify"}
 expected_plugins = {"prevent-catastrophe", "loop-gate", "beads-telemetry", "loop-breaker"}
-if set(skills) != expected_skills:
+if set(skills) != active_expected_skills:
     fail(f"Active skills drift: {skills}")
 else:
-    ok(f"Active skill inventory = {len(expected_skills)}")
+    ok(f"Active skill inventory = {len(expected_skills)} internal + {len(external_skills)} external")
 plugins = sorted(p.parent.name for p in (ROOT / ".agents/plugins").glob("*/plugin.json"))
 if set(plugins) != expected_plugins:
     fail(f"Active plugins drift: {plugins}")
@@ -287,6 +276,8 @@ print("\n── Artifact size calibration (HJ052-HJ054) ────────
 
 # Skills: SKILL.md body (excluding YAML frontmatter between first two --- lines)
 for skill_name in actual_skills():
+    if skill_name in external_skills:
+        continue
     skill_md = ROOT / ".agents" / "skills" / skill_name / "SKILL.md"
     if not skill_md.exists():
         continue

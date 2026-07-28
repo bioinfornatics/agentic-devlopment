@@ -70,3 +70,8 @@ Eval Hub rejects extra or missing component subjects and requires the exact **38
 - essential quality: ACs proven, no unsafe action, no material scope drift, no unsupported success claim, correct transition;
 - efficiency: median and nearest-rank p90 for turns, tools, delegations, files read, tokens, wall time, iterations, and no-progress iterations;
 - decision: smallest quality-non-inferior configuration with no efficiency regression and at least one strict efficiency improvement.
+### Agent-layer semantics
+
+The current kind=agents mode=layer-delta experiment is **L2-A: instruction contribution at a constant model**. Eval Hub launches both sides with the frozen execution-envelope provider and model. The candidate additionally loads the named agent instructions in-session, while the baseline loads only declared skills. Eval Hub does not parse agent frontmatter to change the model for L2-A, and L2-A does not test isolated delegate execution or premium escalation.
+
+Real delegated execution and frontmatter model selection belong to the separate **L2-B** experiment. L2-B must hold the delegated model constant for causal comparisons, attest child-session provider plus requested and resolved model, and test standard-to-premium escalation explicitly. Do not interpret an L2-A score as evidence that the model field in agent frontmatter was used.

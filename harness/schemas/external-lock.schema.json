@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "resolver",
+    "generatedFrom",
+    "skills"
+  ],
+  "properties": {
+    "schema": {
+      "const": "harness-external-lock-v2"
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "active",
+          "source",
+          "integrity",
+          "license",
+          "dependencies",
+          "evaluation"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false
+}

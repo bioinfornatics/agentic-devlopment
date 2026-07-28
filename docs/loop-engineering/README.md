@@ -1,13 +1,16 @@
 # Loop Engineering
 
-Documentation versionnée d'une boucle d'ingénierie récursive en six étapes :
+Documentation versionnée d'une boucle d'ingénierie gouvernée en sept étapes.
 
-1. **Planificateur** — stratégie et découpage de l'objectif.
-2. **Builder** — exécution du plan et production d'un résultat concret.
-3. **Vérificateur** — comparaison du résultat avec les critères de succès.
-4. **Mémoire** — conservation des faits, décisions, réussites et échecs.
-5. **Gestionnaire** — priorisation du travail restant.
-6. **Contrôleur** — révision de la méthode et relance du cycle.
+L'état durable est porté par **Beads** (`.beads/`). La conversation et les fichiers locaux sont éphémères et ne font jamais autorité.
+
+00. **Trigger** — déclenchement ou reprise justifiée de la boucle.
+01. **Planificateur** — stratégie et découpage de l'objectif en incréments vérifiables.
+02. **Builder** — exécution du plus petit changement utile.
+03. **Vérificateur** — évaluation indépendante du résultat avec des preuves reproductibles.
+04. **Mémoire** — conservation des faits, décisions, réussites et échecs dans Beads.
+05. **Gestionnaire** — priorisation du travail restant.
+06. **Contrôleur** — décision typée (CONTINUE, REPLAN, WAIT, COMPLETE, ESCALATE, ABORT).
 
 ## Organisation
 

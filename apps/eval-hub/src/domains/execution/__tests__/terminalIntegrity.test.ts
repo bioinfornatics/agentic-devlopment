@@ -16,7 +16,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { SkillEvalRunner } from "../evalRunner.js";
 import { buildTreatmentPair, hashUtf8, treatmentContentHash, type ExecutionTreatment } from "../executionIntegrity.js";
-import { expectedCriterionIdsFor } from "../grader.js";
+import { expectedCriterionIdsFor, defaultRubricDescriptor } from "../grader.js";
 import type {
   GooseRawEvent, GooseRunConfig, IGooseRunner, IGrader, ScenarioRunConfig, ScenarioIntegrityPlan,
 } from "../ports.js";
@@ -158,7 +158,7 @@ function buildManifest(): IntegrityManifestV2 {
       evalHubRuntimeVersion: HUB_VER,
     },
     grader: { id: "llm-judge", version: "2" },
-    rubric: { id: "expected-behavior", version: "1" },
+    rubric: { id: "expected_behavior_index", version: "v1" },
   };
 }
 
@@ -194,7 +194,7 @@ function buildCfg(side: "candidate" | "baseline", overrides: Partial<ScenarioRun
     candidateTreatmentHash: treatmentContentHash(candidate),
     baselineTreatmentHash:  treatmentContentHash(baseline),
     grader:  { id: "llm-judge", version: "2" },
-    rubric:  { id: "expected-behavior", version: "1", expectedCriterionIds: CRITERION_IDS },
+    rubric:  { id: "expected_behavior_index", version: "v1", expectedCriterionIds: CRITERION_IDS },
   };
   return {
     kind:                   KIND,
@@ -251,7 +251,7 @@ describe("1. valid terminal — succeeded run with valid grading", () => {
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
         runProvenanceId: "prov-001", graderId: "llm-judge", graderVersion: "2",
-        rubricId: "expected-behavior", rubricVersion: "1",
+        rubricId: "expected_behavior_index", rubricVersion: "v1",
       },
       grading: null, exclusion: null,
     } as const;
@@ -299,7 +299,7 @@ describe("2. failed terminal before throw — execution_failed recorded before r
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
         runProvenanceId: "prov-001", graderId: "llm-judge", graderVersion: "2",
-        rubricId: "expected-behavior", rubricVersion: "1",
+        rubricId: "expected_behavior_index", rubricVersion: "v1",
       },
       grading: null, exclusion: null,
     } as const;
@@ -342,7 +342,7 @@ describe("3. grader-invalid null — grader throw / mismatch → grader_invalid,
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
         runProvenanceId: "prov-001", graderId: "llm-judge", graderVersion: "2",
-        rubricId: "expected-behavior", rubricVersion: "1",
+        rubricId: "expected_behavior_index", rubricVersion: "v1",
       },
       grading: null, exclusion: null,
     } as const;
@@ -374,7 +374,7 @@ describe("3. grader-invalid null — grader throw / mismatch → grader_invalid,
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
         runProvenanceId: "prov-001", graderId: "llm-judge", graderVersion: "2",
-        rubricId: "expected-behavior", rubricVersion: "1",
+        rubricId: "expected_behavior_index", rubricVersion: "v1",
       },
       grading: null, exclusion: null,
     } as const;
@@ -522,7 +522,7 @@ describe("10. zero expected criteria — succeeded terminal with grader_invalid 
     const zeroCfg: ScenarioRunConfig = {
       ...base,
       scenario: zeroScenario,
-      integrity: { ...base.integrity, rubric: { id: "expected-behavior", version: "1", expectedCriterionIds: [] } },
+      integrity: { ...base.integrity, rubric: { id: "expected_behavior_index", version: "v1", expectedCriterionIds: [] } },
     };
     const events: string[] = [];
     // Must NOT throw — grader_invalid is a valid terminal outcome
@@ -543,7 +543,7 @@ describe("10. zero expected criteria — succeeded terminal with grader_invalid 
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
         runProvenanceId: "prov-001", graderId: "llm-judge", graderVersion: "2",
-        rubricId: "expected-behavior", rubricVersion: "1",
+        rubricId: "expected_behavior_index", rubricVersion: "v1",
       },
       grading: null, exclusion: null,
     } as const;
@@ -582,6 +582,355 @@ describe("11. second-run grader_invalid immutable slot — provider and grader s
   });
 });
 
+// ── 12. Grading divergence — rounded pass_rate must not invalidate outcomes ──
+
+describe("12. grading divergence — rounded pass_rate does not produce grader_invalid outcomes", () => {
+  it("records valid outcomes when grader summary has rounded pass_rate (e.g. 0.67 instead of 0.6666...)", async () => {
+    // Diagnostic scenario: agent_l2/run-1/grading.json shows valid expectations but terminal
+    // records outcomes=[] grader_invalid because strict pass_rate equality failed.
+    // This test verifies the divergence is fixed: rounded pass_rate no longer invalidates outcomes.
+    const THREE = ["check auth flow", "check rate limiting", "check audit log"];
+    const threeScenario = { query: TASK_TEXT, expected_behavior: THREE, skills: [SUBJECT] };
+    const threeIds = expectedCriterionIdsFor(threeScenario);
+    const base = buildCfg("candidate");
+    const threeCfg: ScenarioRunConfig = {
+      ...base,
+      scenario: threeScenario,
+      integrity: { ...base.integrity, rubric: { id: "expected_behavior_index", version: "v1", expectedCriterionIds: threeIds } },
+    };
+
+    // 2/3 passed → exact computedPassRate = 0.6666...; LLM grader returns rounded 0.67
+    const roundedPassRateGrader: IGrader = {
+      async grade() {
+        return {
+          summary: { total: 3, passed: 2, failed: 1, pass_rate: 0.67 }, // rounded, not 0.6666...
+          expectations: [
+            { text: THREE[0]!, passed: true,  evidence: "found" },
+            { text: THREE[1]!, passed: true,  evidence: "found" },
+            { text: THREE[2]!, passed: false, evidence: "missing" },
+          ],
+        };
+      },
+    };
+
+    const goose = new TrackingGoose(0);
+    const events: string[] = [];
+    for await (const ev of new SkillEvalRunner(goose, undefined, roundedPassRateGrader, new StubWriter()).run(threeCfg)) {
+      events.push(ev.type);
+    }
+    expect(events).toContain("subject.graded");
+
+    const { candidate, baseline } = pair();
+    const key = {
+      schema: INTEGRITY_SCHEMA_V2, manifestHash: storedManifestHash,
+      kind: KIND, subject: SUBJECT, evalId: EVAL_ID, repetition: 0,
+      side: "candidate" as const, treatmentId: candidate.id,
+      status: "succeeded" as const,
+      pairKey: {
+        taskPayloadHash: hashUtf8(TASK_TEXT), maxTurns: 5, fixtureHashes: FIXTURE_H,
+        executionEnvelopeHash: integrityValueHash(buildManifest().executionEnvelope),
+        candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
+        candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
+        runProvenanceId: "prov-001", graderId: "llm-judge", graderVersion: "2",
+        rubricId: "expected_behavior_index", rubricVersion: "v1",
+      },
+      grading: null, exclusion: null,
+    } as const;
+
+    const record = await store.readTerminalKey(key);
+    expect(record).not.toBeNull();
+    // Despite rounded pass_rate in grading.json, terminal must have valid outcomes (not [])
+    expect(record!.grading?.validationStatus).toBe("valid");
+    expect(record!.grading?.parseStatus).toBe("parsed");
+    expect(record!.grading?.outcomes).toHaveLength(3);
+    expect(record!.grading?.outcomes[0]?.criterionId).toBe(threeIds[0]);
+    expect(record!.grading?.outcomes[1]?.criterionId).toBe(threeIds[1]);
+    expect(record!.grading?.outcomes[2]?.criterionId).toBe(threeIds[2]);
+    expect(record!.grading?.score).toBeCloseTo(2 / 3);
+    expect(record!.exclusion).toBeNull();
+    expect(await store.isTerminalComplete(key)).toBe(true);
+  });
+
+  it("still records grader_invalid when pass_rate is null (NullGrader / grader-unavailable path)", async () => {
+    const nullPassRateGrader: IGrader = {
+      async grade() {
+        return { summary: { total: 2, passed: 0, failed: 0, pass_rate: null }, expectations: [] };
+      },
+    };
+    const goose = new TrackingGoose(0);
+    for await (const _ of new SkillEvalRunner(goose, undefined, nullPassRateGrader, new StubWriter()).run(buildCfg("candidate"))) {}
+
+    const { candidate, baseline } = pair();
+    const key = {
+      schema: INTEGRITY_SCHEMA_V2, manifestHash: storedManifestHash,
+      kind: KIND, subject: SUBJECT, evalId: EVAL_ID, repetition: 0,
+      side: "candidate" as const, treatmentId: candidate.id,
+      status: "succeeded" as const,
+      pairKey: {
+        taskPayloadHash: hashUtf8(TASK_TEXT), maxTurns: 5, fixtureHashes: FIXTURE_H,
+        executionEnvelopeHash: integrityValueHash(buildManifest().executionEnvelope),
+        candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
+        candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
+        runProvenanceId: "prov-001", graderId: "llm-judge", graderVersion: "2",
+        rubricId: "expected_behavior_index", rubricVersion: "v1",
+      },
+      grading: null, exclusion: null,
+    } as const;
+
+    const record = await store.readTerminalKey(key);
+    expect(record!.grading?.validationStatus).toBe("invalid"); // null pass_rate → always invalid
+    expect(record!.exclusion?.reason).toBe("grader_invalid");
+    expect(await store.isTerminalComplete(key)).toBe(false);
+  });
+});
+
+// ── AC3: 5-expectation grading with expected_behavior_index rubric ────────────
+//
+// Reproduces the exact artifact shape from the historical grading.json
+// (total=5, passed=2, failed=3, pass_rate=0.4) and verifies:
+//   • expectedCriterionIdsFor generates 5 IDs in expected_behavior_index format
+//   • 2/5 === 0.4 exactly (IEEE-754) — does not trigger grader_invalid
+//   • terminal records validationStatus="valid", score≈0.4, 5 outcomes
+//   • grading-diagnostic.json is written alongside grading.json
+//
+// Historical artifact/terminal incompatibility:
+//   The verifier session 20260727_362 observed that dist/evals terminals for
+//   eval-0 recorded outcomes=[] (grader_invalid) despite the grading artifact
+//   containing nonempty expectations and a finite pass_rate. This test confirms
+//   that the current code does NOT produce grader_invalid for the 5/2/3/0.4
+//   shape. The actual root cause of the historical divergence is not determined
+//   here; inspect grading-diagnostic.json for artifactTerminalDivergenceObserved
+//   alongside the terminal record to trace any future occurrence.
+
+describe("AC3: 5-expectation grading — expected_behavior_index rubric — 2/5 pass_rate 0.4", () => {
+  const FIVE_BEHAVIORS = [
+    "check auth flow works",
+    "check rate limiting is applied",
+    "check session expiry enforcement",
+    "check CSRF token validation",
+    "check audit log entries",
+  ];
+  const fiveScenario = { query: TASK_TEXT, expected_behavior: FIVE_BEHAVIORS, skills: [SUBJECT] };
+
+  it("expectedCriterionIdsFor produces 5 IDs in expected_behavior_index format", () => {
+    const ids = expectedCriterionIdsFor(fiveScenario);
+    expect(ids).toHaveLength(5);
+    expect(ids[0]).toBe("expected_behavior[0]");
+    expect(ids[1]).toBe("expected_behavior[1]");
+    expect(ids[4]).toBe("expected_behavior[4]");
+    // defaultRubricDescriptor uses expected_behavior_index rubric ID
+    expect(defaultRubricDescriptor().id).toBe("expected_behavior_index");
+  });
+
+  it("records valid terminal with score 0.4 and 5 outcomes when grader returns 2/5 pass_rate 0.4", async () => {
+    const fiveIds = expectedCriterionIdsFor(fiveScenario);
+    const base = buildCfg("candidate");
+    const fiveCfg: ScenarioRunConfig = {
+      ...base,
+      scenario: fiveScenario,
+      integrity: {
+        ...base.integrity,
+        rubric: { id: "expected_behavior_index", version: "v1", expectedCriterionIds: fiveIds },
+      },
+    };
+
+    const fiveGrader: IGrader = {
+      async grade() {
+        return {
+          // 2/5 === 0.4 exactly in IEEE-754 — must NOT trigger grader_invalid
+          summary: { total: 5, passed: 2, failed: 3, pass_rate: 0.4 },
+          expectations: [
+            { text: FIVE_BEHAVIORS[0]!, passed: true,  evidence: "auth flow passed" },
+            { text: FIVE_BEHAVIORS[1]!, passed: true,  evidence: "rate limit applied" },
+            { text: FIVE_BEHAVIORS[2]!, passed: false, evidence: "session not enforced" },
+            { text: FIVE_BEHAVIORS[3]!, passed: false, evidence: "no CSRF token" },
+            { text: FIVE_BEHAVIORS[4]!, passed: false, evidence: "no audit entries" },
+          ],
+        };
+      },
+    };
+
+    const goose = new TrackingGoose(0);
+    const events: string[] = [];
+    for await (const ev of new SkillEvalRunner(goose, undefined, fiveGrader, new StubWriter()).run(fiveCfg)) {
+      events.push(ev.type);
+    }
+    expect(events).toContain("subject.graded");
+
+    const { candidate, baseline } = pair();
+    const key = {
+      schema: INTEGRITY_SCHEMA_V2, manifestHash: storedManifestHash,
+      kind: KIND, subject: SUBJECT, evalId: EVAL_ID, repetition: 0,
+      side: "candidate" as const, treatmentId: candidate.id,
+      status: "succeeded" as const,
+      pairKey: {
+        taskPayloadHash: hashUtf8(TASK_TEXT), maxTurns: 5, fixtureHashes: FIXTURE_H,
+        executionEnvelopeHash: integrityValueHash(buildManifest().executionEnvelope),
+        candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
+        candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
+        runProvenanceId: "prov-001", graderId: "llm-judge", graderVersion: "2",
+        rubricId: "expected_behavior_index", rubricVersion: "v1",
+      },
+      grading: null, exclusion: null,
+    } as const;
+
+    const record = await store.readTerminalKey(key);
+    expect(record).not.toBeNull();
+    expect(record!.grading?.validationStatus).toBe("valid");
+    expect(record!.grading?.parseStatus).toBe("parsed");
+    expect(record!.grading?.outcomes).toHaveLength(5);
+    expect(record!.grading?.outcomes[0]?.criterionId).toBe(fiveIds[0]);
+    expect(record!.grading?.outcomes[4]?.criterionId).toBe(fiveIds[4]);
+    // Score re-derived from expectations: 2/5 === 0.4 exactly
+    expect(record!.grading?.score).toBeCloseTo(0.4);
+    expect(record!.grading?.score).not.toBeNull();
+    // No grader_invalid exclusion — pass_rate 0.4 is exact and valid
+    expect(record!.exclusion).toBeNull();
+    expect(await store.isTerminalComplete(key)).toBe(true);
+
+    // grading-diagnostic.json must have been written and reflect valid=true
+    const fs2 = await import("node:fs/promises");
+    const diagRaw = await fs2.readFile(path.join(workspace, "grading-diagnostic.json"), "utf8");
+    const diag = JSON.parse(diagRaw) as {
+      valid: boolean;
+      criterionCount: { expected: number; observed: number; match: boolean };
+      passCount: { expected: number; observed: number; match: boolean };
+      recomputedScore: number;
+      artifactTerminalDivergenceObserved: boolean;
+    };
+    expect(diag.valid).toBe(true);
+    expect(diag.criterionCount).toEqual({ expected: 5, observed: 5, match: true });
+    expect(diag.passCount).toEqual({ expected: 2, observed: 2, match: true });
+    expect(diag.recomputedScore).toBeCloseTo(0.4);
+    expect(diag.artifactTerminalDivergenceObserved).toBe(false);
+  });
+});
+
+// ── 13. Runtime binary mutation is terminal and never graded ──────────────────
+
+describe("13. runtime binary mutation — excluded before grading", () => {
+  it("records runtime_binary_changed and never invokes the grader", async () => {
+    const { MutatingBinaryProvenanceChecker } = await import("../binaryProvenance.js");
+    let gradeCalls = 0;
+    const countingGrader: IGrader = {
+      async grade() {
+        gradeCalls++;
+        return validGrader.grade({} as any, "", "", "", "");
+      },
+    };
+    const runner = new SkillEvalRunner(
+      new TrackingGoose(0), undefined, countingGrader, new StubWriter(),
+      new MutatingBinaryProvenanceChecker(),
+    );
+
+    await expect(async () => {
+      for await (const _ of runner.run(buildCfg("candidate"))) {}
+    }).rejects.toThrow(/binary changed during run/i);
+
+    expect(gradeCalls).toBe(0);
+    const terminals = await store.listTerminals();
+    expect(terminals).toHaveLength(1);
+    expect(terminals[0]).toMatchObject({
+      status: "failed", grading: null,
+      exclusion: { level: "pair", reason: "runtime_binary_changed" },
+    });
+    const result = JSON.parse(await fs.readFile(path.join(workspace, "execution-result.json"), "utf8"));
+    expect(result).toMatchObject({
+      status: "failed", failureReason: "runtime_binary_changed",
+      binaryProvenance: { stableDuringRun: false },
+    });
+  });
+});
+
+// ── 14. Binary unavailable before run — excluded, Goose and grader not called ─
+
+describe("14. runtime binary unavailable BEFORE run — excluded, Goose/grader not invoked", () => {
+  it("records runtime_binary_unavailable, never invokes Goose or grader", async () => {
+    const trackingGoose = new TrackingGoose(0);
+    let gradeCalls = 0;
+    const countingGrader: IGrader = {
+      async grade() {
+        gradeCalls++;
+        return validGrader.grade({} as any, "", "", "", "");
+      },
+    };
+    const { ThrowingBinaryProvenanceChecker } = await import("../binaryProvenance.js");
+    const runner = new SkillEvalRunner(
+      trackingGoose, undefined, countingGrader, new StubWriter(),
+      new ThrowingBinaryProvenanceChecker("first"),
+    );
+
+    await expect(async () => {
+      for await (const _ of runner.run(buildCfg("candidate"))) {}
+    }).rejects.toThrow(/binary unavailable/i);
+
+    // Goose must NOT have been called
+    expect(trackingGoose.calls).toBe(0);
+    // Grader must NOT have been called
+    expect(gradeCalls).toBe(0);
+
+    // Exactly one terminal recorded with runtime_binary_unavailable
+    const terminals = await store.listTerminals();
+    expect(terminals).toHaveLength(1);
+    expect(terminals[0]).toMatchObject({
+      status: "failed", grading: null,
+      exclusion: { level: "pair", reason: "runtime_binary_unavailable" },
+    });
+
+    // execution-result.json must have been written with the correct failureReason
+    const result = JSON.parse(
+      await fs.readFile(path.join(workspace, "execution-result.json"), "utf8"),
+    );
+    expect(result).toMatchObject({
+      status: "failed", failureReason: "runtime_binary_unavailable",
+    });
+  });
+});
+
+// ── 15. Binary unavailable after run — Goose ran, grader not called ───────────
+
+describe("15. runtime binary unavailable AFTER run — Goose ran, grader not invoked", () => {
+  it("records runtime_binary_unavailable, Goose ran but grader is not invoked", async () => {
+    const trackingGoose = new TrackingGoose(0);
+    let gradeCalls = 0;
+    const countingGrader: IGrader = {
+      async grade() {
+        gradeCalls++;
+        return validGrader.grade({} as any, "", "", "", "");
+      },
+    };
+    const { ThrowingBinaryProvenanceChecker: ThrowingBinaryProvenanceCheckerV2 } = await import("../binaryProvenance.js");
+    const runner = new SkillEvalRunner(
+      trackingGoose, undefined, countingGrader, new StubWriter(),
+      new ThrowingBinaryProvenanceCheckerV2("second"),
+    );
+
+    await expect(async () => {
+      for await (const _ of runner.run(buildCfg("candidate"))) {}
+    }).rejects.toThrow(/binary unavailable/i);
+
+    // Goose MUST have been called (run proceeded past BEFORE snapshot)
+    expect(trackingGoose.calls).toBe(1);
+    // Grader must NOT have been called
+    expect(gradeCalls).toBe(0);
+
+    // Exactly one terminal recorded with runtime_binary_unavailable
+    const terminals = await store.listTerminals();
+    expect(terminals).toHaveLength(1);
+    expect(terminals[0]).toMatchObject({
+      status: "failed", grading: null,
+      exclusion: { level: "pair", reason: "runtime_binary_unavailable" },
+    });
+
+    const result = JSON.parse(
+      await fs.readFile(path.join(workspace, "execution-result.json"), "utf8"),
+    );
+    expect(result).toMatchObject({
+      status: "failed", failureReason: "runtime_binary_unavailable",
+    });
+  });
+});
+
 // ── 7. Duplicate never overwritten ───────────────────────────────────────────
 
 describe("7. duplicate never overwritten — second store write is rejected", () => {
@@ -605,11 +954,11 @@ describe("7. duplicate never overwritten — second store write is rejected", ()
         candidateTreatmentId: candidate.id, baselineTreatmentId: baseline.id,
         candidateTreatmentHash: treatmentContentHash(candidate), baselineTreatmentHash: treatmentContentHash(baseline),
         runProvenanceId: "prov-001", graderId: "llm-judge", graderVersion: "2",
-        rubricId: "expected-behavior", rubricVersion: "1",
+        rubricId: "expected_behavior_index", rubricVersion: "v1",
       },
       grading: {
         graderId: "llm-judge", graderVersion: "2",
-        rubricId: "expected-behavior", rubricVersion: "1",
+        rubricId: "expected_behavior_index", rubricVersion: "v1",
         expectedCriterionIds: [...CRITERION_IDS],
         outcomes: CRITERION_IDS.map(criterionId => ({ criterionId, passed: true })),
         parseStatus: "parsed", validationStatus: "valid", score: 1,

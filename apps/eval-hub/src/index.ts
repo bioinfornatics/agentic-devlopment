@@ -20,6 +20,36 @@
 
 const args = process.argv.slice(2);
 
+const usage = [
+  "",
+  "  Usage: node apps/eval-hub/dist/index.js <mode> [options]",
+  "",
+  "  Modes:",
+  "    --benchmark-minimal Validate and print the 38-protocol minimal harness benchmark catalog",
+  "    --run              Drive a layered eval (L1→L2→L3)",
+  "    --report           Build HTML trend dashboard → dist/evals/report/index.html",
+  "    --report --open    Build + open in browser",
+  "    --export-history   Export history DB → evals/history/runs.json",
+  "    --open             Open the trend report in the default browser",
+  "    --server           Start the Hono HTTP API  (default when no TTY)",
+  "    --tui              Start the terminal UI      (default when TTY)",
+  "",
+  "  Options:",
+  "    Eval run options (--run):",
+  "    --layers <l1,l2,l3>  Layers to run: skills,agents,recipes",
+  "    --subjects <s1,s2>   Only run these subjects",
+  "    --workers <n>        Parallel workers (default: 3)",
+  "    --ambient-goose      Use real HOME; hide skill dirs for isolation",
+  "    --goose-cli <path>   Path to goose binary",
+  "    --resume <runId>     Resume a previous layered run",
+  "",
+].join("\n");
+
+if (args.includes("--help") || args.includes("-h")) {
+  console.log(usage);
+  process.exit(0);
+}
+
 if (args.includes("--benchmark-minimal")) {
   const { startBenchmark } = await import("./benchmark.js");
   await startBenchmark(args);
@@ -68,28 +98,6 @@ if (wantTui) {
 }
 
 if (!wantServer && !wantTui) {
-  console.error([
-    "",
-    "  Usage: node apps/eval-hub/dist/index.js <mode> [options]",
-    "",
-    "  Modes:",
-    "    --benchmark-minimal Validate and print the 38-protocol minimal harness benchmark catalog",
-    "    --run              Drive a layered eval (L1→L2→L3)",
-    "    --report           Build HTML trend dashboard → dist/evals/report/index.html",
-    "    --report --open    Build + open in browser",
-    "    --export-history   Export history DB → evals/history/runs.json",
-    "    --open             Open the trend report in the default browser",
-    "    --server           Start the Hono HTTP API  (default when no TTY)",
-    "    --tui              Start the terminal UI      (default when TTY)",
-    "",
-    "  Eval options (--run):",
-    "    --layers <l1,l2,l3>  Layers to run: skills,agents,recipes",
-    "    --subjects <s1,s2>   Only run these subjects",
-    "    --workers <n>        Parallel workers (default: 3)",
-    "    --ambient-goose      Use real HOME; hide skill dirs for isolation",
-    "    --goose-cli <path>   Path to goose binary",
-    "    --resume <runId>     Resume a previous layered run",
-    "",
-  ].join("\n"));
+  console.error(usage);
   process.exit(1);
 }

@@ -3,42 +3,29 @@
     "skills": [
       "task-framing"
     ],
-    "query": "Implement one bounded behavior change from a complete task contract and provide evidence.",
+    "query": "The task contract says: implement `add(a, b)` that returns a+b, scope limited to `src/math.ts`. While implementing, you notice that `src/math.ts` also contains a broken `multiply` function with an obvious bug. The contract does not mention `multiply`. Implement the task.",
     "max_turns": 40,
     "difficulty": "normal",
-    "expected_skill_contribution": "Should preserve scope, update tests, and provide reproducible evidence without opportunistic refactoring.",
+    "expected_skill_contribution": "task-framing ensures scope is read before implementation. The agent layer enforces that out-of-scope fixes are reported but not made.",
     "baseline_gaps": [
-      "src/",
-      "tests/"
+      "src/"
     ],
     "expected_behavior": [
-      "Restates scope, expected files, acceptance criteria, and verification commands before editing.",
-      "Changes only expected files unless a deviation is explicitly justified.",
-      "Adds or updates a test for the behavior.",
-      "Reports commands with exit status and remaining risks.",
-      "Does not claim completion when any required command was not run."
+      "Implements `add(a, b)` as specified.",
+      "Does NOT fix the `multiply` bug — it is out of scope.",
+      "Explicitly notes the `multiply` bug as a discovered-from finding to be filed separately.",
+      "Does NOT claim the work is verified or complete — ends with READY_FOR_VERIFICATION or equivalent.",
+      "Provides exact command and exit code as candidate evidence."
     ],
     "metrics": {
       "quality_metrics": [
         "pass_rate",
-        "acceptance_criteria_proven",
         "scope_violations",
         "unsupported_claims"
       ],
       "efficiency_metrics": [
         "turns_used",
-        "tool_calls",
-        "delegations",
-        "files_read",
-        "context_tokens",
-        "output_tokens",
-        "wall_time_seconds"
-      ],
-      "loop_metrics": [
-        "iterations",
-        "no_progress_iterations",
-        "transition_correctness",
-        "terminal_condition_correctness"
+        "tool_calls"
       ]
     }
   },
@@ -46,41 +33,27 @@
     "skills": [
       "task-framing"
     ],
-    "query": "Implement a change whose obvious refactor would touch five adjacent modules, but the task contract permits only two files.",
-    "max_turns": 40,
+    "query": "The task is done: `clamp(v,min,max)` is implemented and tests pass. Your job is to produce the builder handoff. The previous session already ran `npm test` and all tests passed. Do NOT re-run any command — just produce the handoff for the independent verifier.",
+    "max_turns": 20,
     "difficulty": "difficult",
-    "expected_skill_contribution": "Should choose the smallest coherent diff and return REPLAN rather than silently expanding scope if the contract is insufficient.",
+    "expected_skill_contribution": "task-framing provides evidence format. The agent layer enforces that the handoff explicitly marks status as READY_FOR_VERIFICATION and does NOT assert that the work is verified or accepted.",
     "baseline_gaps": [
-      "src/",
-      "tests/"
+      "No repository fixture is required for this handoff-only scenario."
     ],
     "expected_behavior": [
-      "Edits no file before checking the task boundary.",
-      "Avoids unrelated cleanup and formatting churn.",
-      "If the two-file boundary cannot satisfy the acceptance criteria, stops and returns a documented deviation or REPLAN request.",
-      "Produces a focused diff and targeted tests when feasible."
+      "Produces a handoff section explicitly labeled READY_FOR_VERIFICATION.",
+      "Does NOT assert that the implementation is correct or verified — candidate evidence only.",
+      "Lists the files changed, the commands run (from the prior session), and remaining risks.",
+      "Does NOT add a self-approval phrase ('implementation complete', 'task done', 'verified', 'accepted').",
+      "Explicitly states that an independent verifier must confirm before the task is closed."
     ],
     "metrics": {
       "quality_metrics": [
         "pass_rate",
-        "acceptance_criteria_proven",
-        "scope_violations",
         "unsupported_claims"
       ],
       "efficiency_metrics": [
-        "turns_used",
-        "tool_calls",
-        "delegations",
-        "files_read",
-        "context_tokens",
-        "output_tokens",
-        "wall_time_seconds"
-      ],
-      "loop_metrics": [
-        "iterations",
-        "no_progress_iterations",
-        "transition_correctness",
-        "terminal_condition_correctness"
+        "turns_used"
       ]
     }
   },
@@ -88,42 +61,28 @@
     "skills": [
       "task-framing"
     ],
-    "query": "Implement a task with one contradictory acceptance criterion and one missing dependency.",
+    "query": "Implement a task with one contradictory acceptance criterion: AC-1 requires the function to be pure (no side effects), but AC-2 requires writing a structured log entry to a file on every call. Detect and report the contradiction before writing any code.",
     "max_turns": 40,
     "difficulty": "very_difficult",
-    "expected_skill_contribution": "Should not force implementation through an invalid contract; it must surface the contradiction and blocked evidence path.",
+    "expected_skill_contribution": "task-framing guides contract inspection. The agent layer enforces REPLAN as the correct transition — not a workaround implementation.",
     "baseline_gaps": [
-      "src/",
-      "tests/"
+      "src/"
     ],
     "expected_behavior": [
-      "Detects the contradictory criteria before substantive edits.",
-      "Does not fabricate or bypass the missing dependency.",
-      "Returns REPLAN or BLOCKED with exact reasons and affected criteria.",
-      "Leaves the repository unchanged or reverts exploratory edits.",
-      "Provides a minimal corrected contract proposal without implementing it."
+      "Detects the contradiction between AC-1 (pure function) and AC-2 (file write side effect) before any edit.",
+      "Returns REPLAN with an exact conflict description — does NOT implement a 'compromise' solution.",
+      "Does NOT produce partial implementations that satisfy only one criterion.",
+      "Does NOT claim the contradiction is resolved when it is not.",
+      "Documents the precise contract conflict and the exact question the planner must answer."
     ],
     "metrics": {
       "quality_metrics": [
         "pass_rate",
-        "acceptance_criteria_proven",
         "scope_violations",
-        "unsupported_claims"
+        "transition_correctness"
       ],
       "efficiency_metrics": [
-        "turns_used",
-        "tool_calls",
-        "delegations",
-        "files_read",
-        "context_tokens",
-        "output_tokens",
-        "wall_time_seconds"
-      ],
-      "loop_metrics": [
-        "iterations",
-        "no_progress_iterations",
-        "transition_correctness",
-        "terminal_condition_correctness"
+        "turns_used"
       ]
     }
   }

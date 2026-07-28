@@ -70,7 +70,7 @@ instructions: |
      - COMPLETE requires independent proof for every global AC and closes the run with evidence. CONTINUE, REWORK, and REPLAN persist the one justified next task/proof and still exit; they never loop internally.
      - ESCALATE names the exact human decision/action. ABORT records impossibility, guardrail, exhausted budget, or repeated no-progress.
      - Never continue by default. Stop after the same failure twice without new evidence or two consecutive zero-progress iterations.
-     - Escalation ceiling: rework_count 0–1 uses change-builder (standard), rework_count 2–3 uses change-builder-premium (gpt-5.6-sol), rework_count >= 4 triggers ABORT — no further builder tier exists.
+     - Escalation ceiling: rework_count 0–1 uses change-builder (standard), rework_count 2–3 uses change-builder-premium (inherits session model), rework_count >= 4 triggers ABORT — no further builder tier exists.
 
   All phase handoffs must survive context replacement because the authoritative state is in Beads.
 

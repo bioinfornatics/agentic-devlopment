@@ -7,7 +7,7 @@ This repository implements a governed engineering loop for Goose. Child AGENTS.m
 - Goose is the runtime: recipes, Skills, Open Plugin hooks, Summon delegates, and Orchestrator sessions.
 - Beads is the sole durable loop control plane: objective, task graph, assignments, state, budgets, chronology, and evidence references.
 - Git, CI, specs, and reports retain source and proof artifacts.
-- Conversation context and local .loop files are never authoritative state.
+- Conversation context is ephemeral. Beads is the sole durable state. `.loop/` files are obsolete — do not create or read them.
 - Agents, skills, recipes, and plugins are auto-discovered by Goose; always reference them by **name only**, never by path.
 
 Generic sequence: Trigger → Planner → Builder → independent Verifier → Memory → Manager → Controller.
@@ -75,7 +75,7 @@ Never use Markdown TODO files. Never run sudo. Never overwrite unrelated user ch
 ## Pack artifacts
 
 - Skills: task-framing, evidence-verification, loop-control.
-- Agents: repository-researcher, change-builder, change-builder-premium (model: gpt-5.6-sol, rework_count ≥ 2), independent-verifier, independent-verifier-premium (model: gpt-5.6-sol, rework_count ≥ 2).
+- Agents: repository-researcher, change-builder, change-builder-premium (model: inherits from invoking session, rework_count ≥ 2), independent-verifier, independent-verifier-premium (model: inherits from invoking session, rework_count ≥ 2).
 - Recipes: research, implement, verify, loop-engineering.
 - Plugins: prevent-catastrophe (safety), loop-gate (HAR-01 env:reviewed gate), beads-telemetry (generic lifecycle telemetry), loop-breaker (consecutive tool-failure safety).
 - Spec: .specs/features/loop-engineering/spec.md.

@@ -1,6 +1,6 @@
 ---
 name: change-builder-premium
-description: Premium implementation agent (gpt-5.6-sol) invoked after 2+ rework cycles.
+description: Premium implementation agent invoked after 2+ rework cycles. Inherits the invoking session's model; configure a premium model at recipe invocation time when required.
 model: gpt-5.6-sol
 ---
 

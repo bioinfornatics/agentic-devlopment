@@ -13,13 +13,19 @@
 - mettre à jour le mode opératoire ;
 - reformuler l'objectif lorsque nécessaire.
 
-## Décisions possibles
+## Transitions typées
 
-- **Poursuivre** : la méthode reste efficace et l'objectif atteignable.
-- **Adapter** : le plan ou certains garde-fous doivent évoluer.
-- **Pivoter** : l'approche courante n'est plus la meilleure.
-- **Suspendre** : une dépendance externe empêche de continuer.
-- **Arrêter** : objectif atteint, valeur insuffisante ou impossibilité démontrée.
+Le contrôleur émet exactement une transition par itération, persistée dans Beads.
+
+| Transition | Condition |
+|---|---|
+| **CONTINUE** | Prochaine action justifiée — tâche, preuve attendue et budget restant explicites |
+| **REPLAN** | Plan, contrat, hypothèse ou architecture invalide |
+| **REWORK** | Défaut d'implémentation borné et reproductible — même contrat |
+| **WAIT** | Dépendance externe — condition de reprise exacte persistée, pas de poll |
+| **COMPLETE** | Tous les critères globaux prouvés indépendamment |
+| **ESCALATE** | Décision ou autorisation humaine requise — action exacte nommée |
+| **ABORT** | Budget épuisé, garde-fou déclenché, ou absence de progrès répétée |
 
 ## Signaux de dérive
 

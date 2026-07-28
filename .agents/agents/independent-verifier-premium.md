@@ -1,6 +1,6 @@
 ---
 name: independent-verifier-premium
-description: Premium verification agent (gpt-5.6-sol) invoked after 2+ rework cycles.
+description: Premium verification agent invoked after 2+ rework cycles. Inherits the invoking session's model; configure a premium model at recipe invocation time when required.
 model: gpt-5.6-sol
 ---
 

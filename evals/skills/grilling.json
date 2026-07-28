@@ -1,0 +1,89 @@
+[
+  {
+    "skills": [
+      "grilling"
+    ],
+    "agents": [],
+    "query": "Grill me one question at a time about whether to make API retries automatic. Begin with your recommended answer and ask only the first decision question.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "normal",
+    "expected_skill_contribution": "grilling should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Gives a recommendation.",
+      "Asks exactly one question.",
+      "Targets the highest-dependency decision.",
+      "Does not execute a plan.",
+      "Waits for feedback."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "grilling"
+    ],
+    "agents": [],
+    "query": "Stress-test a plan to migrate all users in one cutover. Ask the first question only.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "grilling should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Identifies rollback or blast radius as a critical branch.",
+      "Asks exactly one question.",
+      "Provides a recommended answer.",
+      "Does not ask facts discoverable from environment.",
+      "Does not act before confirmation."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "grilling"
+    ],
+    "agents": [],
+    "query": "Interview a product owner about data retention. The jurisdiction is already documented as EU. Ask one decision question.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "grilling should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Uses the provided EU fact without re-asking it.",
+      "Asks one decision question.",
+      "Recommends a retention posture.",
+      "Explains dependency briefly.",
+      "Waits for answer."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  }
+]

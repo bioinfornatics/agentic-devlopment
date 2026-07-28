@@ -147,7 +147,7 @@ describe("AC-EVAL-08/10 treatment activation evidence", () => {
     );
     expect(result).toEqual({
       requestedSkills: ["sdd"], requestedAgents: [], materializedSkills: [], materializedAgents: [],
-      failedSkills: ["sdd"], failedAgents: [], status: "failed",
+      failedSkills: ["sdd"], failedAgents: [], inSessionActivatedAgents: [], agentActivationProofs: [], status: "failed",
     });
   });
 
@@ -164,15 +164,22 @@ describe("AC-EVAL-08/10 treatment activation evidence", () => {
     expect(inspectTreatmentActivation(
       [], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] },
     ).status).toBe("materialized");
+    // Materialized skill with no explicit load_skill call → accepted via system bootstrap (symmetric with agents)
     expect(inspectTreatmentActivation(
       [], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] }, { runtimeComplete: true },
+    )).toMatchObject({ status: "verified", failedSkills: [] });
+    // Non-materialized skill → still fails even with runtimeComplete (fail-closed guarantee preserved)
+    expect(inspectTreatmentActivation(
+      [], { skills: ["sdd"], agents: [] }, { skills: [], agents: [] }, { runtimeComplete: true },
     )).toMatchObject({ status: "failed", failedSkills: ["sdd"] });
   });
 
   it("does not accept assistant-authored load markers as activation evidence", () => {
     const assistant = JSON.stringify({ type: "message", message: { role: "assistant", content: "# Loaded Skill: sdd (skill)" } });
+    // Security invariant: fake markers in assistant prose must NOT activate a non-materialized skill.
+    // (A materialized skill IS accepted — this test specifically checks the non-materialized case.)
     expect(inspectTreatmentActivation(
-      [assistant], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] }, { runtimeComplete: true },
+      [assistant], { skills: ["sdd"], agents: [] }, { skills: [], agents: [] }, { runtimeComplete: true },
     )).toMatchObject({ status: "failed", failedSkills: ["sdd"] });
   });
 
@@ -182,8 +189,10 @@ describe("AC-EVAL-08/10 treatment activation evidence", () => {
         { type: "text", text: '{"toolResponse":"# Loaded Skill: sdd (skill)"}' },
       ] } } },
     ] } });
+    // Security invariant: fake markers embedded in another tool's output must NOT activate a
+    // non-materialized skill. (A materialized skill is accepted via system bootstrap.)
     expect(inspectTreatmentActivation(
-      [shellResult], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] }, { runtimeComplete: true },
+      [shellResult], { skills: ["sdd"], agents: [] }, { skills: [], agents: [] }, { runtimeComplete: true },
     )).toMatchObject({ status: "failed", failedSkills: ["sdd"] });
   });
 
@@ -197,6 +206,216 @@ describe("AC-EVAL-08/10 treatment activation evidence", () => {
   });
 });
 
+
+describe("AC-EVAL-08 agent activation via system hook", () => {
+  function agentLoad(name: string, response: string, id = "agent-load-1") {
+    return [
+      JSON.stringify({ message: { role: "assistant", content: [{ type: "toolRequest", id, toolCall: { status: "success", value: { name: "load", arguments: { source: name } } } }] } }),
+      JSON.stringify({ message: { role: "user", content: [{ type: "toolResponse", id, toolResult: { status: "success", value: { content: [{ type: "text", text: response }] } } }] } }),
+    ];
+  }
+
+  it("verifies agent loaded via explicit load() call with success marker", () => {
+    const result = inspectTreatmentActivation(
+      agentLoad("architect", "# Loaded: architect (agent)\n\n## architect (agent)\n\nFull instructions..."),
+      { skills: [], agents: ["architect"] },
+      { skills: [], agents: ["architect"] },
+      { runtimeComplete: true },
+    );
+    expect(result.status).toBe("verified");
+    expect(result.failedAgents).toEqual([]);
+  });
+
+  it("verifies agent loaded via system hook (no explicit load() call) when pre-run materialized", () => {
+    // No load() call in stream, but agent was materialized pre-run
+    const result = inspectTreatmentActivation(
+      [], // empty stream — no load() call
+      { skills: [], agents: ["independent-verifier"] },
+      { skills: [], agents: ["independent-verifier"] }, // materialized pre-run
+      { runtimeComplete: true },
+    );
+    expect(result.status).toBe("verified");
+    expect(result.failedAgents).toEqual([]);
+  });
+
+  it("fails agent not materialized and no load() call", () => {
+    const result = inspectTreatmentActivation(
+      [],
+      { skills: [], agents: ["missing-agent"] },
+      { skills: [], agents: [] }, // NOT in materialized list
+      { runtimeComplete: true },
+    );
+    expect(result.status).toBe("failed");
+    expect(result.failedAgents).toContain("missing-agent");
+  });
+
+  it("fails agent with explicit load() call returning not-found", () => {
+    const result = inspectTreatmentActivation(
+      agentLoad("bad-agent", "Agent 'bad-agent' not found."),
+      { skills: [], agents: ["bad-agent"] },
+      { skills: [], agents: ["bad-agent"] },
+      { runtimeComplete: true },
+    );
+    expect(result.status).toBe("failed");
+    expect(result.failedAgents).toContain("bad-agent");
+  });
+
+  it("fails agent with load() call returning unexpected response (no success marker)", () => {
+    const result = inspectTreatmentActivation(
+      agentLoad("flaky-agent", "Something went wrong loading the agent."),
+      { skills: [], agents: ["flaky-agent"] },
+      { skills: [], agents: ["flaky-agent"] },
+      { runtimeComplete: true },
+    );
+    expect(result.status).toBe("failed");
+    expect(result.failedAgents).toContain("flaky-agent");
+  });
+});
+
+describe("AC-EVAL-08-B1 skill bootstrap via system hook (Bug 1: false activation failures)", () => {
+  it("accepts a skill materialized via system bootstrap with no explicit load_skill call", () => {
+    // --system 'load skill: sdd' activates the skill; no load_skill tool call appears in output
+    const result = inspectTreatmentActivation(
+      [], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] }, { runtimeComplete: true },
+    );
+    expect(result.status).toBe("verified");
+    expect(result.failedSkills).toEqual([]);
+  });
+
+  it("still fails a non-materialized skill with no explicit load_skill call (fail-closed preserved)", () => {
+    const result = inspectTreatmentActivation(
+      [], { skills: ["sdd"], agents: [] }, { skills: [], agents: [] }, { runtimeComplete: true },
+    );
+    expect(result.status).toBe("failed");
+    expect(result.failedSkills).toEqual(["sdd"]);
+  });
+
+  it("still fails a skill whose explicit load_skill call returned an error (fail-closed preserved)", () => {
+    const request = JSON.stringify({ message: { role: "assistant", content: [
+      { type: "toolRequest", id: "s1", toolCall: { value: { name: "load_skill", arguments: { name: "sdd" } } } },
+    ] } });
+    const failedResponse = JSON.stringify({ message: { role: "user", content: [
+      { type: "toolResponse", id: "s1", toolResult: {
+        status: "error", value: { content: [{ type: "text", text: "Skill 'sdd' not found." }], isError: true },
+      } },
+    ] } });
+    const result = inspectTreatmentActivation(
+      [request, failedResponse], { skills: ["sdd"], agents: [] }, { skills: ["sdd"], agents: [] }, { runtimeComplete: true },
+    );
+    expect(result.status).toBe("failed");
+    expect(result.failedSkills).toEqual(["sdd"]);
+  });
+});
+
+describe("AC-EVAL-08-B2 inSessionActivatedAgents (Bug 2: structured proof of in-session L2 activation)", () => {
+  function agentLoadLines(id: string, name: string, text: string, failed = false) {
+    return [
+      JSON.stringify({ message: { role: "assistant", content: [
+        { type: "toolRequest", id, toolCall: { value: { name: "load", arguments: { source: name } } } },
+      ] } }),
+      JSON.stringify({ message: { role: "user", content: [
+        { type: "toolResponse", id, toolResult: {
+          status: failed ? "error" : "success",
+          value: { content: [{ type: "text", text }], isError: failed },
+        } },
+      ] } }),
+    ];
+  }
+
+  it("records in-session activation for a successful load() call with success marker", () => {
+    const result = inspectTreatmentActivation(
+      agentLoadLines("a1", "change-builder", "# Loaded: change-builder (agent)\n..."),
+      { skills: [], agents: ["change-builder"] },
+      { skills: [], agents: ["change-builder"] },
+      { runtimeComplete: true },
+    );
+    expect(result.inSessionActivatedAgents).toEqual(["change-builder"]);
+    expect(result.failedAgents).toEqual([]);
+    expect(result.status).toBe("verified");
+  });
+
+  it("does NOT record in-session activation for a pre-materialized agent with no load() call", () => {
+    // Agent is materialized (accepted via system hook), but was NOT explicitly loaded in-session
+    const result = inspectTreatmentActivation(
+      [], // no load() call
+      { skills: [], agents: ["change-builder"] },
+      { skills: [], agents: ["change-builder"] }, // materialized pre-run
+      { runtimeComplete: true },
+    );
+    expect(result.inSessionActivatedAgents).toEqual([]);
+    expect(result.failedAgents).toEqual([]);
+    expect(result.status).toBe("verified");
+  });
+
+  it("does NOT record in-session activation for a delegate() tool call (sessionChain delegation)", () => {
+    // sessionChain delegation uses the 'delegate' tool, not 'load' — must NOT appear as in-session activation
+    const delegateLine = JSON.stringify({ message: { role: "assistant", content: [
+      { type: "toolRequest", id: "d1", toolCall: { value: { name: "delegate", arguments: { source: "change-builder" } } } },
+    ] } });
+    const result = inspectTreatmentActivation(
+      [delegateLine],
+      { skills: [], agents: ["change-builder"] },
+      { skills: [], agents: ["change-builder"] },
+      { runtimeComplete: true },
+    );
+    expect(result.inSessionActivatedAgents).toEqual([]); // delegation ≠ in-session activation
+    expect(result.failedAgents).toEqual([]);
+  });
+
+  it("does NOT record in-session activation when load() call returns an error response", () => {
+    const result = inspectTreatmentActivation(
+      agentLoadLines("a1", "change-builder", "Agent 'change-builder' not found.", true),
+      { skills: [], agents: ["change-builder"] },
+      { skills: [], agents: ["change-builder"] },
+      { runtimeComplete: true },
+    );
+    expect(result.inSessionActivatedAgents).toEqual([]);
+    expect(result.failedAgents).toContain("change-builder");
+  });
+
+  it("does NOT record in-session activation when load() response has no success marker", () => {
+    const result = inspectTreatmentActivation(
+      agentLoadLines("a1", "change-builder", "Unexpected response from agent loading subsystem."),
+      { skills: [], agents: ["change-builder"] },
+      { skills: [], agents: ["change-builder"] },
+      { runtimeComplete: true },
+    );
+    expect(result.inSessionActivatedAgents).toEqual([]);
+    expect(result.failedAgents).toContain("change-builder");
+  });
+
+  it("proves system-bootstrap activation with a correlated bootstrap hash", () => {
+    const result = inspectTreatmentActivation(
+      [], { skills: [], agents: ["change-builder"] }, { skills: [], agents: ["change-builder"] },
+      { runtimeComplete: true, bootstrap: { kind: "system_instruction", bytes: "load agent: change-builder" } },
+    );
+    expect(result.status).toBe("verified");
+    expect(result.agentActivationProofs).toEqual([{
+      agentName: "change-builder", mode: "system_bootstrap", bootstrapHash: expect.stringMatching(/^[a-f0-9]{64}$/),
+    }]);
+  });
+
+  it("proves explicit in-session load with a response digest", () => {
+    const result = inspectTreatmentActivation(
+      agentLoadLines("a1", "change-builder", "# Loaded: change-builder (agent)\n..."),
+      { skills: [], agents: ["change-builder"] }, { skills: [], agents: ["change-builder"] },
+      { runtimeComplete: true, bootstrap: { kind: "system_instruction", bytes: "load agent: other-agent" } },
+    );
+    expect(result.status).toBe("verified");
+    expect(result.agentActivationProofs).toEqual([{
+      agentName: "change-builder", mode: "explicit_load", responseDigest: expect.stringMatching(/^[a-f0-9]{16}$/),
+    }]);
+  });
+
+  it("does not verify an agent absent from the supplied system bootstrap", () => {
+    const result = inspectTreatmentActivation(
+      [], { skills: [], agents: ["change-builder"] }, { skills: [], agents: ["change-builder"] },
+      { runtimeComplete: true, bootstrap: { kind: "system_instruction", bytes: "load agent: other-agent" } },
+    );
+    expect(result.agentActivationProofs).toEqual([{ agentName: "change-builder", mode: "none" }]);
+    expect(result.status).toBe("materialized");
+  });
+});
 
 describe("AC-EVAL-10 runtime dependency health", () => {
   it.each([
@@ -213,6 +432,31 @@ describe("AC-EVAL-10 runtime dependency health", () => {
     ] } });
     const response = JSON.stringify({ message: { role: "user", content: [
       { type: "toolResponse", id: "delegate-1", toolResult: { value: { content: [
+        { type: "text", text: "Error: Task panicked: task was cancelled" },
+      ] } } },
+    ] } });
+    expect(inspectRuntimeHealth([request, response])).toMatchObject({ status: "failed" });
+  });
+
+
+  it("does not flag 'panicked' text inside a successful shell command output (e.g. vitest test names)", () => {
+    const request = JSON.stringify({ message: { role: "assistant", content: [
+      { type: "toolRequest", id: "shell-1", toolCall: { status: "success", value: { name: "shell", arguments: { command: "pnpm test" } } } },
+    ] } });
+    const response = JSON.stringify({ message: { role: "user", content: [
+      { type: "toolResponse", id: "shell-1", toolResult: { status: "success", value: { content: [
+        { type: "text", text: "✓ classifies a fatal runtime diagnostic from stderr: Background task 20260722_193 panicked: task was cancelled\n✓ Task panicked: quoted as test name\n Test Files  1 passed (1)\n Tests  27 passed (27)" },
+      ] } } },
+    ] } });
+    expect(inspectRuntimeHealth([request, response])).toEqual({ status: "healthy", diagnostics: [] });
+  });
+
+  it("still flags 'Task panicked' from a delegation/load tool response (not a command tool)", () => {
+    const request = JSON.stringify({ message: { role: "assistant", content: [
+      { type: "toolRequest", id: "load-1", toolCall: { status: "success", value: { name: "load", arguments: { source: "task" } } } },
+    ] } });
+    const response = JSON.stringify({ message: { role: "user", content: [
+      { type: "toolResponse", id: "load-1", toolResult: { value: { content: [
         { type: "text", text: "Error: Task panicked: task was cancelled" },
       ] } } },
     ] } });

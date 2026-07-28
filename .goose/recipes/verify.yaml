@@ -21,7 +21,8 @@ prompt: |
 parameters:
   - key: run_id
     input_type: string
-    requirement: required
+    requirement: optional
+    default: ""
     description: "Parent Beads run epic"
   - key: task_id
     input_type: string

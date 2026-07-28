@@ -10,7 +10,46 @@ export interface TreatmentActivation {
   readonly materializedAgents: readonly string[];
   readonly failedSkills: readonly string[];
   readonly failedAgents: readonly string[];
+  /**
+   * Agents confirmed as activated **in-session** via a successful Summon.load() call in this
+   * session's output. Distinct from:
+   *   • sessionChain delegation (delegate tool tracked by sessionChainAnalyzer)
+   *   • pre-materialization alone (agent .md file copied but no explicit load() call observed)
+   */
+  readonly inSessionActivatedAgents: readonly string[];
+  /**
+   * Structured per-agent activation proof records.  Only populated when the caller supplies
+   * a bootstrap descriptor via options.bootstrap — empty array in legacy/test call paths.
+   *
+   * mode "system_bootstrap" — agent activated via --system instruction; bootstrapHash is the
+   *   SHA-256 hex of TreatmentBootstrap.bytes, proving which instruction was sent.
+   * mode "explicit_load"    — agent activated via a successful Summon.load() call observed in
+   *   this session's output stream; responseDigest is first-16-hex of SHA-256 of response text.
+   * mode "none"             — no admissible proof found; status is at most "materialized".
+   *
+   * Distinguished from delegation: a delegate() tool call tracked by sessionChainAnalyzer does
+   * NOT constitute explicit_load activation in this session.
+   */
+  readonly agentActivationProofs: readonly AgentActivationProof[];
   readonly status: "materialized" | "verified" | "failed";
+}
+
+/** Activation proof mode for a single requested agent. */
+export type ActivationProofMode = "system_bootstrap" | "explicit_load" | "none";
+
+export interface AgentActivationProof {
+  readonly agentName: string;
+  readonly mode: ActivationProofMode;
+  /**
+   * SHA-256 hex of the bootstrap bytes (system_bootstrap only).
+   * Proves which --system instruction was sent to the Goose process.
+   */
+  readonly bootstrapHash?: string;
+  /**
+   * First 16 hex chars of SHA-256 of the successful load() response text (explicit_load only).
+   * Sufficient for correlation; full response is in the session stream artifact.
+   */
+  readonly responseDigest?: string;
 }
 
 interface GooseToolEvent {
@@ -71,7 +110,7 @@ export function inspectTreatmentActivation(
   outputLines: readonly string[],
   requested: Readonly<{ skills: readonly string[]; agents: readonly string[] }>,
   materialized: Readonly<{ skills: readonly string[]; agents: readonly string[] }> = { skills: [], agents: [] },
-  options: Readonly<{ runtimeComplete?: boolean }> = {},
+  options: Readonly<{ runtimeComplete?: boolean; bootstrap?: TreatmentBootstrap }> = {},
 ): TreatmentActivation {
   const events = gooseToolEvents(outputLines);
   const responses = new Map(events.filter(event => event.kind === "response").map(event => [event.id, event.payload]));
@@ -87,21 +126,81 @@ export function inspectTreatmentActivation(
   const explicitAgentFailures = requested.agents.filter(name => agentLoads.get(name)?.includes("Agent '" + name + "' not found.") ?? false);
   const missingSkills = requested.skills.filter(name => !materialized.skills.includes(name));
   const missingAgents = requested.agents.filter(name => !materialized.agents.includes(name));
-  const unloadedSkills = runtimeComplete ? requested.skills.filter(name =>
-    !skillLoads.get(name)?.includes("# Loaded Skill: " + name + " (skill)"),
-  ) : [];
+  const unloadedSkills = runtimeComplete ? requested.skills.filter(name => {
+    const response = skillLoads.get(name);
+    if (response !== undefined) {
+      // load_skill was explicitly called — require a success marker in the response (null = error response)
+      return response === null || !response.includes("# Loaded Skill: " + name + " (skill)");
+    }
+    // No explicit load_skill call — accept if skill was pre-run materialized via system bootstrap hook
+    // (symmetric with agents: --system "load skill: xxx" activates the skill without a tool call)
+    return !materialized.skills.includes(name);
+  }) : [];
   const unloadedAgents = runtimeComplete ? requested.agents.filter(name => {
     const response = agentLoads.get(name);
-    return !response?.includes("# Loaded: " + name + " (agent)") && !response?.includes("# Loaded Agent: " + name);
+    if (response !== undefined) {
+      // load() was explicitly called — require a success marker in the response (null = error response)
+      return response === null || (!response.includes("# Loaded: " + name + " (agent)") && !response.includes("# Loaded Agent: " + name));
+    }
+    // No explicit load() call — accept if agent was pre-run materialized via system hook
+    return !materialized.agents.includes(name);
   }) : [];
   const allFailedSkills = [...new Set([...explicitSkillFailures, ...missingSkills, ...unloadedSkills])];
   const allFailedAgents = [...new Set([...explicitAgentFailures, ...missingAgents, ...unloadedAgents])];
+  // In-session activation: agents confirmed via explicit successful Summon.load() call in THIS session's output.
+  // A delegate() tool call (tracked by sessionChainAnalyzer) or pre-materialization alone does NOT count.
+  const inSessionActivatedAgents = requested.agents.filter(name => {
+    const response = agentLoads.get(name);
+    return response !== undefined && response !== null &&
+      (response.includes("# Loaded: " + name + " (agent)") || response.includes("# Loaded Agent: " + name));
+  });
   const failed = allFailedSkills.length > 0 || allFailedAgents.length > 0;
+
+  // When bootstrap is provided, compute structured per-agent activation proofs.
+  // status=verified requires admissible proof for every requested agent.
+  // Legacy/test paths that omit bootstrap use the existing materialization check.
+  let agentActivationProofs: AgentActivationProof[] = [];
+  let allAgentsProven = true;
+
+  if (options.bootstrap !== undefined) {
+    const bootstrapBytes  = options.bootstrap.bytes;
+    const bootstrapHash   = crypto.createHash("sha256").update(bootstrapBytes, "utf8").digest("hex");
+    const isSystemBoot    = options.bootstrap.kind === "system_instruction";
+
+    agentActivationProofs = requested.agents.map(agentName => {
+      // explicit_load takes precedence: successful Summon.load() in this session's output
+      const loadResponse = agentLoads.get(agentName);
+      if (loadResponse !== undefined && loadResponse !== null &&
+          (loadResponse.includes("# Loaded: " + agentName + " (agent)") ||
+           loadResponse.includes("# Loaded Agent: " + agentName))) {
+        const digest = crypto.createHash("sha256").update(loadResponse, "utf8").digest("hex").slice(0, 16);
+        return { agentName, mode: "explicit_load" as const, responseDigest: digest };
+      }
+      // system_bootstrap: agent name in bootstrap instruction AND agent was materialized
+      if (isSystemBoot && materialized.agents.includes(agentName)) {
+        const loadAgentLine = bootstrapBytes.split("\n").find(line => line.startsWith("load agent:"));
+        if (loadAgentLine !== undefined) {
+          const listed = loadAgentLine.replace("load agent:", "").split(",").map(s => s.trim());
+          if (listed.includes(agentName)) {
+            return { agentName, mode: "system_bootstrap" as const, bootstrapHash };
+          }
+        }
+      }
+      return { agentName, mode: "none" as const };
+    });
+
+    allAgentsProven = agentActivationProofs.every(p => p.mode !== "none");
+  }
+
+  // verified: no failures AND runtimeComplete AND (no bootstrap given OR all agents have proof)
+  const verified = runtimeComplete && (options.bootstrap === undefined || allAgentsProven);
   return {
     requestedSkills: [...requested.skills], requestedAgents: [...requested.agents],
     materializedSkills: [...materialized.skills], materializedAgents: [...materialized.agents],
     failedSkills: allFailedSkills, failedAgents: allFailedAgents,
-    status: failed ? "failed" : runtimeComplete ? "verified" : "materialized",
+    inSessionActivatedAgents,
+    agentActivationProofs,
+    status: failed ? "failed" : verified ? "verified" : "materialized",
   };
 }
 
@@ -123,8 +222,29 @@ export function inspectRuntimeHealth(
     /Task panicked:/i,
     /extension .+(?:disconnected|unavailable|failed to (?:start|connect))/i,
   ];
-  const stdoutDiagnostics = gooseToolEvents(outputLines)
+  // Build a map of response-id → request tool name so we can skip command-execution
+  // tool outputs (shell, write, tree, …) whose content may contain pattern-matching
+  // strings that are not Goose runtime diagnostics (e.g. vitest test names containing
+  // "panicked", shell output containing "DeploymentNotFound" as a quoted string).
+  const allEvents = gooseToolEvents(outputLines);
+  const requestNames = new Map(
+    allEvents
+      .filter(e => e.kind === "request" && e.name !== undefined)
+      .map(e => [e.id, e.name!]),
+  );
+  // Tools whose output is user/command content, not Goose infrastructure messages.
+  const commandTools = new Set([
+    "shell", "write", "edit", "tree", "read_image",
+    "list_resources", "read_resource", "analyze", "load_skill",
+  ]);
+  const stdoutDiagnostics = allEvents
     .filter(event => event.kind === "response")
+    .filter(event => {
+      const name = requestNames.get(event.id);
+      // Skip responses from command-execution tools; check everything else
+      // (delegation tools, unknown/orphaned responses from Goose infrastructure).
+      return name === undefined || !commandTools.has(name);
+    })
     .map(event => responseText(event.payload))
     .filter(evidence => patterns.some(pattern => pattern.test(evidence)));
   const stderrDiagnostics = stderrLines.filter(line => patterns.some(pattern => pattern.test(line)));

@@ -311,6 +311,24 @@ fi
 SRC_PLUGINS="$ROOT/.agents/plugins"
 DST_PLUGINS="$HOME/.agents/plugins"
 if [[ -d "$SRC_PLUGINS" ]]; then
+  # Build plugins that declare a bun build script (e.g. loop-breaker → binary)
+  if command -v bun &>/dev/null; then
+    for plugin_dir in "$SRC_PLUGINS"/*/; do
+      [[ -d "$plugin_dir" ]] || continue
+      plugin_name="$(basename "$plugin_dir")"
+      pkg_json="$plugin_dir/package.json"
+      if [[ -f "$pkg_json" ]] && python3 -c "import json,sys; d=json.load(open('$pkg_json')); sys.exit(0 if 'build' in d.get('scripts',{}) else 1)" 2>/dev/null; then
+        echo "Building plugin: $plugin_name (bun install + bun run build)..."
+        (cd "$plugin_dir" && bun install --frozen-lockfile 2>/dev/null || bun install) \
+          && (cd "$plugin_dir" && bun run build) \
+          && echo "Built plugin binary: $plugin_name" \
+          || echo "Warning: build failed for $plugin_name — shell fallback will be used"
+      fi
+    done
+  else
+    echo "Warning: bun not found — skipping binary compilation for plugins (shell fallback will be used)"
+  fi
+
   for plugin_dir in "$SRC_PLUGINS"/*/; do
     [[ -d "$plugin_dir" ]] || continue
     plugin_name="$(basename "$plugin_dir")"

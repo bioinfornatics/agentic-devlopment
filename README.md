@@ -124,20 +124,24 @@ Named agents in `.agents/agents/` — invoke with Goose Summon natural language:
 
 | Agent | Role | Model |
 |-------|------|-------|
-| `change-builder` | Implements one claimed bounded Beads task and produces candidate evidence withou |  |
-| `change-builder-premium` | Premium implementation agent (gpt-5. | gpt-5.6-sol |
-| `error-analyzer` |  | claude-sonnet-4-20250514 |
-| `independent-verifier` | Independently judges a Beads task against predefined acceptance criteria and rep |  |
-| `independent-verifier-premium` | Premium verification agent (gpt-5. | gpt-5.6-sol |
-| `repository-researcher` | Builds an evidence-backed repository and Beads state map before implementation w |  |
+| `change-builder` | Implements one claimed bounded Beads task and produces candidate evidence withou | claude-sonnet-4-6 |
+| `change-builder-premium` | Premium implementation agent invoked after 2+ rework cycles. | gpt-5.6-sol |
+| `error-analyzer` |  | claude-sonnet-4-6 |
+| `independent-verifier` | Independently judges a Beads task against predefined acceptance criteria and rep | claude-sonnet-4-6 |
+| `independent-verifier-premium` | Premium verification agent invoked after 2+ rework cycles. | gpt-5.6-sol |
+| `repository-researcher` | Builds an evidence-backed repository and Beads state map before implementation w | claude-sonnet-4-6 |
 <!-- END GENERATED: agents-table -->
 
 <!-- BEGIN GENERATED: skills-table -->
-## Skills (8)
+## Skills (12)
 
 | Skill | Purpose |
 |-------|---------|
+| `domain-modeling` | Build and sharpen a project's domain model. |
 | `evidence-verification` | Evaluate engineering work against predefined acceptance criteria using reproducible eviden |
+| `grill-me` | A relentless interview to sharpen a plan or design. |
+| `grill-with-docs` | A relentless interview to sharpen a plan or design, which also creates docs (ADR's and glo |
+| `grilling` | Grill the user relentlessly about a plan, decision, or idea. |
 | `interface-quality` | Shared quality floor for UI evaluation: evidence labeling, anti-generic patterns, and stru |
 | `loop-control` | Govern a Beads-backed engineering loop with explicit progress, budgets, dependencies, and |
 | `output-discipline` | Keep tool outputs within token budget. |

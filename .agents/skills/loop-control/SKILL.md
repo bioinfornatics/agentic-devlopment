@@ -54,6 +54,21 @@ Emit exactly one:
 
 CONTINUE is never the default. Remaining budget alone is not a reason to continue.
 
+## Transition exclusivity and precedence
+
+Emit exactly one transition. Never join transitions with a slash, "or", commas, or alternatives. Apply the first matching branch:
+
+1. Invalid or contradictory contract, criteria, assumptions, scope, or architecture → REPLAN.
+2. Temporary external condition with a concrete resume signal → WAIT.
+3. Valid contract with an unavailable non-human dependency and no bounded resume signal → BLOCKED at the role boundary.
+4. Human authorization, judgment, destructive action, or risk acceptance → ESCALATE.
+5. Bounded defect under a valid contract → REWORK.
+6. Another independent ready task with expected new evidence → CONTINUE.
+7. Every global AC independently proven → COMPLETE.
+8. Impossible objective, guardrail, exhausted budget, or repeated zero progress → ABORT.
+
+A contradiction is REPLAN, not BLOCKED. A permission boundary is ESCALATE, not BLOCKED. If several branches appear applicable, choose the earliest branch and state why later branches do not control.
+
 ## Decision procedure
 
 1. Load the run epic, ready/blocked children, latest verifier verdict, evidence signature, and budgets.

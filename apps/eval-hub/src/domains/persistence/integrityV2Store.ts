@@ -68,7 +68,11 @@ export interface IntegrityPairKeyV2 {
 export type PairExclusionReason =
   | "result_missing" | "grade_null" | "grade_non_numeric" | "execution_failed"
   | "grader_invalid" | "treatment_bootstrap_failed" | "runtime_dependency_failed" | "input_mismatch" | "provenance_mismatch"
-  | "grader_mismatch" | "rubric_mismatch";
+  | "grader_mismatch" | "rubric_mismatch"
+  /** Goose binary (sha256/inode/mtime/size) changed between pre-run and post-run snapshots. No grading. */
+  | "runtime_binary_changed"
+  /** Goose binary snapshot unavailable before or after run (e.g. command not found in PATH). No grading. */
+  | "runtime_binary_unavailable";
 export type SubjectFailureReason = "source_missing" | "schema_legacy_incomplete";
 
 export interface IntegrityTerminalRecordV2 {
@@ -176,7 +180,8 @@ async function writeExclusive(file: string, bytes: string): Promise<void> {
 
 const PAIR_EXCLUSION_REASONS = new Set<PairExclusionReason>([
   "result_missing", "grade_null", "grade_non_numeric", "execution_failed", "grader_invalid",
-  "treatment_bootstrap_failed", "runtime_dependency_failed", "input_mismatch", "provenance_mismatch", "grader_mismatch", "rubric_mismatch",
+  "treatment_bootstrap_failed", "runtime_dependency_failed", "input_mismatch", "provenance_mismatch",
+  "grader_mismatch", "rubric_mismatch", "runtime_binary_changed", "runtime_binary_unavailable",
 ]);
 const SUBJECT_FAILURE_REASONS = new Set<SubjectFailureReason>(["source_missing", "schema_legacy_incomplete"]);
 

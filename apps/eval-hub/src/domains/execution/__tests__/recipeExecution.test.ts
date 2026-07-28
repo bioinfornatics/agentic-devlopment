@@ -341,15 +341,22 @@ describe("EVAL-INT-01/02/19 recipe execution", () => {
     expect(terminals[0]?.exclusion?.reason).toBe("treatment_bootstrap_failed");
   });
 
-  it("fails closed when Goose exits zero without runtime activation evidence", async () => {
-    await expect(async () => {
-      for await (const _ of new SkillEvalRunner(new EmptySuccessGoose(), undefined, grader, new Writer()).run(cfg("baseline"))) {}
-    }).rejects.toThrow(/treatment bootstrap failed/i);
+  it("accepts exit-zero run when skills are pre-materialized via system bootstrap without explicit load_skill call", async () => {
+    // Bug 1 fix: materialized skills + no load_skill call = system bootstrap activated them.
+    // EmptySuccessGoose produces no output (no load_skill call); pre-created stubs exist in workspace.
+    // Must NOT throw — skill materialization is sufficient activation evidence for system-bootstrap path.
+    let gradeCalls = 0;
+    const countingGrader: IGrader = {
+      async grade() { gradeCalls++; return { summary: { total: 1, passed: 1, failed: 0, pass_rate: 1 }, expectations: [{ text: "works", passed: true, evidence: "" }] }; },
+    };
+    for await (const _ of new SkillEvalRunner(new EmptySuccessGoose(), undefined, countingGrader, new Writer()).run(cfg("baseline"))) {}
     const result = JSON.parse(await fs.readFile(path.join(workspace, "execution-result.json"), "utf8"));
-    expect(result).toMatchObject({
-      status: "failed", failureReason: "treatment_bootstrap_failed",
-      treatmentActivation: { status: "failed", failedSkills: ["task-framing"], failedAgents: ["change-builder"] },
-    });
+    // treatmentActivation must be "verified": materialized skills accepted without load_skill call
+    expect(result.treatmentActivation.status).toBe("verified");
+    expect(result.treatmentActivation.failedSkills).toEqual([]);
+    expect(result.treatmentActivation.failedAgents).toEqual([]);
+    // Grading should have been called (run succeeded, grading proceeded)
+    expect(gradeCalls).toBe(1);
   });
 
   it("fails closed on a fatal diagnostic found only in correlated Goose logs", async () => {

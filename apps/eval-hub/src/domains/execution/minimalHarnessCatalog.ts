@@ -4,7 +4,7 @@ import { EVALS_DIR } from "../../shared/paths.js";
 
 export const MINIMAL_HARNESS_SUBJECTS = {
   agents: ["change-builder", "error-analyzer", "independent-verifier", "repository-researcher"],
-  skills: ["evidence-verification", "interface-quality", "loop-control", "task-framing", "ui-design", "ux-principles", "wcag-accessibility-audit"],
+  skills: ["domain-modeling", "evidence-verification", "grill-me", "grill-with-docs", "grilling", "interface-quality", "loop-control", "skill-creator", "task-framing", "ui-design", "ux-principles", "wcag-accessibility-audit"],
   recipes: ["implement", "loop-engineering", "research", "verify"],
 } as const;
 
@@ -83,8 +83,8 @@ export async function loadMinimalHarnessCatalog(): Promise<MinimalHarnessCatalog
     total: 0,
   };
   counts.total = counts.agents + counts.skills + counts.recipes + counts.architecture;
-  if (counts.agents !== 12 || counts.skills !== 21 || counts.recipes !== 14 || counts.architecture !== 6 || counts.total !== 53) {
-    throw new Error("expected 53 protocols; got " + JSON.stringify(counts));
+  if (counts.agents !== 12 || counts.skills !== 36 || counts.recipes !== 14 || counts.architecture !== 6 || counts.total !== 68) {
+    throw new Error("expected 68 protocols; got " + JSON.stringify(counts));
   }
   return { subjects: MINIMAL_HARNESS_SUBJECTS, architecture, counts };
 }

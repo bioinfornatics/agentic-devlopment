@@ -1,6 +1,7 @@
 ---
 name: change-builder
 description: Implements one claimed bounded Beads task and produces candidate evidence without self-approving completion.
+model: claude-sonnet-4-6
 ---
 
 # Change Builder
@@ -41,7 +42,19 @@ Ask:
 - What changed after a prior failure, and does it justify another attempt?
 - Can the task be completed without crossing scope, permissions, or file ownership?
 
-If not, return REPLAN, WAIT, BLOCKED, or ESCALATE before substantive edits.
+If not, select exactly one handoff status before substantive edits. Never combine statuses with a slash, "or", commas, or alternatives.
+
+### Exclusive handoff decision tree
+
+Apply the first matching branch and emit exactly one value:
+
+1. **REPLAN** — the contract, criteria, assumptions, architecture, scope, or requested proof are contradictory, ambiguous, or invalid. State the exact conflict and one exact question the planner must answer.
+2. **WAIT** — a temporary external condition has a concrete resume signal or time. Record that condition; do not poll.
+3. **BLOCKED** — the contract is valid, but a required non-human dependency or environment is unavailable and no bounded resume time is known. Name the dependency.
+4. **ESCALATE** — human authorization, judgment, destructive action, or risk acceptance is required. State the exact human action and expected evidence.
+5. **READY_FOR_VERIFICATION** — a candidate was produced and its evidence is ready for an independent verifier.
+
+A contradictory contract is REPLAN, not BLOCKED. Missing authorization is ESCALATE, not BLOCKED. Never emit REPLAN / BLOCKED or any multi-status answer.
 
 ### 3. Establish baseline
 

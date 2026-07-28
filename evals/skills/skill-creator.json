@@ -1,0 +1,89 @@
+[
+  {
+    "skills": [
+      "skill-creator"
+    ],
+    "agents": [],
+    "query": "Design a new skill named log-triage. Return the minimal SKILL.md frontmatter and evaluation plan, without installing it.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "normal",
+    "expected_skill_contribution": "skill-creator should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Produces valid name and description frontmatter.",
+      "Description includes use trigger.",
+      "Separates methodology from references.",
+      "Defines at least three eval scenarios.",
+      "Does not install or mutate."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "skill-creator"
+    ],
+    "agents": [],
+    "query": "Review a skill whose SKILL.md says only Be helpful. Identify the most important deficiencies.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "skill-creator should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Identifies missing trigger/description specificity.",
+      "Identifies absent methodology.",
+      "Requests representative evaluations.",
+      "Avoids padding for length alone.",
+      "Proposes bounded improvements."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "skill-creator"
+    ],
+    "agents": [],
+    "query": "Package a hypothetical skill conceptually and list validation checks, but do not write files.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "skill-creator should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Lists frontmatter validation.",
+      "Lists supporting-file reference validation.",
+      "Lists evaluation checks.",
+      "Distinguishes source from package output.",
+      "Does not write files."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  }
+]

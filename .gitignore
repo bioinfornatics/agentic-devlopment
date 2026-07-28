@@ -22,9 +22,19 @@ CLAUDE.md
 apps/*/node_modules/
 apps/node_modules/
 
+# Plugin build artifacts (compiled binaries + bun deps)
+.agents/plugins/*/bin/
+.agents/plugins/*/node_modules/
+.agents/plugins/*/bun.lockb
+
 # Ephemeral audit outputs
 .audit/
 
 # Python CI test outputs
 .coverage
 test-results/
+*.db-wal
+
+*.db-shm
+
+.vite/

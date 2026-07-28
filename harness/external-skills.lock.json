@@ -1,0 +1,204 @@
+{
+  "schema": "harness-external-lock-v2",
+  "resolver": {
+    "name": "skills",
+    "version": "1.5.20"
+  },
+  "generatedFrom": {
+    "legacyFile": "skills-lock.json",
+    "projectRevision": "cbb7265526477713adc1dff7810745cedcf6d630"
+  },
+  "skills": [
+    {
+      "name": "domain-modeling",
+      "active": true,
+      "source": {
+        "type": "github",
+        "repository": "mattpocock/skills",
+        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "path": "skills/engineering/domain-modeling"
+      },
+      "integrity": {
+        "algorithm": "sha256-tree-v1",
+        "digest": "937de2a55f08262e10a00591f35fa0c43fb531072d5403f5ca74d27e5ac0fe79"
+      },
+      "license": {
+        "spdx": "MIT",
+        "releaseAllowed": true
+      },
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "policy": "behavioral-or-explicit-gated-ineligibility"
+      }
+    },
+    {
+      "name": "grill-me",
+      "active": true,
+      "source": {
+        "type": "github",
+        "repository": "mattpocock/skills",
+        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "path": "skills/productivity/grill-me"
+      },
+      "integrity": {
+        "algorithm": "sha256-tree-v1",
+        "digest": "b644270312ff5b67aeb042ce80ed357ccdcac43339131abcefc5d3dfe217c605"
+      },
+      "license": {
+        "spdx": "MIT",
+        "releaseAllowed": true
+      },
+      "dependencies": [
+        "skill:grilling"
+      ],
+      "evaluation": {
+        "required": true,
+        "policy": "behavioral-or-explicit-gated-ineligibility"
+      }
+    },
+    {
+      "name": "grill-with-docs",
+      "active": true,
+      "source": {
+        "type": "github",
+        "repository": "mattpocock/skills",
+        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "path": "skills/engineering/grill-with-docs"
+      },
+      "integrity": {
+        "algorithm": "sha256-tree-v1",
+        "digest": "afbecd14d3f15d4de43b61a9a6237a4a2098569049609e2b026ae81e95e7e236"
+      },
+      "license": {
+        "spdx": "MIT",
+        "releaseAllowed": true
+      },
+      "dependencies": [
+        "skill:grilling",
+        "skill:domain-modeling"
+      ],
+      "evaluation": {
+        "required": true,
+        "policy": "behavioral-or-explicit-gated-ineligibility"
+      }
+    },
+    {
+      "name": "grilling",
+      "active": true,
+      "source": {
+        "type": "github",
+        "repository": "mattpocock/skills",
+        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "path": "skills/productivity/grilling"
+      },
+      "integrity": {
+        "algorithm": "sha256-tree-v1",
+        "digest": "971312c765cff158d58e07248124c9bead17b654eb512f32708586455ceba86e"
+      },
+      "license": {
+        "spdx": "MIT",
+        "releaseAllowed": true
+      },
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "policy": "behavioral-or-explicit-gated-ineligibility"
+      }
+    },
+    {
+      "name": "skill-creator",
+      "active": true,
+      "source": {
+        "type": "github",
+        "repository": "anthropics/skills",
+        "revision": "b29e7cf65e5cb78a5ac33d582270551bc74a14eb",
+        "path": "skills/skill-creator"
+      },
+      "integrity": {
+        "algorithm": "sha256-tree-v1",
+        "digest": "ad4f350be137206c6cb509aaaccf80960fd216db6ad6ef8e6f1d8920acb860b6"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "releaseAllowed": true
+      },
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "policy": "behavioral-or-explicit-gated-ineligibility"
+      }
+    },
+    {
+      "name": "wcag-accessibility-audit",
+      "active": true,
+      "source": {
+        "type": "github",
+        "repository": "mastepanoski/claude-skills",
+        "revision": "fbdde8adb5645dd3ab8531200a651c9112472b2b",
+        "path": "skills/wcag-accessibility-audit"
+      },
+      "integrity": {
+        "algorithm": "sha256-tree-v1",
+        "digest": "74436662a2f82987bf67c6b513d892c1673d0a52914d96d7f54f327ab71ac93c",
+        "localDigest": "13225b7fe3bf609574f07265b4dcac5bf126766441150995357f80e5fadaa204",
+        "localDriftReason": "project copy contains additional local files; task C stages the pinned upstream tree"
+      },
+      "license": {
+        "spdx": "MIT",
+        "releaseAllowed": true
+      },
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "policy": "behavioral-or-explicit-gated-ineligibility"
+      }
+    },
+    {
+      "name": "atomic-design-fundamentals",
+      "active": false,
+      "source": {
+        "type": "github",
+        "repository": "thebushidocollective/han",
+        "revision": "00ad890f395114dfb067b52d108f8e727636ba74",
+        "path": "plugins/patterns/atomic-design/skills/atomic-design-fundamentals"
+      },
+      "integrity": {
+        "algorithm": "sha256-tree-v1",
+        "digest": "4a2d3a077911fd8da7ac42c42ff120345e476078ede8f523c9a0a7b4e3eb7cc8"
+      },
+      "license": {
+        "spdx": "FSL-1.1-ALv2",
+        "releaseAllowed": false
+      },
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "policy": "inactive-not-installed"
+      }
+    },
+    {
+      "name": "design-critique-case-studies",
+      "active": false,
+      "source": {
+        "type": "github",
+        "repository": "phazurlabs/ux-ui-mastery",
+        "revision": "cc165ef69e35769ead8c5e65d64f9a52b6c50a63",
+        "path": "skills/design-critique-case-studies"
+      },
+      "integrity": {
+        "algorithm": "sha256-tree-v1",
+        "digest": "f7735b60d9debb9beddf96a324441b1e1327696254926179fbf21ea08b718a22"
+      },
+      "license": {
+        "spdx": "NOASSERTION",
+        "releaseAllowed": false
+      },
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "policy": "inactive-not-installed"
+      }
+    }
+  ]
+}

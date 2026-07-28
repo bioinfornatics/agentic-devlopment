@@ -1,0 +1,89 @@
+[
+  {
+    "skills": [
+      "domain-modeling"
+    ],
+    "agents": [],
+    "query": "Define a ubiquitous language for an order workflow where users alternate between the terms customer and account holder. Return a compact glossary and one ambiguity requiring a decision.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "normal",
+    "expected_skill_contribution": "domain-modeling should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Uses one canonical term per concept.",
+      "Distinguishes observed terminology from a proposed decision.",
+      "Identifies the customer/account-holder ambiguity.",
+      "Produces a compact glossary.",
+      "Does not mix implementation details into domain definitions."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "domain-modeling"
+    ],
+    "agents": [],
+    "query": "Record an architectural decision to use event sourcing for Order while keeping the domain glossary implementation-agnostic.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "domain-modeling should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Separates ADR content from glossary content.",
+      "States decision, context, consequences, and alternatives.",
+      "Keeps glossary free of storage/framework details.",
+      "Names affected domain concepts.",
+      "Flags unresolved domain questions."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "domain-modeling"
+    ],
+    "agents": [],
+    "query": "Stress-test a proposed definition: An active subscription is any subscription that is not deleted.",
+    "files": [],
+    "max_turns": 12,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "domain-modeling should add its declared external methodology.",
+    "baseline_gaps": [
+      "Without the external skill the response may omit its distinctive protocol."
+    ],
+    "expected_behavior": [
+      "Finds paused, expired, cancelled, pending, and scheduled edge cases.",
+      "Rejects the simplistic negative definition.",
+      "Proposes a positive observable definition.",
+      "Separates facts from decisions.",
+      "Asks one decision at a time."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  }
+]

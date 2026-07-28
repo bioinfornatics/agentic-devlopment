@@ -30,6 +30,7 @@ import { buildGooseInvocation, hashUtf8, inspectRuntimeHealth, inspectTreatmentA
 import { analyzeGooseLogs, gooseLogCaptureForWorkspace } from "./gooseLogAnalyzer.js";
 import { analyzeSessionChain } from "./sessionChainAnalyzer.js";
 import { checkPhaseCompliance } from "./phaseComplianceChecker.js";
+import { FsBinaryProvenanceChecker, type IBinaryProvenanceChecker, type BinarySnapshot } from "./binaryProvenance.js";
 import { projectPhaseEvidence } from "./beadsPhaseEvidence.js";
 import { readBeadsEvidence, beadsIssuesPath } from "../../shared/beadsAdapter.js";
 import {
@@ -40,43 +41,127 @@ import {
 // ── Grading validation ────────────────────────────────────────────────────────
 
 /**
- * Returns true iff the raw grading result is fully valid for the given
- * expected criterion IDs:
- *   • expected list is nonempty
- *   • exact count of expectation outputs (no more, no less)
- *   • every expectation has a non-empty text field
- *   • summary total / passed / failed / pass_rate is self-consistent
- *   • computed pass fraction == summary pass_rate (finite)
+ * Structured validation result for a raw grading result.
  *
- * No zero coercion: a null / NaN / missing score is always "invalid".
+ * Persisted as grading-diagnostic.json alongside grading.json to make any
+ * divergence between the grading artifact and the terminal record traceable.
+ * The authoritative score is always re-derived from
+ * expectations[].passed / expectedCriterionIds.length; summary.pass_rate is
+ * treated as informational only and is never used as a validity gate.
  */
-function validateGrading(
+export interface GradingDiagnostic {
+  readonly criterionCount: { readonly expected: number; readonly observed: number; readonly match: boolean };
+  readonly passCount:      { readonly expected: number; readonly observed: number; readonly match: boolean };
+  readonly failCount:      { readonly expected: number; readonly observed: number; readonly match: boolean };
+  readonly passRateFinite: boolean;
+  readonly summaryPassRate: number | null;
+  /** Re-derived score (passed / total); null when criterionCount.match is false or expectations missing. */
+  readonly recomputedScore: number | null;
+  /** One entry per failed check; "all checks passed" when valid. */
+  readonly reasons: readonly string[];
+  readonly valid: boolean;
+  /**
+   * Documented observation (not a causal claim): set to true when the grading artifact has a
+   * nonempty expectations array with a finite pass_rate yet the terminal records grader_invalid.
+   * Possible sources include criterion-count mismatch (e.g. scenario expected_behavior key
+   * mismatch), expectation text issues, summary inconsistency, or a stale/overwritten immutable
+   * slot. Inspect grading.json and terminal.json side-by-side to determine the actual root cause.
+   */
+  readonly artifactTerminalDivergenceObserved: boolean;
+}
+
+/**
+ * Validates a raw grading result and returns a structured diagnostic.
+ * Validity rules:
+ *   • expectedCriterionIds must be nonempty
+ *   • exact count of expectations (no more, no less)
+ *   • every expectation has a non-empty text field
+ *   • summary.total / .passed / .failed must match re-derived counts
+ *   • summary.pass_rate must be finite (but need not equal recomputedScore — LLM output may round)
+ *
+ * No zero coercion: a null / NaN / missing pass_rate is always invalid.
+ */
+function validateGradingWithDiagnostic(
   grading: GradingResult,
   expectedCriterionIds: readonly string[],
-): boolean {
-  if (expectedCriterionIds.length === 0) return false;
-  if (!Array.isArray(grading.expectations) || grading.expectations.length !== expectedCriterionIds.length) return false;
-  if (!grading.expectations.every(e => typeof e.text === "string" && e.text.length > 0)) return false;
-  const total = expectedCriterionIds.length;
-  const passed = grading.expectations.filter(e => e.passed).length;
-  const failed = total - passed;
-  const computedPassRate = passed / total;
-  if (grading.summary.pass_rate === null || !Number.isFinite(grading.summary.pass_rate)) return false;
-  if (grading.summary.pass_rate !== computedPassRate) return false;
-  if (grading.summary.total !== total) return false;
-  if (grading.summary.passed !== passed) return false;
-  if (grading.summary.failed !== failed) return false;
-  return true;
+): { valid: boolean; diagnostic: GradingDiagnostic } {
+  const reasons: string[] = [];
+  const expectedCount = expectedCriterionIds.length;
+  const observedCount = Array.isArray(grading.expectations) ? grading.expectations.length : -1;
+
+  if (expectedCount === 0) {
+    reasons.push("expectedCriterionIds is empty");
+    return {
+      valid: false,
+      diagnostic: {
+        criterionCount:  { expected: expectedCount, observed: observedCount, match: false },
+        passCount:       { expected: 0, observed: grading.summary.passed ?? 0, match: false },
+        failCount:       { expected: 0, observed: grading.summary.failed ?? 0, match: false },
+        passRateFinite:  grading.summary.pass_rate !== null && Number.isFinite(grading.summary.pass_rate),
+        summaryPassRate: grading.summary.pass_rate,
+        recomputedScore: null,
+        reasons,
+        valid: false,
+        artifactTerminalDivergenceObserved: false,
+      },
+    };
+  }
+
+  const criterionMatch = observedCount === expectedCount;
+  if (!criterionMatch) reasons.push("criterion count mismatch: expected " + String(expectedCount) + ", observed " + String(observedCount));
+
+  const hasNonEmptyText = Array.isArray(grading.expectations) &&
+    grading.expectations.every(e => typeof e.text === "string" && e.text.length > 0);
+  if (!hasNonEmptyText) reasons.push("one or more expectations have empty or missing text");
+
+  const passedFromExpectations = Array.isArray(grading.expectations)
+    ? grading.expectations.filter(e => e.passed).length : 0;
+  const failedFromExpectations = expectedCount - passedFromExpectations;
+
+  const passRateFinite = grading.summary.pass_rate !== null && Number.isFinite(grading.summary.pass_rate);
+  if (!passRateFinite) reasons.push("summary.pass_rate is null or non-finite");
+
+  const totalMatch = grading.summary.total  === expectedCount;
+  const passMatch  = grading.summary.passed === passedFromExpectations;
+  const failMatch  = grading.summary.failed === failedFromExpectations;
+  if (!totalMatch) reasons.push("summary.total mismatch: expected " + String(expectedCount) + ", observed " + String(grading.summary.total));
+  if (!passMatch)  reasons.push("summary.passed mismatch: expected " + String(passedFromExpectations) + " (from expectations), observed " + String(grading.summary.passed));
+  if (!failMatch)  reasons.push("summary.failed mismatch: expected " + String(failedFromExpectations) + " (from expectations), observed " + String(grading.summary.failed));
+
+  const recomputedScore = criterionMatch && hasNonEmptyText ? passedFromExpectations / expectedCount : null;
+  const valid = criterionMatch && hasNonEmptyText && passRateFinite && totalMatch && passMatch && failMatch;
+  if (valid) reasons.push("all checks passed");
+
+  // Observe artifact/terminal divergence: artifact looks structurally valid (nonempty expectations,
+  // finite pass_rate) but validation still failed. Documented without causal claim.
+  const artifactTerminalDivergenceObserved =
+    !valid && Array.isArray(grading.expectations) && grading.expectations.length > 0 && passRateFinite;
+
+  return {
+    valid,
+    diagnostic: {
+      criterionCount:  { expected: expectedCount, observed: observedCount, match: criterionMatch },
+      passCount:       { expected: passedFromExpectations, observed: grading.summary.passed, match: passMatch },
+      failCount:       { expected: failedFromExpectations, observed: grading.summary.failed, match: failMatch },
+      passRateFinite,
+      summaryPassRate:  grading.summary.pass_rate,
+      recomputedScore,
+      reasons,
+      valid,
+      artifactTerminalDivergenceObserved,
+    },
+  };
 }
 
 // ── Runner ────────────────────────────────────────────────────────────────────
 
 export class SkillEvalRunner implements IEvalRunner {
   constructor(
-    private readonly goose:   IGooseRunner    = new GooseProcessRunner(),
-    private readonly prompt:  IPromptBuilder  = new SkillPromptBuilder(),
-    private readonly grader:  IGrader         = new LlmGrader(),
-    private readonly writer:  IWorkspaceWriter = new FsWorkspaceWriter(),
+    private readonly goose:      IGooseRunner             = new GooseProcessRunner(),
+    private readonly prompt:     IPromptBuilder            = new SkillPromptBuilder(),
+    private readonly grader:     IGrader                   = new LlmGrader(),
+    private readonly writer:     IWorkspaceWriter          = new FsWorkspaceWriter(),
+    private readonly provenance: IBinaryProvenanceChecker  = new FsBinaryProvenanceChecker(),
   ) {}
 
   async *run(cfg: ScenarioRunConfig, sink: IEventSink = NULL_SINK): AsyncGenerator<EvalEvent> {
@@ -246,6 +331,15 @@ export class SkillEvalRunner implements IEvalRunner {
     );
     const gooseRuntimeVersion = cfg.gooseRuntimeVersion;
 
+    // ── Binary provenance — snapshot BEFORE run ────────────────────────────────
+    // Captured before any Goose I/O so the pre-run state is locked.
+    // Fail-hard: if the binary cannot be resolved or read, record a terminal with
+    // exclusion runtime_binary_unavailable and throw before launching Goose.
+    let snapshotBefore: BinarySnapshot | null = null;
+    let binaryUnavailableBefore = false;
+    try { snapshotBefore = await this.provenance.captureSnapshot(gooseCli); }
+    catch { binaryUnavailableBefore = true; }
+
     // Legacy execution-evidence.json (preserves compatibility with reporting/workspace reader)
     // Materialize only the active side's requested artifacts. Goose discovers these by walking up from cwd.
     for (const name of treatment.definition.skills) {
@@ -275,7 +369,7 @@ export class SkillEvalRunner implements IEvalRunner {
         fs.access(path.join(cfg.workspace, ".agents", "agents", name + ".md")).then(() => name).catch(() => null),
       ))).filter((name): name is string => name !== null),
     };
-    const initialActivation = inspectTreatmentActivation([], treatment.definition, materialized);
+    const initialActivation = inspectTreatmentActivation([], treatment.definition, materialized, { bootstrap: treatment.bootstrap });
     const executionEvidence = {
       schema: "eval-integrity-execution-v1" as const,
       kind, subject, evalId, repetition,
@@ -292,6 +386,7 @@ export class SkillEvalRunner implements IEvalRunner {
       treatmentActivation: initialActivation,
       gooseLogs: { schema: "goose-log-capture-v1" as const, source: "isolated_xdg_state" as const },
       gooseArgs: args,
+      binaryProvenanceBefore: snapshotBefore,
     };
     await fs.mkdir(cfg.workspace, { recursive: true });
     await fs.writeFile(
@@ -321,6 +416,35 @@ export class SkillEvalRunner implements IEvalRunner {
       };
       yield failedEvent; sink.emit(failedEvent);
       throw new Error("Treatment bootstrap failed for " + subject + " eval-" + evalId + "/" + config);
+    }
+
+    // ── Binary unavailable BEFORE run — bail before launching Goose ─────────────
+    if (binaryUnavailableBefore) {
+      await fs.writeFile(
+        path.join(cfg.workspace, "execution-result.json"),
+        JSON.stringify({
+          status: "failed", exitCode: null, signal: null, score: null,
+          ...executionEvidence, failureReason: "runtime_binary_unavailable",
+          binaryProvenance: null,
+        }, null, 2),
+      );
+      const failedTerminal: IntegrityTerminalRecordV2 = {
+        ...terminalTemplate,
+        status:    "failed",
+        grading:   null,
+        exclusion: { level: "pair", reason: "runtime_binary_unavailable" },
+      };
+      await store.recordTerminal(failedTerminal);
+      const failedEvent = {
+        type: "subject.completed" as const, kind, subject, hash, evalId, config,
+        treatmentId: treatment.id, repetition, run, status: "failed" as const,
+        rc: null, signal: null, turns: 0, durationMs: 0,
+      };
+      yield failedEvent; sink.emit(failedEvent);
+      throw new Error(
+        "Goose binary unavailable for " + subject + " eval-" + evalId + "/" + config +
+        " (cannot capture pre-run provenance snapshot)",
+      );
     }
 
     // ── Run Goose ─────────────────────────────────────────────────────────────
@@ -355,6 +479,18 @@ export class SkillEvalRunner implements IEvalRunner {
     }
 
     const durationMs = Date.now() - startMs;
+
+    // ── Binary provenance — snapshot AFTER run ─────────────────────────────────
+    // Fail-hard on AFTER as well: if the snapshot cannot be captured post-run,
+    // record runtime_binary_unavailable and skip grading.
+    let snapshotAfter: BinarySnapshot | null = null;
+    let snapshotAfterFailed = false;
+    try { snapshotAfter = await this.provenance.captureSnapshot(gooseCli); }
+    catch { snapshotAfterFailed = true; }
+    const binaryStability = (snapshotBefore !== null && snapshotAfter !== null)
+      ? this.provenance.checkStability(snapshotBefore, snapshotAfter)
+      : null;
+
     await this.writer.writeTiming(kind, subject, hash, evalId, config, run, {
       startedAt: new Date(startMs).toISOString(), completedAt: new Date().toISOString(),
       durationMs, turnsUsed: turns, maxTurns, maxTurnsReached: turns >= maxTurns,
@@ -366,7 +502,8 @@ export class SkillEvalRunner implements IEvalRunner {
       : terminalExecutionResult(rc, signal);
 
     const treatmentActivation = inspectTreatmentActivation(
-      outputLines, treatment.definition, materialized, { runtimeComplete: terminal.status === "succeeded" },
+      outputLines, treatment.definition, materialized,
+      { runtimeComplete: terminal.status === "succeeded", bootstrap: treatment.bootstrap },
     );
     const gooseLogAnalysis = await analyzeGooseLogs(gooseLogCapture.logsRoot, model);
     await fs.writeFile(
@@ -397,15 +534,23 @@ export class SkillEvalRunner implements IEvalRunner {
     );
     const failureReason = treatmentActivation.status === "failed"
       ? "treatment_bootstrap_failed" as const
+      : (binaryStability !== null && !binaryStability.stableDuringRun) ? "runtime_binary_changed" as const
+      : snapshotAfterFailed ? "runtime_binary_unavailable" as const
       : runtimeHealth.status === "failed" ? "runtime_dependency_failed" as const : null;
     const effectiveTerminal = failureReason === null ? terminal : {
       status: "failed" as const, exitCode: terminal.exitCode, signal: terminal.signal, score: null,
     };
 
     // Legacy execution-result.json (always written, even on failure — for compatibility)
+    const binaryProvenanceResult = (snapshotBefore !== null || snapshotAfter !== null) ? {
+      before: snapshotBefore,
+      after: snapshotAfter,
+      stableDuringRun: binaryStability !== null ? binaryStability.stableDuringRun : null,
+      instabilityDetail: binaryStability !== null ? binaryStability.instabilityDetail : null,
+    } : null;
     await fs.writeFile(
       path.join(cfg.workspace, "execution-result.json"),
-      JSON.stringify({ ...effectiveTerminal, ...executionEvidence, treatmentActivation, runtimeHealth, gooseLogAnalysis, failureReason }, null, 2),
+      JSON.stringify({ ...effectiveTerminal, ...executionEvidence, treatmentActivation, runtimeHealth, gooseLogAnalysis, failureReason, binaryProvenance: binaryProvenanceResult }, null, 2),
     );
 
     const ev1 = {
@@ -432,6 +577,15 @@ export class SkillEvalRunner implements IEvalRunner {
       if (failureReason === "runtime_dependency_failed") {
         throw new Error("Runtime dependency failed for " + subject + " eval-" + evalId + "/" + config);
       }
+      if (failureReason === "runtime_binary_changed") {
+        throw new Error("Goose binary changed during run for " + subject + " eval-" + evalId + "/" + config + ": " + String(binaryStability?.instabilityDetail));
+      }
+      if (failureReason === "runtime_binary_unavailable") {
+        throw new Error(
+          "Goose binary unavailable for " + subject + " eval-" + evalId + "/" + config +
+          " (cannot capture post-run provenance snapshot)",
+        );
+      }
       throw new Error(
         "Goose run failed for " + subject + " eval-" + evalId + "/" + config + " (exit " + String(effectiveTerminal.exitCode) + ", signal " + String(effectiveTerminal.signal) + ")",
       );
@@ -457,37 +611,61 @@ export class SkillEvalRunner implements IEvalRunner {
     let gradingRecord: IntegrityTerminalRecordV2["grading"];
     let exclusionRecord: IntegrityTerminalRecordV2["exclusion"];
 
-    if (rawGrading !== null && validateGrading(rawGrading, expectedCriterionIds)) {
-      // Valid grading — map criterion IDs by index to grader expectation outcomes
-      const passed = rawGrading.expectations.filter(e => e.passed).length;
-      const score  = passed / expectedCriterionIds.length;
-      gradingRecord = {
-        graderId:              cfg.integrity.grader.id,
-        graderVersion:         cfg.integrity.grader.version,
-        rubricId:              cfg.integrity.rubric.id,
-        rubricVersion:         cfg.integrity.rubric.version,
-        expectedCriterionIds,
-        outcomes: expectedCriterionIds.map((criterionId, i) => ({
-          criterionId,
-          passed: rawGrading!.expectations[i]!.passed,
-        })),
-        parseStatus:       "parsed",
-        validationStatus:  "valid",
-        score,
-      };
-      exclusionRecord = null;
+    // Structured grading diagnostic — persisted as grading-diagnostic.json alongside grading.json
+    // so that any artifact/terminal divergence is traceable after the fact.
+    if (rawGrading !== null) {
+      const gradingValidation = validateGradingWithDiagnostic(rawGrading, expectedCriterionIds);
+      await fs.writeFile(
+        path.join(cfg.workspace, "grading-diagnostic.json"),
+        JSON.stringify(gradingValidation.diagnostic, null, 2),
+      );
+
+      if (gradingValidation.valid) {
+        // Valid grading — score re-derived from expectations, not from summary.pass_rate
+        const passed = rawGrading.expectations.filter(e => e.passed).length;
+        const score  = passed / expectedCriterionIds.length;
+        gradingRecord = {
+          graderId:             cfg.integrity.grader.id,
+          graderVersion:        cfg.integrity.grader.version,
+          rubricId:             cfg.integrity.rubric.id,
+          rubricVersion:        cfg.integrity.rubric.version,
+          expectedCriterionIds,
+          outcomes: expectedCriterionIds.map((criterionId, i) => ({
+            criterionId,
+            passed: rawGrading!.expectations[i]!.passed,
+          })),
+          parseStatus:      "parsed",
+          validationStatus: "valid",
+          score,
+        };
+        exclusionRecord = null;
+      } else {
+        // Invalid grading — diagnostic explains reasons; no zero coercion; no rethrow
+        gradingRecord = {
+          graderId:             cfg.integrity.grader.id,
+          graderVersion:        cfg.integrity.grader.version,
+          rubricId:             cfg.integrity.rubric.id,
+          rubricVersion:        cfg.integrity.rubric.version,
+          expectedCriterionIds,
+          outcomes:             [],
+          parseStatus:          "parsed",
+          validationStatus:     "invalid",
+          score:                null,
+        };
+        exclusionRecord = { level: "pair", reason: "grader_invalid" };
+      }
     } else {
-      // Invalid grading — do NOT throw; record grader_invalid exclusion; no zero coercion
+      // Grader threw — record grader_invalid with parseStatus=failed; no diagnostic written
       gradingRecord = {
-        graderId:              cfg.integrity.grader.id,
-        graderVersion:         cfg.integrity.grader.version,
-        rubricId:              cfg.integrity.rubric.id,
-        rubricVersion:         cfg.integrity.rubric.version,
+        graderId:             cfg.integrity.grader.id,
+        graderVersion:        cfg.integrity.grader.version,
+        rubricId:             cfg.integrity.rubric.id,
+        rubricVersion:        cfg.integrity.rubric.version,
         expectedCriterionIds,
-        outcomes:              [],
-        parseStatus:           rawGrading === null ? "failed" : "parsed",
-        validationStatus:      "invalid",
-        score:                 null,
+        outcomes:             [],
+        parseStatus:          "failed",
+        validationStatus:     "invalid",
+        score:                null,
       };
       exclusionRecord = { level: "pair", reason: "grader_invalid" };
     }
