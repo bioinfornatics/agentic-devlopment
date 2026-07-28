@@ -21,7 +21,10 @@ jobs:
         with: {bun-version: "1.3.12"}
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - run: pnpm --dir apps install --frozen-lockfile
+      - name: Install workspace dependencies
+        run: pnpm --dir apps install --frozen-lockfile --ignore-scripts
+      - name: Rebuild Eval Hub native dependencies
+        run: pnpm --dir apps --filter @harness/eval-hub rebuild better-sqlite3
       - run: pnpm --dir apps --filter @harness/eval-hub build
       - run: python3 scripts/ci-harness-release.py --version "${GITHUB_REF_NAME#harness-v}" --output dist/harness-ci --dry-run-publish
       - name: Build Eval Hub optional companion

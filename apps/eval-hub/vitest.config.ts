@@ -2,6 +2,8 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
+    setupFiles: ["./src/testSetup.ts"],
+
     // Unit tests run in Node — no browser, no jsdom
     environment: "node",
 
