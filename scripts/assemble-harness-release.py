@@ -4,7 +4,9 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def main():
- ap=argparse.ArgumentParser();ap.add_argument('--internal',required=True);ap.add_argument('--external',required=True);ap.add_argument('--output',required=True);ap.add_argument('--version',required=True);ap.add_argument('--target',default='linux-x86_64');ap.add_argument('--sign-key');a=ap.parse_args();internal=Path(a.internal);external=Path(a.external);out=Path(a.output);tmp=Path(tempfile.mkdtemp(prefix='harness-release-'))
+ ap=argparse.ArgumentParser();ap.add_argument('--internal',required=True);ap.add_argument('--external',required=True);ap.add_argument('--output',required=True);ap.add_argument('--version',required=True);ap.add_argument('--target',default='linux-x86_64');ap.add_argument('--sign-key');a=ap.parse_args();
+ if '/' in a.version or '\\' in a.version or a.version in ('','.','..'):raise RuntimeError('invalid release version')
+ internal=Path(a.internal);external=Path(a.external);out=Path(a.output);tmp=Path(tempfile.mkdtemp(prefix='harness-release-'))
  try:
   root=tmp/'root';root.mkdir()
   for child in internal.iterdir():

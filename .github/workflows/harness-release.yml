@@ -28,10 +28,20 @@ jobs:
       - name: Rebuild Eval Hub native dependencies
         run: pnpm --dir apps --filter @harness/eval-hub rebuild better-sqlite3
       - run: pnpm --dir apps --filter @harness/eval-hub build
-      - run: python3 scripts/ci-harness-release.py --version "${GITHUB_REF_NAME#harness-v}" --output dist/harness-ci --dry-run-publish --skip-tests
+      - name: Resolve release version
+        id: release-version
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/harness-v* ]]; then
+            version="${GITHUB_REF_NAME#harness-v}"
+          else
+            version="0.0.0-pr${{ github.event.pull_request.number || github.run_number }}"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - run: python3 scripts/ci-harness-release.py --version "${{ steps.release-version.outputs.version }}" --output dist/harness-ci --dry-run-publish --skip-tests
       - name: Build Eval Hub optional companion
         if: startsWith(github.ref, 'refs/tags/harness-v')
-        run: python3 scripts/package-eval-hub-companion.py --version "${GITHUB_REF_NAME#harness-v}" --output dist/eval-hub-companion --license-spdx "${{ vars.EVAL_HUB_LICENSE_SPDX }}" --source-date-epoch "$(git show -s --format=%ct HEAD)"
+        run: python3 scripts/package-eval-hub-companion.py --version "${{ steps.release-version.outputs.version }}" --output dist/eval-hub-companion --license-spdx "${{ vars.EVAL_HUB_LICENSE_SPDX }}" --source-date-epoch "$(git show -s --format=%ct HEAD)"
       - uses: actions/upload-artifact@v4
         with:
           name: harness-release-linux-x86_64

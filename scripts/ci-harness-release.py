@@ -6,6 +6,7 @@ def run(cmd,**kw):subprocess.run(cmd,cwd=ROOT,check=True,**kw)
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def main():
  ap=argparse.ArgumentParser();ap.add_argument('--version',required=True);ap.add_argument('--output',required=True);ap.add_argument('--goose-cli');ap.add_argument('--dry-run-publish',action='store_true');ap.add_argument('--skip-tests',action='store_true');a=ap.parse_args();out=Path(a.output).resolve();shutil.rmtree(out,ignore_errors=True);out.mkdir(parents=True)
+ if '/' in a.version or '\\' in a.version or a.version in ('','.','..'):raise RuntimeError('invalid release version')
  if subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip() and os.environ.get('CI')!='true':raise RuntimeError('release build requires clean git tree')
  run(['python3','scripts/validate-harness-manifests.py']);
  if not a.skip_tests:run(['python3','-m','unittest','discover','-s','scripts/tests/integration','-p','test_harness*.py'])
