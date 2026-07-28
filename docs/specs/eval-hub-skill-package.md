@@ -23,7 +23,7 @@ eval-hub-companion-<version>-linux-x86_64.tar
 
 ## Build
 
-Compile `apps/eval-hub/src/index.ts` with pinned Bun 1.3.12 at a deterministic absolute work/output path. Build twice at the same path and compare bytes. Linux x86_64 is required in v1; other targets are absent unless explicitly published.
+Compile `src/app/eval-hub/src/index.ts` with pinned Bun 1.3.12 at a deterministic absolute work/output path. Build twice at the same path and compare bytes. Linux x86_64 is required in v1; other targets are absent unless explicitly published.
 
 ## Runtime
 
@@ -31,7 +31,7 @@ The launcher resolves an explicit companion root or its installed layout, verifi
 
 ## Provenance and distribution
 
-The package manifest records target, source commit, Bun version, binary and skill digests, archive file inventory, `coreHarnessIncluded: false`, and license assertion status. SHA256SUMS, CycloneDX SBOM, and normalized provenance are sibling artifacts. The core harness source manifest continues to exclude `apps/eval-hub`.
+The package manifest records target, source commit, Bun version, binary and skill digests, archive file inventory, `coreHarnessIncluded: false`, and license assertion status. SHA256SUMS, CycloneDX SBOM, and normalized provenance are sibling artifacts. The core harness source manifest continues to exclude `src/app/eval-hub`.
 
 ## Agent Skills compatibility
 

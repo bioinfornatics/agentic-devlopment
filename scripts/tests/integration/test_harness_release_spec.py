@@ -7,10 +7,11 @@ class HarnessReleaseSpecTest(unittest.TestCase):
  def setUpClass(cls): cls.inv=json.loads((ROOT/'harness/runtime-inventory.json').read_text())
  def test_all_disk_components_are_in_inventory(self):
   got={(x['kind'],x['name']) for x in self.inv['components']}; expected=set()
-  expected|={('skill',p.name) for p in (ROOT/'.agents/skills').iterdir() if p.is_dir()}
-  expected|={('agent',p.stem) for p in (ROOT/'.agents/agents').glob('*.md')}
-  expected|={('recipe',p.stem) for p in (ROOT/'.goose/recipes').glob('*.yaml')}
-  expected|={('plugin',p.name) for p in (ROOT/'.agents/plugins').iterdir() if (p/'plugin.json').is_file()}
+  expected|={('skill',p.name) for p in (ROOT/'src/skills').iterdir() if p.is_dir()}
+  expected|={('agent',p.stem) for p in (ROOT/'src/agents').glob('*.md')}
+  expected|={('recipe',p.stem) for p in (ROOT/'src/recipes').glob('*.yaml')}
+  expected|={('plugin',p.name) for p in (ROOT/'src/plugins').iterdir() if (p/'plugin.json').is_file()}
+  lock=json.loads((ROOT/'harness/external-skills.lock.json').read_text());expected|={('skill',item['name']) for item in lock['skills'] if item['active']}
   self.assertTrue(expected<=got, expected-got)
  def test_scripts_have_build_contract(self):
   required={'path','ownership','language','build','runtime','package'}

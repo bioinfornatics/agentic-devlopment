@@ -119,9 +119,9 @@ def inject(path: Path, section: str, content: str) -> bool:
 
 # ── Sources ───────────────────────────────────────────────────────────────────
 
-SKILLS_DIR = ROOT / '.agents/skills'
-AGENTS_DIR = ROOT / '.agents/agents'
-RECIPES_DIR = ROOT / '.goose/recipes'
+SKILLS_DIR = ROOT / 'src/skills'
+AGENTS_DIR = ROOT / 'src/agents'
+RECIPES_DIR = ROOT / 'src/recipes'
 
 skills = sorted(
     p for p in SKILLS_DIR.iterdir()
@@ -132,18 +132,23 @@ recipes = sorted(
     p for p in RECIPES_DIR.glob('*.yaml')
     if p.parent.name != 'subrecipes'
 )
+external_lock = json.loads((ROOT / 'harness/external-skills.lock.json').read_text())
+external_skills = sorted((item for item in external_lock['skills'] if item.get('active')), key=lambda item: item['name'])
 
 # ── Generate README skills table ──────────────────────────────────────────────
 
 def gen_readme_skills() -> str:
     rows = []
-    rows.append(f'## Skills ({len(skills)})')
+    rows.append(f'## Skills ({len(skills) + len(external_skills)})')
     rows.append('')
     rows.append('| Skill | Purpose |')
     rows.append('|-------|---------|')
-    for s in skills:
-        desc = skill_description(s)
-        rows.append(f'| `{s.name}` | {desc} |')
+    for skill_dir in skills:
+        desc = skill_description(skill_dir)
+        rows.append(f'| `{skill_dir.name}` | {desc} |')
+    for item in external_skills:
+        source = item['source']['repository']
+        rows.append(f"| `{item['name']}` | External locked skill from `{source}`. |")
     return '\n'.join(rows)
 
 # ── Generate README agents table ──────────────────────────────────────────────
@@ -152,7 +157,7 @@ def gen_readme_agents() -> str:
     rows = []
     rows.append(f'## Named agents ({len(agents)})')
     rows.append('')
-    rows.append('Named agents in `.agents/agents/` — invoke with Goose Summon natural language:')
+    rows.append('Named agent sources in `src/agents/` — invoke with Goose Summon natural language:')
     rows.append('`load agent <name>` (in-session) or `delegate task bd-xxx and into those task load agent <name>` (isolated).')
     rows.append('')
     rows.append('| Agent | Role | Model |')
@@ -168,9 +173,13 @@ def gen_readme_agents() -> str:
 
 def gen_eval_skills() -> str:
     rows = ['| Skill | Eval file |', '| --- | --- |']
-    for s in skills:
-        if (ROOT / 'evals/skills' / f'{s.name}.json').exists():
-            rows.append(f'| `{s.name}` | `evals/skills/{s.name}.json` |')
+    for skill_dir in skills:
+        if (ROOT / 'evals/skills' / f'{skill_dir.name}.json').exists():
+            rows.append(f'| `{skill_dir.name}` | `evals/skills/{skill_dir.name}.json` |')
+    for item in external_skills:
+        name = item['name']
+        if (ROOT / 'evals/skills' / f'{name}.json').exists():
+            rows.append(f'| `{name}` | `evals/skills/{name}.json` |')
     return '\n'.join(rows)
 
 def gen_eval_agents() -> str:

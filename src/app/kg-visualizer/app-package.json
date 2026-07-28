@@ -1,0 +1,1 @@
+{"name":"kg-visualizer","kind":"standalone-app","entrypoint":"src/server.ts","targets":["node22"],"outputs":[{"runtimePath":"bin/kg-visualizer","packageProfile":"development-tool","source":"dist/server.js"}]}

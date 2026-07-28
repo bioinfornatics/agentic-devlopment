@@ -48,7 +48,7 @@ Installation performs no network or compilation. It verifies before extraction, 
 
 ## Evaluate exact installed bytes
 ```bash
-pnpm --dir apps --filter @harness/eval-hub build
+pnpm --dir src/app --filter @harness/eval-hub build
 python3 scripts/evaluate-harness-release.py --release "$PREFIX/current" --goose-cli /absolute/path/to/goose -- --layers skills,agents,recipes --workers 3 --ambient-goose --continue-on-failure
 ```
 The run records release, manifest, lock, and Goose digests and verifies release stability after execution. Mutation invalidates the run. All active external skills require corpus coverage or a gated non-eligibility decision.

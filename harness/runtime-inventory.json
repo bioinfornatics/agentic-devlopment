@@ -41,17 +41,18 @@
     {
       "kind": "skill",
       "name": "domain-modeling",
-      "path": ".agents/skills/domain-modeling",
+      "path": null,
       "ownership": "external",
       "language": "markdown",
       "build": "copy",
       "runtime": "goose-discovery",
-      "package": "tree"
+      "package": "tree",
+      "source": "external-lock"
     },
     {
       "kind": "skill",
       "name": "evidence-verification",
-      "path": ".agents/skills/evidence-verification",
+      "path": "src/skills/evidence-verification",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -61,37 +62,40 @@
     {
       "kind": "skill",
       "name": "grill-me",
-      "path": ".agents/skills/grill-me",
+      "path": null,
       "ownership": "external",
       "language": "markdown",
       "build": "copy",
       "runtime": "goose-discovery",
-      "package": "tree"
+      "package": "tree",
+      "source": "external-lock"
     },
     {
       "kind": "skill",
       "name": "grill-with-docs",
-      "path": ".agents/skills/grill-with-docs",
+      "path": null,
       "ownership": "external",
       "language": "markdown",
       "build": "copy",
       "runtime": "goose-discovery",
-      "package": "tree"
+      "package": "tree",
+      "source": "external-lock"
     },
     {
       "kind": "skill",
       "name": "grilling",
-      "path": ".agents/skills/grilling",
+      "path": null,
       "ownership": "external",
       "language": "markdown",
       "build": "copy",
       "runtime": "goose-discovery",
-      "package": "tree"
+      "package": "tree",
+      "source": "external-lock"
     },
     {
       "kind": "skill",
       "name": "interface-quality",
-      "path": ".agents/skills/interface-quality",
+      "path": "src/skills/interface-quality",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -101,7 +105,7 @@
     {
       "kind": "skill",
       "name": "loop-control",
-      "path": ".agents/skills/loop-control",
+      "path": "src/skills/loop-control",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -111,7 +115,7 @@
     {
       "kind": "skill",
       "name": "output-discipline",
-      "path": ".agents/skills/output-discipline",
+      "path": "src/skills/output-discipline",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -121,117 +125,128 @@
     {
       "kind": "skill",
       "name": "skill-creator",
-      "path": ".agents/skills/skill-creator",
+      "path": null,
       "ownership": "external",
       "language": "markdown",
       "build": "copy",
       "runtime": "goose-discovery",
-      "package": "tree"
+      "package": "tree",
+      "source": "external-lock"
     },
     {
       "kind": "script",
       "name": "skill-creator:eval-viewer/generate_review.py",
-      "path": ".agents/skills/skill-creator/eval-viewer/generate_review.py",
+      "path": null,
       "ownership": "external",
       "language": "python",
       "build": "python-package",
       "runtime": "skill-runtime",
-      "package": "file"
+      "package": "file",
+      "source": "external-lock"
     },
     {
       "kind": "script",
       "name": "skill-creator:scripts/__init__.py",
-      "path": ".agents/skills/skill-creator/scripts/__init__.py",
+      "path": null,
       "ownership": "external",
       "language": "python",
       "build": "python-package",
       "runtime": "skill-runtime",
-      "package": "file"
+      "package": "file",
+      "source": "external-lock"
     },
     {
       "kind": "script",
       "name": "skill-creator:scripts/aggregate_benchmark.py",
-      "path": ".agents/skills/skill-creator/scripts/aggregate_benchmark.py",
+      "path": null,
       "ownership": "external",
       "language": "python",
       "build": "python-package",
       "runtime": "skill-runtime",
-      "package": "file"
+      "package": "file",
+      "source": "external-lock"
     },
     {
       "kind": "script",
       "name": "skill-creator:scripts/generate_report.py",
-      "path": ".agents/skills/skill-creator/scripts/generate_report.py",
+      "path": null,
       "ownership": "external",
       "language": "python",
       "build": "python-package",
       "runtime": "skill-runtime",
-      "package": "file"
+      "package": "file",
+      "source": "external-lock"
     },
     {
       "kind": "script",
       "name": "skill-creator:scripts/improve_description.py",
-      "path": ".agents/skills/skill-creator/scripts/improve_description.py",
+      "path": null,
       "ownership": "external",
       "language": "python",
       "build": "python-package",
       "runtime": "skill-runtime",
-      "package": "file"
+      "package": "file",
+      "source": "external-lock"
     },
     {
       "kind": "script",
       "name": "skill-creator:scripts/package_skill.py",
-      "path": ".agents/skills/skill-creator/scripts/package_skill.py",
+      "path": null,
       "ownership": "external",
       "language": "python",
       "build": "python-package",
       "runtime": "skill-runtime",
-      "package": "file"
+      "package": "file",
+      "source": "external-lock"
     },
     {
       "kind": "script",
       "name": "skill-creator:scripts/quick_validate.py",
-      "path": ".agents/skills/skill-creator/scripts/quick_validate.py",
+      "path": null,
       "ownership": "external",
       "language": "python",
       "build": "python-package",
       "runtime": "skill-runtime",
-      "package": "file"
+      "package": "file",
+      "source": "external-lock"
     },
     {
       "kind": "script",
       "name": "skill-creator:scripts/run_eval.py",
-      "path": ".agents/skills/skill-creator/scripts/run_eval.py",
+      "path": null,
       "ownership": "external",
       "language": "python",
       "build": "python-package",
       "runtime": "skill-runtime",
-      "package": "file"
+      "package": "file",
+      "source": "external-lock"
     },
     {
       "kind": "script",
       "name": "skill-creator:scripts/run_loop.py",
-      "path": ".agents/skills/skill-creator/scripts/run_loop.py",
+      "path": null,
       "ownership": "external",
       "language": "python",
       "build": "python-package",
       "runtime": "skill-runtime",
-      "package": "file"
+      "package": "file",
+      "source": "external-lock"
     },
     {
       "kind": "script",
       "name": "skill-creator:scripts/utils.py",
-      "path": ".agents/skills/skill-creator/scripts/utils.py",
+      "path": null,
       "ownership": "external",
       "language": "python",
       "build": "python-package",
       "runtime": "skill-runtime",
-      "package": "file"
+      "package": "file",
+      "source": "external-lock"
     },
     {
       "kind": "skill",
       "name": "task-framing",
-      "path": ".agents/skills/task-framing",
+      "path": "src/skills/task-framing",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -241,7 +256,7 @@
     {
       "kind": "skill",
       "name": "ui-design",
-      "path": ".agents/skills/ui-design",
+      "path": "src/skills/ui-design",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -251,7 +266,7 @@
     {
       "kind": "skill",
       "name": "ux-principles",
-      "path": ".agents/skills/ux-principles",
+      "path": "src/skills/ux-principles",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -261,17 +276,18 @@
     {
       "kind": "skill",
       "name": "wcag-accessibility-audit",
-      "path": ".agents/skills/wcag-accessibility-audit",
+      "path": null,
       "ownership": "external",
       "language": "markdown",
       "build": "copy",
       "runtime": "goose-discovery",
-      "package": "tree"
+      "package": "tree",
+      "source": "external-lock"
     },
     {
       "kind": "agent",
       "name": "change-builder-premium",
-      "path": ".agents/agents/change-builder-premium.md",
+      "path": "src/agents/change-builder-premium.md",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -281,7 +297,7 @@
     {
       "kind": "agent",
       "name": "change-builder",
-      "path": ".agents/agents/change-builder.md",
+      "path": "src/agents/change-builder.md",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -291,7 +307,7 @@
     {
       "kind": "agent",
       "name": "error-analyzer",
-      "path": ".agents/agents/error-analyzer.md",
+      "path": "src/agents/error-analyzer.md",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -301,7 +317,7 @@
     {
       "kind": "agent",
       "name": "independent-verifier-premium",
-      "path": ".agents/agents/independent-verifier-premium.md",
+      "path": "src/agents/independent-verifier-premium.md",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -311,7 +327,7 @@
     {
       "kind": "agent",
       "name": "independent-verifier",
-      "path": ".agents/agents/independent-verifier.md",
+      "path": "src/agents/independent-verifier.md",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -321,7 +337,7 @@
     {
       "kind": "agent",
       "name": "repository-researcher",
-      "path": ".agents/agents/repository-researcher.md",
+      "path": "src/agents/repository-researcher.md",
       "ownership": "internal",
       "language": "markdown",
       "build": "copy",
@@ -331,7 +347,7 @@
     {
       "kind": "recipe",
       "name": "implement",
-      "path": ".goose/recipes/implement.yaml",
+      "path": "src/recipes/implement.yaml",
       "ownership": "internal",
       "language": "yaml",
       "build": "validate",
@@ -341,7 +357,7 @@
     {
       "kind": "recipe",
       "name": "loop-engineering",
-      "path": ".goose/recipes/loop-engineering.yaml",
+      "path": "src/recipes/loop-engineering.yaml",
       "ownership": "internal",
       "language": "yaml",
       "build": "validate",
@@ -351,7 +367,7 @@
     {
       "kind": "recipe",
       "name": "research",
-      "path": ".goose/recipes/research.yaml",
+      "path": "src/recipes/research.yaml",
       "ownership": "internal",
       "language": "yaml",
       "build": "validate",
@@ -361,7 +377,7 @@
     {
       "kind": "recipe",
       "name": "verify",
-      "path": ".goose/recipes/verify.yaml",
+      "path": "src/recipes/verify.yaml",
       "ownership": "internal",
       "language": "yaml",
       "build": "validate",
@@ -371,7 +387,7 @@
     {
       "kind": "plugin",
       "name": "beads-telemetry",
-      "path": ".agents/plugins/beads-telemetry",
+      "path": "src/plugins/beads-telemetry",
       "ownership": "internal",
       "language": "mixed",
       "build": "validate-and-package",
@@ -381,7 +397,7 @@
     {
       "kind": "script",
       "name": "beads-telemetry:scripts/record-event.sh",
-      "path": ".agents/plugins/beads-telemetry/scripts/record-event.sh",
+      "path": "src/plugins/beads-telemetry/scripts/record-event.sh",
       "ownership": "internal",
       "language": "shell",
       "build": "shell-validated",
@@ -391,7 +407,7 @@
     {
       "kind": "script",
       "name": "beads-telemetry:tests/test-plugin.sh",
-      "path": ".agents/plugins/beads-telemetry/tests/test-plugin.sh",
+      "path": "src/plugins/beads-telemetry/tests/test-plugin.sh",
       "ownership": "internal",
       "language": "shell",
       "build": "shell-validated",
@@ -401,7 +417,7 @@
     {
       "kind": "plugin",
       "name": "loop-breaker",
-      "path": ".agents/plugins/loop-breaker",
+      "path": "src/plugins/loop-breaker",
       "ownership": "internal",
       "language": "mixed",
       "build": "compile-and-package",
@@ -411,7 +427,7 @@
     {
       "kind": "script",
       "name": "loop-breaker:scripts/count-failures.sh",
-      "path": ".agents/plugins/loop-breaker/scripts/count-failures.sh",
+      "path": "src/plugins/loop-breaker/scripts/count-failures.sh",
       "ownership": "internal",
       "language": "shell",
       "build": "shell-validated",
@@ -421,7 +437,7 @@
     {
       "kind": "script",
       "name": "loop-breaker:src/audit.ts",
-      "path": ".agents/plugins/loop-breaker/src/audit.ts",
+      "path": "src/app/loop-breaker/src/audit.ts",
       "ownership": "internal",
       "language": "typescript",
       "build": "bundle",
@@ -431,7 +447,7 @@
     {
       "kind": "script",
       "name": "loop-breaker:src/counters.ts",
-      "path": ".agents/plugins/loop-breaker/src/counters.ts",
+      "path": "src/app/loop-breaker/src/counters.ts",
       "ownership": "internal",
       "language": "typescript",
       "build": "bundle",
@@ -441,7 +457,7 @@
     {
       "kind": "script",
       "name": "loop-breaker:src/db/index.ts",
-      "path": ".agents/plugins/loop-breaker/src/db/index.ts",
+      "path": "src/app/loop-breaker/src/db/index.ts",
       "ownership": "internal",
       "language": "typescript",
       "build": "bundle",
@@ -451,7 +467,7 @@
     {
       "kind": "script",
       "name": "loop-breaker:src/db/schema.ts",
-      "path": ".agents/plugins/loop-breaker/src/db/schema.ts",
+      "path": "src/app/loop-breaker/src/db/schema.ts",
       "ownership": "internal",
       "language": "typescript",
       "build": "bundle",
@@ -461,7 +477,7 @@
     {
       "kind": "script",
       "name": "loop-breaker:src/guidance.ts",
-      "path": ".agents/plugins/loop-breaker/src/guidance.ts",
+      "path": "src/app/loop-breaker/src/guidance.ts",
       "ownership": "internal",
       "language": "typescript",
       "build": "bundle",
@@ -471,7 +487,7 @@
     {
       "kind": "script",
       "name": "loop-breaker:src/index.ts",
-      "path": ".agents/plugins/loop-breaker/src/index.ts",
+      "path": "src/app/loop-breaker/src/index.ts",
       "ownership": "internal",
       "language": "typescript",
       "build": "bundle",
@@ -481,7 +497,7 @@
     {
       "kind": "script",
       "name": "loop-breaker:src/patterns.ts",
-      "path": ".agents/plugins/loop-breaker/src/patterns.ts",
+      "path": "src/app/loop-breaker/src/patterns.ts",
       "ownership": "internal",
       "language": "typescript",
       "build": "bundle",
@@ -491,7 +507,7 @@
     {
       "kind": "script",
       "name": "loop-breaker:tests/test-plugin.sh",
-      "path": ".agents/plugins/loop-breaker/tests/test-plugin.sh",
+      "path": "src/app/loop-breaker/tests/test-plugin.sh",
       "ownership": "internal",
       "language": "shell",
       "build": "shell-validated",
@@ -501,7 +517,7 @@
     {
       "kind": "plugin",
       "name": "loop-gate",
-      "path": ".agents/plugins/loop-gate",
+      "path": "src/plugins/loop-gate",
       "ownership": "internal",
       "language": "mixed",
       "build": "validate-and-package",
@@ -511,7 +527,7 @@
     {
       "kind": "script",
       "name": "loop-gate:scripts/gate-reviewed.sh",
-      "path": ".agents/plugins/loop-gate/scripts/gate-reviewed.sh",
+      "path": "src/plugins/loop-gate/scripts/gate-reviewed.sh",
       "ownership": "internal",
       "language": "shell",
       "build": "shell-validated",
@@ -521,7 +537,7 @@
     {
       "kind": "script",
       "name": "loop-gate:tests/test-plugin.sh",
-      "path": ".agents/plugins/loop-gate/tests/test-plugin.sh",
+      "path": "src/plugins/loop-gate/tests/test-plugin.sh",
       "ownership": "internal",
       "language": "shell",
       "build": "shell-validated",
@@ -531,7 +547,7 @@
     {
       "kind": "plugin",
       "name": "prevent-catastrophe",
-      "path": ".agents/plugins/prevent-catastrophe",
+      "path": "src/plugins/prevent-catastrophe",
       "ownership": "internal",
       "language": "mixed",
       "build": "validate-and-package",
@@ -541,7 +557,7 @@
     {
       "kind": "script",
       "name": "prevent-catastrophe:scripts/guard-shell.sh",
-      "path": ".agents/plugins/prevent-catastrophe/scripts/guard-shell.sh",
+      "path": "src/plugins/prevent-catastrophe/scripts/guard-shell.sh",
       "ownership": "internal",
       "language": "shell",
       "build": "shell-validated",
@@ -551,7 +567,7 @@
     {
       "kind": "script",
       "name": "prevent-catastrophe:tests/test-plugin.sh",
-      "path": ".agents/plugins/prevent-catastrophe/tests/test-plugin.sh",
+      "path": "src/plugins/prevent-catastrophe/tests/test-plugin.sh",
       "ownership": "internal",
       "language": "shell",
       "build": "shell-validated",

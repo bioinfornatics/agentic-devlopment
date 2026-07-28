@@ -15,7 +15,7 @@ class BuildTest(unittest.TestCase):
    out=Path(t)/'b';self.assertEqual(self.runbuild(out).returncode,0);m=json.loads((out/'build-manifest.json').read_text());src=json.loads((ROOT/'harness/source-manifest.json').read_text());self.assertEqual({x['id'] for x in m['components']},{x['id'] for x in src['components'] if x['ownership']=='internal'})
  def test_build_does_not_modify_plugin_source(self):
   import hashlib
-  src=ROOT/'.agents/plugins/loop-breaker'
+  src=ROOT/'src/app/loop-breaker'
   def digest():
    h=hashlib.sha256()
    for p in sorted(x for x in src.rglob('*') if x.is_file() and 'node_modules' not in x.parts and 'bin' not in x.parts and 'data' not in x.parts):h.update(p.relative_to(src).as_posix().encode());h.update(p.read_bytes())

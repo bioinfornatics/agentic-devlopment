@@ -22,14 +22,34 @@
           "kind",
           "name",
           "ownership",
-          "currentRuntimePath",
           "targetSourcePath",
           "migrationState",
           "packagePolicy",
           "targets",
           "dependencies",
           "evaluation"
-        ]
+        ],
+        "properties": {
+          "currentRuntimePath": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "targetSourcePath": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "migrationState": {
+            "enum": [
+              "pending-git-move",
+              "canonical-source",
+              "external-lock-only"
+            ]
+          }
+        }
       }
     },
     "pathSemantics": {

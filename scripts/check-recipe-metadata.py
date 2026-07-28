@@ -51,13 +51,13 @@ if metadata is not None and schema is not None:
 
 if isinstance(metadata, dict):
     agents = metadata.get("agents", {})
-    agent_names = sorted(path.stem for path in (ROOT / ".agents/agents").glob("*.md"))
-    skill_names = sorted(path.name for path in (ROOT / ".agents/skills").iterdir() if path.is_dir())
+    agent_names = sorted(path.stem for path in (ROOT / "src/agents").glob("*.md"))
+    skill_names = sorted(path.name for path in (ROOT / "src/skills").iterdir() if path.is_dir())
     if not isinstance(agents, dict) or set(agents) != set(agent_names):
         names = sorted(agents) if isinstance(agents, dict) else []
         ERRORS.append(f"metadata agents {names} != active agents {agent_names}")
     entries = metadata.get("recipes", {})
-    recipe_paths = sorted((ROOT / ".goose/recipes").glob("*.yaml"))
+    recipe_paths = sorted((ROOT / "src/recipes").glob("*.yaml"))
     active_names = [path.stem for path in recipe_paths]
     if not isinstance(entries, dict) or set(entries) != set(active_names):
         names = sorted(entries) if isinstance(entries, dict) else []
@@ -67,7 +67,7 @@ if isinstance(metadata, dict):
         item = entries.get(name) if isinstance(entries, dict) else None
         if not isinstance(item, dict):
             continue
-        expected_path = f".goose/recipes/{name}.yaml"
+        expected_path = f"src/recipes/{name}.yaml"
         if item.get("source_path") != expected_path:
             ERRORS.append(f"{name} source_path must be {expected_path}")
         try:

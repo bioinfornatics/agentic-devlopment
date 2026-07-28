@@ -4,7 +4,7 @@ name: Eval Hub
 "on":
   pull_request:
     paths:
-      - "apps/**"
+      - "src/app/**"
       - ".github/workflows/eval-hub.yml"
   push:
     branches: [main]
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: apps
+        working-directory: src/app
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,7 +41,7 @@ jobs:
         with:
           node-version: ${{ steps.node-version.outputs.version }}
           cache: pnpm
-          cache-dependency-path: apps/pnpm-lock.yaml
+          cache-dependency-path: src/app/pnpm-lock.yaml
 
       - name: Install workspace dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts

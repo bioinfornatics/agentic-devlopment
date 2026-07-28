@@ -24,7 +24,7 @@ class RecipeMetadataValidationTest(unittest.TestCase):
             target = self.root / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / relative, target)
-        for relative in (".goose/recipes", ".agents/agents", ".agents/skills"):
+        for relative in ("src/recipes", "src/agents", "src/skills"):
             shutil.copytree(ROOT / relative, self.root / relative)
 
     def tearDown(self) -> None:
@@ -71,13 +71,13 @@ class RecipeMetadataValidationTest(unittest.TestCase):
     def test_skill_path_reference_is_rejected(self) -> None:
         result = self.mutate_metadata(
             lambda data: data["recipes"]["implement"]["controller_skills"][0].update(
-                skill=".agents/skills/task-framing"
+                skill="src/skills/task-framing"
             )
         )
         self.assert_rejected(result, "name-only")
 
     def test_missing_skills_extension_is_rejected(self) -> None:
-        path = self.root / ".goose/recipes/implement.yaml"
+        path = self.root / "src/recipes/implement.yaml"
         extension = "  - type: platform\n    name: skills\n"
         text = path.read_text()
         self.assertIn(extension, text)

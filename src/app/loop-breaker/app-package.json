@@ -1,0 +1,9 @@
+{
+  "name": "loop-breaker",
+  "kind": "plugin-binary",
+  "entrypoint": "src/index.ts",
+  "targets": ["linux-x86_64"],
+  "outputs": [
+    {"runtimePath": ".agents/plugins/loop-breaker/bin/loop-breaker", "packageProfile": "core-harness-plugin", "source": "bin/loop-breaker"}
+  ]
+}

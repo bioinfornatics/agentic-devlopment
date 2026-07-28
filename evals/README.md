@@ -59,7 +59,7 @@ Prefer the smallest configuration that is non-inferior on quality and strictly b
 Validate the minimal suite without invoking a provider:
 
 ~~~bash
-cd apps/eval-hub
+cd src/app/eval-hub
 pnpm build
 node dist/index.js --benchmark-minimal
 node dist/index.js --benchmark-minimal --json ../../dist/evals/minimal-harness/catalog.json

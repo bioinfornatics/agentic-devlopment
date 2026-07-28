@@ -40,7 +40,7 @@ class EvalCorpusIntegrationTest(unittest.TestCase):
                         self.assertGreater(scenario["max_turns"], 0, label)
 
     def test_layer_references_resolve_to_installed_harness_assets(self) -> None:
-        asset_dirs = {"skills": ROOT / ".agents" / "skills", "agents": ROOT / ".agents" / "agents"}
+        asset_dirs = {"skills": ROOT / "src" / "skills", "agents": ROOT / "src" / "agents"}
         for kind in KINDS:
             for path in self.eval_files(kind):
                 scenarios = json.loads(path.read_text(encoding="utf-8"))
@@ -51,6 +51,9 @@ class EvalCorpusIntegrationTest(unittest.TestCase):
                         for ref in refs:
                             target = asset_dir / ref
                             exists = target.is_dir() if layer == "skills" else target.with_suffix(".md").is_file()
+                            if layer == "skills" and not exists:
+                                lock = json.loads((ROOT / "harness/external-skills.lock.json").read_text())
+                                exists = any(item["active"] and item["name"] == ref for item in lock["skills"])
                             self.assertTrue(exists, f"{path}:{index} references missing {layer[:-1]} {ref!r}")
                     if kind == "agents":
                         self.assertIn("skills", scenario, f"{path}:{index}")

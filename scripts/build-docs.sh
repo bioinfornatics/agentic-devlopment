@@ -100,20 +100,20 @@ echo "wrote $HTML_OUT"
 
 # KG visualizer
 mkdir -p dist/kg
-cp apps/kg-visualizer/src/app.html dist/kg/index.html
+cp src/app/kg-visualizer/src/app.html dist/kg/index.html
 echo "wrote dist/kg/index.html"
 
 # KG pipeline — refresh + reason
-if [ -f "apps/kg/dist/cli.js" ] && [ -d ".knowledge" ]; then
-  node apps/kg/dist/cli.js bootstrap > /dev/null 2>&1 && echo "KG bootstrapped"
-  node apps/kg/dist/cli.js reason > /dev/null 2>&1 && echo "KG reasoned"
+if [ -f "src/app/kg/dist/cli.js" ] && [ -d ".knowledge" ]; then
+  node src/app/kg/dist/cli.js bootstrap > /dev/null 2>&1 && echo "KG bootstrapped"
+  node src/app/kg/dist/cli.js reason > /dev/null 2>&1 && echo "KG reasoned"
 fi
 echo "wrote $HTML_INDEX"
 
 # Build eval trend dashboard through the TypeScript eval-hub CLI.
-if [ -d apps/eval-hub/node_modules ]; then
+if [ -d src/app/eval-hub/node_modules ]; then
   (cd apps && pnpm --filter @harness/eval-hub build >/dev/null)
-  node apps/eval-hub/dist/index.js --report || echo warning: eval report unavailable >&2
+  node src/app/eval-hub/dist/index.js --report || echo warning: eval report unavailable >&2
 else
   echo warning: eval-hub dependencies not installed - skipping trend report >&2
 fi

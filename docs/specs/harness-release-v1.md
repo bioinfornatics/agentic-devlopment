@@ -21,7 +21,7 @@ Eval Hub is not part of the release. Neither are applications, evaluation corpor
 
 ## Layout
 
-source: .agents plus .goose/recipes plus harness manifests
+source: src/{agents,skills,recipes,plugins,app} plus harness manifests
 resolve: build/harness/resolve/<lock-digest>
 build: build/harness/components/<target>
 package: dist/harness/<version>/<target>
@@ -37,7 +37,7 @@ harness/runtime-inventory.json is the machine-readable inventory. Every runtime 
 
 ## Goose discovery evidence
 
-Project sources are discovered from .agents/skills, .agents/agents, .agents/plugins, and .goose/recipes, as documented in docs/reference/use-cases/01-init-project.md, docs/reference/getting-started.md, and ADR-008. Installed releases retain these directory shapes through installer-managed activation. Task F must prove the supported activation mechanism with a clean HOME and XDG probe; this spec assumes no undocumented Goose environment variable.
+Canonical sources live under src; projected runtime assets are discovered from .agents/skills, .agents/agents, .agents/plugins, and .goose/recipes, as documented in docs/reference/use-cases/01-init-project.md, docs/reference/getting-started.md, and ADR-008. Installed releases retain these directory shapes through installer-managed activation. Task F must prove the supported activation mechanism with a clean HOME and XDG probe; this spec assumes no undocumented Goose environment variable.
 
 ## Ownership
 

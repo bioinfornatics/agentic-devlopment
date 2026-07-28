@@ -119,7 +119,7 @@ Layer 0: GOOSE          Runtime, tools, sessions, extensions and subagents
 <!-- BEGIN GENERATED: agents-table -->
 ## Named agents (6)
 
-Named agents in `.agents/agents/` — invoke with Goose Summon natural language:
+Named agent sources in `src/agents/` — invoke with Goose Summon natural language:
 `load agent <name>` (in-session) or `delegate task bd-xxx and into those task load agent <name>` (isolated).
 
 | Agent | Role | Model |
@@ -133,22 +133,23 @@ Named agents in `.agents/agents/` — invoke with Goose Summon natural language:
 <!-- END GENERATED: agents-table -->
 
 <!-- BEGIN GENERATED: skills-table -->
-## Skills (12)
+## Skills (13)
 
 | Skill | Purpose |
 |-------|---------|
-| `domain-modeling` | Build and sharpen a project's domain model. |
 | `evidence-verification` | Evaluate engineering work against predefined acceptance criteria using reproducible eviden |
-| `grill-me` | A relentless interview to sharpen a plan or design. |
-| `grill-with-docs` | A relentless interview to sharpen a plan or design, which also creates docs (ADR's and glo |
-| `grilling` | Grill the user relentlessly about a plan, decision, or idea. |
 | `interface-quality` | Shared quality floor for UI evaluation: evidence labeling, anti-generic patterns, and stru |
 | `loop-control` | Govern a Beads-backed engineering loop with explicit progress, budgets, dependencies, and |
 | `output-discipline` | Keep tool outputs within token budget. |
 | `task-framing` | Convert an engineering objective into the smallest independently verifiable Beads task contract. |
 | `ui-design` | Evaluate visual design decisions: design system token compliance, visual hierarchy, spacin |
 | `ux-principles` | Evaluate user experience: journey completion, interaction state coverage (loading, empty, |
-| `wcag-accessibility-audit` | Formal WCAG 2. |
+| `domain-modeling` | External locked skill from `mattpocock/skills`. |
+| `grill-me` | External locked skill from `mattpocock/skills`. |
+| `grill-with-docs` | External locked skill from `mattpocock/skills`. |
+| `grilling` | External locked skill from `mattpocock/skills`. |
+| `skill-creator` | External locked skill from `anthropics/skills`. |
+| `wcag-accessibility-audit` | External locked skill from `mastepanoski/claude-skills`. |
 <!-- END GENERATED: skills-table -->
 
 ## Recipes
@@ -237,7 +238,7 @@ goose recipe validate .goose/recipes/loop-engineering.yaml
 Validate all recipes:
 
 ```bash
-find .goose/recipes -name '*.yaml' -print -exec goose recipe validate {} \;
+find src/recipes -name '*.yaml' -print -exec goose recipe validate {} \;
 ```
 
 Check custom-agent frontmatter:
@@ -308,4 +309,4 @@ See [`evals/README.md`](evals/README.md).
 This pack is a local operational configuration. Adapt it to the governance, security, and delivery constraints of each project.
 ## Optional Eval Hub companion
 
-Eval Hub is distributed separately from the core harness as an optional Bun-packaged application plus the `eval-hub` Agent Skill. See `docs/specs/eval-hub-skill-package.md` and `companions/eval-hub/skill/SKILL.md`. The core release remains evaluator-independent.
+Eval Hub is distributed separately from the core harness as an optional Bun-packaged application plus the `eval-hub` Agent Skill. See `docs/specs/eval-hub-skill-package.md` and `src/app/eval-hub/companion/skill/SKILL.md`. The core release remains evaluator-independent.

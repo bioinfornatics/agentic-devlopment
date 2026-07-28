@@ -24,15 +24,15 @@ When release is blocked, run these checks directly:
 
 ```bash
 # 1. Recipe validation
-find .goose/recipes -name '*.yaml' -exec goose recipe validate {} \;
+find src/recipes -name '*.yaml' -exec goose recipe validate {} \;
 
 # 2. Plugin tests
 for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker; do
-  sh .agents/plugins/$p/tests/test-plugin.sh
+  sh src/plugins/$p/tests/test-plugin.sh
 done
 
 # 3. KG bootstrap dry-run
-node apps/kg/dist/cli.js bootstrap --dry-run
+node src/app/kg/dist/cli.js bootstrap --dry-run
 
 # 4. Check consistency (metadata, recipe contracts)
 python3 scripts/check-recipe-metadata.py

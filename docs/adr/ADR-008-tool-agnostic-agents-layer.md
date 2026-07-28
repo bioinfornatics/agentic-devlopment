@@ -1,6 +1,6 @@
 # ADR-008 : Couche `.agents/` outil-agnostique comme source canonique
 
-Skills, plugins et agents vivent dans `.agents/` (outil-agnostique), pas dans `.goose/`. L'outil `npx skills add` crée des liens symboliques vers les répertoires outil-spécifiques (`.goose/skills/`, `.claude/skills/`, etc.). Les recettes seules restent dans `.goose/recipes/` car leur format YAML est spécifique à Goose.
+Skills, plugins et agents vivent dans `.agents/` (outil-agnostique), pas dans `.goose/`. L'outil `npx skills add` crée des liens symboliques vers les répertoires outil-spécifiques (`.goose/skills/`, `.claude/skills/`, etc.). Les recettes seules restent dans `src/recipes/` (source; `.goose/recipes/` at runtime) car leur format YAML est spécifique à Goose.
 
 ## Considered Options
 
@@ -12,4 +12,4 @@ Skills, plugins et agents vivent dans `.agents/` (outil-agnostique), pas dans `.
 - Un nouveau contributeur installe les skills avec `npx skills add`, pas en modifiant `~/.config/goose/config.yaml`.
 - Goose découvre les artefacts en scannant deux niveaux : `~/.agents/` (utilisateur) puis `<project>/.agents/` (projet) — espace projet prioritaire.
 - Les artefacts sont référencés par **nom uniquement**, jamais par chemin.
-- Les recettes (`.goose/recipes/`) restent outil-spécifiques et ne sont pas distribuées via ce mécanisme.
+- Les recettes (`src/recipes/` (source; `.goose/recipes/` at runtime)) restent outil-spécifiques et ne sont pas distribuées via ce mécanisme.

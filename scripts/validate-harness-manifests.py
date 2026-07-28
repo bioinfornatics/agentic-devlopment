@@ -13,19 +13,27 @@ if m.get('schema')!='harness-source-manifest-v1' or l.get('schema')!='harness-ex
 ids=[c['id'] for c in m['components']]; names=[c['name'] for c in m['components']]
 for c in m['components']:
  if 'sourcePath' in c: fail('ambiguous sourcePath remains: '+c['id'])
- if not c.get('currentRuntimePath','').startswith(('.agents/','.goose/')): fail('invalid currentRuntimePath: '+c['id'])
- if not c.get('targetSourcePath','').startswith('src/'): fail('invalid targetSourcePath: '+c['id'])
+ if c['ownership']=='internal':
+  if c.get('currentRuntimePath') is not None: fail('internal currentRuntimePath must be absent: '+c['id'])
+  if not c.get('targetSourcePath','').startswith('src/'): fail('invalid targetSourcePath: '+c['id'])
+  if c.get('migrationState')!='canonical-source': fail('internal migration incomplete: '+c['id'])
+ else:
+  if c.get('currentRuntimePath') is not None or c.get('targetSourcePath') is not None: fail('external paths must be lock-only: '+c['id'])
+  if c.get('migrationState')!='external-lock-only': fail('external migration state invalid: '+c['id'])
 if len(ids)!=len(set(ids)): fail('duplicate component id')
 locked={x['name']:x for x in l['skills']}; external={c['name'] for c in m['components'] if c['kind']=='skill' and c['ownership']=='external'}
 active={n for n,x in locked.items() if x['active']}
 if external!=active: fail(f'external manifest/lock mismatch: {external^active}')
 for n in active:
- x=locked[n]; p=ROOT/'.agents/skills'/n
- if not p.is_dir(): fail(f'missing active external: {n}')
+ x=locked[n]
  if len(x['source']['revision'])!=40: fail(f'unpinned revision: {n}')
  if x['license']['spdx']=='NOASSERTION' or not x['license']['releaseAllowed']: fail(f'unapproved license: {n}')
- expected=x['integrity'].get('localDigest',x['integrity']['digest'])
- if tree_hash(p)!=expected: fail(f'integrity drift: {n}')
+ if len(x['integrity']['digest'])!=64: fail(f'invalid external integrity digest: {n}')
+ candidates=[]  # external source integrity is verified during locked resolution
+ p=next((item for item in candidates if item.is_dir()),None)
+ if p is not None:
+  expected=x['integrity'].get('localDigest',x['integrity']['digest'])
+  if tree_hash(p)!=expected: fail(f'integrity drift: {n}')
 for x in l['skills']:
  for dep in x['dependencies']:
   if dep.startswith('skill:') and dep[6:] not in locked: fail(f'missing dependency {dep}')

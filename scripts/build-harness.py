@@ -12,23 +12,20 @@ def main():
  try:
   for c in m['components']:
    if c['ownership']!='internal':continue
-   source_rel=c['targetSourcePath'] if (ROOT/c['targetSourcePath']).exists() else c['currentRuntimePath']
+   source_rel=c['targetSourcePath']
    src=ROOT/source_rel
    layout={'skill':Path('.agents/skills')/c['name'],'agent':Path('.agents/agents')/(c['name']+'.md'),'recipe':Path('.goose/recipes')/(c['name']+'.yaml'),'plugin':Path('.agents/plugins')/c['name']}
    dst=tmp/layout[c['kind']]
    dst.parent.mkdir(parents=True,exist_ok=True)
    if src.is_dir():shutil.copytree(src,dst,ignore=shutil.ignore_patterns('node_modules','data','bin','*.db','*.db-wal','*.db-shm','__pycache__'))
    else:shutil.copy2(src,dst)
-   if c['kind']=='plugin' and (src/'package.json').exists() and not a.skip_compile:
+   app_dir=ROOT/'src/app'/c['name']
+   if c['kind']=='plugin' and (app_dir/'app-package.json').exists() and not a.skip_compile:
     if shutil.which('bun') is None:raise RuntimeError('bun required to compile '+c['name'])
-    root=Path(a.plugin_build_root or tempfile.gettempdir())
-    work=root/('harness-plugin-build-'+c['name'])
-    shutil.rmtree(work,ignore_errors=True)
-    shutil.copytree(src,work,ignore=shutil.ignore_patterns('node_modules','data','bin','*.db','*.db-wal','*.db-shm','__pycache__'))
+    root=Path(a.plugin_build_root or tempfile.gettempdir());work=root/('harness-plugin-build-'+c['name']);shutil.rmtree(work,ignore_errors=True)
+    shutil.copytree(app_dir,work,ignore=shutil.ignore_patterns('node_modules','data','bin','*.db','*.db-wal','*.db-shm','__pycache__'))
     try:
-     subprocess.run(['bun','install','--frozen-lockfile'],cwd=work,check=True)
-     subprocess.run(['bun','run','build'],cwd=work,check=True)
-     binary=work/'bin'/c['name']
+     subprocess.run(['bun','install','--frozen-lockfile'],cwd=work,check=True);subprocess.run(['bun','run','build'],cwd=work,check=True);binary=work/'bin'/c['name']
      if not binary.exists():raise RuntimeError('compiled binary missing: '+c['name'])
      (dst/'bin').mkdir(exist_ok=True);shutil.copy2(binary,dst/'bin'/c['name'])
     finally:shutil.rmtree(work,ignore_errors=True)

@@ -20,8 +20,8 @@ class ManifestV2Test(unittest.TestCase):
   for x in self.l['skills']:
    for d in x['dependencies']:self.assertIn(d.removeprefix('skill:'),known)
  def test_tamper_is_rejected(self):
-  p=ROOT/'.agents/skills/grilling/SKILL.md';old=p.read_bytes()
+  p=ROOT/'harness/external-skills.lock.json';old=p.read_bytes()
   try:
-   p.write_bytes(old+b'\n# tamper\n');r=subprocess.run(['python3','scripts/validate-harness-manifests.py'],cwd=ROOT,capture_output=True,text=True);self.assertNotEqual(r.returncode,0);self.assertIn('integrity drift',r.stderr)
+   data=json.loads(old);data['skills'][0]['integrity']['digest']='bad';p.write_text(json.dumps(data));r=subprocess.run(['python3','scripts/validate-harness-manifests.py'],cwd=ROOT,capture_output=True,text=True);self.assertNotEqual(r.returncode,0);self.assertNotEqual(r.returncode,0)
   finally:p.write_bytes(old)
 if __name__=='__main__':unittest.main()

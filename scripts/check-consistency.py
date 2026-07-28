@@ -35,15 +35,15 @@ AGENT_RE = re.compile(r"[Ll]oad\s+agent\s+([a-z][a-z0-9-]+)", re.IGNORECASE)
 def actual_skills() -> list[str]:
     """Domain skills present on disk (excludes skill-creator and README)."""
     return sorted(
-        p.name for p in (ROOT / ".agents/skills").iterdir()
+        p.name for p in (ROOT / "src/skills").iterdir()
         if p.is_dir() and p.name not in ("skill-creator",)
     )
 
 def actual_agents() -> list[str]:
-    return sorted(p.stem for p in (ROOT / ".agents/agents").glob("*.md"))
+    return sorted(p.stem for p in (ROOT / "src/agents").glob("*.md"))
 
 def actual_recipes() -> list[str]:
-    return sorted(p.stem for p in (ROOT / ".goose/recipes").glob("*.yaml")
+    return sorted(p.stem for p in (ROOT / "src/recipes").glob("*.yaml")
                   if p.parent.name != "subrecipes")
 
 def eval_json(kind: str, name: str) -> list[dict]:
@@ -53,7 +53,12 @@ def eval_json(kind: str, name: str) -> list[dict]:
 # ── 1. SKILL COUNTS ───────────────────────────────────────────────────────────
 print("\n── Skill counts ──────────────────────────────────────────────────────")
 skills = actual_skills()
-n = len(skills)
+# Documentation/runtime inventory includes lock-resolved external skills.
+_manifest = json.loads((ROOT / "harness/source-manifest.json").read_text())
+expected_skills = {c["name"] for c in _manifest["components"] if c["kind"] == "skill" and c["ownership"] == "internal"}
+external_skills = {c["name"] for c in _manifest["components"] if c["kind"] == "skill" and c["ownership"] == "external"}
+documented_skills = sorted(expected_skills | external_skills)
+n = len(documented_skills)
 
 readme = (ROOT / "README.md").read_text()
 m = re.search(r"## Skills \((\d+)\)", readme)
@@ -80,10 +85,6 @@ else:
     ok("Canonical Loop Engineering spec exists")
 
 # Ownership comes from the release source manifest; never hard-code external names.
-_manifest = json.loads((ROOT / "harness/source-manifest.json").read_text())
-expected_skills = {c["name"] for c in _manifest["components"] if c["kind"] == "skill" and c["ownership"] == "internal"}
-external_skills = {c["name"] for c in _manifest["components"] if c["kind"] == "skill" and c["ownership"] == "external"}
-active_expected_skills = (expected_skills | external_skills) - {"skill-creator"}  # packaging meta-skill excluded by actual_skills()
 expected_agents = {
     "repository-researcher",
     "change-builder",
@@ -94,11 +95,11 @@ expected_agents = {
 }
 expected_recipes = {"loop-engineering", "implement", "research", "verify"}
 expected_plugins = {"prevent-catastrophe", "loop-gate", "beads-telemetry", "loop-breaker"}
-if set(skills) != active_expected_skills:
-    fail(f"Active skills drift: {skills}")
+if set(skills) != expected_skills:
+    fail(f"Internal source skills drift: {skills}")
 else:
-    ok(f"Active skill inventory = {len(expected_skills)} internal + {len(external_skills)} external")
-plugins = sorted(p.parent.name for p in (ROOT / ".agents/plugins").glob("*/plugin.json"))
+    ok(f"Skill inventory = {len(expected_skills)} internal sources + {len(external_skills)} external locks")
+plugins = sorted(p.parent.name for p in (ROOT / "src/plugins").glob("*/plugin.json"))
 if set(plugins) != expected_plugins:
     fail(f"Active plugins drift: {plugins}")
 else:
@@ -106,11 +107,11 @@ else:
 
 # ── 2. README SKILLS TABLE ────────────────────────────────────────────────────
 print("\n── README skills table ───────────────────────────────────────────────")
-for skill in skills:
+for skill in documented_skills:
     if f"`{skill}`" not in readme:
         fail(f"README.md missing skill row: {skill}")
-ok_count = sum(1 for s in skills if f"`{s}`" in readme)
-ok(f"README.md skill rows present: {ok_count}/{n}")
+ok_count = sum(1 for item in documented_skills if f"`{item}`" in readme)
+ok(f"README.md skill rows present: {ok_count}/{len(documented_skills)}")
 
 # ── 4. EVAL JSON FOR EACH SKILL ───────────────────────────────────────────────
 print("\n── Skill eval coverage ───────────────────────────────────────────────")
@@ -128,7 +129,7 @@ print("\n── Skill dependency validation ────────────
 import yaml
 skill_deps = {}
 for skill in skills:
-    skill_path = ROOT / ".agents/skills" / skill / "SKILL.md"
+    skill_path = ROOT / "src/skills" / skill / "SKILL.md"
     if skill_path.exists():
         content = skill_path.read_text()
         # Extract YAML frontmatter
@@ -212,7 +213,7 @@ else:
 print("\n── Agent skill contracts (AC-AGENT-02) ──────────────────────────────")
 _contract_ok = True
 for agent in agents:
-    body = (ROOT / ".agents/agents" / f"{agent}.md").read_text()
+    body = (ROOT / "src/agents" / f"{agent}.md").read_text()
     required_markers = (
         "## Required Skill Load",
         "Mandatory baseline:",
@@ -235,7 +236,7 @@ print("\n── Skill supporting file integrity (AC-SKILL-02) ──────
 import re as _re
 _files_ok = True
 for skill_name in actual_skills():
-    skill_dir = ROOT / ".agents" / "skills" / skill_name
+    skill_dir = ROOT / "src" / "skills" / skill_name
     skill_md  = skill_dir / "SKILL.md"
     if not skill_md.exists():
         continue
@@ -247,7 +248,7 @@ for skill_name in actual_skills():
     for ref in _re.findall(r'load\s+`((?:references|scripts|assets)/[^`<>]+)`', body):
         if not (skill_dir / ref).exists():
             fail(f"AC-SKILL-02: {skill_name}/SKILL.md references '{ref}' "
-                 f"but .agents/skills/{skill_name}/{ref} does not exist")
+                 f"but src/skills/{skill_name}/{ref} does not exist")
             _files_ok = False
 
     # Pattern B: load skill: <skill-name>/references|scripts|assets/<file>
@@ -256,10 +257,10 @@ for skill_name in actual_skills():
         r'load\s+skill[:\s]+`?([a-z][a-z0-9-]+/(?:references|scripts|assets)/[^\s`|\'\"]+)`?', body
     ):
         target_skill, sub_path = full_ref.split("/", 1)
-        target = ROOT / ".agents" / "skills" / target_skill / sub_path
+        target = ROOT / "src" / "skills" / target_skill / sub_path
         if not target.exists():
             fail(f"AC-SKILL-02: {skill_name}/SKILL.md references "
-                 f"'{full_ref}' but .agents/skills/{target_skill}/{sub_path} does not exist")
+                 f"'{full_ref}' but src/skills/{target_skill}/{sub_path} does not exist")
             _files_ok = False
 
     # Layout check: executable files in skill root instead of scripts/ subdir.
@@ -278,7 +279,7 @@ print("\n── Artifact size calibration (HJ052-HJ054) ────────
 for skill_name in actual_skills():
     if skill_name in external_skills:
         continue
-    skill_md = ROOT / ".agents" / "skills" / skill_name / "SKILL.md"
+    skill_md = ROOT / "src" / "skills" / skill_name / "SKILL.md"
     if not skill_md.exists():
         continue
     lines = skill_md.read_text().splitlines()
@@ -299,7 +300,7 @@ for skill_name in actual_skills():
 
 # Agents: full .md file
 for agent in agents:
-    agent_md = ROOT / ".agents" / "agents" / f"{agent}.md"
+    agent_md = ROOT / "src" / "agents" / f"{agent}.md"
     n = len(agent_md.read_text().splitlines())
     if n < 80:
         fail(f"HJ053: {agent}.md is {n} lines — too short (< 80); required sections cannot fit")
@@ -314,7 +315,7 @@ ok("Artifact size calibration checked (skills + agents)")
 print("\n── Skill conditional-load sections (AC-SKILL-04 / HJ055) ───────────")
 _cond_ok = True
 for skill_name in actual_skills():
-    skill_dir = ROOT / ".agents" / "skills" / skill_name
+    skill_dir = ROOT / "src" / "skills" / skill_name
     ref_dir   = skill_dir / "references"
     skill_md  = skill_dir / "SKILL.md"
     if not ref_dir.is_dir() or not skill_md.exists():
@@ -353,7 +354,7 @@ if _cond_ok:
 print("\n── Skill frontmatter spec (AC-SKILL-05 / HJ056-HJ057) ──────────────")
 _fm_ok = True
 for skill_name in actual_skills():
-    skill_md = ROOT / ".agents" / "skills" / skill_name / "SKILL.md"
+    skill_md = ROOT / "src" / "skills" / skill_name / "SKILL.md"
     if not skill_md.exists():
         continue
     body = skill_md.read_text()
@@ -413,7 +414,7 @@ for agent in agents:
     if not scenarios:
         warn(f"No eval file: evals/agents/{agent}.json")
         continue
-    agent_body = (ROOT / ".agents/agents" / f"{agent}.md").read_text()
+    agent_body = (ROOT / "src/agents" / f"{agent}.md").read_text()
     declared = set(SKILL_RE.findall(agent_body))
     for i, s in enumerate(scenarios):
         listed = s.get("skills") or []
@@ -444,7 +445,7 @@ for recipe in recipes:
     if not scenarios:
         warn(f"No eval file: evals/recipes/{recipe}.json")
         continue
-    recipe_body = (ROOT / ".goose/recipes" / f"{recipe}.yaml").read_text()
+    recipe_body = (ROOT / "src" / "recipes" / f"{recipe}.yaml").read_text()
     decl_agents = set(AGENT_RE.findall(recipe_body))
     decl_skills = set(SKILL_RE.findall(recipe_body))
     for i, s in enumerate(scenarios):
@@ -482,7 +483,7 @@ recipe_skill_markers = (
     "missing optional or dynamic skill",
 )
 for recipe in recipes:
-    body = (ROOT / ".goose/recipes" / f"{recipe}.yaml").read_text()
+    body = (ROOT / "src/recipes" / f"{recipe}.yaml").read_text()
     missing_markers = [marker for marker in recipe_skill_markers if marker not in body]
     if missing_markers:
         fail(f"{recipe}.yaml incomplete delegate skill contract; missing {missing_markers}")
@@ -499,7 +500,7 @@ ok("Active recipe wiring delegated to workflow metadata")
 print("\n── Recipe semantic lint (AD-001 / delegation prose) ─────────────────")
 contradictions = 0
 for recipe in recipes:
-    recipe_path = ROOT / ".goose/recipes" / f"{recipe}.yaml"
+    recipe_path = ROOT / "src/recipes" / f"{recipe}.yaml"
     recipe_body = recipe_path.read_text()
     lower = recipe_body.lower()
     has_none = "delegated/summoned: none" in lower

@@ -20,7 +20,9 @@ class SourceLayoutContractTest(unittest.TestCase):
  def test_manifest_distinguishes_current_runtime_from_target_source(self):
   manifest=json.loads((ROOT/'harness/source-manifest.json').read_text())
   for component in manifest['components']:
-   self.assertNotIn('sourcePath',component);self.assertTrue(component['currentRuntimePath'].startswith(('.agents/','.goose/')));self.assertTrue(component['targetSourcePath'].startswith('src/'));self.assertEqual(component['migrationState'],'pending-git-move')
+   self.assertNotIn('sourcePath',component)
+   if component['ownership']=='internal':self.assertNotIn('currentRuntimePath',component);self.assertTrue(component['targetSourcePath'].startswith('src/'));self.assertEqual(component['migrationState'],'canonical-source')
+   else:self.assertIsNone(component['currentRuntimePath']);self.assertIsNone(component['targetSourcePath']);self.assertEqual(component['migrationState'],'external-lock-only')
  def test_spec_keeps_root_agents_and_goose_operational_only(self):
   s=(ROOT/'docs/specs/source-runtime-separation.md').read_text();self.assertIn('operational outputs only',s);self.assertIn('src/app/<name>/app-package.json',s);self.assertIn('External skills are never canonical source',s)
  def test_json_schema_accepts_source_manifest(self):

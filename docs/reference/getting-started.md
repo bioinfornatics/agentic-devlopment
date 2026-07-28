@@ -72,7 +72,7 @@ bd close <id>         # Mark complete
 
 ### Delegation
 
-Goose agents are discovered automatically from `.agents/agents/`. Active agents:
+Goose agents are discovered automatically from `src/agents/` (source; `.agents/agents/` at runtime). Active agents:
 
 | Name | Role |
 |---|---|

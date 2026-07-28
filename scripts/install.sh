@@ -60,9 +60,10 @@ done
 SCRIPT_DIR="$(cd -P "$(dirname "$script_path")" >/dev/null 2>&1 && pwd)"
 ROOT="$(cd -P "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
 
-SRC_RECIPES="$ROOT/.goose/recipes"
-SRC_SKILLS="$ROOT/.agents/skills"
-SRC_AGENTS="$ROOT/.agents/agents"
+RUNTIME_ROOT="${HARNESS_RUNTIME_ROOT:-$ROOT/build/harness/runtime/current}"
+SRC_RECIPES="$RUNTIME_ROOT/.goose/recipes"
+SRC_SKILLS="$RUNTIME_ROOT/.agents/skills"
+SRC_AGENTS="$RUNTIME_ROOT/.agents/agents"
 DST_RECIPES="$HOME/.config/goose/recipes"
 DST_SKILLS="$HOME/.agents/skills"
 DST_AGENTS="$HOME/.agents/agents"
@@ -308,7 +309,7 @@ if (( VALIDATE )); then
 fi
 
 # Install Goose plugin (hooks) into user plugins directory
-SRC_PLUGINS="$ROOT/.agents/plugins"
+SRC_PLUGINS="$RUNTIME_ROOT/.agents/plugins"
 DST_PLUGINS="$HOME/.agents/plugins"
 if [[ -d "$SRC_PLUGINS" ]]; then
   # Build plugins that declare a bun build script (e.g. loop-breaker → binary)

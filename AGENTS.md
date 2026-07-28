@@ -23,7 +23,7 @@ Generic sequence: Trigger → Planner → Builder → independent Verifier → M
 | **Plugin** | Distributes hooks and scripts by domain (`prevent-catastrophe`, `loop-gate`, `beads-telemetry`, `loop-breaker`) |
 | **Hook** | Triggers checks around lifecycle events (PreToolUse, PostToolUse, Stop) |
 | **MCP** | Acts on external systems (Beads Dolt, eval-hub server) |
-| **Memory / KG** | Persists state and learnings (`.knowledge/`, `apps/kg/`) |
+| **Memory / KG** | Persists state and learnings (`.knowledge/`, `src/app/kg/`) |
 | **Beads** | Maintains backlog, dependencies, and states (canonical control plane) |
 | **Tests / evals** | Produce proof (577+ TypeScript tests, 38-protocol eval catalog) |
 | **Human gate** | Retains human judgement (APPROVE/BLOCK at `36ws.5`-style gates) |
@@ -138,7 +138,7 @@ For skill/agent/recipe changes:
 python3 scripts/generate-tables.py
 for r in loop-engineering implement research verify; do goose recipe validate $r; done
 python3 scripts/check-consistency.py
-node apps/kg/dist/cli.js pipeline
+node src/app/kg/dist/cli.js pipeline
 ~~~
 
 Recipe eval agents arrays list only in-session agents. Summoned agents are not Layer 2 declarations.
@@ -146,11 +146,11 @@ Recipe eval agents arrays list only in-session agents. Summoned agents are not L
 ## Validation
 
 ~~~bash
-find .goose/recipes -name '*.yaml' -exec goose recipe validate {} \;
-for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker; do sh .agents/plugins/$p/tests/test-plugin.sh; done
+find src/recipes -name '*.yaml' -exec goose recipe validate {} \;
+for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker; do sh src/plugins/$p/tests/test-plugin.sh; done
 python3 scripts/check-recipe-metadata.py
 python3 scripts/check-consistency.py
-node apps/kg/dist/cli.js bootstrap --dry-run
+node src/app/kg/dist/cli.js bootstrap --dry-run
 ./scripts/build-docs.sh
 ~~~
 

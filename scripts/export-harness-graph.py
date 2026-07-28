@@ -15,13 +15,13 @@ def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--summary',action='store_true'); args=ap.parse_args(); nodes=[]; edges=[]; seen=set()
     def add(n):
         if n['id'] not in seen: nodes.append(n); seen.add(n['id'])
-    for p in sorted((ROOT/'.agents/skills').iterdir() if (ROOT/'.agents/skills').exists() else []):
+    for p in sorted((ROOT/'src/skills').iterdir() if (ROOT/'src/skills').exists() else []):
         if p.is_dir() and (p/'SKILL.md').exists(): add(node(f'skill:{p.name}','Skill',p.name,p/'SKILL.md',layer='L1'))
-    for p in sorted((ROOT/'.agents/agents').glob('*.md')):
+    for p in sorted((ROOT/'src/agents').glob('*.md')):
         aid=f'agent:{p.stem}'; add(node(aid,'Agent',p.stem,p,layer='L2'))
         for i,line in enumerate(read(p),1):
             for sk in SKILL_RE.findall(line): edges.append(rel('Agent_LOADS_SKILL',aid,f'skill:{sk}',p,i,evidence=line.strip()))
-    for p in sorted((ROOT/'.goose/recipes').glob('*.yaml')):
+    for p in sorted((ROOT/'src/recipes').glob('*.yaml')):
         rid=f'recipe:{p.stem}'; add(node(rid,'Recipe',p.stem,p,layer='L3'))
         if p.stem in PHASES:
             pid=f'phase:{PHASES[p.stem]}'; add(node(pid,'LifecyclePhase',PHASES[p.stem],None,source_kind='inferred',confidence=0.85)); edges.append(rel('Recipe_IMPLEMENTS_PHASE',rid,pid,p,None,0.85,'inferred'))

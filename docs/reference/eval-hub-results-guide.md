@@ -195,7 +195,7 @@ Chercher : est-ce que tous les evalIds ont le même score ? Si oui → grader ou
 
 ```bash
 # Run de base (tous les layers)
-node apps/eval-hub/dist/index.js kind=agents subjects=change-builder,error-analyzer,independent-verifier,repository-researcher mode=layer-delta repetitions=3 maxTurns=40 timeoutMs=900000 ambient=true
+node src/app/eval-hub/dist/index.js kind=agents subjects=change-builder,error-analyzer,independent-verifier,repository-researcher mode=layer-delta repetitions=3 maxTurns=40 timeoutMs=900000 ambient=true
 
 # Résumé rapide d'un run
 python3 -c "
@@ -241,8 +241,8 @@ for f in glob.glob('dist/evals/layered/<TS>/agents/*/*/eval-*/agent_l2/run-1/gra
 
 ## 9. Liens
 
-- Source : `apps/eval-hub/src/domains/execution/executionIntegrity.ts` — mécanisme `inspectTreatmentActivation`
-- Architecture : `apps/eval-hub/ARCHITECTURE.md`
+- Source : `src/app/eval-hub/src/domains/execution/executionIntegrity.ts` — mécanisme `inspectTreatmentActivation`
+- Architecture : `src/app/eval-hub/ARCHITECTURE.md`
 - Evals definitions : `evals/agents/`, `evals/skills/`, `evals/recipes/`
 - Rapport HTML : `dist/evals/layered/<TS>/integrity-report-agents.html`
 
@@ -255,7 +255,7 @@ for f in glob.glob('dist/evals/layered/<TS>/agents/*/*/eval-*/agent_l2/run-1/gra
 **Exemple observé :** IV eval-0 baseline → `turnsUsed: 137`, `maxTurns: 40`  
 → root session ~40 turns + sub-agents collectivement ~97 turns
 
-`maxTurnsReached: true` se déclenche à `turns >= maxTurns` (root boundary), mais le stream continue depuis les sous-sessions en vol. Ce comportement est documenté dans `apps/eval-hub/REVIEW.md §2.1`.
+`maxTurnsReached: true` se déclenche à `turns >= maxTurns` (root boundary), mais le stream continue depuis les sous-sessions en vol. Ce comportement est documenté dans `src/app/eval-hub/REVIEW.md §2.1`.
 
 **Interprétation :** ce n'est pas un bug fonctionnel. Ne pas confondre avec une session bloquée. Si la qualité du run est acceptable (grading non-null), ignorer cet artefact.
 

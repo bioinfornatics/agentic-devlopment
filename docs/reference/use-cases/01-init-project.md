@@ -66,9 +66,9 @@ If the repo is not initialized for Beads, use the project policy for `bd init` /
 | File                                    | Purpose                                   |
 |-----------------------------------------|-------------------------------------------|
 | `AGENTS.md`                             | Agent instructions and session policy     |
-| `.agents/skills/`                       | Project-local reusable skills             |
-| `.agents/agents/`                       | Project-local named subagents             |
-| `.goose/recipes/` or `.agents/recipes/` | Project-local recipes                     |
+| `src/skills/` (internal source; `.agents/skills/` at runtime)                       | Project-local reusable skills             |
+| `src/agents/` (source; `.agents/agents/` at runtime)                       | Project-local named subagents             |
+| `src/recipes/` (source; `.goose/recipes/` at runtime) or `.agents/recipes/` | Project-local recipes                     |
 | `.beads/`                               | Beads database/config/formulas            |
 | `.gooseignore`                          | Paths agents should not inspect or modify |
 

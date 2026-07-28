@@ -82,7 +82,7 @@
       "properties": {
         "source_path": {
           "type": "string",
-          "pattern": "^\\.goose/recipes/[a-z-]+\\.yaml$"
+          "pattern": "^src/recipes/[a-z-]+\\.yaml$"
         },
         "phase": {
           "type": "string",

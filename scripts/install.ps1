@@ -191,9 +191,10 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Root = Split-Path -Parent $ScriptDir
 $Stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 
-$SourceRecipes = Join-Path $Root '.goose/recipes'
-$SourceSkills = Join-Path $Root '.agents/skills'
-$SourceAgents = Join-Path $Root '.agents/agents'
+$RuntimeRoot = if ($env:HARNESS_RUNTIME_ROOT) { $env:HARNESS_RUNTIME_ROOT } else { Join-Path $Root 'build/harness/runtime/current' }
+$SourceRecipes = Join-Path $RuntimeRoot '.goose/recipes'
+$SourceSkills = Join-Path $RuntimeRoot '.agents/skills'
+$SourceAgents = Join-Path $RuntimeRoot '.agents/agents'
 $DestRecipes = Resolve-HomePath '.config/goose/recipes'
 $DestSkills = Resolve-HomePath '.agents/skills'
 $DestAgents = Resolve-HomePath '.agents/agents'
