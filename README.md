@@ -310,3 +310,6 @@ This pack is a local operational configuration. Adapt it to the governance, secu
 ## Optional Eval Hub companion
 
 Eval Hub is distributed separately from the core harness as an optional Bun-packaged application plus the `eval-hub` Agent Skill. See `docs/specs/eval-hub-skill-package.md` and `src/app/eval-hub/companion/skill/SKILL.md`. The core release remains evaluator-independent.
+## Development source vs runtime
+
+Edit harness assets only under `src/agents`, `src/skills`, `src/recipes`, `src/plugins`, and `src/app`. Root `.agents` and `.goose` are generated runtime projections. Bootstrap with `make bootstrap-runtime`; verify with `make verify-runtime`. See `docs/migration/source-runtime-separation.md`.
