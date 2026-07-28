@@ -28,6 +28,8 @@ jobs:
       - name: Rebuild Eval Hub native dependencies
         run: pnpm --dir src/app --filter @harness/eval-hub rebuild better-sqlite3
       - run: pnpm --dir src/app --filter @harness/eval-hub build
+      - name: Bootstrap projected harness runtime
+        run: make bootstrap-runtime
       - name: Resolve release version
         id: release-version
         shell: bash

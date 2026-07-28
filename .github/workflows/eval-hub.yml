@@ -48,6 +48,10 @@ jobs:
       - name: Rebuild Eval Hub native dependency
         run: pnpm --filter @harness/eval-hub rebuild better-sqlite3
 
+      - name: Bootstrap projected harness runtime
+        working-directory: ${{ github.workspace }}
+        run: make bootstrap-runtime
+
       - name: Check native binding
         run: pnpm --filter @harness/eval-hub test:native
 

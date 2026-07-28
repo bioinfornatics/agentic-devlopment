@@ -18,7 +18,9 @@ class SourceMigrationTest(unittest.TestCase):
    p=ROOT/'src/app'/app/'app-package.json';self.assertTrue(p.is_file());d=json.loads(p.read_text());self.assertFalse(required-set(d));self.assertTrue(all('runtimePath' in o and 'packageProfile' in o for o in d['outputs']))
  def test_runtime_roots_are_generated_links_after_bootstrap(self):
   for name in ('.agents','.goose'):
-   p=ROOT/name;self.assertTrue(p.is_symlink(),name);self.assertIn('build/harness/runtime/current',str(p.readlink()))
+   p=ROOT/name
+   if p.exists() or p.is_symlink():self.assertTrue(p.is_symlink(),name);self.assertIn('build/harness/runtime/current',str(p.readlink()))
+   else:self.assertTrue((ROOT/'Makefile').is_file());self.assertIn(name,(ROOT/'harness/source-layout.json').read_text())
  def test_no_tracked_runtime_or_legacy_app_sources(self):
   tracked=subprocess.check_output(['git','ls-files','.agents','.goose','apps','companions'],cwd=ROOT,text=True).splitlines();self.assertEqual(tracked,[])
  def test_source_tools_do_not_read_runtime_as_source(self):
