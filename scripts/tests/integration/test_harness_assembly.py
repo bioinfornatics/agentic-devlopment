@@ -15,4 +15,6 @@ class AssembleTest(unittest.TestCase):
   o=self.make('o');self.assertTrue(json.loads((o/'release.json').read_text())['files']);self.assertIn('domain-modeling',json.loads((o/'THIRD_PARTY_LICENSES.json').read_text()));self.assertTrue((o/'sbom.cdx.json').exists())
  def test_mutable_db_rejected(self):
   (self.i/'bad.db').write_text('x');r=subprocess.run(['python3','scripts/assemble-harness-release.py','--internal',str(self.i),'--external',str(self.e),'--output',str(self.r/'bad'),'--version','1'],cwd=ROOT,capture_output=True);self.assertNotEqual(r.returncode,0)
+ def test_invalid_version_cannot_escape_output(self):
+  r=subprocess.run(['python3','scripts/assemble-harness-release.py','--internal',str(self.i),'--external',str(self.e),'--output',str(self.r/'bad-version'),'--version','1/merge'],cwd=ROOT,capture_output=True);self.assertNotEqual(r.returncode,0)
 if __name__=='__main__':unittest.main()

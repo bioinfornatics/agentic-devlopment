@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+if [ -n "${EVAL_HUB_COMPANION_ROOT:-}" ]; then ROOT=$EVAL_HUB_COMPANION_ROOT; else ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../../.." && pwd -P); fi
+BIN=${EVAL_HUB_BIN:-$ROOT/bin/eval-hub}
+SUM=${EVAL_HUB_SHA256_FILE:-$ROOT/bin/eval-hub.sha256}
+if [ ! -f "$BIN" ] || [ ! -x "$BIN" ]; then echo "eval-hub companion binary missing: $BIN" >&2; exit 66; fi
+if [ ! -f "$SUM" ]; then echo "eval-hub checksum missing: $SUM" >&2; exit 66; fi
+EXPECTED=$(awk 'NR==1 {print $1}' "$SUM")
+ACTUAL=$(sha256sum "$BIN" | awk '{print $1}')
+if [ -z "$EXPECTED" ] || [ "$ACTUAL" != "$EXPECTED" ]; then echo "eval-hub companion checksum mismatch" >&2; exit 65; fi
+exec "$BIN" "$@"

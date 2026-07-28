@@ -24,3 +24,13 @@ for (const alias of ["--help", "-h"]) {
     });
   });
 }
+describe("Eval Hub companion self-check", () => {
+  it("prints bounded runtime identity and starts no operational mode", () => {
+    const result = spawnSync(process.execPath, [entryPoint, "--companion-self-check"], { encoding: "utf8", timeout: 5_000 });
+    expect(result.error).toBeUndefined();
+    expect(result.status).toBe(0);
+    const identity = JSON.parse(result.stdout.trim());
+    expect(identity).toMatchObject({ schema: "eval-hub-companion-self-check-v1", operationalModeStarted: false });
+    expect(["node", "bun"]).toContain(identity.runtime);
+  });
+});
