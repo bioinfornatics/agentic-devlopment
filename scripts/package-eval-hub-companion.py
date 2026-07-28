@@ -10,15 +10,19 @@ def tree_hash(root):
  return h.hexdigest()
 def copy_skill(dst):shutil.copytree(ROOT/'companions/eval-hub/skill',dst/'.agents/skills/eval-hub')
 def main():
- ap=argparse.ArgumentParser();ap.add_argument('--version',required=True);ap.add_argument('--output',required=True);ap.add_argument('--target',default='linux-x86_64');ap.add_argument('--license-spdx');ap.add_argument('--allow-noassertion',action='store_true');ap.add_argument('--bun',default='bun');ap.add_argument('--source-date-epoch');a=ap.parse_args()
+ ap=argparse.ArgumentParser();ap.add_argument('--version',required=True);ap.add_argument('--output',required=True);ap.add_argument('--target',default='linux-x86_64');ap.add_argument('--license-spdx');ap.add_argument('--allow-noassertion',action='store_true');ap.add_argument('--bun',default='bun');ap.add_argument('--source-date-epoch');ap.add_argument('--prebuilt-binary');a=ap.parse_args()
  if a.target!='linux-x86_64':raise RuntimeError('unsupported companion target: '+a.target)
  license_id=a.license_spdx or 'NOASSERTION'
  if license_id=='NOASSERTION' and not a.allow_noassertion:raise RuntimeError('distribution license is NOASSERTION; pass reviewed --license-spdx or explicit --allow-noassertion for non-publishing tests')
- out=Path(a.output).resolve();shutil.rmtree(out,ignore_errors=True);out.mkdir(parents=True);shutil.rmtree(FIXED,ignore_errors=True);FIXED.mkdir(parents=True)
+ out=Path(a.output).resolve();shutil.rmtree(out,ignore_errors=True);out.mkdir(parents=True);FIXED.parent.mkdir(parents=True,exist_ok=True);shutil.rmtree(FIXED,ignore_errors=True);FIXED.mkdir(parents=True)
  try:
-  binary=FIXED/'eval-hub';subprocess.run([a.bun,'build','eval-hub/src/index.ts','--compile','--outfile',str(binary)],cwd=ROOT/'apps',check=True)
-  first=sha(binary);binary.unlink();subprocess.run([a.bun,'build','eval-hub/src/index.ts','--compile','--outfile',str(binary)],cwd=ROOT/'apps',check=True)
-  if sha(binary)!=first:raise RuntimeError('non-reproducible Bun companion binary')
+  binary=FIXED/'eval-hub'
+  if a.prebuilt_binary:
+   shutil.copy2(Path(a.prebuilt_binary).resolve(),binary);binary.chmod(0o755);first=sha(binary)
+  else:
+   subprocess.run([a.bun,'build','eval-hub/src/index.ts','--compile','--outfile',str(binary)],cwd=ROOT/'apps',check=True)
+   first=sha(binary);binary.unlink();subprocess.run([a.bun,'build','eval-hub/src/index.ts','--compile','--outfile',str(binary)],cwd=ROOT/'apps',check=True)
+   if sha(binary)!=first:raise RuntimeError('non-reproducible Bun companion binary')
   root=FIXED/'root';root.mkdir();(root/'bin').mkdir();shutil.copy2(binary,root/'bin/eval-hub');(root/'bin/eval-hub').chmod(0o755);(root/'bin/eval-hub.sha256').write_text(first+'  eval-hub\n');copy_skill(root)
   launcher=root/'.agents/skills/eval-hub/scripts/eval-hub';launcher.chmod(0o755);skill_digest=tree_hash(root/'.agents/skills/eval-hub');commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip();epoch=a.source_date_epoch or subprocess.check_output(['git','show','-s','--format=%ct',commit],cwd=ROOT,text=True).strip();bun_version=subprocess.check_output([a.bun,'--version'],text=True).strip()
   files=[{'path':p.relative_to(root).as_posix(),'sha256':sha(p),'size':p.stat().st_size} for p in sorted(x for x in root.rglob('*') if x.is_file())]

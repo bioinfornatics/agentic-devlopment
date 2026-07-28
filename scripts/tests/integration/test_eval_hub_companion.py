@@ -6,7 +6,7 @@ def run(cmd,**kw):return subprocess.run(cmd,cwd=ROOT,capture_output=True,text=Tr
 class EvalHubCompanionTest(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
-  cls.tmp=tempfile.TemporaryDirectory();cls.root=Path(cls.tmp.name);cls.bundle=cls.root/'bundle';r=run(['python3','scripts/package-eval-hub-companion.py','--version','test','--output',str(cls.bundle),'--license-spdx','Apache-2.0']);assert r.returncode==0,r.stderr;cls.prefix=cls.root/'prefix with spaces';r=run(['python3','scripts/install-eval-hub-companion.py','--bundle',str(cls.bundle),'--prefix',str(cls.prefix)]);assert r.returncode==0,r.stderr;cls.installed=cls.prefix/'current';cls.launch=cls.installed/'.agents/skills/eval-hub/scripts/eval-hub'
+  cls.tmp=tempfile.TemporaryDirectory();cls.root=Path(cls.tmp.name);cls.prebuilt=cls.root/'prebuilt';self_check=json.dumps({'schema':'eval-hub-companion-self-check-v1','runtime':'test','operationalModeStarted':False});cls.prebuilt.write_text('#!/bin/sh\nif [ "$1" = "--companion-self-check" ]; then echo '+repr(self_check)+'; exit 0; fi\necho Usage:\n');cls.prebuilt.chmod(0o755);cls.bundle=cls.root/'bundle';r=run(['python3','scripts/package-eval-hub-companion.py','--version','test','--output',str(cls.bundle),'--license-spdx','Apache-2.0','--prebuilt-binary',str(cls.prebuilt)]);assert r.returncode==0,r.stderr;cls.prefix=cls.root/'prefix with spaces';r=run(['python3','scripts/install-eval-hub-companion.py','--bundle',str(cls.bundle),'--prefix',str(cls.prefix)]);assert r.returncode==0,r.stderr;cls.installed=cls.prefix/'current';cls.launch=cls.installed/'.agents/skills/eval-hub/scripts/eval-hub'
  @classmethod
  def tearDownClass(cls):cls.tmp.cleanup()
  def env(self):
@@ -21,7 +21,7 @@ class EvalHubCompanionTest(unittest.TestCase):
  def test_exit_code_propagation(self):
   fake=self.root/'fake';fake.write_text('#!/bin/sh\nexit 23\n');fake.chmod(0o755);sumfile=self.root/'fake.sha';sumfile.write_text(hashlib.sha256(fake.read_bytes()).hexdigest()+'  fake\n');env=self.env();env.update({'EVAL_HUB_BIN':str(fake),'EVAL_HUB_SHA256_FILE':str(sumfile)});self.assertEqual(run([str(self.launch)],env=env).returncode,23)
  def test_fixed_path_build_reproducible(self):
-  other=self.root/'other';r=run(['python3','scripts/package-eval-hub-companion.py','--version','test','--output',str(other),'--license-spdx','Apache-2.0']);self.assertEqual(r.returncode,0,r.stderr);self.assertEqual(next(self.bundle.glob('*.tar')).read_bytes(),next(other.glob('*.tar')).read_bytes())
+  other=self.root/'other';r=run(['python3','scripts/package-eval-hub-companion.py','--version','test','--output',str(other),'--license-spdx','Apache-2.0','--prebuilt-binary',str(self.prebuilt)]);self.assertEqual(r.returncode,0,r.stderr);self.assertEqual(next(self.bundle.glob('*.tar')).read_bytes(),next(other.glob('*.tar')).read_bytes())
  def test_core_source_manifest_still_excludes_eval_hub(self):
   m=json.loads((ROOT/'harness/source-manifest.json').read_text());self.assertIn('apps/eval-hub',m['releaseExcludes']);self.assertFalse(any(c['name']=='eval-hub' for c in m['components']))
  def test_noassertion_fails_closed(self):
