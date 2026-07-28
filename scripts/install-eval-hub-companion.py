@@ -10,7 +10,8 @@ def main():
   with tarfile.open(archive) as tar:
    for m in tar.getmembers():
     dest=(partial/m.name).resolve()
-    if not str(dest).startswith(str(partial.resolve())+os.sep):raise RuntimeError('archive path escape')
+    base=partial.resolve()
+    if dest != base and not str(dest).startswith(str(base)+os.sep):raise RuntimeError('archive path escape')
    tar.extractall(partial,filter='data')
   binary=partial/'bin/eval-hub';expected=(partial/'bin/eval-hub.sha256').read_text().split()[0]
   if sha(binary)!=expected:raise RuntimeError('companion binary digest mismatch')
