@@ -15,7 +15,6 @@
       "kind": "skill",
       "name": "domain-modeling",
       "ownership": "external",
-      "sourcePath": ".agents/skills/domain-modeling",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -24,14 +23,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/domain-modeling",
+      "targetSourcePath": "src/skills/domain-modeling",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:evidence-verification",
       "kind": "skill",
       "name": "evidence-verification",
       "ownership": "internal",
-      "sourcePath": ".agents/skills/evidence-verification",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -40,14 +41,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/evidence-verification",
+      "targetSourcePath": "src/skills/evidence-verification",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:grill-me",
       "kind": "skill",
       "name": "grill-me",
       "ownership": "external",
-      "sourcePath": ".agents/skills/grill-me",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -58,14 +61,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/grill-me",
+      "targetSourcePath": "src/skills/grill-me",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:grill-with-docs",
       "kind": "skill",
       "name": "grill-with-docs",
       "ownership": "external",
-      "sourcePath": ".agents/skills/grill-with-docs",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -77,14 +82,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/grill-with-docs",
+      "targetSourcePath": "src/skills/grill-with-docs",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:grilling",
       "kind": "skill",
       "name": "grilling",
       "ownership": "external",
-      "sourcePath": ".agents/skills/grilling",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -93,14 +100,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/grilling",
+      "targetSourcePath": "src/skills/grilling",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:interface-quality",
       "kind": "skill",
       "name": "interface-quality",
       "ownership": "internal",
-      "sourcePath": ".agents/skills/interface-quality",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -109,14 +118,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/interface-quality",
+      "targetSourcePath": "src/skills/interface-quality",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:loop-control",
       "kind": "skill",
       "name": "loop-control",
       "ownership": "internal",
-      "sourcePath": ".agents/skills/loop-control",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -125,14 +136,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/loop-control",
+      "targetSourcePath": "src/skills/loop-control",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:output-discipline",
       "kind": "skill",
       "name": "output-discipline",
       "ownership": "internal",
-      "sourcePath": ".agents/skills/output-discipline",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -141,14 +154,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/output-discipline",
+      "targetSourcePath": "src/skills/output-discipline",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:skill-creator",
       "kind": "skill",
       "name": "skill-creator",
       "ownership": "external",
-      "sourcePath": ".agents/skills/skill-creator",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -157,14 +172,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/skill-creator",
+      "targetSourcePath": "src/skills/skill-creator",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:task-framing",
       "kind": "skill",
       "name": "task-framing",
       "ownership": "internal",
-      "sourcePath": ".agents/skills/task-framing",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -173,14 +190,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/task-framing",
+      "targetSourcePath": "src/skills/task-framing",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:ui-design",
       "kind": "skill",
       "name": "ui-design",
       "ownership": "internal",
-      "sourcePath": ".agents/skills/ui-design",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -189,14 +208,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/ui-design",
+      "targetSourcePath": "src/skills/ui-design",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:ux-principles",
       "kind": "skill",
       "name": "ux-principles",
       "ownership": "internal",
-      "sourcePath": ".agents/skills/ux-principles",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -205,14 +226,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/ux-principles",
+      "targetSourcePath": "src/skills/ux-principles",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "skill:wcag-accessibility-audit",
       "kind": "skill",
       "name": "wcag-accessibility-audit",
       "ownership": "external",
-      "sourcePath": ".agents/skills/wcag-accessibility-audit",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -221,14 +244,16 @@
       "evaluation": {
         "required": true,
         "reason": "Installed skills affect harness behavior"
-      }
+      },
+      "currentRuntimePath": ".agents/skills/wcag-accessibility-audit",
+      "targetSourcePath": "src/skills/wcag-accessibility-audit",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "agent:change-builder-premium",
       "kind": "agent",
       "name": "change-builder-premium",
       "ownership": "internal",
-      "sourcePath": ".agents/agents/change-builder-premium.md",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -237,14 +262,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".agents/agents/change-builder-premium.md",
+      "targetSourcePath": "src/agents/change-builder-premium.md",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "agent:change-builder",
       "kind": "agent",
       "name": "change-builder",
       "ownership": "internal",
-      "sourcePath": ".agents/agents/change-builder.md",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -253,14 +280,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".agents/agents/change-builder.md",
+      "targetSourcePath": "src/agents/change-builder.md",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "agent:error-analyzer",
       "kind": "agent",
       "name": "error-analyzer",
       "ownership": "internal",
-      "sourcePath": ".agents/agents/error-analyzer.md",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -269,14 +298,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".agents/agents/error-analyzer.md",
+      "targetSourcePath": "src/agents/error-analyzer.md",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "agent:independent-verifier-premium",
       "kind": "agent",
       "name": "independent-verifier-premium",
       "ownership": "internal",
-      "sourcePath": ".agents/agents/independent-verifier-premium.md",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -285,14 +316,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".agents/agents/independent-verifier-premium.md",
+      "targetSourcePath": "src/agents/independent-verifier-premium.md",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "agent:independent-verifier",
       "kind": "agent",
       "name": "independent-verifier",
       "ownership": "internal",
-      "sourcePath": ".agents/agents/independent-verifier.md",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -301,14 +334,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".agents/agents/independent-verifier.md",
+      "targetSourcePath": "src/agents/independent-verifier.md",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "agent:repository-researcher",
       "kind": "agent",
       "name": "repository-researcher",
       "ownership": "internal",
-      "sourcePath": ".agents/agents/repository-researcher.md",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -317,14 +352,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".agents/agents/repository-researcher.md",
+      "targetSourcePath": "src/agents/repository-researcher.md",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "recipe:implement",
       "kind": "recipe",
       "name": "implement",
       "ownership": "internal",
-      "sourcePath": ".goose/recipes/implement.yaml",
       "packagePolicy": "file",
       "targets": [
         "linux-x86_64"
@@ -333,14 +370,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".goose/recipes/implement.yaml",
+      "targetSourcePath": "src/recipes/implement.yaml",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "recipe:loop-engineering",
       "kind": "recipe",
       "name": "loop-engineering",
       "ownership": "internal",
-      "sourcePath": ".goose/recipes/loop-engineering.yaml",
       "packagePolicy": "file",
       "targets": [
         "linux-x86_64"
@@ -349,14 +388,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".goose/recipes/loop-engineering.yaml",
+      "targetSourcePath": "src/recipes/loop-engineering.yaml",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "recipe:research",
       "kind": "recipe",
       "name": "research",
       "ownership": "internal",
-      "sourcePath": ".goose/recipes/research.yaml",
       "packagePolicy": "file",
       "targets": [
         "linux-x86_64"
@@ -365,14 +406,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".goose/recipes/research.yaml",
+      "targetSourcePath": "src/recipes/research.yaml",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "recipe:verify",
       "kind": "recipe",
       "name": "verify",
       "ownership": "internal",
-      "sourcePath": ".goose/recipes/verify.yaml",
       "packagePolicy": "file",
       "targets": [
         "linux-x86_64"
@@ -381,14 +424,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".goose/recipes/verify.yaml",
+      "targetSourcePath": "src/recipes/verify.yaml",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "plugin:beads-telemetry",
       "kind": "plugin",
       "name": "beads-telemetry",
       "ownership": "internal",
-      "sourcePath": ".agents/plugins/beads-telemetry",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -397,14 +442,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".agents/plugins/beads-telemetry",
+      "targetSourcePath": "src/plugins/beads-telemetry",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "plugin:loop-breaker",
       "kind": "plugin",
       "name": "loop-breaker",
       "ownership": "internal",
-      "sourcePath": ".agents/plugins/loop-breaker",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -413,14 +460,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".agents/plugins/loop-breaker",
+      "targetSourcePath": "src/plugins/loop-breaker",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "plugin:loop-gate",
       "kind": "plugin",
       "name": "loop-gate",
       "ownership": "internal",
-      "sourcePath": ".agents/plugins/loop-gate",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -429,14 +478,16 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".agents/plugins/loop-gate",
+      "targetSourcePath": "src/plugins/loop-gate",
+      "migrationState": "pending-git-move"
     },
     {
       "id": "plugin:prevent-catastrophe",
       "kind": "plugin",
       "name": "prevent-catastrophe",
       "ownership": "internal",
-      "sourcePath": ".agents/plugins/prevent-catastrophe",
       "packagePolicy": "tree",
       "targets": [
         "linux-x86_64"
@@ -445,7 +496,10 @@
       "evaluation": {
         "required": false,
         "reason": "covered by integration contracts"
-      }
+      },
+      "currentRuntimePath": ".agents/plugins/prevent-catastrophe",
+      "targetSourcePath": "src/plugins/prevent-catastrophe",
+      "migrationState": "pending-git-move"
     }
   ],
   "releaseExcludes": [
@@ -457,5 +511,10 @@
     "node_modules",
     "session-db",
     "caches"
-  ]
+  ],
+  "pathSemantics": {
+    "currentRuntimePath": "Existing operational path used only during migration; removed as source input after projection activation.",
+    "targetSourcePath": "Canonical editable source path after migration.",
+    "runtimePath": "Generated path declared by source-layout runtimePaths and package outputs."
+  }
 }

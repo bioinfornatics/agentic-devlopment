@@ -6,7 +6,8 @@
     "project",
     "resolver",
     "components",
-    "releaseExcludes"
+    "releaseExcludes",
+    "pathSemantics"
   ],
   "properties": {
     "schema": {
@@ -21,13 +22,84 @@
           "kind",
           "name",
           "ownership",
-          "sourcePath",
+          "currentRuntimePath",
+          "targetSourcePath",
+          "migrationState",
           "packagePolicy",
           "targets",
           "dependencies",
           "evaluation"
         ]
       }
+    },
+    "pathSemantics": {
+      "type": "object",
+      "required": [
+        "currentRuntimePath",
+        "targetSourcePath",
+        "runtimePath"
+      ],
+      "properties": {
+        "currentRuntimePath": {
+          "type": "string"
+        },
+        "targetSourcePath": {
+          "type": "string"
+        },
+        "runtimePath": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "repository",
+        "revisionPolicy"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revisionPolicy": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "resolver": {
+      "type": "object",
+      "required": [
+        "name",
+        "package",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "package": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "releaseExcludes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
     }
   },
   "additionalProperties": false

@@ -11,6 +11,10 @@ def fail(msg): print('ERROR:',msg,file=sys.stderr); raise SystemExit(1)
 m=json.loads((ROOT/'harness/source-manifest.json').read_text()); l=json.loads((ROOT/'harness/external-skills.lock.json').read_text())
 if m.get('schema')!='harness-source-manifest-v1' or l.get('schema')!='harness-external-lock-v2': fail('schema mismatch')
 ids=[c['id'] for c in m['components']]; names=[c['name'] for c in m['components']]
+for c in m['components']:
+ if 'sourcePath' in c: fail('ambiguous sourcePath remains: '+c['id'])
+ if not c.get('currentRuntimePath','').startswith(('.agents/','.goose/')): fail('invalid currentRuntimePath: '+c['id'])
+ if not c.get('targetSourcePath','').startswith('src/'): fail('invalid targetSourcePath: '+c['id'])
 if len(ids)!=len(set(ids)): fail('duplicate component id')
 locked={x['name']:x for x in l['skills']}; external={c['name'] for c in m['components'] if c['kind']=='skill' and c['ownership']=='external'}
 active={n for n,x in locked.items() if x['active']}

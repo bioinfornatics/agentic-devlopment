@@ -12,7 +12,8 @@ def main():
  try:
   for c in m['components']:
    if c['ownership']!='internal':continue
-   src=ROOT/c['sourcePath']
+   source_rel=c['targetSourcePath'] if (ROOT/c['targetSourcePath']).exists() else c['currentRuntimePath']
+   src=ROOT/source_rel
    layout={'skill':Path('.agents/skills')/c['name'],'agent':Path('.agents/agents')/(c['name']+'.md'),'recipe':Path('.goose/recipes')/(c['name']+'.yaml'),'plugin':Path('.agents/plugins')/c['name']}
    dst=tmp/layout[c['kind']]
    dst.parent.mkdir(parents=True,exist_ok=True)

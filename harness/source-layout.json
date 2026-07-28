@@ -1,0 +1,67 @@
+{
+  "schema": "harness-source-layout-v1",
+  "canonicalSources": {
+    "agents": "src/agents",
+    "skills": "src/skills",
+    "recipes": "src/recipes",
+    "plugins": "src/plugins",
+    "apps": "src/app"
+  },
+  "externalSources": {
+    "lock": "harness/external-skills.lock.json",
+    "resolved": "build/harness/external/<lock-digest>"
+  },
+  "runtimeProjection": {
+    "releases": "build/harness/runtime/releases/<digest>",
+    "current": "build/harness/runtime/current",
+    "projectAgents": ".agents",
+    "projectGoose": ".goose",
+    "generated": true,
+    "editable": false
+  },
+  "runtimePaths": {
+    "agents": ".agents/agents",
+    "skills": ".agents/skills",
+    "plugins": ".agents/plugins",
+    "recipes": ".goose/recipes"
+  },
+  "appPackageDescriptor": {
+    "file": "app-package.json",
+    "required": [
+      "name",
+      "kind",
+      "entrypoint",
+      "targets",
+      "outputs"
+    ],
+    "kinds": [
+      "companion-skill",
+      "plugin-binary",
+      "standalone-app"
+    ],
+    "outputFields": [
+      "runtimePath",
+      "packageProfile"
+    ]
+  },
+  "principles": [
+    "single-canonical-source",
+    "external-lock-only",
+    "atomic-runtime-activation",
+    "no-generated-edits",
+    "explicit-source-runtime-roots"
+  ],
+  "projectionCommands": {
+    "bootstrap": "make bootstrap-runtime",
+    "activate": "make activate-runtime",
+    "verify": "make verify-runtime",
+    "rollback": "make rollback-runtime",
+    "clean": "make clean-runtime"
+  },
+  "migration": {
+    "phase": "contract-defined",
+    "currentSourceField": "currentRuntimePath",
+    "targetSourceField": "targetSourcePath",
+    "completionCondition": "all components moved to targetSourcePath and currentRuntimePath is no longer a source input"
+  }
+}
