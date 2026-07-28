@@ -306,3 +306,6 @@ See [`evals/README.md`](evals/README.md).
 ## License / ownership
 
 This pack is a local operational configuration. Adapt it to the governance, security, and delivery constraints of each project.
+## Optional Eval Hub companion
+
+Eval Hub is distributed separately from the core harness as an optional Bun-packaged application plus the `eval-hub` Agent Skill. See `docs/specs/eval-hub-skill-package.md` and `companions/eval-hub/skill/SKILL.md`. The core release remains evaluator-independent.
