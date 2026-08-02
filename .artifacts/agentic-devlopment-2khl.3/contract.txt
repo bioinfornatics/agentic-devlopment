@@ -1,6 +1,0 @@
-Contract restatement 2026-07-26
-Run: agentic-devlopment-2khl; task: agentic-devlopment-2khl.3; builder: 20260726_20
-In scope: minimal active spec/metadata/schema, consistency validators, eval projection status/transitions, proportional tests.
-Out of scope: legacy harness revival, unrelated broad generated README churn, provider benchmark reruns.
-AC proof: structural workflow; metadata/consistency scripts; eval-hub tests/typecheck/diff check.
-Risk: shared worktree contains sibling-task changes; preserve them and constrain fixes.
