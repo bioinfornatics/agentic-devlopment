@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { SuiteRunner } from "../suiteRunner.js";
 import type { IEvalRunner, ScenarioRunConfig } from "../ports.js";
 import type { EvalEvent, SuiteEvent } from "../../../shared/events.js";
-import { PROJECT_ROOT } from "../../../shared/paths.js";
+import { EVALS_DIR, PROJECT_ROOT } from "../../../shared/paths.js";
 
 class CapturingEvalRunner implements IEvalRunner {
   readonly calls: ScenarioRunConfig[] = [];
@@ -53,7 +53,7 @@ describe("EVAL-INT-01/02/03/17/19 production SuiteRunner schedule", () => {
   });
 
   it("rejects an untyped recipe subject before scheduling either side", async () => {
-    const evalPath = path.join(PROJECT_ROOT, "evals/recipes/implement.json");
+    const evalPath = path.join(EVALS_DIR, "recipes", "implement.json");
     const original = await fs.readFile(evalPath, "utf8");
     try {
       const scenarios = JSON.parse(original).map(({ recipe_source_type: _, ...scenario }: Record<string, unknown>) => scenario);
@@ -123,5 +123,97 @@ describe("EVAL-INT-PLAN SuiteRunner.plan()/runPlan() split", () => {
     await expect(async () => { for await (const _ of suite.runPlan(plan)) {} })
       .rejects.toThrow(/input_mismatch/i);
     expect(fake.calls).toHaveLength(0);
+  });
+});
+
+describe("EVAL-INT-RELEASE SuiteRunner release context propagation", () => {
+  const releaseContext = {
+    runProvenanceId: "fixed-release-provenance-id",
+    bindings: {
+      profile:  "prof-digest",
+      runtime:  "rt-digest",
+      release:  "rel-digest",
+      corpus:   "corp-digest",
+      goose:    "goose-digest",
+      provider: "provider-digest",
+      model:    "model-digest",
+    },
+  } as const;
+
+  it("uses supplied runProvenanceId in the manifest when releaseContext is provided", async () => {
+    const workspace = await fs.mkdtemp(path.join(os.tmpdir(), "suite-release-provenance-"));
+    roots.push(workspace);
+    const fake = new CapturingEvalRunner();
+    const suite = new SuiteRunner(fake);
+    const plan = await suite.plan({
+      kind: "skills", subjects: ["task-framing"], workspace, gooseCli: "goose",
+      workers: 1, mode: "with-without", maxTurns: 8, timeoutMs: 1_000,
+      ambient: false, continueOnFail: false, repetitions: 1,
+      releaseContext,
+    });
+    // All planned rows must share the exact supplied runProvenanceId
+    for (const row of plan.rows) {
+      expect(row.runCfg.integrity.runProvenanceId).toBe("fixed-release-provenance-id");
+    }
+    // All rows in one plan share the same provenance
+    const ids = new Set(plan.rows.map(r => r.runCfg.integrity.runProvenanceId));
+    expect(ids.size).toBe(1);
+  });
+
+  it("appends binding.<key>=<value> cliArguments and omits them when no releaseContext", async () => {
+    const withWs  = await fs.mkdtemp(path.join(os.tmpdir(), "suite-release-binding-with-"));
+    const withoutWs = await fs.mkdtemp(path.join(os.tmpdir(), "suite-release-binding-without-"));
+    roots.push(withWs, withoutWs);
+    const suiteWith    = new SuiteRunner(new CapturingEvalRunner());
+    const suiteWithout = new SuiteRunner(new CapturingEvalRunner());
+
+    const planWith = await suiteWith.plan({
+      kind: "skills", subjects: ["task-framing"], workspace: withWs, gooseCli: "goose",
+      workers: 1, mode: "with-without", maxTurns: 8, timeoutMs: 1_000,
+      ambient: false, continueOnFail: false, repetitions: 1,
+      releaseContext,
+    });
+    const planWithout = await suiteWithout.plan({
+      kind: "skills", subjects: ["task-framing"], workspace: withoutWs, gooseCli: "goose",
+      workers: 1, mode: "with-without", maxTurns: 8, timeoutMs: 1_000,
+      ambient: false, continueOnFail: false, repetitions: 1,
+    });
+
+    // Read back the written manifests to verify cliArguments
+    const manifestWith    = JSON.parse(await fs.readFile(path.join(withWs,    "_integrity-v2", "skills", "manifest.json"), "utf8")) as { cliArguments: string[]; runProvenanceId: string };
+    const manifestWithout = JSON.parse(await fs.readFile(path.join(withoutWs, "_integrity-v2", "skills", "manifest.json"), "utf8")) as { cliArguments: string[]; runProvenanceId: string };
+
+    // With release context: binding args present
+    const bindingArgs = Object.entries(releaseContext.bindings).map(([k, v]) => `binding.${k}=${v}`);
+    for (const arg of bindingArgs) {
+      expect(manifestWith.cliArguments).toContain(arg);
+    }
+    expect(manifestWith.runProvenanceId).toBe("fixed-release-provenance-id");
+
+    // Without release context: no binding args
+    const bindingInWithout = manifestWithout.cliArguments.filter(a => a.startsWith("binding."));
+    expect(bindingInWithout).toHaveLength(0);
+    // Without provenance: still a valid ISO timestamp (not the fixed ID)
+    expect(manifestWithout.runProvenanceId).not.toBe("fixed-release-provenance-id");
+
+    // The two plans must have different manifestHashes (distinct provenance → distinct content)
+    expect(planWith.manifestHash).not.toBe(planWithout.manifestHash);
+  });
+
+  it("non-release plan rows share their generated runProvenanceId (normal behavior unchanged)", async () => {
+    const workspace = await fs.mkdtemp(path.join(os.tmpdir(), "suite-no-release-provenance-"));
+    roots.push(workspace);
+    const fake = new CapturingEvalRunner();
+    const suite = new SuiteRunner(fake);
+    const plan = await suite.plan({
+      kind: "skills", subjects: ["task-framing"], workspace, gooseCli: "goose",
+      workers: 1, mode: "with-without", maxTurns: 8, timeoutMs: 1_000,
+      ambient: false, continueOnFail: false, repetitions: 1,
+    });
+    // All rows still share one consistent provenance within the plan
+    const ids = new Set(plan.rows.map(r => r.runCfg.integrity.runProvenanceId));
+    expect(ids.size).toBe(1);
+    // Should not be the release-specific fixed ID
+    expect([...ids][0]).not.toBe("fixed-release-provenance-id");
   });
 });

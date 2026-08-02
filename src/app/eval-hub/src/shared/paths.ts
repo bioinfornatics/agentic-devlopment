@@ -18,7 +18,7 @@
  *   https://goose-docs.ai/docs/guides/context-engineering/custom-agents
  *   https://goose-docs.ai/docs/guides/recipes/recipe-reference/
  *
- * PROJECT_SOURCE_ROOT defaults to the nearest ancestor containing evals/ and src/.
+ * PROJECT_SOURCE_ROOT defaults to the nearest ancestor containing src/app/eval-hub/evals and src/.
  * HARNESS_RUNTIME_ROOT identifies the immutable projected .agents/.goose tree.
  */
 import path from "node:path";
@@ -34,7 +34,7 @@ async function findProjectRoot(start: string): Promise<string> {
   let current = path.resolve(start);
   while (true) {
     try {
-      await fs.access(path.join(current, "evals"));
+      await fs.access(path.join(current, "src", "app", "eval-hub", "evals"));
       await fs.access(path.join(current, "src"));
       return current;
     } catch { /* walk upward */ }
@@ -58,7 +58,7 @@ export const USER_AGENTS_DIR  = path.join(os.homedir(), ".agents",  "agents");
 export const USER_RECIPES_DIR = path.join(os.homedir(), ".config",  "goose", "recipes");
 
 // ── Eval data (always project-local) ─────────────────────────────────────────
-export const EVALS_DIR    = path.join(PROJECT_ROOT, "evals");
+export const EVALS_DIR    = path.join(PROJECT_ROOT, "src", "app", "eval-hub", "evals");
 export const DIST_DIR     = path.join(PROJECT_ROOT, "dist");
 export const DIST_EVALS   = path.join(DIST_DIR,     "evals");
 export const LAYERED_ROOT = path.join(DIST_EVALS,   "layered");

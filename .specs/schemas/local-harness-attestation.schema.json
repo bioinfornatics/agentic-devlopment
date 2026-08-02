@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local-harness-attestation.schema.json",
+  "title": "Local harness evaluation attestation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "status",
+    "digest",
+    "payload",
+    "html"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bindings",
+        "population",
+        "smoke",
+        "releaseGate",
+        "profileDigest",
+        "startedAt",
+        "completedAt",
+        "commands"
+      ],
+      "properties": {
+        "bindings": {
+          "$ref": "#/$defs/bindings"
+        },
+        "population": {
+          "$ref": "#/$defs/population"
+        },
+        "smoke": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schemaVersion",
+            "profileVersion",
+            "profile",
+            "status",
+            "releaseDigest",
+            "bindings",
+            "checks",
+            "startedAt",
+            "completedAt"
+          ],
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "profileVersion": {
+              "type": "string"
+            },
+            "profile": {
+              "const": "smoke"
+            },
+            "status": {
+              "enum": [
+                "pass",
+                "fail"
+              ]
+            },
+            "releaseDigest": {
+              "$ref": "#/$defs/digest"
+            },
+            "bindings": {
+              "type": "object"
+            },
+            "checks": {
+              "type": "array"
+            },
+            "startedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "completedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "failure": {
+              "type": "string"
+            }
+          }
+        },
+        "releaseGate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "releaseDigest",
+            "bindings",
+            "evidence",
+            "population",
+            "commands"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "pass",
+                "fail"
+              ]
+            },
+            "releaseDigest": {
+              "$ref": "#/$defs/digest"
+            },
+            "bindings": {
+              "$ref": "#/$defs/bindings"
+            },
+            "evidence": {
+              "type": "object"
+            },
+            "population": {
+              "$ref": "#/$defs/population"
+            },
+            "commands": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "profileDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "html": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "locks",
+        "runtime",
+        "release",
+        "goose",
+        "evalHub",
+        "provider",
+        "model",
+        "corpus",
+        "profile"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/digest"
+        },
+        "locks": {
+          "$ref": "#/$defs/digest"
+        },
+        "runtime": {
+          "$ref": "#/$defs/digest"
+        },
+        "release": {
+          "$ref": "#/$defs/digest"
+        },
+        "goose": {
+          "$ref": "#/$defs/digest"
+        },
+        "evalHub": {
+          "$ref": "#/$defs/digest"
+        },
+        "provider": {
+          "$ref": "#/$defs/digest"
+        },
+        "model": {
+          "$ref": "#/$defs/digest"
+        },
+        "corpus": {
+          "$ref": "#/$defs/digest"
+        },
+        "profile": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "population": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "kind",
+          "component",
+          "disposition"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "skill",
+              "agent",
+              "recipe"
+            ]
+          },
+          "component": {
+            "type": "string",
+            "minLength": 1
+          },
+          "disposition": {
+            "enum": [
+              "covered",
+              "exempt"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

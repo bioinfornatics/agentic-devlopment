@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT"
 
 if ! command -v pandoc >/dev/null 2>&1; then
@@ -33,6 +33,7 @@ cp docs/assets/site.css "$ASSETS_DIR/site.css"
 DOCS=(
   README.md
   INSTALL.md
+  HOWTO.md
   USE_CASES.md
   docs/reference/getting-started.md
   docs/reference/00-index.md
@@ -62,8 +63,12 @@ pandoc "${DOCS[@]}" \
   --css assets/site.css \
   -o "$HTML_OUT"
 
-# WCAG: wrap body content in <main> landmark + fix lang attr
-python3 scripts/wcag-postprocess.py "$HTML_OUT"
+# WCAG: set language and add a main landmark.
+sed -i 's/lang=""/lang="en"/' "$HTML_OUT"
+if ! grep -q '<main[ >]' "$HTML_OUT"; then
+  sed -i '0,/<body>/s//<body>\n<main id="main-content" role="main">/' "$HTML_OUT"
+  sed -i '0,/<\/body>/s//<\/main>\n<\/body>/' "$HTML_OUT"
+fi
 
 # Bug zyq4 – add accessible name to TOC nav element
 sed -i 's|<nav id="TOC"|<nav id="TOC" aria-label="Table of contents"|g' "$HTML_OUT"
@@ -112,7 +117,7 @@ echo "wrote $HTML_INDEX"
 
 # Build eval trend dashboard through the TypeScript eval-hub CLI.
 if [ -d src/app/eval-hub/node_modules ]; then
-  (cd apps && pnpm --filter @harness/eval-hub build >/dev/null)
+  pnpm --dir src/app/eval-hub build >/dev/null
   node src/app/eval-hub/dist/index.js --report || echo warning: eval report unavailable >&2
 else
   echo warning: eval-hub dependencies not installed - skipping trend report >&2

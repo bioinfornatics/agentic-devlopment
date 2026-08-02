@@ -51,7 +51,7 @@ export class LlmGrader implements IGrader {
     gooseOutput: string,
     runDir:      string,
     gooseCli:    string,
-    runtime: Readonly<{ provider: string | null; model: string | null }> = { provider: null, model: null },
+    runtime: Readonly<{ provider: string | null; model: string | null; sandbox?: import("./ports.js").SandboxProcessConfig }> = { provider: null, model: null },
   ): Promise<GradingResult> {
     const expectations = scenario.expected_behavior ?? [];
     if (expectations.length === 0) {
@@ -64,7 +64,10 @@ export class LlmGrader implements IGrader {
 
     let gradingOutput = "";
     let processFailed = false;
-    const logCapture = gooseLogCaptureForWorkspace(path.join(runDir, ".grader"));
+    const graderRoot = path.join(runDir, ".grader");
+    const graderProject = path.join(graderRoot, "project");
+    await fs.mkdir(graderProject, { recursive: true });
+    const logCapture = gooseLogCaptureForWorkspace(graderRoot);
     try {
       const runtimeArgs = [
         ...(runtime.provider ? ["--provider", runtime.provider] : []),
@@ -73,8 +76,9 @@ export class LlmGrader implements IGrader {
       for await (const raw of this.goose.run({
         gooseCli,
         args:      ["run", "--instructions", promptPath, ...runtimeArgs, "--no-session", "--max-turns", "1", "--quiet"],
-        env:       { XDG_STATE_HOME: logCapture.stateHome },
-        cwd:       runDir,
+        env:       { ...(runtime.sandbox?.env ?? {}), XDG_STATE_HOME: logCapture.stateHome, XDG_DATA_HOME: logCapture.stateHome },
+        cwd:       runtime.sandbox ? graderProject : runDir,
+        inheritEnv: !runtime.sandbox,
         timeoutMs: 120_000,
       })) {
         if (raw.type === "exit") { processFailed = raw.code !== 0 || raw.signal !== null; break; }

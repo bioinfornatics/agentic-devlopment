@@ -13,5 +13,5 @@ La recette `loop-engineering` tourne entièrement dans **une seule session Goose
 - Le LLM peut traverser plusieurs itérations dans la même session jusqu'à `max_turns: 80`.
 - Quand la compaction automatique résume les anciens messages, l'état critique (compteurs, transitions, preuves) est reconstituable via `bd show <run-id> --json` — Beads est le seul pont durable.
 - Les fichiers `.loop/` ne doivent **jamais** être créés ni lus. Toute référence à `.loop/` dans d'anciens scripts ou skills est obsolète.
-- Les freins s'appliquent dans la même session : `max_turns` (limite mécanique), `max_tool_repetitions` (répétition d'outil), plugins hooks (PreToolUse/PostToolUse/Stop), `loop_transition_guard.py` (garde final avant persistance).
+- Les freins s'appliquent dans la même session : `max_turns` (limite mécanique), `max_tool_repetitions` (répétition d'outil), plugins hooks (PreToolUse/PostToolUse/Stop), `src/app/tooling/dist/loop-transition-guard.js` (garde final avant persistance).
 - COMPLETE, ESCALATE et ABORT produisent le JSON de réponse final (schema `response:`) et terminent la session. CONTINUE, REPLAN, REWORK, et WAIT persistent dans Beads et rebouclent en step 1.

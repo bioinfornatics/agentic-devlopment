@@ -1,57 +1,59 @@
-# Source/runtime separation migration
+---
+normative: false
+document_type: reference
+---
 
-## Canonical development tree
+# Source/runtime operations reference
 
-- `src/agents`: authored agent definitions.
-- `src/skills`: authored internal skills only.
-- `src/recipes`: authored Goose recipe YAML.
-- `src/plugins`: runtime plugin descriptors, hooks, wrappers and tests.
-- `src/app`: application sources with package descriptors.
+This is a non-normative operational reference. ADR-012 and the source/runtime
+contract define the invariants.
 
-External skills are never copied into `src/skills`; they are pinned in `harness/external-skills.lock.json` and resolved during projection.
+## Canonical locations
 
-## Functional runtime
+Edit harness assets in `src/agents`, `src/skills`, `src/recipes`, and
+`src/plugins`. Manifests and locks are in `src/harness`; short system launchers are in
+`src/tooling`; typed automation is in `src/app/tooling`; application source is in `src/app`; the eval corpus is in
+`src/app/eval-hub/evals`. Root `.agents` and `.goose` are generated outputs.
 
-```bash
-make bootstrap-runtime
-make verify-runtime
-```
+## Commands
 
-This creates content-addressed releases below `build/harness/runtime/releases`, atomically activates `current`, and creates root `.agents` and `.goose` symlinks. Do not edit those paths. Edit `src`, then rebuild.
+Install the pinned Just command runner, then use the root `justfile`:
 
-Rollback and cleanup:
+~~~bash
+just bootstrap-runtime
+just verify-runtime
+just activate-runtime
+just rollback-runtime
+just clean-runtime
+~~~
 
-```bash
-make rollback-runtime
-make clean-runtime
-```
+Bootstrap resolves locked external inputs, builds packages, projects, activates,
+and verifies a content-addressed release. Activation selects a built digest.
+Rollback selects the previous verified release. Cleanup removes inactive generated
+state while retaining the active and previous releases.
 
-Rollback atomically selects the previous verified projection. Cleanup retains current and previous releases.
+For a fresh checkout:
 
-## Fresh clone
-
-```bash
-git clone git@github.com:bioinfornatics/agentic-devlopment.git
-cd agentic-devlopment
+~~~bash
 pnpm --dir src/app install --frozen-lockfile
-make bootstrap-runtime
+just bootstrap-runtime
 goose skills list
-python3 scripts/check-consistency.py
-```
+node src/app/tooling/dist/check-consistency.js
+~~~
 
-Bootstrap needs network access for locked external repositories unless a verified external cache is supplied. Published release installation remains offline.
-
-## Application packaging
-
-`src/app/eval-hub/companion.Makefile` emits the optional Eval Hub companion skill and Bun binary. `src/app/loop-breaker` emits the binary projected into `src/plugins/loop-breaker`. Application source is never copied into runtime skill or plugin packages.
+External resolution needs network access unless a verified cache is supplied.
+Published release installation remains offline.
 
 ## Troubleshooting
 
-- `runtime drift`: rollback or discard the mutated projection, then rebuild from `src`.
-- `integrity mismatch`: verify the external commit, path and license; never update a digest blindly.
-- missing `.agents` or `.goose`: run `make bootstrap-runtime`.
-- unavailable Bun: install pinned Bun; no source fallback is published.
-
-## Repository rollback
-
-The pre-migration tag is `pre-harness-rewrite-2026-07`. Restore it only through a reviewed branch and pull request. Runtime rollback changes only the active generated projection and does not rewrite Git.
+- **Runtime drift:** run `just verify-runtime`; discard generated mutations and
+  run `just bootstrap-runtime`.
+- **Integrity mismatch:** verify the external commit, path, and digest; never
+  update a digest blindly.
+- **Missing discovery links:** run `just activate-runtime`, then
+  `just verify-runtime`.
+- **Bad active release:** run `just rollback-runtime` and verify again.
+- **Missing Just:** install the repository-pinned version; do not substitute a
+  different command runner.
+- **Unavailable package runtime:** install the pinned runtime and repeat bootstrap;
+  release builds do not use source fallbacks.

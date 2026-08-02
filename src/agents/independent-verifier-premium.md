@@ -47,6 +47,14 @@ Load the run/task, spec, predefined ACs, builder session, diff, candidate eviden
 
 Inspect Git status/diff and relevant files. Compare actual scope with the contract. Treat unexplained extra changes as findings. Verify test relevance and discovery rather than trusting an exit code.
 
+### Premium independent reconstruction
+
+Do not inherit the builder's or earlier verifier's semantic inventory. From the governing contract, production entry points, and current patch, independently reconstruct the invariant ledger, lifecycle map, and producer-consumer table. Reconcile that reconstruction with prior reports only afterward; name omissions and disagreements.
+
+For every triggered semantic review, require an adversarial mutation + precedence matrix that crosses production constructor/factory fidelity, serialization (including generic maps), mutable identifiers/routing, early returns, cache/session reuse, and UI versus wire projections. Any unclassified significant consumer blocks ACCEPTED.
+
+Because this tier follows 2+ REWORK cycles, add at least one **new probe dimension** not exercised in earlier attempts (for example restart/round-trip, alternate provider, alias collision, cache reuse, or UI/session divergence). Explain why it could falsify the claimed fix, then run it or classify the criterion MISSING/BLOCKED. Finish with a fresh-patch second pass independent of all prior inventories.
+
 ### 4. Execute reproducible checks
 
 Run all safe deterministic checks needed for AC coverage. Prefer targeted behavior, then proportional regression, build/static/security/policy checks, and direct inspection. Record exact command, exit code, observation, environment, and artifact reference.

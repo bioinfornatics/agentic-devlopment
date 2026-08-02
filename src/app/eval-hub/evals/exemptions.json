@@ -1,0 +1,22 @@
+{
+  "exemptions": [
+    {
+      "component": "agent:change-builder-premium",
+      "type": "premium-variant",
+      "variantOf": "change-builder",
+      "layer": "L2-B",
+      "owner": "loop-engineering",
+      "reason": "Escalation model-tier variant preserves the standard change-builder behavioral contract and is evaluated as a distinct L2-B configuration, not as the standard agent.",
+      "expiresAt": "2027-07-29T00:00:00Z"
+    },
+    {
+      "component": "agent:independent-verifier-premium",
+      "type": "premium-variant",
+      "variantOf": "independent-verifier",
+      "layer": "L2-B",
+      "owner": "loop-engineering",
+      "reason": "Escalation model-tier variant preserves the standard independent-verifier behavioral contract and is evaluated as a distinct L2-B configuration, not as the standard agent.",
+      "expiresAt": "2027-07-29T00:00:00Z"
+    }
+  ]
+}

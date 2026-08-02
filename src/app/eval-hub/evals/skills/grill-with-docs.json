@@ -1,7 +1,9 @@
 [
   {
     "skills": [
-      "grill-with-docs"
+      "grill-with-docs",
+      "grilling",
+      "domain-modeling"
     ],
     "agents": [],
     "query": "Use grill-with-docs for a decision about event sourcing. Ask the first question only and state which documentation will be maintained after confirmation.",
@@ -30,7 +32,9 @@
   },
   {
     "skills": [
-      "grill-with-docs"
+      "grill-with-docs",
+      "grilling",
+      "domain-modeling"
     ],
     "agents": [],
     "query": "Stress-test a rename from customer to account holder and maintain documentation as decisions settle.",
@@ -59,7 +63,9 @@
   },
   {
     "skills": [
-      "grill-with-docs"
+      "grill-with-docs",
+      "grilling",
+      "domain-modeling"
     ],
     "agents": [],
     "query": "Grill a multi-tenant boundary decision with docs.",

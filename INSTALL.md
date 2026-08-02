@@ -1,255 +1,107 @@
 # Install the Agentic Development Harness
 
-This guide installs the portable Goose + Beads harness from this repository into your local Goose configuration.
+This guide installs the Goose + Beads harness from this repository into your local Goose configuration.
+
+For the full build/test sequence and a disposable HOME smoke installation, see [HOWTO.md](HOWTO.md).
 
 ## Prerequisites
 
 Required:
 
-- `goose` CLI available on `PATH`
-- `bd` / Beads available in repositories where you want durable task tracking
-- `uvx` available if you use the Beads MCP extension through recipes
+- `goose` CLI available on PATH
+- Node.js 22 (workspace requires >=22 <23)
+- `just` for build orchestration
 
 Recommended:
 
-- Node/npm for Playwright MCP workflows
-- Git for project work
+- `bd` / Beads for durable task tracking
+- `pnpm` for dependency management (pinned in workspace)
 
-Check:
+## Quick install
 
-```bash
-goose --version
-bd --version
-uvx --version
-```
-
-## Install
-
-From this repository root:
+From the repository root:
 
 ```bash
-cd ~/Codes/agentic-devlopment
+# Bootstrap runtime from source
+just bootstrap-runtime
+just verify-runtime
+
+# Install into user Goose config (~/.agents + ~/.config/goose)
+just install-release
 ```
 
-### Option A: install script
+The installer:
+- extracts internal skills, agents, and recipes
+- resolves pinned external skills with integrity verification
+- upserts slash commands in `~/.config/goose/config.yaml`
+- validates all recipes with `goose recipe validate`
 
-Linux/macOS/Git Bash:
+## Install options
 
 ```bash
-./scripts/install.sh
+# Preview only (no files written)
+just INSTALL_FLAGS='--dry-run' install-release
+
+# Skip recipe validation (faster)
+just INSTALL_FLAGS='--skip-validate' install-release
+
+# Preserve existing targets without backup
+just INSTALL_FLAGS='--no-backup' install-release
+
+# Skip slash command configuration
+just INSTALL_FLAGS='--skip-slash-commands' install-release
 ```
 
-PowerShell:
+## Release-based install
 
-```powershell
-./scripts/install.ps1
-```
-
-Useful flags:
+Build and install a reproducible release archive in one command:
 
 ```bash
-./scripts/install.sh --dry-run
-./scripts/install.sh --no-backup
-./scripts/install.sh --skip-validate
-./scripts/install.sh --skip-slash-commands
+just VERSION=1.0.0 release-pipeline
+just install-release
 ```
 
-```powershell
-./scripts/install.ps1 -DryRun
-./scripts/install.ps1 -NoBackup
-./scripts/install.ps1 -SkipValidate
-./scripts/install.ps1 -SkipSlashCommands
-```
-
-#### Slash command installation
-
-By default, the installer upserts slash commands for every top-level recipe in `.goose/recipes/*.yaml`. The active minimal harness installs:
-
-```text
-/implement  /loop-engineering  /research  /verify
-```
-
-The update is idempotent: existing entries for those command names are replaced, not duplicated. Other user-defined slash commands are preserved. Use `--skip-slash-commands` or `-SkipSlashCommands` to opt out.
-
-### Option B: manual install
+Or assemble, verify, then install separately:
 
 ```bash
-mkdir -p ~/.config/goose ~/.agents
-
-rm -rf ~/.config/goose/recipes
-rm -rf ~/.agents/skills
-rm -rf ~/.agents/agents
-
-cp -a .goose/recipes ~/.config/goose/recipes
-cp -a .agents/skills ~/.agents/skills
-cp -a .agents/agents ~/.agents/agents
-```
-
-### Option C: manual install with backups
-
-```bash
-stamp=$(date +%Y%m%d-%H%M%S)
-
-[ -d ~/.config/goose/recipes ] && mv ~/.config/goose/recipes ~/.config/goose/recipes.backup-$stamp
-[ -d ~/.agents/skills ] && mv ~/.agents/skills ~/.agents/skills.backup-$stamp
-[ -d ~/.agents/agents ] && mv ~/.agents/agents ~/.agents/agents.backup-$stamp
-
-mkdir -p ~/.config/goose ~/.agents
-cp -a .goose/recipes ~/.config/goose/recipes
-cp -a .agents/skills ~/.agents/skills
-cp -a .agents/agents ~/.agents/agents
+just VERSION=1.0.0 release-local
+just verify-release
+just install-release
 ```
 
 ## Validate
 
-Validate all recipes:
-
 ```bash
-find ~/.config/goose/recipes -name '*.yaml' -print -exec goose recipe validate {} \;
-```
+# Validate all recipes
+find src/recipes -name '*.yaml' -print -exec goose recipe validate {} \;
 
-Check that skills are visible:
-
-```bash
+# Check skills
 goose skills list
+
+# Check recipes
+goose recipe list
+
+# Verify runtime integrity
+just verify-runtime
 ```
 
-Expected custom skills include:
+## Update after source changes
 
-```text
-agentic-devlopment
-beads
-goose-orchestration
-sdd
-code-review
-ux-quality
-webapp-testing
-```
-
-Check that recipes are visible:
+After editing assets in `src/`, rebootstrap and reinstall:
 
 ```bash
-goose recipe list --verbose
-```
-
-Expected recipes include:
-
-```text
-dev       discover  explore   spec
-design    sdd       plan      implement
-review    verify    release   remember
-doc-review  harness-review
-```
-
-## Configure Goose extensions
-
-The recipes explicitly request core platform extensions:
-
-- `developer`
-- `analyze`
-- `summon`
-- `skills`
-
-Some workflows also request:
-
-- Beads MCP via `uvx beads-mcp`
-- Playwright MCP via `npx @playwright/mcp@latest`
-
-You can inspect and toggle global extensions with:
-
-```bash
-goose configure
-```
-
-## Smoke tests
-
-Render without running:
-
-```bash
-goose run --recipe dev \
-  --params task="smoke test" \
-  --render-recipe
-```
-
-Run a read-only review in a repository:
-
-```bash
-cd /path/to/repo
-
-goose run --recipe review \
-  --params task="review current diff" \
-  --params repo_path="$PWD" \
-  --params constraints="Read-only smoke test. Do not modify files."
-```
-
-## Use in a Beads repository
-
-In a Beads-enabled repo:
-
-```bash
-bd prime
-bd ready --json
-
-goose run --recipe dev \
-  --params task="work on the next ready bead" \
-  --params repo_path="$PWD"
-```
-
-## Update this harness
-
-After editing files in this repository, reinstall by copying again:
-
-```bash
-cp -a .goose/recipes ~/.config/goose/recipes
-cp -a .agents/skills ~/.agents/skills
-cp -a .agents/agents ~/.agents/agents
-```
-
-Then validate:
-
-```bash
-find ~/.config/goose/recipes -name '*.yaml' -print -exec goose recipe validate {} \;
-goose skills list
-```
-
-## Build docs
-
-Install Pandoc, then build the documentation bundle:
-
-```bash
-# Fedora example
-sudo dnf install pandoc texlive-xetex
-
-./scripts/build-docs.sh
-```
-
-Generated files:
-
-```text
-dist/docs/html/agentic-development-harness.html
-dist/docs/pdf/agentic-development-harness.pdf
+just bootstrap-runtime
+just install-release
 ```
 
 ## Uninstall
 
-Remove installed harness files:
-
 ```bash
-rm -rf ~/.config/goose/recipes
-rm -rf ~/.agents/skills
-rm -rf ~/.agents/agents
+node src/app/tooling/dist/install-harness-release.js uninstall --prefix ~/.config
 ```
 
-Then restore any backup if you created one:
+Or remove installed targets manually and restore backups if you created any.
 
-```bash
-mv ~/.config/goose/recipes.backup-YYYYMMDD-HHMMSS ~/.config/goose/recipes
-mv ~/.agents/skills.backup-YYYYMMDD-HHMMSS ~/.agents/skills
-mv ~/.agents/agents.backup-YYYYMMDD-HHMMSS ~/.agents/agents
-```
+## Next steps
 
----
-
-## Next step
-
-See [docs/getting-started.md](docs/getting-started.md) to learn which slash commands to use and when.
+See [docs/START-HERE.md](docs/START-HERE.md) to learn which slash commands to use and when.

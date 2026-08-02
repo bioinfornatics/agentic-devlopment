@@ -1,0 +1,131 @@
+[
+  {
+    "skills": [
+      "output-discipline"
+    ],
+    "agents": [],
+    "query": "Run a multi-step repository inspection while keeping every tool result bounded to only what the next step needs.",
+    "files": [],
+    "max_turns": 15,
+    "difficulty": "normal",
+    "expected_skill_contribution": "Should filter shell and Beads output at source and retain only compact actionable summaries.",
+    "baseline_gaps": [
+      "Would accept a vague objective and begin implementation without defining scope, constraints, or falsifiable acceptance criteria.",
+      "Would not identify that 'error handling' is multi-concern and needs decomposition before claiming a single task."
+    ],
+    "expected_behavior": [
+      "Uses bounded grep, jq, head, or tail filters for potentially large output.",
+      "Returns compact summaries rather than raw logs.",
+      "Persists durable decisions or evidence references instead of carrying large output."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "output-discipline"
+    ],
+    "agents": [],
+    "query": "Inspect a Beads task and its recent evidence without loading the complete issue history into context.",
+    "files": [],
+    "max_turns": 20,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "Should select only required Beads fields and tail recent comments.",
+    "baseline_gaps": [
+      "Would attempt to implement all concerns (copy, API, analytics, accessibility) in one task without isolating independent increments.",
+      "Would not identify dependency order or safe parallelism between the concerns."
+    ],
+    "expected_behavior": [
+      "Queries only fields needed for the next action.",
+      "Limits comment history.",
+      "Does not copy raw large issue data into the response."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "output-discipline"
+    ],
+    "agents": [],
+    "query": "Run several test suites and report reproducible evidence under a strict context budget.",
+    "files": [],
+    "max_turns": 20,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Should retain exact commands, exit codes, concise observations, and artifact references without raw logs.",
+    "baseline_gaps": [
+      "Would frame acceptance criteria from an ambiguous metric-free objective, producing criteria that cannot be independently proved.",
+      "Would not identify that a research task or WAIT transition is required before an implementation contract can be written."
+    ],
+    "expected_behavior": [
+      "Filters test output to a concise failure or pass summary.",
+      "Records exact command and exit status.",
+      "References artifacts for raw logs instead of embedding them."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
+  }
+]

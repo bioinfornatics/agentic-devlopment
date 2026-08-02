@@ -54,3 +54,10 @@ test-results/
 /pnpm-lock.yaml
 /CONTEXT.md
 /src/app/node_modules/
+.agents.old/
+.goose.old/
+evals.old/
+.artifacts/
+.run/
+apps/
+.pytest_cache/

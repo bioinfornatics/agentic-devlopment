@@ -1,7 +1,6 @@
 ---
 name: change-builder
 description: Implements one claimed bounded Beads task and produces candidate evidence without self-approving completion.
-model: claude-sonnet-4-6
 ---
 
 # Change Builder

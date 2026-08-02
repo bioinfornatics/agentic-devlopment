@@ -1,7 +1,8 @@
 [
   {
     "skills": [
-      "grill-me"
+      "grill-me",
+      "grilling"
     ],
     "agents": [],
     "query": "Use grill-me to sharpen a proposal to add a cache. Start the grilling session and ask only one question.",
@@ -30,7 +31,8 @@
   },
   {
     "skills": [
-      "grill-me"
+      "grill-me",
+      "grilling"
     ],
     "agents": [],
     "query": "Use grill-me on a release plan with no rollback strategy.",
@@ -59,7 +61,8 @@
   },
   {
     "skills": [
-      "grill-me"
+      "grill-me",
+      "grilling"
     ],
     "agents": [],
     "query": "Use grill-me to examine whether a feature flag is necessary.",

@@ -307,12 +307,14 @@ export class SkillEvalRunner implements IEvalRunner {
     await this.writer.writePrompt(kind, subject, hash, evalId, config, run, promptText);
 
     // ── cwd / env ─────────────────────────────────────────────────────────────
-    const cwd = cfg.workspace;
+    const cwd = cfg.sandbox ? path.join(cfg.workspace, "project") : cfg.workspace;
+    await fs.mkdir(cwd, { recursive: true });
     // Give each execution a private XDG state root. Goose writes the same log
     // formats as ~/.local/state/goose/logs, but concurrent workers can now be
     // attributed without time-window guesses or historical contamination.
     const gooseLogCapture = gooseLogCaptureForWorkspace(cfg.workspace);
     const env: Record<string, string> = {
+      ...(cfg.sandbox?.env ?? {}),
       XDG_STATE_HOME: gooseLogCapture.stateHome,
       // Isolate sessions DB so delegation chain is attributable to this run only.
       // Goose writes sessions.db to $XDG_DATA_HOME/goose/sessions/sessions.db.
@@ -337,14 +339,14 @@ export class SkillEvalRunner implements IEvalRunner {
     // exclusion runtime_binary_unavailable and throw before launching Goose.
     let snapshotBefore: BinarySnapshot | null = null;
     let binaryUnavailableBefore = false;
-    try { snapshotBefore = await this.provenance.captureSnapshot(gooseCli); }
+    try { snapshotBefore = await this.provenance.captureSnapshot(gooseCli, cfg.sandbox ? { env, cwd } : undefined); if (cfg.sandbox && snapshotBefore.version === null) throw new Error("Goose version unavailable"); }
     catch { binaryUnavailableBefore = true; }
 
     // Legacy execution-evidence.json (preserves compatibility with reporting/workspace reader)
     // Materialize only the active side's requested artifacts. Goose discovers these by walking up from cwd.
     for (const name of treatment.definition.skills) {
       const source = await resolveSubjectPath("skills", name);
-      const target = path.join(cfg.workspace, ".agents", "skills", name);
+      const target = path.join(cwd, ".agents", "skills", name);
       try {
         await fs.access(path.join(source, "SKILL.md"));
         await fs.mkdir(path.dirname(target), { recursive: true });
@@ -353,7 +355,7 @@ export class SkillEvalRunner implements IEvalRunner {
     }
     for (const name of treatment.definition.agents) {
       const source = await resolveSubjectPath("agents", name);
-      const target = path.join(cfg.workspace, ".agents", "agents", name + ".md");
+      const target = path.join(cwd, ".agents", "agents", name + ".md");
       try {
         await fs.access(source);
         await fs.mkdir(path.dirname(target), { recursive: true });
@@ -363,10 +365,10 @@ export class SkillEvalRunner implements IEvalRunner {
 
     const materialized = {
       skills: (await Promise.all(treatment.definition.skills.map(async name =>
-        fs.access(path.join(cfg.workspace, ".agents", "skills", name, "SKILL.md")).then(() => name).catch(() => null),
+        fs.access(path.join(cwd, ".agents", "skills", name, "SKILL.md")).then(() => name).catch(() => null),
       ))).filter((name): name is string => name !== null),
       agents: (await Promise.all(treatment.definition.agents.map(async name =>
-        fs.access(path.join(cfg.workspace, ".agents", "agents", name + ".md")).then(() => name).catch(() => null),
+        fs.access(path.join(cwd, ".agents", "agents", name + ".md")).then(() => name).catch(() => null),
       ))).filter((name): name is string => name !== null),
     };
     const initialActivation = inspectTreatmentActivation([], treatment.definition, materialized, { bootstrap: treatment.bootstrap });
@@ -457,7 +459,7 @@ export class SkillEvalRunner implements IEvalRunner {
     let   gooseError: unknown   = null;
 
     try {
-      for await (const raw of this.goose.run({ gooseCli, args, env, cwd, timeoutMs: cfg.timeoutMs })) {
+      for await (const raw of this.goose.run({ gooseCli, args, env, cwd, timeoutMs: cfg.timeoutMs, inheritEnv: !cfg.sandbox })) {
         if (raw.type === "exit") { rc = raw.code; signal = raw.signal; break; }
         if (!raw.text.trim()) continue;
         if (raw.stream === "stderr") { stderrLines.push(raw.text); continue; }
@@ -485,7 +487,7 @@ export class SkillEvalRunner implements IEvalRunner {
     // record runtime_binary_unavailable and skip grading.
     let snapshotAfter: BinarySnapshot | null = null;
     let snapshotAfterFailed = false;
-    try { snapshotAfter = await this.provenance.captureSnapshot(gooseCli); }
+    try { snapshotAfter = await this.provenance.captureSnapshot(gooseCli, cfg.sandbox ? { env, cwd } : undefined); if (cfg.sandbox && snapshotAfter.version === null) throw new Error("Goose version unavailable"); }
     catch { snapshotAfterFailed = true; }
     const binaryStability = (snapshotBefore !== null && snapshotAfter !== null)
       ? this.provenance.checkStability(snapshotBefore, snapshotAfter)
@@ -596,7 +598,7 @@ export class SkillEvalRunner implements IEvalRunner {
     let rawGrading: GradingResult | null = null;
     try {
       rawGrading = await this.grader.grade(
-        scenario, config, outputLines.join("\n"), cfg.workspace, gooseCli, { provider, model },
+        scenario, config, outputLines.join("\n"), cfg.workspace, gooseCli, { provider, model, ...(cfg.sandbox ? { sandbox: cfg.sandbox } : {}) },
       );
     } catch {
       rawGrading = null;

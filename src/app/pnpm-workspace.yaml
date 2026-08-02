@@ -2,3 +2,4 @@ packages:
   - "kg"
   - "kg-visualizer"
   - "eval-hub"
+  - "tooling"

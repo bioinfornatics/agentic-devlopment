@@ -85,14 +85,11 @@ describe("HAR-02 recipe path consistency", () => {
     expect(violations, violations.join("\n")).toEqual([]);
   });
 
-  it("install.sh declares exactly the 4 active recipes as slash commands", async () => {
-    const installSh = await fs.readFile(path.join(PROJECT_ROOT, "scripts", "install.sh"), "utf8");
-    // install.sh uses recipe_dir.glob("*.yaml") — it dynamically discovers
-    // recipes; the test verifies the managed list comment or dynamic discovery
-    // is present (not a hard-coded stale list)
-    const hasDynamicDiscovery = installSh.includes('recipe_dir.glob("*.yaml")') ||
-      installSh.includes("recipe_dir.glob('*.yaml')");
-    expect(hasDynamicDiscovery, "install.sh must use dynamic recipe discovery via glob").toBe(true);
+  it("the installer derives slash commands from active recipe files", async () => {
+    const support = await fs.readFile(path.join(PROJECT_ROOT, "src", "app", "tooling", "src", "install-support.ts"), "utf8");
+    expect(support).toContain("readdir");
+    expect(support).toContain('endsWith(".yaml")');
+    expect(support).not.toContain("discover.yaml");
   });
 });
 

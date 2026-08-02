@@ -28,17 +28,17 @@ jobs:
           sudo apt-get install -y --no-install-recommends pandoc
 
       - name: Build documentation
-        run: ./scripts/build-docs.sh
+        run: ./src/tooling/bin/build-docs
 
       - name: Copy committed eval artifacts into dist/
         # benchmark.json, analysis files, and review.html are committed under
-        # evals/history/; the runner also commits dist/evals/skills/ selectively.
+        # src/app/eval-hub/evals/history/; the runner also commits dist/evals/skills/ selectively.
         # This step copies what IS committed so Pages serves it.
         run: |
           mkdir -p dist/evals/skills
           # Copy any eval HTML/JSON committed directly (not .gitignored run artifacts)
-          if [ -d "evals" ]; then
-            echo "evals/history available for trend data"
+          if [ -d "src/app/eval-hub/evals" ]; then
+            echo "src/app/eval-hub/evals/history available for trend data"
           fi
 
       - name: Create landing index

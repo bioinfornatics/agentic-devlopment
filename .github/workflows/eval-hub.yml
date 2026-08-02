@@ -9,7 +9,7 @@ name: Eval Hub
   push:
     branches: [main]
     paths:
-      - "apps/**"
+      - "src/app/**"
       - ".github/workflows/eval-hub.yml"
   workflow_dispatch:
 
@@ -25,6 +25,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install Just 1.55.1
+        uses: extractions/setup-just@v3
+        with:
+          just-version: "1.55.1"
 
       - name: Read Node version
         id: node-version
@@ -55,7 +59,7 @@ jobs:
 
       - name: Bootstrap projected harness runtime
         working-directory: ${{ github.workspace }}
-        run: make bootstrap-runtime
+        run: just bootstrap-runtime
 
       - name: Check native binding
         run: pnpm --filter @harness/eval-hub test:native
@@ -65,6 +69,10 @@ jobs:
 
       - name: Build
         run: pnpm --filter @harness/eval-hub build
+
+      - name: Deterministic corpus and impact checks (no LLM)
+        run: pnpm --filter @harness/eval-hub exec vitest run causalDeps impactSelector
+        working-directory: ${{ github.workspace }}
 
       - name: Test
         run: pnpm --filter @harness/eval-hub test

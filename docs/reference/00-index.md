@@ -47,7 +47,7 @@ The harness combines three layers:
 ```bash
 # Clone and install harness
 git clone <repo> && cd agentic-devlopment
-./scripts/install.sh
+./src/tooling/bin/install
 
 # Verify: active recipes
 ls .goose/recipes/    # implement  loop-engineering  research  verify

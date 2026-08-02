@@ -40,7 +40,7 @@ describe("AC-EVAL-01/02/04/05: eval coverage and layer-delta contracts", () => {
   }
 
   it("AC-EVAL-01: every authored skill eval has at least 3 scenarios for positive-delta checks", async () => {
-    const evalsDir = join(REPO, "evals", "skills");
+    const evalsDir = join(REPO, "src", "app", "eval-hub", "evals", "skills");
     const skillsDir = join(REPO, "src", "skills");
     const authoredSkills = (await readdir(skillsDir, { withFileTypes: true }))
       .filter(d => d.isDirectory())
@@ -68,7 +68,7 @@ describe("AC-EVAL-01/02/04/05: eval coverage and layer-delta contracts", () => {
 
   it("AC-EVAL-02: every top-level recipe has an eval JSON file with at least 3 scenarios", async () => {
     const recipesDir = join(REPO, "src", "recipes");
-    const evalsDir = join(REPO, "evals", "recipes");
+    const evalsDir = join(REPO, "src", "app", "eval-hub", "evals", "recipes");
     const recipeNames = (await readdir(recipesDir)).filter(f => f.endsWith(".yaml")).map(f => f.replace(".yaml", "")).sort();
     const evalFiles = new Set((await readdir(evalsDir)).filter(f => f.endsWith(".json")).map(f => f.replace(".json", "")));
     const problems: string[] = [];
@@ -91,7 +91,7 @@ describe("AC-EVAL-01/02/04/05: eval coverage and layer-delta contracts", () => {
   // This test block is preserved as a comment for historical traceability.
 
   it("AC-EVAL-04: agent evals declare Layer 1 skills-only baseline and layer-delta expectations", async () => {
-    const evalsDir = join(REPO, "evals", "agents");
+    const evalsDir = join(REPO, "src", "app", "eval-hub", "evals", "agents");
     const files = (await readdir(evalsDir)).filter(f => f.endsWith(".json"));
     const problems: string[] = [];
     for (const f of files) {
@@ -113,7 +113,7 @@ describe("AC-EVAL-01/02/04/05: eval coverage and layer-delta contracts", () => {
   });
 
   it("AC-EVAL-05: recipe evals declare Layer 2 agents+skills baseline and layer-delta expectations", async () => {
-    const evalsDir = join(REPO, "evals", "recipes");
+    const evalsDir = join(REPO, "src", "app", "eval-hub", "evals", "recipes");
     const files = (await readdir(evalsDir)).filter(f => f.endsWith(".json"));
     const problems: string[] = [];
     for (const f of files) {
@@ -252,16 +252,17 @@ describe("AC-RECIPE-03 / HAR-02: slash command registration", () => {
   // "every dev subrecipe path resolves" removed — dev.yaml is an archived recipe, not active.
 
   it("installer derives managed commands from recipe files", async () => {
-    const installSh = await readFile(join(REPO, "scripts", "install.sh"), "utf8");
-    expect(installSh).toContain('recipe_dir.glob("*.yaml")');
-    expect(installSh).not.toContain('("discover", "discover.yaml")');
+    const support = await readFile(join(REPO, "src", "app", "tooling", "src", "install-support.ts"), "utf8");
+    expect(support).toContain("readdir");
+    expect(support).toContain(".yaml");
+    expect(support).not.toContain("discover.yaml");
   });
 });
 
 // ── AC-EVAL-06: layer declarations in eval JSON files ────────────────────
 describe("AC-EVAL-06: layer declarations in eval JSON files", () => {
-  const agentsEvalDir = (repo: string) => join(repo, "evals", "agents");
-  const recipesEvalDir = (repo: string) => join(repo, "evals", "recipes");
+  const agentsEvalDir = (repo: string) => join(repo, "src", "app", "eval-hub", "evals", "agents");
+  const recipesEvalDir = (repo: string) => join(repo, "src", "app", "eval-hub", "evals", "recipes");
   const agentsDir = (repo: string) => join(repo, ".agents", "agents");
   const skillsDir = (repo: string) => join(repo, ".agents", "skills");
 

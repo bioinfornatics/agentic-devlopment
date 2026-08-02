@@ -42,7 +42,10 @@
       ]
     },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "objective"
+    "recipe_task_parameter": "objective",
+    "delegated_agents": [
+      "repository-researcher"
+    ]
   },
   {
     "skills": [
@@ -88,7 +91,10 @@
       ]
     },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "objective"
+    "recipe_task_parameter": "objective",
+    "delegated_agents": [
+      "repository-researcher"
+    ]
   },
   {
     "skills": [
@@ -134,6 +140,9 @@
       ]
     },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "objective"
+    "recipe_task_parameter": "objective",
+    "delegated_agents": [
+      "repository-researcher"
+    ]
   }
 ]

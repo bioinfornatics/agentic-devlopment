@@ -1,7 +1,7 @@
 /**
  * Archive-isolation guardrail tests — dcjv.23
  *
- * AC-1  Active discovery reads only .agents/, .goose/, and evals/.
+ * AC-1  Active discovery reads only .agents/, .goose/, and the Eval Hub corpus.
  * AC-2  assertNotArchive / isArchivePath throw or flag archive paths.
  * AC-3  Archive roots are enumerated and stable; no archive content is read.
  * AC-4  Focused tests and typecheck pass.
@@ -65,9 +65,9 @@ describe("source/runtime root separation", () => {
   });
 });
 
-describe("AC-1 active discovery reads only .agents/, .goose/, and evals/", () => {
-  it("ACTIVE_DIR_NAMES lists .agents, .goose, and evals", () => {
-    expect([...ACTIVE_DIR_NAMES].sort()).toEqual([".agents", ".goose", "evals"]);
+describe("AC-1 active discovery reads only runtime roots and the canonical Eval Hub corpus", () => {
+  it("ACTIVE_DIR_NAMES lists runtime roots and the canonical corpus", () => {
+    expect([...ACTIVE_DIR_NAMES].sort()).toEqual([".agents", ".goose", path.join("src", "app", "eval-hub", "evals")]);
   });
 
   it("PROJECT_AGENTS_DIR is inside active .agents/ and not any archive", () => {
@@ -85,8 +85,8 @@ describe("AC-1 active discovery reads only .agents/, .goose/, and evals/", () =>
     expect(isArchivePath(PROJECT_RECIPES_DIR, PROJECT_ROOT)).toBe(false);
   });
 
-  it("EVALS_DIR is inside active evals/ and not any archive", () => {
-    expect(EVALS_DIR.startsWith(path.join(PROJECT_ROOT, "evals"))).toBe(true);
+  it("EVALS_DIR is inside the canonical Eval Hub corpus and not any archive", () => {
+    expect(EVALS_DIR.startsWith(path.join(PROJECT_ROOT, "src", "app", "eval-hub", "evals"))).toBe(true);
     expect(isArchivePath(EVALS_DIR, PROJECT_ROOT)).toBe(false);
   });
 
@@ -173,8 +173,8 @@ describe("AC-2 assertNotArchive does not throw for active harness paths", () => 
     expect(() => assertNotArchive(p, FAKE_ROOT)).not.toThrow();
   });
 
-  it("passes for evals/ path", () => {
-    const p = path.join(FAKE_ROOT, "evals", "skills", "some-skill.json");
+  it("passes for canonical Eval Hub corpus path", () => {
+    const p = path.join(FAKE_ROOT, "src", "app", "eval-hub", "evals", "skills", "some-skill.json");
     expect(() => assertNotArchive(p, FAKE_ROOT)).not.toThrow();
   });
 
@@ -206,8 +206,8 @@ describe("AC-2 isArchivePath uses exact prefix matching — no false positives",
     expect(isArchivePath(path.join(FAKE_ROOT, ".goose", "x"), FAKE_ROOT)).toBe(false);
   });
 
-  it("returns false for active evals/ — shares prefix but is not archive", () => {
-    expect(isArchivePath(path.join(FAKE_ROOT, "evals", "x"), FAKE_ROOT)).toBe(false);
+  it("returns false for the canonical Eval Hub corpus", () => {
+    expect(isArchivePath(path.join(FAKE_ROOT, "src", "app", "eval-hub", "evals", "x"), FAKE_ROOT)).toBe(false);
   });
 
   it("returns false for unrelated paths", () => {

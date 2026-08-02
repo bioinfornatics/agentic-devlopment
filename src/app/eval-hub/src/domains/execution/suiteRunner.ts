@@ -25,7 +25,7 @@ import { NULL_SINK } from "../../shared/eventBus.js";
 import { buildTreatmentPair, hashUtf8, resolveTypedRecipeSource, treatmentContentHash, validateRepetitionCount, type TreatmentPair } from "./executionIntegrity.js";
 
 export interface SuitePlanningRuntime {
-  identity(gooseCli: string): Promise<GooseRuntimeIdentity>;
+  identity(gooseCli: string, sandbox?: import("./ports.js").SandboxProcessConfig): Promise<GooseRuntimeIdentity>;
 }
 
 export interface SuitePlanningOptions {
@@ -99,7 +99,7 @@ export class SuiteRunner implements ISuiteRunner {
               kind: cfg.kind, subject, hash, scenario, evalId,
               config: treatment.id, treatment, repetition,
               workspace: pairWorkspace,
-              gooseCli: cfg.gooseCli, maxTurns: intPlan.manifest.maxTurnsByTask[taskKey]!, timeoutMs: cfg.timeoutMs, ambient: cfg.ambient,
+              gooseCli: cfg.gooseCli, maxTurns: intPlan.manifest.maxTurnsByTask[taskKey]!, timeoutMs: cfg.timeoutMs, ambient: cfg.ambient, ...(cfg.sandbox ? { sandbox: cfg.sandbox } : {}),
               fixtureHashes,
               plannedTaskPayload:     subjectPlan.taskPayloads.get(evalId)!,
               plannedTaskPayloadHash: intPlan.manifest.taskPayloadHashes[taskKey]!,
@@ -290,7 +290,7 @@ export class SuiteRunner implements ISuiteRunner {
       readonly fixtureHashesByEvalId: Map<number, Readonly<Record<string, string>>>;
     }>;
   }> {
-    const runtime = await this.runtime.identity(cfg.gooseCli);
+    const runtime = await this.runtime.identity(cfg.gooseCli, cfg.sandbox);
     const provider = runtime.provider ?? "unknown";
     const model = runtime.model ?? "unknown";
     const root = path.join(cfg.workspace, "_integrity-v2", cfg.kind);
@@ -353,12 +353,16 @@ export class SuiteRunner implements ISuiteRunner {
       plannedSubjects.set(subject, { sourceHash, taskPayloads, treatments: treatmentPlans, pair, fixtureHashesByEvalId });
     }
 
+    const bindingArgs: string[] = cfg.releaseContext
+      ? Object.entries(cfg.releaseContext.bindings).map(([key, value]) => `binding.${key}=${value}`)
+      : [];
     const manifest: IntegrityManifestV2 = {
       schema: INTEGRITY_SCHEMA_V2,
-      runProvenanceId: this.runProvenanceId(),
+      runProvenanceId: cfg.releaseContext?.runProvenanceId ?? this.runProvenanceId(),
       cliArguments: [
         `kind=${cfg.kind}`, `subjects=${cfg.subjects.join(",")}`, `mode=${cfg.mode}`, `repetitions=${repetitions}`,
         `maxTurns=${cfg.maxTurns}`, `timeoutMs=${cfg.timeoutMs}`, `ambient=${cfg.ambient}`,
+        ...bindingArgs,
       ],
       subjects,
       repetitions,

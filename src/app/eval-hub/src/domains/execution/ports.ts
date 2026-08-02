@@ -10,12 +10,20 @@ import type { INTEGRITY_SCHEMA_V2, IntegrityManifestV2 } from "../persistence/in
 
 // ── Goose process ─────────────────────────────────────────────────────────────
 
+export interface SandboxProcessConfig {
+  readonly env: Record<string, string>;
+  readonly projectRoot: string;
+  readonly runtimeRoot: string;
+  readonly evidenceRoot: string;
+}
+
 export interface GooseRunConfig {
   readonly gooseCli:    string;
   readonly args:        readonly string[];
   readonly env?:        Record<string, string>;
   readonly cwd:         string;
   readonly timeoutMs?:  number;
+  readonly inheritEnv?: boolean;
 }
 
 export interface GooseRuntimeIdentity {
@@ -32,7 +40,7 @@ export type GooseRawEvent =
 export interface IGooseRunner {
   run(config: GooseRunConfig): AsyncGenerator<GooseRawEvent>;
   version(cli: string): Promise<string>;
-  identity(cli: string): Promise<GooseRuntimeIdentity>;
+  identity(cli: string, sandbox?: SandboxProcessConfig): Promise<GooseRuntimeIdentity>;
 }
 
 // ── Prompt builder ────────────────────────────────────────────────────────────
@@ -65,7 +73,7 @@ export interface IGrader {
     gooseOutput: string,
     runDir:      string,
     gooseCli:    string,
-    runtime?: Readonly<{ provider: string | null; model: string | null }>,
+    runtime?: Readonly<{ provider: string | null; model: string | null; sandbox?: SandboxProcessConfig }>,
   ): Promise<GradingResult>;
 }
 
@@ -105,6 +113,7 @@ export interface ScenarioRunConfig {
   readonly maxTurns:    number;
   readonly timeoutMs:   number;
   readonly ambient:     boolean;
+  readonly sandbox?: SandboxProcessConfig;
   readonly fixtureHashes: Readonly<Record<string, string>>;
   readonly plannedTaskPayload: string;
   readonly plannedTaskPayloadHash: string;
@@ -120,6 +129,30 @@ export interface IEvalRunner {
   run(config: ScenarioRunConfig, sink?: IEventSink): AsyncGenerator<EvalEvent>;
 }
 
+// ── Release context ──────────────────────────────────────────────────────────
+
+/**
+ * Optional release-protocol context supplied by the caller (e.g. a CI release
+ * run).  When present, SuiteRunner uses the supplied runProvenanceId instead of
+ * generating one, and appends `binding.<key>=<value>` cliArguments to each
+ * Integrity V2 manifest so that evaluateReleaseGate can verify provenance sharing
+ * across all layers of the run.
+ */
+export interface ReleaseContext {
+  /** Shared across all layers of the release run. */
+  readonly runProvenanceId: string;
+  /** Canonical binding digests written as binding.<key>=<value> cliArguments. */
+  readonly bindings: {
+    readonly profile:   string;
+    readonly runtime:   string;
+    readonly release:   string;
+    readonly corpus:    string;
+    readonly goose:     string;
+    readonly provider:  string;
+    readonly model:     string;
+  };
+}
+
 // ── Suite runner ──────────────────────────────────────────────────────────────
 
 export interface SuiteConfig {
@@ -132,8 +165,10 @@ export interface SuiteConfig {
   readonly maxTurns:       number;
   readonly timeoutMs:      number;
   readonly ambient:        boolean;
+  readonly sandbox?: SandboxProcessConfig;
   readonly continueOnFail: boolean;
   readonly repetitions:    number;
+  readonly releaseContext?: ReleaseContext;
 }
 
 /** One leaf execution unit: subject × scenario × repetition × side. */
@@ -196,12 +231,14 @@ export interface LayeredConfig {
   readonly maxTurns:           number;
   readonly timeoutMs:          number;
   readonly ambient:            boolean;
+  readonly sandbox?: SandboxProcessConfig;
   readonly continueOnFail:     boolean;
   readonly earlyStopThreshold: number;
   readonly noEarlyStop:        boolean;
   readonly repetitions?:       number;
   readonly layeredRunId?:      string;
   readonly subjectFilter?:     readonly string[];
+  readonly releaseContext?:    ReleaseContext;
 }
 
 export interface ILayeredRunner {

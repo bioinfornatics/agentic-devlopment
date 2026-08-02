@@ -43,7 +43,10 @@
       ]
     },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "task_id"
+    "recipe_task_parameter": "task_id",
+    "delegated_agents": [
+      "independent-verifier"
+    ]
   },
   {
     "skills": [
@@ -89,7 +92,10 @@
       ]
     },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "task_id"
+    "recipe_task_parameter": "task_id",
+    "delegated_agents": [
+      "independent-verifier"
+    ]
   },
   {
     "skills": [
@@ -135,6 +141,9 @@
       ]
     },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "task_id"
+    "recipe_task_parameter": "task_id",
+    "delegated_agents": [
+      "independent-verifier"
+    ]
   }
 ]

@@ -22,12 +22,12 @@ export const ARCHIVE_DIR_NAMES: readonly string[] = [
 
 /**
  * Active harness directory names: Goose discovers agents/skills/plugins from
- * .agents/, recipes from .goose/; eval data lives in evals/.
+ * .agents/, recipes from .goose/; eval data lives in src/app/eval-hub/evals/.
  */
 export const ACTIVE_DIR_NAMES: readonly string[] = [
   ".agents",
   ".goose",
-  "evals",
+  path.join("src", "app", "eval-hub", "evals"),
 ];
 
 /**

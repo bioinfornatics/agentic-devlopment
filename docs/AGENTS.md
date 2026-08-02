@@ -16,7 +16,7 @@ docs/
 ## Setup
 
 ```bash
-./scripts/build-docs.sh   # pandoc → dist/docs/html/ + KG pipeline
+./src/tooling/bin/build-docs   # pandoc → dist/docs/html/ + KG pipeline
 ```
 
 ## Conventions
@@ -43,7 +43,7 @@ docs/adr/ADR-*.md                     # Architecture Decision Records
 ## After editing
 
 ```bash
-./scripts/build-docs.sh   # verify HTML builds without errors
+./src/tooling/bin/build-docs   # verify HTML builds without errors
 ```
 
 ## What to avoid

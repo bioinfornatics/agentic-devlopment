@@ -4,8 +4,6 @@ description: >
   Analyzes repeated tool failures, provides corrections, and creates learned
   patterns to prevent recurrence. Summoned by loop-breaker when errors repeat.
   Uses loop-breaker's SQLite database for pattern storage.
-model: claude-sonnet-4-6
-
 ---
 
 # Error Analyzer

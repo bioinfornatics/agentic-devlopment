@@ -351,11 +351,17 @@ export function buildTreatmentPair(input: TreatmentPairInput): TreatmentPair {
   const skills = [...input.declaredSkills];
   const agents = [...input.declaredAgents];
   switch (input.kind) {
-    case "skills":
+    case "skills": {
+      // AC1: L1 causal baseline — skill_l1 = subject + deps, skill_l0 = same deps without subject.
+      // deps = declared scenario skills that are NOT the evaluation subject itself.
+      // This makes the L1 comparison causally correct: what does the subject skill add
+      // over having only the other skills the scenario already declares?
+      const deps = input.declaredSkills.filter(s => s !== input.subject);
       return {
-        candidate: treatment("skill_l1", input, systemBootstrap([input.subject], []), [input.subject], []),
-        baseline: treatment("skill_l0", input, systemBootstrap([], []), [], []),
+        candidate: treatment("skill_l1", input, systemBootstrap([input.subject, ...deps], []), [input.subject, ...deps], []),
+        baseline: treatment("skill_l0", input, systemBootstrap(deps, []), deps, []),
       };
+    }
     case "agents":
       return {
         candidate: treatment("agent_l2", input, systemBootstrap(skills, [input.subject]), skills, [input.subject]),

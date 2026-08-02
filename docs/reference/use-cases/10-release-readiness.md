@@ -35,17 +35,17 @@ done
 node src/app/kg/dist/cli.js bootstrap --dry-run
 
 # 4. Check consistency (metadata, recipe contracts)
-python3 scripts/check-recipe-metadata.py
-python3 scripts/check-consistency.py
+node src/app/tooling/dist/check-recipe-metadata.js
+node src/app/tooling/dist/check-consistency.js
 
 # 5. Full test suite
 cd apps && pnpm -r test
 
-# 6. Python corpus tests
-python3 -m pytest scripts/tests/ -q
+# 6. TypeScript tooling and corpus tests
+pnpm --dir src/app --filter @harness/tooling test
 
 # 7. Docs build
-./scripts/build-docs.sh
+./src/tooling/bin/build-docs
 ```
 
 ## Release phases

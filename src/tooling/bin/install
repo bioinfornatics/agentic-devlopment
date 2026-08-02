@@ -5,7 +5,7 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: ./scripts/install.sh [options]
+Usage: ./src/tooling/bin/install [options]
 
 Install project-local harness files into:
   ~/.config/goose/recipes
@@ -16,7 +16,13 @@ Install project-local harness files into:
 The installer also adds/upserts harness slash commands in:
   ~/.config/goose/config.yaml
 
+Modes:
+  Default:    Install from bootstrap staging (build/harness/runtime/current)
+  --bundle:   Install from a release archive directory (dist/releases)
+
 Options:
+  --bundle DIR       Install from release archive in DIR instead of bootstrap staging
+                     DIR must contain SHA256SUMS and a .tar file
   --dry-run              Print actions without copying files
   --no-backup            Do not backup existing target directories/config
   --skip-validate        Skip goose recipe validation after copy
@@ -24,9 +30,9 @@ Options:
   -h, --help             Show this help
 
 Examples:
-  ./scripts/install.sh
-  ./scripts/install.sh --dry-run
-  ./scripts/install.sh --no-backup
+  ./src/tooling/bin/install                         # from bootstrap staging
+  ./src/tooling/bin/install --bundle dist/releases   # from release archive
+  ./src/tooling/bin/install --bundle dist/releases --dry-run
 USAGE
 }
 
@@ -34,6 +40,7 @@ DRY_RUN=0
 BACKUP=1
 VALIDATE=1
 SLASH_COMMANDS=1
+BUNDLE=""
 
 while (( $# > 0 )); do
   case "$1" in
@@ -41,6 +48,9 @@ while (( $# > 0 )); do
     --no-backup) BACKUP=0 ;;
     --skip-validate) VALIDATE=0 ;;
     --skip-slash-commands) SLASH_COMMANDS=0 ;;
+    --bundle)
+      if [[ -z "${2:-}" ]]; then echo "error: --bundle requires a directory argument" >&2; exit 2; fi
+      BUNDLE="$2"; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "error: unknown option: $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -58,17 +68,53 @@ while [[ -L "$script_path" ]]; do
   fi
 done
 SCRIPT_DIR="$(cd -P "$(dirname "$script_path")" >/dev/null 2>&1 && pwd)"
-ROOT="$(cd -P "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
+ROOT="$(cd -P "$SCRIPT_DIR/../../.." >/dev/null 2>&1 && pwd)"
 
-RUNTIME_ROOT="${HARNESS_RUNTIME_ROOT:-$ROOT/build/harness/runtime/current}"
+# ── Resolve runtime source ────────────────────────────────────────
+
+if [[ -n "$BUNDLE" ]]; then
+  # Install from release archive: extract to temp, copy files to user config.
+  if [[ ! -d "$BUNDLE" ]]; then
+    echo "error: bundle directory not found: $BUNDLE" >&2; exit 1
+  fi
+  if [[ ! -f "$BUNDLE/SHA256SUMS" ]]; then
+    echo "error: no SHA256SUMS in $BUNDLE; run just VERSION=x.y.z release-local first" >&2; exit 1
+  fi
+
+  # Verify archive checksum before extracting
+  archive_name=$(awk '{print $2}' "$BUNDLE/SHA256SUMS")
+  expected=$(awk '{print $1}' "$BUNDLE/SHA256SUMS")
+  if [[ -z "$archive_name" ]]; then echo "error: malformed SHA256SUMS" >&2; exit 1; fi
+  actual=$(sha256sum "$BUNDLE/$archive_name" | awk '{print $1}')
+  if [[ "$actual" != "$expected" ]]; then
+    echo "error: archive checksum mismatch (expected $expected)" >&2; exit 1
+  fi
+
+  echo "Verified $archive_name checksum OK"
+
+  # Extract to disposable temp directory
+  INSTALL_TMP=$(mktemp -d)
+  trap 'rm -rf "$INSTALL_TMP"' EXIT
+  tar -xf "$BUNDLE/$archive_name" -C "$INSTALL_TMP"
+
+  RUNTIME_ROOT="$INSTALL_TMP"
+else
+  RUNTIME_ROOT="${HARNESS_RUNTIME_ROOT:-$ROOT/build/harness/runtime/current}"
+fi
+
+# ── Target paths ──────────────────────────────────────────────────
+
 SRC_RECIPES="$RUNTIME_ROOT/.goose/recipes"
 SRC_SKILLS="$RUNTIME_ROOT/.agents/skills"
 SRC_AGENTS="$RUNTIME_ROOT/.agents/agents"
-DST_RECIPES="$HOME/.config/goose/recipes"
+GOOSE_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/goose"
+DST_RECIPES="$GOOSE_CONFIG_HOME/recipes"
 DST_SKILLS="$HOME/.agents/skills"
 DST_AGENTS="$HOME/.agents/agents"
-GOOSE_CONFIG="$HOME/.config/goose/config.yaml"
+GOOSE_CONFIG="$GOOSE_CONFIG_HOME/config.yaml"
 STAMP="$(date +%Y%m%d-%H%M%S)"
+
+# ── Helpers ───────────────────────────────────────────────────────
 
 require_dir() {
   local dir="$1"
@@ -108,125 +154,10 @@ copy_dir() {
 }
 
 update_slash_commands() {
-  if (( ! SLASH_COMMANDS )); then
-    echo "Skipping slash command update."
-    return 0
-  fi
-
-  if ! command -v python3 >/dev/null 2>&1; then
-    echo "warning: python3 not found; cannot update slash_commands automatically" >&2
-    return 0
-  fi
-
-  python3 - "$GOOSE_CONFIG" "$DST_RECIPES" "$BACKUP" "$DRY_RUN" "$STAMP" <<'PY'
-from pathlib import Path
-import re, shutil, sys
-
-config = Path(sys.argv[1])
-recipe_dir = Path(sys.argv[2])
-backup_enabled = sys.argv[3] == "1"
-dry_run = sys.argv[4] == "1"
-stamp = sys.argv[5]
-
-managed = [
-    (path.stem, path.name) for path in sorted(recipe_dir.glob("*.yaml"))
-]
-managed_names = {name.lower() for name, _ in managed}
-
-missing = [str(recipe_dir / file) for _, file in managed if not (recipe_dir / file).is_file()]
-if missing:
-    print("warning: cannot add slash commands; missing installed recipes:", file=sys.stderr)
-    for path in missing:
-        print(f"  {path}", file=sys.stderr)
-    sys.exit(0)
-
-new_entries = []
-for name, file in managed:
-    new_entries.extend([
-        f'  - command: "{name}"\n',
-        f'    recipe_path: "{recipe_dir / file}"\n',
-    ])
-
-def item_command(chunk):
-    for line in chunk:
-        m = re.search(r'^\s*command:\s*["\']?([^"\'\s#]+)', line)
-        if m:
-            return m.group(1).lower()
-    return None
-
-def split_items(block_body):
-    prefix = []
-    chunks = []
-    current = None
-    for line in block_body:
-        if re.match(r'^\s*-\s+', line):
-            if current is not None:
-                chunks.append(current)
-            current = [line]
-        elif current is None:
-            prefix.append(line)
-        else:
-            current.append(line)
-    if current is not None:
-        chunks.append(current)
-    return prefix, chunks
-
-if config.exists():
-    lines = config.read_text().splitlines(keepends=True)
-else:
-    lines = []
-
-start = None
-for i, line in enumerate(lines):
-    if re.match(r'^slash_commands:\s*(#.*)?$', line):
-        start = i
-        break
-
-if start is None:
-    replacement = []
-    if lines and lines[-1].strip():
-        replacement.append('\n')
-    replacement.append('slash_commands:\n')
-    replacement.extend(new_entries)
-    out = lines + replacement
-else:
-    end = len(lines)
-    for j in range(start + 1, len(lines)):
-        if re.match(r'^[A-Za-z0-9_][^:]*:\s*(#.*)?$', lines[j]):
-            end = j
-            break
-    body = lines[start + 1:end]
-    _prefix, chunks = split_items(body)
-    kept_chunks = []
-    for chunk in chunks:
-        cmd = item_command(chunk)
-        if cmd in managed_names or cmd is None:
-            continue
-        for line in chunk:
-            stripped = line.lstrip()
-            if stripped.startswith('- '):
-                kept_chunks.append('  ' + stripped)
-            else:
-                kept_chunks.append('    ' + stripped)
-    replacement = ['slash_commands:\n']
-    replacement.extend(kept_chunks)
-    replacement.extend(new_entries)
-    out = lines[:start] + replacement + lines[end:]
-
-if dry_run:
-    print("[dry-run] upsert slash_commands:")
-    for name, file in managed:
-        print(f"  /{name} -> {recipe_dir / file}")
-    sys.exit(0)
-
-config.parent.mkdir(parents=True, exist_ok=True)
-if config.exists() and backup_enabled:
-    shutil.copy2(config, config.with_name(f"config.yaml.backup-{stamp}"))
-config.write_text(''.join(out))
-print("Updated slash_commands in", config)
-for name, file in managed:
-    print(f"  /{name} -> {recipe_dir / file}")
-PY
+  if (( ! SLASH_COMMANDS )); then echo "Skipping slash command update."; return 0; fi
+  local scan_recipes="$DST_RECIPES"
+  (( DRY_RUN )) && scan_recipes="$SRC_RECIPES"
+  node "$ROOT/src/app/tooling/dist/install-support.js" update-slash-commands "$GOOSE_CONFIG" "$scan_recipes" "$DST_RECIPES" "$BACKUP" "$DRY_RUN" "$STAMP"
 }
 
 # Copy project skills into $DST_SKILLS while preserving any external skills
@@ -250,7 +181,8 @@ merge_skills_dir() {
     run rm -rf "$dst"
   fi
 
-  # Install project skills fresh.
+  # Install project skills fresh. The parent may not exist in a new HOME.
+  run mkdir -p "$(dirname "$dst")"
   run cp -a "$src" "$dst"
 
   # Restore every sub-directory from the backup that is NOT a project skill.
@@ -273,13 +205,18 @@ merge_skills_dir() {
   fi
 }
 
+# ── Validate source dirs exist ────────────────────────────────────
+
 require_dir "$SRC_RECIPES"
 require_dir "$SRC_SKILLS"
 require_dir "$SRC_AGENTS"
 
+# ── Display install plan ─────────────────────────────────────────
+
 cat <<INFO
 Installing Agentic Development Harness
   source:      $ROOT
+  runtime:     $RUNTIME_ROOT
   recipes ->   $DST_RECIPES
   skills  ->   $DST_SKILLS
   agents  ->   $DST_AGENTS
@@ -288,10 +225,14 @@ Installing Agentic Development Harness
   dry-run:     $DRY_RUN
 INFO
 
+# ── Copy files ────────────────────────────────────────────────────
+
 copy_dir "$SRC_RECIPES" "$DST_RECIPES"
 merge_skills_dir "$SRC_SKILLS" "$DST_SKILLS"
 copy_dir "$SRC_AGENTS" "$DST_AGENTS"
 update_slash_commands
+
+# ── Validate ──────────────────────────────────────────────────────
 
 if (( VALIDATE )); then
   if command -v goose >/dev/null 2>&1; then
@@ -308,32 +249,18 @@ if (( VALIDATE )); then
   fi
 fi
 
-# Install Goose plugin (hooks) into user plugins directory
+# ── Install plugins ──────────────────────────────────────────────
+
 SRC_PLUGINS="$RUNTIME_ROOT/.agents/plugins"
 DST_PLUGINS="$HOME/.agents/plugins"
 if [[ -d "$SRC_PLUGINS" ]]; then
-  # Build plugins that declare a bun build script (e.g. loop-breaker → binary)
-  if command -v bun &>/dev/null; then
-    for plugin_dir in "$SRC_PLUGINS"/*/; do
-      [[ -d "$plugin_dir" ]] || continue
-      plugin_name="$(basename "$plugin_dir")"
-      pkg_json="$plugin_dir/package.json"
-      if [[ -f "$pkg_json" ]] && python3 -c "import json,sys; d=json.load(open('$pkg_json')); sys.exit(0 if 'build' in d.get('scripts',{}) else 1)" 2>/dev/null; then
-        echo "Building plugin: $plugin_name (bun install + bun run build)..."
-        (cd "$plugin_dir" && bun install --frozen-lockfile 2>/dev/null || bun install) \
-          && (cd "$plugin_dir" && bun run build) \
-          && echo "Built plugin binary: $plugin_name" \
-          || echo "Warning: build failed for $plugin_name — shell fallback will be used"
-      fi
-    done
-  else
-    echo "Warning: bun not found — skipping binary compilation for plugins (shell fallback will be used)"
-  fi
+  # Plugins come from the verified projection; installation never rebuilds them.
 
   for plugin_dir in "$SRC_PLUGINS"/*/; do
     [[ -d "$plugin_dir" ]] || continue
     plugin_name="$(basename "$plugin_dir")"
     run mkdir -p "$DST_PLUGINS"
+    backup_or_remove_dir "$DST_PLUGINS/$plugin_name"
     run cp -a "$plugin_dir" "$DST_PLUGINS/$plugin_name"
     # Make hook scripts executable
     find "$DST_PLUGINS/$plugin_name/scripts" -name '*.sh' -exec chmod +x {} \; 2>/dev/null || true

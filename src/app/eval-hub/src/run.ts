@@ -25,11 +25,12 @@
  */
 import path from "node:path";
 import type { EvalKind } from "./shared/types.js";
-import type { LayeredConfig } from "./domains/execution/ports.js";
+import type { LayeredConfig, ReleaseContext } from "./domains/execution/ports.js";
 import type { DomainEvent } from "./shared/events.js";
 import { LayeredRunner } from "./domains/execution/layeredRunner.js";
 import { EventBus }      from "./shared/eventBus.js";
 import { LAYERED_ROOT }  from "./shared/paths.js";
+import { createSandboxProcessConfig } from "./shared/sandbox.js";
 import {
   buildIntegrityArtifactsFromStore,
   persistIntegrityArtifacts,
@@ -132,6 +133,73 @@ function optInt(args: string[], name: string, fallback: number): number {
   return Number.isFinite(v) ? v : fallback;
 }
 
+// ── Release-gate CLI helpers (exported for deterministic unit testing) ─────────
+
+export interface ReleaseCliArgs {
+  readonly runId:           string | undefined;
+  readonly runProvenanceId: string | undefined;
+  readonly bindings: {
+    readonly profile:  string | undefined;
+    readonly runtime:  string | undefined;
+    readonly release:  string | undefined;
+    readonly corpus:   string | undefined;
+    readonly goose:    string | undefined;
+    readonly provider: string | undefined;
+    readonly model:    string | undefined;
+  };
+}
+
+/** Pure parser — safe to call from tests without a live provider. */
+export function parseReleaseCliArgs(args: string[]): ReleaseCliArgs {
+  const str = (name: string): string | undefined => { const v = opt(args, name, ""); return v || undefined; };
+  return {
+    runId:           str("--run-id"),
+    runProvenanceId: str("--run-provenance-id"),
+    bindings: {
+      profile:  str("--binding-profile"),
+      runtime:  str("--binding-runtime"),
+      release:  str("--binding-release"),
+      corpus:   str("--binding-corpus"),
+      goose:    str("--binding-goose"),
+      provider: str("--binding-provider"),
+      model:    str("--binding-model"),
+    },
+  };
+}
+
+/**
+ * Validate all required release-gate fields and construct a ReleaseContext.
+ * Throws (fail-closed) if any required argument is missing.
+ */
+export function buildReleaseContext(parsed: ReleaseCliArgs): ReleaseContext {
+  const missing: string[] = [];
+  if (!parsed.runProvenanceId)   missing.push("--run-provenance-id");
+  if (!parsed.bindings.profile)  missing.push("--binding-profile");
+  if (!parsed.bindings.runtime)  missing.push("--binding-runtime");
+  if (!parsed.bindings.release)  missing.push("--binding-release");
+  if (!parsed.bindings.corpus)   missing.push("--binding-corpus");
+  if (!parsed.bindings.goose)    missing.push("--binding-goose");
+  if (!parsed.bindings.provider) missing.push("--binding-provider");
+  if (!parsed.bindings.model)    missing.push("--binding-model");
+  if (missing.length > 0) {
+    throw new Error(
+      `--release-gate / --full requires all binding arguments. Missing: ${missing.join(", ")}`,
+    );
+  }
+  return {
+    runProvenanceId: parsed.runProvenanceId!,
+    bindings: {
+      profile:  parsed.bindings.profile!,
+      runtime:  parsed.bindings.runtime!,
+      release:  parsed.bindings.release!,
+      corpus:   parsed.bindings.corpus!,
+      goose:    parsed.bindings.goose!,
+      provider: parsed.bindings.provider!,
+      model:    parsed.bindings.model!,
+    },
+  };
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 export async function startRun(args: string[]): Promise<void> {
@@ -141,11 +209,20 @@ export async function startRun(args: string[]): Promise<void> {
   const repetitions = Number(opt(args, "--repetitions", "1"));
   const timeoutMs  = optInt(args, "--timeout", 900) * 1000;
   const ambient    = flag(args, "--ambient-goose");
+  const releaseGate = flag(args, "--release-gate") || flag(args, "--full");
+  if (releaseGate && ambient) throw new Error("release/full gate forbids --ambient-goose");
+  const sandbox = releaseGate ? await createSandboxProcessConfig({ sandboxRoot: opt(args, "--sandbox-root", ""), runtimeRoot: opt(args, "--runtime-root", ""), evidenceRoot: opt(args, "--evidence-root", "") }) : undefined;
+  let releaseContext: ReleaseContext | undefined;
+  if (releaseGate) {
+    // Fail closed: throws if any required binding or provenance arg is missing.
+    releaseContext = buildReleaseContext(parseReleaseCliArgs(args));
+  }
   const noEarlyStop         = flag(args, "--no-early-stop");
   const continueOnFail      = flag(args, "--continue-on-failure");
   const earlyStopThreshold  = parseFloat(opt(args, "--early-stop-threshold", "0"));
-  const resumeId    = flag(args, "--resume") ? opt(args, "--resume", "") : undefined;
-  const jsonOutArg  = opt(args, "--json", "");
+  const resumeId      = flag(args, "--resume") ? opt(args, "--resume", "") : undefined;
+  const explicitRunId = opt(args, "--run-id", "") || undefined;
+  const jsonOutArg    = opt(args, "--json", "");
   const layersRaw   = opt(args, "--layers", "skills,agents,recipes");
   const layers      = layersRaw.split(",").map(s => s.trim()).filter(Boolean) as EvalKind[];
   const subjectsRaw = opt(args, "--subjects", "");
@@ -156,7 +233,9 @@ export async function startRun(args: string[]): Promise<void> {
   // Always resolve a stable runId so we can compute the integrity store path
   // after layer.completed without touching the runner internals.
   // Algorithm mirrors LayeredRunner's default: ISO timestamp, 15 chars + "Z".
-  const runId = resumeId ?? new Date().toISOString().replace(/[:\-.]/g, "").slice(0, 15) + "Z";
+  // explicitRunId (--run-id) sets the workspace name without triggering resume behaviour.
+  // resumeId (--resume) also sets the workspace name and shows the "Resuming" header.
+  const runId = explicitRunId ?? resumeId ?? new Date().toISOString().replace(/[:\-.]/g, "").slice(0, 15) + "Z";
 
   const threshold  = Number.isFinite(earlyStopThreshold) ? earlyStopThreshold : 0;
   const baseWs     = path.join(LAYERED_ROOT, runId);
@@ -173,6 +252,7 @@ export async function startRun(args: string[]): Promise<void> {
   console.log(`  ${C.dim}Repetitions:${C.reset} ${repetitions}`);
   console.log(`  ${C.dim}Timeout    :${C.reset} ${timeoutMs / 1000}s`);
   console.log(`  ${C.dim}Ambient    :${C.reset} ${ambient}`);
+  if (explicitRunId) console.log(`  ${C.dim}Run ID     :${C.reset} ${explicitRunId}`);
   if (resumeId)      console.log(`  ${C.dim}Resuming   :${C.reset} ${resumeId}`);
   if (jsonOutArg)    console.log(`  ${C.dim}JSON out   :${C.reset} ${jsonOutArg}`);
   if (subjectFilter) console.log(`  ${C.dim}Subjects   :${C.reset} ${subjectFilter.join(", ")}`);
@@ -230,7 +310,9 @@ export async function startRun(args: string[]): Promise<void> {
     continueOnFail, earlyStopThreshold: threshold, noEarlyStop,
     // Always pass the resolved runId so the runner uses our stable ID.
     layeredRunId: runId,
+    ...(sandbox ? { sandbox } : {}),
     ...(subjectFilter ? { subjectFilter } : {}),
+    ...(releaseContext ? { releaseContext } : {}),
   };
 
   const runner  = new LayeredRunner();

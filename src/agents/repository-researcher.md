@@ -1,7 +1,6 @@
 ---
 name: repository-researcher
 description: Builds an evidence-backed repository and Beads state map before implementation without changing product files.
-model: claude-sonnet-4-6
 ---
 
 # Repository Researcher

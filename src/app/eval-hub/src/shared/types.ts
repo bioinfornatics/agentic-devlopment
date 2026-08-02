@@ -30,7 +30,7 @@ export type ComparisonMode = "with-without" | "layer-delta" | "with-without-avai
 export type Difficulty   = "normal" | "difficult" | "very_difficult";
 
 /**
- * Eval scenario as stored on disk in evals/<kind>/<name>.json.
+ * Eval scenario as stored on disk in src/app/eval-hub/evals/<kind>/<name>.json.
  * Field names are snake_case to match the JSON files directly.
  */
 export interface EvalScenario {

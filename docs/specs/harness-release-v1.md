@@ -33,7 +33,7 @@ Build and resolution never write into HOME. Installation performs no compilation
 
 ## Inventory and targets
 
-harness/runtime-inventory.json is the machine-readable inventory. Every runtime script records language, build policy, runtime owner, and package policy. Linux x86_64 is required for v1. macOS arm64 and Windows x86_64 are planned and must either publish complete artifacts or be explicitly absent from the release index.
+src/harness/runtime-inventory.json is the machine-readable inventory. Every runtime script records language, build policy, runtime owner, and package policy. Linux x86_64 is required for v1. macOS arm64 and Windows x86_64 are planned and must either publish complete artifacts or be explicitly absent from the release index.
 
 ## Goose discovery evidence
 

@@ -1,0 +1,373 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local-harness-evaluation-profile.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "profileVersion",
+    "profiles",
+    "layers",
+    "coverage",
+    "integrity",
+    "thresholds",
+    "evidenceBindings",
+    "publication"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "profileVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+[.][0-9]+[.][0-9]+$"
+    },
+    "profiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "smoke",
+        "release"
+      ],
+      "properties": {
+        "smoke": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "providerBacked",
+            "behavioralEvidence"
+          ],
+          "properties": {
+            "providerBacked": {
+              "const": false
+            },
+            "behavioralEvidence": {
+              "const": false
+            }
+          }
+        },
+        "release": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "providerBacked",
+            "earlyStop",
+            "noEarlyStop",
+            "layers",
+            "conceptualBaseline",
+            "repetitions",
+            "provider",
+            "model",
+            "maxTurns",
+            "timeoutMs",
+            "decoding",
+            "gooseBinary",
+            "sandboxRootsRequired"
+          ],
+          "properties": {
+            "providerBacked": {
+              "const": true
+            },
+            "earlyStop": {
+              "const": false
+            },
+            "noEarlyStop": {
+              "const": true
+            },
+            "layers": {
+              "const": [
+                "skills",
+                "agents",
+                "recipes"
+              ]
+            },
+            "conceptualBaseline": {
+              "const": "L0"
+            },
+            "repetitions": {
+              "type": "integer",
+              "minimum": 5
+            },
+            "provider": {
+              "type": "string",
+              "minLength": 1
+            },
+            "model": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maxTurns": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "timeoutMs": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "decoding": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "temperature",
+                "seedPolicy",
+                "seed"
+              ],
+              "properties": {
+                "temperature": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "seedPolicy": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "seed": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "gooseBinary": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sandboxRootsRequired": {
+              "const": true
+            }
+          }
+        }
+      }
+    },
+    "layers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "L0",
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "properties": {
+        "L0": {
+          "$ref": "#/$defs/layer"
+        },
+        "L1": {
+          "$ref": "#/$defs/layer"
+        },
+        "L2": {
+          "$ref": "#/$defs/layer"
+        },
+        "L3": {
+          "$ref": "#/$defs/layer"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "population",
+        "exemptionTypes",
+        "exemptionRequiredFields"
+      ],
+      "properties": {
+        "population": {
+          "const": [
+            "active-skill",
+            "active-agent",
+            "active-recipe"
+          ]
+        },
+        "exemptionTypes": {
+          "const": [
+            "unsupported-provider",
+            "non-behavioral",
+            "premium-variant"
+          ]
+        },
+        "exemptionRequiredFields": {
+          "const": [
+            "component",
+            "owner",
+            "reason",
+            "expiresAt"
+          ]
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimumPairedRepetitions",
+        "matchedPairFields"
+      ],
+      "properties": {
+        "minimumPairedRepetitions": {
+          "type": "integer",
+          "minimum": 5
+        },
+        "matchedPairFields": {
+          "type": "array",
+          "minItems": 9,
+          "uniqueItems": true,
+          "contains": {
+            "const": "treatment"
+          },
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimumValidPairRate",
+        "maximumExclusionRate",
+        "minimumTreatmentDelta",
+        "confidenceLevel",
+        "minimumConfidenceIntervalLowerBoundExclusive"
+      ],
+      "properties": {
+        "minimumValidPairRate": {
+          "type": "number",
+          "minimum": 0.9,
+          "maximum": 1
+        },
+        "maximumExclusionRate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.1
+        },
+        "minimumTreatmentDelta": {
+          "type": "number",
+          "minimum": 0.05
+        },
+        "confidenceLevel": {
+          "const": 0.95
+        },
+        "minimumConfidenceIntervalLowerBoundExclusive": {
+          "const": 0
+        }
+      }
+    },
+    "evidenceBindings": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 10,
+      "allOf": [
+        {
+          "contains": {
+            "const": "source"
+          }
+        },
+        {
+          "contains": {
+            "const": "locks"
+          }
+        },
+        {
+          "contains": {
+            "const": "runtime"
+          }
+        },
+        {
+          "contains": {
+            "const": "release"
+          }
+        },
+        {
+          "contains": {
+            "const": "goose"
+          }
+        },
+        {
+          "contains": {
+            "const": "evalHub"
+          }
+        },
+        {
+          "contains": {
+            "const": "provider"
+          }
+        },
+        {
+          "contains": {
+            "const": "model"
+          }
+        },
+        {
+          "contains": {
+            "const": "corpus"
+          }
+        },
+        {
+          "contains": {
+            "const": "profile"
+          }
+        }
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requiredPassingProfiles",
+        "sameReleaseDigest",
+        "rejectStaleProof"
+      ],
+      "properties": {
+        "requiredPassingProfiles": {
+          "const": [
+            "smoke",
+            "release"
+          ]
+        },
+        "sameReleaseDigest": {
+          "const": true
+        },
+        "rejectStaleProof": {
+          "const": true
+        },
+        "maxEvidenceAgeMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 604800000
+        }
+      }
+    }
+  },
+  "$defs": {
+    "layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "control",
+        "treatment"
+      ],
+      "properties": {
+        "control": {
+          "type": "string",
+          "minLength": 1
+        },
+        "treatment": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

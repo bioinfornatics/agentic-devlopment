@@ -72,7 +72,7 @@ export class LayeredRunner implements ILayeredRunner {
   async *run(cfg: LayeredConfig, sink: IEventSink = NULL_SINK): AsyncGenerator<LayeredEvent> {
     const repetitions = validateRepetitionCount(cfg.repetitions ?? 1);
     const runId  = cfg.layeredRunId ?? new Date().toISOString().replace(/[:\-.]/g, "").slice(0, 15) + "Z";
-    const baseWs = path.join(this.layeredRoot, runId);
+    const baseWs = path.join(cfg.sandbox?.evidenceRoot ?? this.layeredRoot, runId);
     await fs.mkdir(baseWs, { recursive: true });
 
     const statePath = path.join(baseWs, "state.json");
@@ -99,6 +99,8 @@ export class LayeredRunner implements ILayeredRunner {
         ambient:        cfg.ambient,
         continueOnFail: cfg.continueOnFail,
         repetitions,
+        ...(cfg.sandbox ? { sandbox: cfg.sandbox } : {}),
+        ...(cfg.releaseContext ? { releaseContext: cfg.releaseContext } : {}),
       };
 
       const plan = await this.suite.plan(suiteConfig);

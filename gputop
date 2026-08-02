@@ -1,0 +1,733 @@
+#!/usr/bin/env bash
+
+set -u
+
+interval="${1:-1}"
+ollama_service="${OLLAMA_SERVICE:-ollama.service}"
+
+###############################################################################
+# GPU detection
+###############################################################################
+
+find_gpu_card() {
+  local card
+  local device_id
+
+  if [[ -n "${GPU_CARD:-}" ]]; then
+    printf '%s\n' "$GPU_CARD"
+    return 0
+  fi
+
+  for card in /sys/class/drm/card[0-9]*; do
+    [[ -r "$card/device/vendor" ]] || continue
+    [[ -r "$card/device/device" ]] || continue
+
+    # AMD
+    [[ "$(cat "$card/device/vendor")" == "0x1002" ]] || continue
+
+    device_id="$(cat "$card/device/device")"
+
+    # Radeon RX 9070 / RX 9070 XT
+    if [[ "$device_id" == "0x7550" ]]; then
+      basename "$card"
+      return 0
+    fi
+  done
+
+  printf 'Erreur: RX 9070 XT 0x1002:0x7550 introuvable\n' >&2
+  return 1
+}
+
+card="$(find_gpu_card)" || exit 1
+device="/sys/class/drm/${card}/device"
+
+validate_gpu() {
+  local required_files=(
+    "$device/gpu_busy_percent"
+    "$device/mem_info_vram_used"
+    "$device/mem_info_vram_total"
+  )
+
+  local file
+
+  for file in "${required_files[@]}"; do
+    if [[ ! -r "$file" ]]; then
+      printf 'Erreur: métrique GPU indisponible: %s\n' "$file" >&2
+      return 1
+    fi
+  done
+}
+
+validate_gpu || exit 1
+
+###############################################################################
+# Ollama systemd cgroup detection
+###############################################################################
+
+find_ollama_cgroup() {
+  local control_group
+
+  control_group="$(
+    systemctl show "$ollama_service" \
+      --property=ControlGroup \
+      --value 2>/dev/null
+  )"
+
+  if [[ -n "$control_group" ]] &&
+     [[ -d "/sys/fs/cgroup${control_group}" ]]; then
+    printf '/sys/fs/cgroup%s\n' "$control_group"
+    return 0
+  fi
+
+  return 1
+}
+
+ollama_cgroup_path="$(find_ollama_cgroup || true)"
+
+###############################################################################
+# ANSI terminal control
+###############################################################################
+
+ESC=$'\033'
+HIDE_CURSOR="${ESC}[?25l"
+SHOW_CURSOR="${ESC}[?25h"
+CLEAR_TO_END="${ESC}[0K"
+RESET="${ESC}[0m"
+
+cleanup() {
+  printf '%s%s\n' "$RESET" "$SHOW_CURSOR"
+}
+
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+trap 'exit 129' HUP
+
+###############################################################################
+# Generic helpers
+###############################################################################
+
+read_file() {
+  local file="$1"
+  local fallback="${2:-0}"
+
+  if [[ -r "$file" ]]; then
+    cat "$file"
+  else
+    printf '%s' "$fallback"
+  fi
+}
+
+human_bytes() {
+  awk -v bytes="$1" '
+    BEGIN {
+      printf "%.2f GiB", bytes / 1024 / 1024 / 1024
+    }
+  '
+}
+
+percent() {
+  awk -v used="$1" -v total="$2" '
+    BEGIN {
+      if (total > 0) {
+        printf "%.1f", used * 100 / total
+      } else {
+        printf "0.0"
+      }
+    }
+  '
+}
+
+###############################################################################
+# GPU metrics
+###############################################################################
+
+find_hwmon() {
+  local hwmon
+
+  for hwmon in "$device"/hwmon/hwmon*; do
+    [[ -d "$hwmon" ]] || continue
+    [[ -r "$hwmon/name" ]] || continue
+
+    if [[ "$(cat "$hwmon/name")" == "amdgpu" ]]; then
+      printf '%s\n' "$hwmon"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+hwmon="$(find_hwmon || true)"
+
+read_temperature_sensor() {
+  local hwmon_path="$1"
+  local label_pattern="$2"
+  local label_file
+  local input_file
+  local index
+
+  for label_file in "$hwmon_path"/temp*_label; do
+    [[ -r "$label_file" ]] || continue
+
+    if grep -Eiq "$label_pattern" "$label_file"; then
+      index="${label_file##*/temp}"
+      index="${index%_label}"
+      input_file="$hwmon_path/temp${index}_input"
+
+      if [[ -r "$input_file" ]]; then
+        awk -v value="$(cat "$input_file")" '
+          BEGIN {
+            printf "%.1f", value / 1000
+          }
+        '
+        return 0
+      fi
+    fi
+  done
+
+  return 1
+}
+
+read_temperature() {
+  local value
+
+  if [[ -z "$hwmon" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  value="$(read_temperature_sensor "$hwmon" 'edge' || true)"
+
+  if [[ -z "$value" && -r "$hwmon/temp1_input" ]]; then
+    value="$(
+      awk -v raw="$(cat "$hwmon/temp1_input")" '
+        BEGIN {
+          printf "%.1f", raw / 1000
+        }
+      '
+    )"
+  fi
+
+  printf '%s' "${value:-N/A}"
+}
+
+read_junction_temperature() {
+  local value
+
+  if [[ -z "$hwmon" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  value="$(
+    read_temperature_sensor "$hwmon" 'junction|hotspot' || true
+  )"
+
+  printf '%s' "${value:-N/A}"
+}
+
+read_memory_temperature() {
+  local value
+
+  if [[ -z "$hwmon" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  value="$(
+    read_temperature_sensor "$hwmon" 'mem|memory' || true
+  )"
+
+  printf '%s' "${value:-N/A}"
+}
+
+read_power() {
+  local file
+
+  if [[ -z "$hwmon" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  for file in \
+    "$hwmon/power1_average" \
+    "$hwmon/power1_input"
+  do
+    if [[ -r "$file" ]]; then
+      awk -v value="$(cat "$file")" '
+        BEGIN {
+          printf "%.1f", value / 1000000
+        }
+      '
+      return
+    fi
+  done
+
+  printf 'N/A'
+}
+
+read_clock() {
+  local file="$device/pp_dpm_sclk"
+  local value
+
+  if [[ ! -r "$file" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  value="$(
+    awk '
+      /\*/ {
+        print $2
+        exit
+      }
+    ' "$file"
+  )"
+
+  printf '%s' "${value:-N/A}"
+}
+
+read_memory_clock() {
+  local file="$device/pp_dpm_mclk"
+  local value
+
+  if [[ ! -r "$file" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  value="$(
+    awk '
+      /\*/ {
+        print $2
+        exit
+      }
+    ' "$file"
+  )"
+
+  printf '%s' "${value:-N/A}"
+}
+
+###############################################################################
+# Global CPU metrics
+###############################################################################
+
+previous_cpu_total=0
+previous_cpu_idle=0
+
+read_cpu_usage() {
+  local cpu
+  local user
+  local nice
+  local system
+  local idle
+  local iowait
+  local irq
+  local softirq
+  local steal
+  local idle_all
+  local total
+  local delta_total
+  local delta_idle
+
+  read -r cpu user nice system idle iowait irq softirq steal _ \
+    < /proc/stat
+
+  idle_all=$((idle + iowait))
+  total=$((user + nice + system + idle + iowait + irq + softirq + steal))
+
+  if (( previous_cpu_total == 0 )); then
+    printf '0.0'
+  else
+    delta_total=$((total - previous_cpu_total))
+    delta_idle=$((idle_all - previous_cpu_idle))
+
+    awk \
+      -v total="$delta_total" \
+      -v idle="$delta_idle" '
+      BEGIN {
+        if (total > 0) {
+          printf "%.1f", 100 * (total - idle) / total
+        } else {
+          printf "0.0"
+        }
+      }
+    '
+  fi
+
+  previous_cpu_total="$total"
+  previous_cpu_idle="$idle_all"
+}
+
+###############################################################################
+# Global RAM metrics
+###############################################################################
+
+read_ram_usage() {
+  awk '
+    /^MemTotal:/ {
+      total = $2
+    }
+
+    /^MemAvailable:/ {
+      available = $2
+    }
+
+    END {
+      used = total - available
+      percentage = total > 0 ? used * 100 / total : 0
+
+      printf "%.1f GiB / %.1f GiB (%.1f%%)",
+        used / 1024 / 1024,
+        total / 1024 / 1024,
+        percentage
+    }
+  ' /proc/meminfo
+}
+
+read_swap_usage() {
+  awk '
+    /^SwapTotal:/ {
+      total = $2
+    }
+
+    /^SwapFree:/ {
+      free = $2
+    }
+
+    END {
+      used = total - free
+      percentage = total > 0 ? used * 100 / total : 0
+
+      printf "%.1f GiB / %.1f GiB (%.1f%%)",
+        used / 1024 / 1024,
+        total / 1024 / 1024,
+        percentage
+    }
+  ' /proc/meminfo
+}
+
+###############################################################################
+# Ollama model information
+###############################################################################
+
+read_ollama_line() {
+  local line
+
+  line="$(
+    ollama ps 2>/dev/null |
+      awk '
+        NR == 2 {
+          name = $1
+          size = $3 " " $4
+          processor = $5
+          context = $6
+
+          printf "%s | %s | %s | ctx %s",
+            name,
+            size,
+            processor,
+            context
+        }
+      '
+  )"
+
+  printf '%s' "${line:-No model loaded}"
+}
+
+###############################################################################
+# Ollama cgroup CPU and RAM metrics
+###############################################################################
+
+previous_ollama_cpu_usec=0
+previous_ollama_cpu_time_ns=0
+
+read_ollama_service_cpu() {
+  local cpu_stat
+  local usage_usec
+  local now_ns
+  local delta_usage_usec
+  local delta_time_ns
+
+  if [[ -z "$ollama_cgroup_path" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  cpu_stat="$ollama_cgroup_path/cpu.stat"
+
+  if [[ ! -r "$cpu_stat" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  usage_usec="$(
+    awk '
+      $1 == "usage_usec" {
+        print $2
+        exit
+      }
+    ' "$cpu_stat"
+  )"
+
+  now_ns="$(date +%s%N)"
+
+  if [[ -z "$usage_usec" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  if (( previous_ollama_cpu_time_ns == 0 )); then
+    printf '0.0'
+  else
+    delta_usage_usec=$((usage_usec - previous_ollama_cpu_usec))
+    delta_time_ns=$((now_ns - previous_ollama_cpu_time_ns))
+
+    awk \
+      -v usage_usec="$delta_usage_usec" \
+      -v elapsed_ns="$delta_time_ns" '
+      BEGIN {
+        if (elapsed_ns > 0) {
+          elapsed_usec = elapsed_ns / 1000
+          printf "%.1f", 100 * usage_usec / elapsed_usec
+        } else {
+          printf "0.0"
+        }
+      }
+    '
+  fi
+
+  previous_ollama_cpu_usec="$usage_usec"
+  previous_ollama_cpu_time_ns="$now_ns"
+}
+
+normalize_cpu_usage() {
+  local raw_usage="$1"
+  local cpu_count
+
+  if [[ "$raw_usage" == "N/A" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  cpu_count="$(nproc)"
+
+  awk -v usage="$raw_usage" -v count="$cpu_count" '
+    BEGIN {
+      if (count > 0) {
+        printf "%.1f", usage / count
+      } else {
+        printf "0.0"
+      }
+    }
+  '
+}
+
+read_ollama_service_ram() {
+  local memory_file
+  local bytes
+
+  if [[ -z "$ollama_cgroup_path" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  memory_file="$ollama_cgroup_path/memory.current"
+
+  if [[ ! -r "$memory_file" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  bytes="$(cat "$memory_file")"
+
+  awk -v bytes="$bytes" '
+    BEGIN {
+      printf "%.2f GiB", bytes / 1024 / 1024 / 1024
+    }
+  '
+}
+
+read_ollama_process_count() {
+  local procs_file
+
+  if [[ -z "$ollama_cgroup_path" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  procs_file="$ollama_cgroup_path/cgroup.procs"
+
+  if [[ ! -r "$procs_file" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  awk 'END { print NR }' "$procs_file"
+}
+
+read_ollama_top_process() {
+  local procs_file
+  local pids
+
+  if [[ -z "$ollama_cgroup_path" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  procs_file="$ollama_cgroup_path/cgroup.procs"
+
+  if [[ ! -r "$procs_file" ]]; then
+    printf 'N/A'
+    return
+  fi
+
+  pids="$(paste -sd, "$procs_file")"
+
+  if [[ -z "$pids" ]]; then
+    printf 'No process'
+    return
+  fi
+
+  ps -p "$pids" \
+    -o pid=,%cpu=,rss=,comm= \
+    --sort=-%cpu \
+    2>/dev/null |
+    awk '
+      NR == 1 {
+        printf "%s | PID %s | CPU %s%% | RSS %.2f GiB",
+          $4,
+          $1,
+          $2,
+          $3 / 1024 / 1024
+        found = 1
+        exit
+      }
+
+      END {
+        if (!found) {
+          printf "No process"
+        }
+      }
+    '
+}
+
+###############################################################################
+# Screen rendering
+###############################################################################
+
+draw_static_screen() {
+  printf '%s' "$HIDE_CURSOR"
+  printf '%s[2J%s[H' "$ESC" "$ESC"
+
+  printf '==========================================================================\n'
+  printf '                         OLLAMA GPU MONITOR\n'
+  printf '==========================================================================\n'
+  printf 'Host          : %s\n' "$(hostname)"
+  printf 'Kernel        : %s\n' "$(uname -r)"
+  printf 'GPU           : %s | PCI %s\n' \
+    "$card" \
+    "$(basename "$(readlink -f "$device")")"
+  printf 'Ollama unit   : %s\n' "$ollama_service"
+  printf 'Refresh       : %ss\n' "$interval"
+  printf '==========================================================================\n'
+  printf '\n'
+  printf 'Date          :\n'
+  printf 'Model         :\n'
+  printf '\n'
+  printf 'CPU global    :\n'
+  printf 'RAM globale   :\n'
+  printf 'Swap          :\n'
+  printf '\n'
+  printf 'Ollama CPU    :\n'
+  printf 'Ollama RAM    :\n'
+  printf 'Ollama procs  :\n'
+  printf 'Top process   :\n'
+  printf '\n'
+  printf 'GPU usage     :\n'
+  printf 'VRAM          :\n'
+  printf 'GPU temp      :\n'
+  printf 'Junction temp :\n'
+  printf 'Memory temp   :\n'
+  printf 'GPU power     :\n'
+  printf 'GPU clock     :\n'
+  printf 'Memory clock  :\n'
+  printf '\n'
+  printf 'Ctrl+C pour quitter\n'
+}
+
+write_at() {
+  local row="$1"
+  local column="$2"
+  local value="$3"
+
+  printf '%s[%s;%sH%s%s' \
+    "$ESC" \
+    "$row" \
+    "$column" \
+    "$CLEAR_TO_END" \
+    "$value"
+}
+
+###############################################################################
+# Main loop
+###############################################################################
+
+draw_static_screen
+
+while true; do
+  gpu_busy="$(read_file "$device/gpu_busy_percent")"
+
+  vram_used="$(read_file "$device/mem_info_vram_used")"
+  vram_total="$(read_file "$device/mem_info_vram_total")"
+  vram_pct="$(percent "$vram_used" "$vram_total")"
+
+  cpu_usage="$(read_cpu_usage)"
+  ram_usage="$(read_ram_usage)"
+  swap_usage="$(read_swap_usage)"
+
+  ollama_line="$(read_ollama_line)"
+  ollama_cpu_raw="$(read_ollama_service_cpu)"
+  ollama_cpu_machine="$(normalize_cpu_usage "$ollama_cpu_raw")"
+  ollama_ram="$(read_ollama_service_ram)"
+  ollama_process_count="$(read_ollama_process_count)"
+  ollama_top_process="$(read_ollama_top_process)"
+
+  temperature="$(read_temperature)"
+  junction_temperature="$(read_junction_temperature)"
+  memory_temperature="$(read_memory_temperature)"
+  power="$(read_power)"
+  gpu_clock="$(read_clock)"
+  memory_clock="$(read_memory_clock)"
+
+  write_at 11 17 "$(date --iso-8601=seconds)"
+  write_at 12 17 "$ollama_line"
+
+  write_at 14 17 "${cpu_usage}%"
+  write_at 15 17 "$ram_usage"
+  write_at 16 17 "$swap_usage"
+
+  if [[ "$ollama_cpu_raw" == "N/A" ]]; then
+    write_at 18 17 "N/A - cgroup systemd introuvable"
+  else
+    write_at 18 17 \
+      "${ollama_cpu_raw}% cores | ${ollama_cpu_machine}% machine"
+  fi
+
+  write_at 19 17 "$ollama_ram"
+  write_at 20 17 "$ollama_process_count"
+  write_at 21 17 "$ollama_top_process"
+
+  write_at 23 17 "${gpu_busy}%"
+  write_at 24 17 \
+    "$(human_bytes "$vram_used") / $(human_bytes "$vram_total") (${vram_pct}%)"
+  write_at 25 17 "${temperature} °C"
+  write_at 26 17 "${junction_temperature} °C"
+  write_at 27 17 "${memory_temperature} °C"
+  write_at 28 17 "${power} W"
+  write_at 29 17 "$gpu_clock"
+  write_at 30 17 "$memory_clock"
+
+  sleep "$interval"
+done

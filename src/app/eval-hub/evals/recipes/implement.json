@@ -43,7 +43,10 @@
       ]
     },
     "recipe_task_parameter": "task_id",
-    "recipe_source_type": "top_level"
+    "recipe_source_type": "top_level",
+    "delegated_agents": [
+      "change-builder"
+    ]
   },
   {
     "skills": [
@@ -88,7 +91,10 @@
       ]
     },
     "recipe_task_parameter": "task_id",
-    "recipe_source_type": "top_level"
+    "recipe_source_type": "top_level",
+    "delegated_agents": [
+      "change-builder"
+    ]
   },
   {
     "skills": [
@@ -133,6 +139,9 @@
       ]
     },
     "recipe_task_parameter": "task_id",
-    "recipe_source_type": "top_level"
+    "recipe_source_type": "top_level",
+    "delegated_agents": [
+      "change-builder"
+    ]
   }
 ]

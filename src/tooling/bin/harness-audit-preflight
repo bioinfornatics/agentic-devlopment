@@ -10,5 +10,5 @@ if [[ -n "$status" && "${ALLOW_DIRTY_AUDIT:-0}" != "1" ]]; then echo "FAIL: work
 if [[ -n "$status" ]]; then echo "WARN: dirty working tree allowed by ALLOW_DIRTY_AUDIT=1" >&2; echo "$status" >&2; fi
 if command -v bd >/dev/null 2>&1; then echo "Beads: $(bd --version 2>/dev/null || true)"; bd list --json >/tmp/harness-audit-bd-list.json; fi
 for f in .goose/recipes/*.yaml; do goose recipe validate "$f" >/dev/null; echo "recipe valid: $f"; done
-python3 scripts/check-consistency.py
+node src/app/tooling/dist/check-consistency.js
 echo "PASS: harness audit preflight complete"

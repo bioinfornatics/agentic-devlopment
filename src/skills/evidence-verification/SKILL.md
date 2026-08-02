@@ -71,6 +71,40 @@ Use BLOCKED rather than success for unavailable proof. Use ESCALATE only for the
 
 Add compact EVIDENCE comments to the verification task and references to Git commits, CI runs, reports, or files. Set the run verdict using bd set-state with a reason. Store a stable evidence signature in metadata so the controller can detect repeated non-progress. Raw logs stay in artifacts, not Beads comments.
 
+## Semantic review trigger and double gate
+
+Run this review when a patch changes an externally meaningful identifier, shared configuration, serialization or deserialization, provider selection, precedence, mutable routing state, a factory or production constructor, session state, UI projection, or cache key/value behavior. Match semantics, not filenames: aliases, generic maps, adapters, and indirect factories still trigger it. Scale the search to the reachable blast radius, but do not omit a significant consumer merely because the diff is small.
+
+A triggered review has two gates:
+
+1. **Invariant gate:** derive an invariant ledger from the contract and implementation. For each invariant record its source of truth, allowed mutation, precedence, serialization form, and observable projections.
+2. **Consumer gate:** construct a lifecycle map and producer-consumer table from creation through mutation, clone/copy/inheritance, persistence/wire boundaries, cache, session, and UI. Classify every significant reader, writer, clone, inherited copy, serializer, and observer as preserved, updated, intentionally divergent, or unverified, with evidence.
+
+ACCEPTED is forbidden when either gate is incomplete. In particular, any unclassified significant consumer makes the triggered review MISSING and blocks ACCEPTED.
+
+### Triggered review probes
+
+- Exercise the production constructor/factory path; a simplified test constructor is supporting evidence only unless production fidelity is demonstrated.
+- Inspect the serialization boundary and reject generic-map payloads that leak internal fields, stale aliases, or an unintended identifier.
+- Build a mutation + precedence matrix covering initial value, each writer, conflicting sources, early returns, cache/session reuse, and final observer.
+- Compare wire/persistence output with session and UI projections; intentional divergence needs a named invariant.
+- After the first result, perform a **fresh-patch second pass** from the current diff without relying on the builder inventory. Search for one missed producer, consumer, or boundary and record the result.
+
+Use this compact record:
+
+```yaml
+semantic_review:
+  trigger: [external-id | shared-config | serialization | provider | precedence | mutable-routing | factory | session | ui | cache]
+  invariant_ledger: [{invariant: string, source: string, mutation: string, precedence: string, serialization: string}]
+  lifecycle_map: [create, mutate, clone-copy-inherit, serialize, cache, session, ui]
+  producer_consumer: [{symbol: string, role: producer|consumer, classification: preserved|updated|intentional-divergence|unverified, proof: string}]
+  production_constructor_fidelity: string
+  serialization_boundary: string
+  mutation_precedence_matrix: string
+  fresh_patch_second_pass: string
+  blocking_unclassified_consumers: [string]
+```
+
 ## Self-validation
 
 - [ ] Builder and verifier are different isolated sessions.

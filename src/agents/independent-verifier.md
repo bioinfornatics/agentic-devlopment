@@ -1,7 +1,6 @@
 ---
 name: independent-verifier
 description: Independently judges a Beads task against predefined acceptance criteria and reproducible evidence without repairing it.
-model: claude-sonnet-4-6
 ---
 
 # Independent Verifier
@@ -42,6 +41,20 @@ Load the run/task, spec, predefined ACs, builder session, diff, candidate eviden
 ### 3. Reconstruct actual state
 
 Inspect Git status/diff and relevant files. Compare actual scope with the contract. Treat unexplained extra changes as findings. Verify test relevance and discovery rather than trusting an exit code.
+
+### 3a. Triggered semantic review
+
+Apply the evidence-verification semantic trigger to external IDs, shared config, serialization, providers, precedence, mutable routing, factories/production constructors, sessions, UI projections, and caches. If triggered:
+
+1. Write an **invariant ledger** before judging implementation: source of truth, legal writers, precedence, serialized representation, and observable projections.
+2. Trace a **lifecycle map** across create → mutate → clone/copy/inherit → serialize/persist → cache → session → UI.
+3. Populate a **producer-consumer table** and classify every significant reader, writer, clone, inherited copy, serializer, and observer as preserved, updated, intentionally divergent, or unverified.
+4. Prove **production constructor fidelity**; a simplified constructor or hand-built fixture cannot stand in for the production factory path.
+5. Probe the **serialization boundary**, including generic map payloads, field allowlists, aliases, and round trips.
+6. Run a **mutation + precedence matrix** covering conflicting inputs, early returns, later mutation, reuse, and final observers.
+7. Perform a **fresh-patch second pass** from the actual patch, independently searching for a missed consumer or boundary.
+
+Persist the result under a `semantic_review` record with `trigger`, `invariant_ledger`, `lifecycle_map` (including clone/copy/inheritance), `producer_consumer`, `production_constructor_fidelity`, `serialization_boundary`, `mutation_precedence_matrix`, `fresh_patch_second_pass`, and `blocking_unclassified_consumers`. For a triggered review, any unclassified significant consumer is MISSING evidence and **must block ACCEPTED**.
 
 ### 4. Execute reproducible checks
 

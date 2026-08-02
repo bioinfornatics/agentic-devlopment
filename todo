@@ -1,0 +1,8 @@
+dnf system-upgrade download --releasever=44
+dnf system-upgrade reboot
+# apres reboot
+dnf distro-sync
+dnf autoremoverpm -ql ollama | grep -E 'systemd|service'
+systemctl list-unit-files | grep -i ollama
+systemctl enable --now ollama
+systemctl status ollama

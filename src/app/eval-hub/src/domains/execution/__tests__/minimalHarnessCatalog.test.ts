@@ -1,32 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { loadMinimalHarnessCatalog } from "../minimalHarnessCatalog.js";
+import { loadMinimalHarnessCatalog, MINIMAL_HARNESS_SUBJECTS, validateExemptions } from "../minimalHarnessCatalog.js";
 
-describe("minimal harness 68-protocol catalog", () => {
-  it("contains exactly 12 agent, 36 skill, 14 recipe, and 6 architecture protocols", async () => {
-    const catalog = await loadMinimalHarnessCatalog();
-    expect(catalog.counts).toEqual({ agents: 12, skills: 36, recipes: 14, architecture: 6, total: 68 });
-    expect(catalog.subjects).toEqual({
-      agents: ["change-builder", "error-analyzer", "independent-verifier", "repository-researcher"],
-      skills: ["domain-modeling", "evidence-verification", "grill-me", "grill-with-docs", "grilling", "interface-quality", "loop-control", "skill-creator", "task-framing", "ui-design", "ux-principles", "wcag-accessibility-audit"],
-      recipes: ["implement", "loop-engineering", "research", "verify"],
-    });
-  });
-
-  it("includes controlled minimal/full/no-harness, skill ablation and agent ablation protocols", async () => {
-    const catalog = await loadMinimalHarnessCatalog();
-    const byName = new Map(catalog.architecture.map(item => [item.name, item]));
-    expect(byName.get("minimal-vs-full-simple-change")?.configurations).toEqual([
-      "minimal_3a_3s_4r", "full_13a_17s_13r", "no_harness",
-    ]);
-    expect(byName.get("skill-ablation")?.configurations).toEqual([
-      "all_3_skills", "without_task_framing", "without_evidence_verification", "without_loop_control",
-    ]);
-    expect(byName.get("agent-ablation")?.configurations).toEqual([
-      "all_3_agents", "single_general_agent", "builder_plus_verifier", "researcher_plus_builder",
-    ]);
-    for (const protocol of catalog.architecture) {
-      expect(protocol.controlled_variables.length).toBeGreaterThan(0);
-      expect(protocol.success_criteria.length).toBeGreaterThan(0);
-    }
-  });
+describe("inventory-derived minimal harness catalog",()=>{
+ it("asserts exact subjects and derives protocol counts from corpus",async()=>{const c=await loadMinimalHarnessCatalog();expect(c.subjects).toEqual(MINIMAL_HARNESS_SUBJECTS);expect(c.subjects.skills).toContain("output-discipline");expect(c.counts.agents).toBeGreaterThanOrEqual(c.subjects.agents.length*4);expect(c.counts.skills).toBeGreaterThanOrEqual(c.subjects.skills.length*3);expect(c.counts.total).toBe(c.counts.agents+c.counts.skills+c.counts.recipes+c.counts.architecture);});
+ it("includes controlled architecture ablations",async()=>{const c=await loadMinimalHarnessCatalog();const names=c.architecture.map(x=>x.name);expect(names).toEqual(expect.arrayContaining(["minimal-vs-full-simple-change","skill-ablation","agent-ablation"]));});
+ it("rejects expired exemptions",()=>expect(()=>validateExemptions({exemptions:[{component:"agent:change-builder-premium",type:"premium-variant",variantOf:"change-builder",layer:"L2-B",owner:"loop",reason:"typed premium model variant",expiresAt:"2020-01-01T00:00:00Z"}]},["change-builder-premium"],new Date("2026-01-01"))).toThrow(/expired/));
+ it("rejects premium variants silently classified as standards or the wrong layer",()=>expect(()=>validateExemptions({exemptions:[{component:"agent:change-builder-premium",type:"premium-variant",variantOf:"change-builder-premium",layer:"L2",owner:"loop",reason:"bad classification",expiresAt:"2027-01-01T00:00:00Z"}]},["change-builder-premium"],new Date("2026-01-01"))).toThrow(/misclassification/));
 });

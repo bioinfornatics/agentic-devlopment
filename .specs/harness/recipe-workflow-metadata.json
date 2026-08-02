@@ -65,7 +65,7 @@
           },
           {
             "type": "shell",
-            "command": "python3 -c \"import json; [json.loads(l) for l in open('.beads/issues.jsonl') if l.strip()]\"  # Beads JSONL integrity"
+            "command": "jq -Rce 'select(length > 0) | fromjson' .beads/issues.jsonl >/dev/null  # Beads JSONL integrity"
           }
         ],
         "on_failure": "abort"

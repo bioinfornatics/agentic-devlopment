@@ -46,7 +46,14 @@
       ]
     },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "objective"
+    "recipe_task_parameter": "objective",
+    "delegated_agents": [
+      "repository-researcher",
+      "change-builder",
+      "change-builder-premium",
+      "independent-verifier",
+      "independent-verifier-premium"
+    ]
   },
   {
     "skills": [
@@ -95,7 +102,14 @@
       ]
     },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "objective"
+    "recipe_task_parameter": "objective",
+    "delegated_agents": [
+      "repository-researcher",
+      "change-builder",
+      "change-builder-premium",
+      "independent-verifier",
+      "independent-verifier-premium"
+    ]
   },
   {
     "skills": [
@@ -145,7 +159,14 @@
       ]
     },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "objective"
+    "recipe_task_parameter": "objective",
+    "delegated_agents": [
+      "repository-researcher",
+      "change-builder",
+      "change-builder-premium",
+      "independent-verifier",
+      "independent-verifier-premium"
+    ]
   },
   {
     "skills": [
@@ -197,7 +218,14 @@
       ]
     },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "objective"
+    "recipe_task_parameter": "objective",
+    "delegated_agents": [
+      "repository-researcher",
+      "change-builder",
+      "change-builder-premium",
+      "independent-verifier",
+      "independent-verifier-premium"
+    ]
   },
   {
     "skills": [
@@ -247,6 +275,13 @@
       ]
     },
     "recipe_source_type": "top_level",
-    "recipe_task_parameter": "objective"
+    "recipe_task_parameter": "objective",
+    "delegated_agents": [
+      "repository-researcher",
+      "change-builder",
+      "change-builder-premium",
+      "independent-verifier",
+      "independent-verifier-premium"
+    ]
   }
 ]

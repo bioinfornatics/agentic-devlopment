@@ -1,0 +1,112 @@
+{
+  "$schema": "../../.specs/schemas/local-harness-evaluation-profile.schema.json",
+  "schemaVersion": 1,
+  "profileVersion": "2.0.0",
+  "profiles": {
+    "smoke": {
+      "providerBacked": false,
+      "behavioralEvidence": false
+    },
+    "release": {
+      "providerBacked": true,
+      "earlyStop": false,
+      "noEarlyStop": true,
+      "layers": [
+        "skills",
+        "agents",
+        "recipes"
+      ],
+      "conceptualBaseline": "L0",
+      "repetitions": 5,
+      "provider": "PIN_PROVIDER_FOR_RELEASE",
+      "model": "PIN_MODEL_FOR_RELEASE",
+      "maxTurns": 20,
+      "timeoutMs": 120000,
+      "decoding": {
+        "temperature": null,
+        "seedPolicy": "provider-deterministic-when-supported-otherwise-null",
+        "seed": null
+      },
+      "gooseBinary": "dist/runtime/bin/goose",
+      "sandboxRootsRequired": true
+    }
+  },
+  "layers": {
+    "L0": {
+      "control": "provider-model-alone",
+      "treatment": "identical-provider-model-input"
+    },
+    "L1": {
+      "control": "declared-dependency-closure-D",
+      "treatment": "D-plus-one-skill"
+    },
+    "L2": {
+      "control": "exact-skills-and-dependency-closure",
+      "treatment": "same-closure-plus-one-agent"
+    },
+    "L3": {
+      "control": "exact-agents-skills-and-dependency-closure",
+      "treatment": "same-closure-orchestrated-by-one-recipe"
+    }
+  },
+  "coverage": {
+    "population": [
+      "active-skill",
+      "active-agent",
+      "active-recipe"
+    ],
+    "exemptionTypes": [
+      "unsupported-provider",
+      "non-behavioral",
+      "premium-variant"
+    ],
+    "exemptionRequiredFields": [
+      "component",
+      "owner",
+      "reason",
+      "expiresAt"
+    ]
+  },
+  "integrity": {
+    "minimumPairedRepetitions": 5,
+    "matchedPairFields": [
+      "treatment",
+      "prompt",
+      "provider",
+      "model",
+      "corpusCase",
+      "grader",
+      "runtime",
+      "seedPolicy",
+      "configuration"
+    ]
+  },
+  "thresholds": {
+    "minimumValidPairRate": 0.9,
+    "maximumExclusionRate": 0.1,
+    "minimumTreatmentDelta": 0.05,
+    "confidenceLevel": 0.95,
+    "minimumConfidenceIntervalLowerBoundExclusive": 0
+  },
+  "evidenceBindings": [
+    "source",
+    "locks",
+    "runtime",
+    "release",
+    "goose",
+    "evalHub",
+    "provider",
+    "model",
+    "corpus",
+    "profile"
+  ],
+  "publication": {
+    "requiredPassingProfiles": [
+      "smoke",
+      "release"
+    ],
+    "sameReleaseDigest": true,
+    "rejectStaleProof": true,
+    "maxEvidenceAgeMs": 86400000
+  }
+}

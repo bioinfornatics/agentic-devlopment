@@ -13,7 +13,7 @@
 # Replace <repo> with the actual repository URL (ask your team lead).
 git clone <repo>
 cd agentic-devlopment
-./scripts/install.sh
+./src/tooling/bin/install
 
 # Verify installation
 goose skills list | grep -c '|'  # Should show 17+

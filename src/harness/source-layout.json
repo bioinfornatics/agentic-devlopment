@@ -8,7 +8,7 @@
     "apps": "src/app"
   },
   "externalSources": {
-    "lock": "harness/external-skills.lock.json",
+    "lock": "src/harness/external-skills.lock.json",
     "resolved": "build/harness/external/<lock-digest>"
   },
   "runtimeProjection": {
@@ -52,11 +52,11 @@
     "explicit-source-runtime-roots"
   ],
   "projectionCommands": {
-    "bootstrap": "make bootstrap-runtime",
-    "activate": "make activate-runtime",
-    "verify": "make verify-runtime",
-    "rollback": "make rollback-runtime",
-    "clean": "make clean-runtime"
+    "bootstrap": "just bootstrap-runtime",
+    "activate": "just activate-runtime",
+    "verify": "just verify-runtime",
+    "rollback": "just rollback-runtime",
+    "clean": "just clean-runtime"
   },
   "migration": {
     "phase": "contract-defined",

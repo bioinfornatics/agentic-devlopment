@@ -37,19 +37,19 @@ export interface BinaryStabilityResult {
 }
 
 export interface IBinaryProvenanceChecker {
-  captureSnapshot(binaryPath: string): Promise<BinarySnapshot>;
+  captureSnapshot(binaryPath: string, process?: { readonly env: Readonly<Record<string,string>>; readonly cwd: string }): Promise<BinarySnapshot>;
   checkStability(before: BinarySnapshot, after: BinarySnapshot): BinaryStabilityResult;
 }
 
 // ── Filesystem implementation ─────────────────────────────────────────────────
 
 export class FsBinaryProvenanceChecker implements IBinaryProvenanceChecker {
-  async captureSnapshot(binaryPath: string): Promise<BinarySnapshot> {
-    const absolute = path.isAbsolute(binaryPath) ? binaryPath : await this._resolveViaPath(binaryPath);
+  async captureSnapshot(binaryPath: string, process?: { readonly env: Readonly<Record<string,string>>; readonly cwd: string }): Promise<BinarySnapshot> {
+    const absolute = path.isAbsolute(binaryPath) ? binaryPath : await this._resolveViaPath(binaryPath, process);
     const resolved = await fs.realpath(absolute);
     const [stat, buf] = await Promise.all([fs.stat(resolved), fs.readFile(resolved)]);
     const sha256 = crypto.createHash("sha256").update(buf).digest("hex");
-    const version = await this._readVersion(resolved);
+    const version = await this._readVersion(resolved, process);
     return {
       schema: BINARY_PROVENANCE_SCHEMA,
       capturedAt: new Date().toISOString(),
@@ -73,6 +73,8 @@ export class FsBinaryProvenanceChecker implements IBinaryProvenanceChecker {
       reasons.push(`size changed: ${before.size} → ${after.size}`);
     if (before.mtimeMs !== after.mtimeMs)
       reasons.push(`mtime changed: ${before.mtimeMs} → ${after.mtimeMs}`);
+    if (before.version !== after.version)
+      reasons.push("version changed: " + String(before.version) + " -> " + String(after.version));
     if (before.realpath !== after.realpath)
       reasons.push(`realpath changed: ${before.realpath} → ${after.realpath}`);
     const stableDuringRun = reasons.length === 0;
@@ -83,10 +85,10 @@ export class FsBinaryProvenanceChecker implements IBinaryProvenanceChecker {
   }
 
   /** Resolve a bare command name (e.g. "goose") via PATH using `which`. */
-  private async _resolveViaPath(command: string): Promise<string> {
+  private async _resolveViaPath(command: string, process?: { readonly env: Readonly<Record<string,string>>; readonly cwd: string }): Promise<string> {
     let stdout: string;
     try {
-      ({ stdout } = await execFileAsync("which", [command], { timeout: 5_000 }));
+      ({ stdout } = await execFileAsync("which", [command], { timeout: 5_000, env: process?.env, cwd: process?.cwd }));
     } catch (err) {
       throw new Error(
         `cannot resolve command '${command}' via PATH: ${err instanceof Error ? err.message : String(err)}`,
@@ -97,9 +99,9 @@ export class FsBinaryProvenanceChecker implements IBinaryProvenanceChecker {
     return resolved;
   }
 
-  private async _readVersion(binaryPath: string): Promise<string | null> {
+  private async _readVersion(binaryPath: string, process?: { readonly env: Readonly<Record<string,string>>; readonly cwd: string }): Promise<string | null> {
     try {
-      const { stdout } = await execFileAsync(binaryPath, ["--version"], { timeout: 5_000 });
+      const { stdout } = await execFileAsync(binaryPath, ["--version"], { timeout: 5_000, env: process?.env, cwd: process?.cwd });
       const trimmed = stdout.trim().slice(0, 128);
       return trimmed.length > 0 ? trimmed : null;
     } catch {

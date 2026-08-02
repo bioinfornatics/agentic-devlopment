@@ -2,6 +2,7 @@
   "name": "@harness/eval-hub",
   "version": "0.1.0",
   "type": "module",
+  "license": "CECILL-B",
   "description": "Native TypeScript eval hub — TUI + HTTP API for the harness A/B evaluation pipeline",
   "main": "dist/index.js",
   "bin": {
@@ -13,7 +14,7 @@
     "start": "node dist/index.js",
     "start:tui": "node dist/index.js --tui",
     "start:server": "node dist/index.js --server --port 7331",
-    "test": "vitest run",
+    "test": "pnpm run build && vitest run",
     "test:native": "node scripts/check-native-deps.mjs",
     "test:unit": "vitest run --reporter=verbose",
     "test:watch": "vitest",
@@ -21,7 +22,8 @@
     "test:e2e": "playwright test",
     "test:smoke": "playwright test smoke/",
     "test:all": "pnpm run test:unit && pnpm run test:e2e",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "evaluate-release": "node dist/index.js --evaluate-harness-release"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.0",
@@ -39,5 +41,9 @@
     "@vitest/coverage-v8": "^2.0.0",
     "typescript": "^5.5.0",
     "vitest": "^2.0.0"
-  }
+  },
+  "files": [
+    "dist/**",
+    "LICENSE.CECILL-B"
+  ]
 }

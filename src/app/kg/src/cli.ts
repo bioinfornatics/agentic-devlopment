@@ -1,5 +1,6 @@
 import { bootstrap } from "./bootstrap.js";
 import { reason, RULES } from "./reason.js";
+import { exportHarnessGraph } from "./harnessGraph.js";
 import { execSync } from "node:child_process";
 import { join } from "node:path";
 import { mkdtemp } from "node:fs/promises";
@@ -45,7 +46,8 @@ switch (cmd) {
     }
     break;
   }
+  case "export-harness-graph": await exportHarnessGraph({ root: str("root"), output: str("output"), summary: flags.summary === true }); break;
   case "visualize": try { execSync("xdg-open \"" + join(REPO, "dist/kg/index.html") + "\"", { stdio: "ignore" }); } catch { console.log("Open:", join(REPO, "dist/kg/index.html")); } break;
   case "rules": RULES.forEach(r => console.log(r.name)); break;
-  default: console.log("Usage: kg <bootstrap|reason|pipeline|visualize|rules> [--dry-run] [--rules] [--product <dir>] [--input <jsonl>] [--output <jsonl>] [--output-dir <dir>]");
+  default: console.log("Usage: kg <bootstrap|reason|pipeline|export-harness-graph|visualize|rules> [--dry-run] [--rules] [--product <dir>] [--input <jsonl>] [--output <jsonl>] [--output-dir <dir>]");
 }

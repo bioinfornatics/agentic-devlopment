@@ -135,5 +135,49 @@
         "terminal_condition_correctness"
       ]
     }
+  },
+  {
+    "skills": [
+      "task-framing",
+      "loop-control"
+    ],
+    "query": "Research a reported regression where tests were added after the last failed attempt; determine whether the new evidence materially changes the next action without editing files.",
+    "max_turns": 40,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The agent contract enforces bounded recovery, changed-hypothesis retries, and a typed handoff.",
+    "baseline_gaps": [
+      "Beads run graph and state",
+      ".goose/recipes/",
+      ".agents/"
+    ],
+    "expected_behavior": [
+      "Separates observed facts from inference.",
+      "Compares the prior failure signature with later-added evidence.",
+      "States whether the hypothesis materially changed.",
+      "Returns a bounded contract or WAIT/REPLAN without editing."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    }
   }
 ]

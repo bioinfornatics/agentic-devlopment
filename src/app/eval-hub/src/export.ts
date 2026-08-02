@@ -1,4 +1,9 @@
 export { loadMinimalHarnessCatalog, MINIMAL_HARNESS_SUBJECTS } from "./domains/execution/minimalHarnessCatalog.js";
+export { evaluateReleaseGate, buildReleaseProtocolConfig, runReleaseProtocol, RELEASE_LAYERS } from "./domains/measurement/releaseGate.js";
+export type {
+  ReleaseProtocolProfile, ReleaseGateInput, ReleaseGateResult, ReleaseGateBindings,
+  ReleaseExecutionMetadata, LayerGateEvidence, ReleaseGatePersistedLayer, ConceptualL0Evidence,
+} from "./domains/measurement/releaseGate.js";
 export {
   evaluateMinimalHarnessRun, summarizeQualifiedEfficiency, recommendSmallestNonInferior,
 } from "./domains/measurement/minimalHarnessEvaluation.js";
@@ -14,13 +19,13 @@ export type {
  * Usage:
  *   node dist/index.js --export-history [--out <path>] [--no-merge]
  *
- * Default output: evals/history/runs.json  (git-committable, GitHub Pages)
+ * Default output: src/app/eval-hub/evals/history/runs.json  (git-committable, GitHub Pages)
  * With --no-merge: overwrites instead of deduplicating by runId.
  */
 import path from "node:path";
 import { SqliteHistoryRepository } from "./domains/persistence/historyRepo.js";
 import { HistoryExporter }         from "./domains/persistence/historyExporter.js";
-import { PROJECT_ROOT }            from "./shared/paths.js";
+import { EVALS_DIR }               from "./shared/paths.js";
 
 function opt(args: string[], flag: string, fallback: string): string {
   const i = args.indexOf(flag);
@@ -31,7 +36,7 @@ export async function startExport(args: string[]): Promise<void> {
   const noMerge = args.includes("--no-merge");
   const outFile = opt(
     args, "--out",
-    path.join(PROJECT_ROOT, "evals", "history", "runs.json"),
+    path.join(EVALS_DIR, "history", "runs.json"),
   );
 
   console.log("\n══════════════════════════════════════════");

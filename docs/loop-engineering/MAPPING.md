@@ -16,7 +16,7 @@ Mapping des 7 étapes du loop-engineering (`loop-engineering.yaml`) vers les pri
 
 Les sept transitions contrôleur actives sont `CONTINUE`, `REWORK`, `REPLAN`, `WAIT`, `COMPLETE`, `ESCALATE` et `ABORT`.
 
-Une invocation est un incrément borné: zéro ou une tâche Builder, puis une vérification indépendante fraîche si le build a eu lieu, Memory/Manager/Controller inline, une seule transition, puis sortie. Le contrôleur appelle python3 scripts/loop_transition_guard.py avant délégation et avant persistance finale avec les champs Beads durables et une heure UTC explicite; un refus est autoritaire. WAIT sort sans polling, et une reprise scheduler/utilisateur conserve les compteurs.
+Une invocation est un incrément borné: zéro ou une tâche Builder, puis une vérification indépendante fraîche si le build a eu lieu, Memory/Manager/Controller inline, une seule transition, puis sortie. Le contrôleur appelle node src/app/tooling/dist/loop-transition-guard.js avant délégation et avant persistance finale avec les champs Beads durables et une heure UTC explicite; un refus est autoritaire. WAIT sort sans polling, et une reprise scheduler/utilisateur conserve les compteurs.
 
 ## Escalade agents (Builder + Verifier)
 

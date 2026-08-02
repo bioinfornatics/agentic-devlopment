@@ -135,9 +135,9 @@ Stages 04 (Memory) and 05 (Manager) are **intentionally handled inline** in the 
 For skill/agent/recipe changes:
 
 ~~~bash
-python3 scripts/generate-tables.py
+node src/app/tooling/dist/generate-tables.js
 for r in loop-engineering implement research verify; do goose recipe validate $r; done
-python3 scripts/check-consistency.py
+node src/app/tooling/dist/check-consistency.js
 node src/app/kg/dist/cli.js pipeline
 ~~~
 
@@ -148,10 +148,10 @@ Recipe eval agents arrays list only in-session agents. Summoned agents are not L
 ~~~bash
 find src/recipes -name '*.yaml' -exec goose recipe validate {} \;
 for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker; do sh src/plugins/$p/tests/test-plugin.sh; done
-python3 scripts/check-recipe-metadata.py
-python3 scripts/check-consistency.py
+node src/app/tooling/dist/check-recipe-metadata.js
+node src/app/tooling/dist/check-consistency.js
 node src/app/kg/dist/cli.js bootstrap --dry-run
-./scripts/build-docs.sh
+./src/tooling/bin/build-docs
 ~~~
 
 Goose currently may emit non-fatal OpenTelemetry shutdown panic messages after successful recipe validation; use the validation result/exit code as the gate and report the runtime warning separately.

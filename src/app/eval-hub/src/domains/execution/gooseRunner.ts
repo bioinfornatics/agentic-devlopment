@@ -9,7 +9,7 @@ export class GooseProcessRunner implements IGooseRunner {
 
   async *run(config: GooseRunConfig): AsyncGenerator<GooseRawEvent> {
     const proc = spawn(config.gooseCli, [...config.args], {
-      cwd: config.cwd, env: { ...process.env, ...(config.env ?? {}) }, stdio: ["ignore", "pipe", "pipe"],
+      cwd: config.cwd, env: config.inheritEnv === false ? (config.env ?? {}) : { ...process.env, ...(config.env ?? {}) }, stdio: ["ignore", "pipe", "pipe"],
     });
 
     const queue: GooseRawEvent[]  = [];
@@ -78,9 +78,9 @@ export class GooseProcessRunner implements IGooseRunner {
     return (await this.identity(cli)).version;
   }
 
-  async identity(cli: string): Promise<import("./ports.js").GooseRuntimeIdentity> {
+  async identity(cli: string, sandbox?: import("./ports.js").SandboxProcessConfig): Promise<import("./ports.js").GooseRuntimeIdentity> {
     return new Promise((resolve, reject) => {
-      const proc = spawn(cli, ["info", "--verbose"], { stdio: ["ignore", "pipe", "pipe"] });
+      const proc = spawn(cli, ["info", "--verbose"], { cwd: sandbox?.projectRoot, env: sandbox?.env, stdio: ["ignore", "pipe", "pipe"] });
       let out = "";
       let err = "";
       proc.stdout.on("data", (chunk: Buffer) => { out += chunk.toString(); });

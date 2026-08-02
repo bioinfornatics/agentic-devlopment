@@ -70,6 +70,27 @@ describe("FsBinaryProvenanceChecker.captureSnapshot", () => {
   it("throws when the file does not exist", async () => {
     await expect(checker.captureSnapshot(path.join(tmpDir, "nonexistent"))).rejects.toThrow();
   });
+  it("uses the supplied sandbox environment for version capture", async () => {
+    const bin = path.join(tmpDir, "sandbox-version");
+    await fs.writeFile(bin, '#!/bin/sh\nprintf "%s\\n" "${CONTAMINATION_SECRET:-clean}"\n');
+    await fs.chmod(bin, 0o755);
+    const checker = new FsBinaryProvenanceChecker();
+    const snap = await checker.captureSnapshot(bin, { env: { PATH: process.env.PATH ?? "", CONTAMINATION_SECRET: "sandbox" }, cwd: tmpDir });
+    expect(snap.version).toBe("sandbox");
+  });
+  it("uses the sandbox envelope for repeated before and after captures", async () => {
+    const bin = path.join(tmpDir, "sandbox-version-twice");
+    await fs.writeFile(bin, '#!/bin/sh\nprintf "%s\\n" "${CONTAMINATION_SECRET:-clean}"\n');
+    await fs.chmod(bin, 0o755);
+    const processConfig = { env: { PATH: process.env.PATH ?? "", CONTAMINATION_SECRET: "sandbox" }, cwd: tmpDir };
+    const before = await checker.captureSnapshot(bin, processConfig);
+    const after = await checker.captureSnapshot(bin, processConfig);
+    expect(before.version).toBe("sandbox");
+    expect(after.version).toBe("sandbox");
+    expect(checker.checkStability(before, after).stableDuringRun).toBe(true);
+  });
+
+
 });
 
 describe("FsBinaryProvenanceChecker.checkStability", () => {
