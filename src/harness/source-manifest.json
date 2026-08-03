@@ -481,14 +481,21 @@
       "migrationState": "canonical-source"
     },
     {
+      "id": "skill:plugin-authoring",
       "kind": "skill",
       "name": "plugin-authoring",
-      "path": "src/skills/plugin-authoring",
       "ownership": "internal",
-      "language": "markdown",
-      "build": "copy",
-      "runtime": "goose-discovery",
-      "package": "tree"
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/plugin-authoring",
+      "migrationState": "canonical-source"
     }
   ],
   "releaseExcludes": [
