@@ -603,6 +603,36 @@
       "build": "copy",
       "runtime": "goose-discovery",
       "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "context-compaction",
+      "path": "src/skills/context-compaction",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "graph-analyzer",
+      "path": "src/skills/graph-analyzer",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "remediation-verifier",
+      "path": "src/skills/remediation-verifier",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
     }
   ]
 }

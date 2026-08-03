@@ -530,6 +530,57 @@
       },
       "targetSourcePath": "src/skills/context-budget-manager",
       "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:context-compaction",
+      "kind": "skill",
+      "name": "context-compaction",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/context-compaction",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:graph-analyzer",
+      "kind": "skill",
+      "name": "graph-analyzer",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/graph-analyzer",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:remediation-verifier",
+      "kind": "skill",
+      "name": "remediation-verifier",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/remediation-verifier",
+      "migrationState": "canonical-source"
     }
   ],
   "releaseExcludes": [
