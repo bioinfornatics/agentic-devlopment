@@ -1,11 +1,7 @@
 # Harness operator HOWTO
-
 > **Non-normative operator guide.** Architecture and behavior are defined by the repository specs and ADRs; this page only gives reproducible commands for the current tree.
-
 ## 1. Prerequisites
-
 Use Node.js 22 (the workspace requires >=22 <23) and pnpm 10.33.0 (pinned in src/app/package.json). The commands also need Git, Bash, just, jq, and Goose; this guide was checked with Goose 1.37.0. Beads (bd) is needed for governed runs. Pandoc is only needed for the documentation build.
-
 ```bash
 node --version
 corepack enable
@@ -33,24 +29,19 @@ bootstrap-runtime resolves pinned external skills, builds and projects the harne
 Run the narrow tooling layer first, then repository contracts:
 
 ```bash
-pnpm --dir src/app --filter @harness/tooling typecheck
-pnpm --dir src/app --filter @harness/tooling test
-node src/app/tooling/dist/check-consistency.js
-node src/app/tooling/dist/check-recipe-metadata.js
-node src/app/tooling/dist/validate-harness-manifests.js
+pnpm --dir src/app --filter @harness/eval-hub typecheck
+pnpm --dir src/app --filter @harness/eval-hub test
+node src/app/harness-release/dist/validate-harness-manifests.js
 ```
 
-The first two commands compile and test the TypeScript tooling. The remaining commands check cross-artifact consistency, recipe metadata, and source manifests. For the generated documentation layer (requires Pandoc):
-
+The first two commands compile and test the Eval Hub package. The third checks source manifests and external lock integrity. For the generated documentation layer (requires Pandoc):
 ```bash
 ./src/tooling/bin/build-docs
 ```
-
 Expected primary output: dist/docs/html/agentic-development-harness.html. A PDF is also produced when XeLaTeX or Chromium is available.
-
 ## 4. Create a disposable Goose home
 
-Use a temporary HOME and all XDG directories. The temporary HOME protects both Goose configuration and the ~/.agents discovery path.
+Use a temporary HOME and all XDG directories. The temporary HOME protects both Goose configuration and the ~/.agents discovery path. See https://goose-docs.ai/docs/guides/environment-variables/. XDG variables alone do **not** redirect `~/.agents`, and this guide does not document a `GOOSE_HOME` variable.
 
 ```bash
 export HARNESS_REPO="$PWD"
@@ -85,7 +76,7 @@ Point the installer at the activated projection explicitly. Preview first — dr
 ```bash
 just INSTALL_FLAGS='--dry-run' install-release
 # or
-./src/tooling/bin/install --bundle dist/releases --dry-run
+"$HARNESS_REPO/src/tooling/bin/install" --dry-run --bundle dist/releases
 ```
 
 Install into user Goose config:
@@ -97,7 +88,7 @@ just install-release
 Install into a project-local target:
 
 ```bash
-node src/app/tooling/dist/install-harness-release.js \
+"$HARNESS_REPO/src/tooling/bin/install" \
   install --bundle dist/releases --prefix /path/to/target
 ```
 
@@ -112,8 +103,9 @@ cd "$HARNESS_EMPTY_PROJECT"
 
 goose skills list
 goose recipe list
+goose run --recipe loop-engineering --render-recipe
 find "$HOME/.agents/plugins" -mindepth 2 -maxdepth 2 -name plugin.json -print
-find "$HOME/.config/goose/recipes" -name '*.yaml' -print \
+find "${XDG_CONFIG_HOME:-$HOME/.config}/goose/recipes" -name '*.yaml' -print \
   -exec goose recipe validate {} \;
 ```
 
@@ -127,7 +119,7 @@ From the repository root:
 just evaluate-local-smoke
 ```
 
-It uses no provider, builds and installs only inside a disposable sandbox, and writes canonical evidence to src/app/tooling/dist/evidence/local-smoke.json. Override with EVIDENCE=sandbox-export/name.json just evaluate-local-smoke; other destinations fail closed.
+It uses no provider, builds and installs only inside a disposable sandbox, and writes canonical evidence to src/app/eval-hub/dist/evidence/local-smoke.json. Override with EVIDENCE=sandbox-export/name.json just evaluate-local-smoke; other destinations fail closed.
 
 ## 8. Releasing from local source
 
