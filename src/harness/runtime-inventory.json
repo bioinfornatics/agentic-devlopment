@@ -583,6 +583,26 @@
       "build": "copy",
       "runtime": "goose-discovery",
       "package": "tree"
+    },
+    {
+      "kind": "plugin",
+      "name": "budget-tracker",
+      "path": "src/plugins/budget-tracker",
+      "ownership": "internal",
+      "language": "shell",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "context-budget-manager",
+      "path": "src/skills/context-budget-manager",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
     }
   ]
 }

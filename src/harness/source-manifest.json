@@ -496,6 +496,40 @@
       },
       "targetSourcePath": "src/skills/plugin-authoring",
       "migrationState": "canonical-source"
+    },
+    {
+      "id": "plugin:budget-tracker",
+      "kind": "plugin",
+      "name": "budget-tracker",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/plugins/budget-tracker",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:context-budget-manager",
+      "kind": "skill",
+      "name": "context-budget-manager",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/context-budget-manager",
+      "migrationState": "canonical-source"
     }
   ],
   "releaseExcludes": [
