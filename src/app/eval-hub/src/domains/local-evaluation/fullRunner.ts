@@ -222,12 +222,16 @@ async function defaultOperations(root: string): Promise<FullOperations> {
       await t.buildHarness({ output, target: "linux-x86_64", skipCompile: false, root });
     },
     async resolve(staging) {
+      // HARNESS_SKILLS_SOURCE_ROOT: optional local directory where <skillName>/ subdirs live.
+      // Allows offline resolution without GitHub cloning (digests must match the lock).
+      const sourceRoot = process.env["HARNESS_SKILLS_SOURCE_ROOT"] ?? undefined;
       await t.resolveExternalSkills({
         lock: "src/harness/external-skills.lock.json",
         staging,
         offline: false,
         skillsCli: "1.5.20",
         root,
+        sourceRoot,
       });
     },
     project: t.projectHarnessRuntime,

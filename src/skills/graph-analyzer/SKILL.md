@@ -113,3 +113,7 @@ Hotspots to address first:
 3. Nodes that load entire files instead of targeted symbols.
 4. Nodes that are retried without a changed hypothesis.
 5. Nodes on the critical path that could be replaced by a deterministic check.
+
+## Knowledge orientation
+
+At session start, run `bd prime` to orient on the current backlog state before applying this skill.

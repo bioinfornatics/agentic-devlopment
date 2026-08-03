@@ -81,7 +81,7 @@ Invoke with Goose Summon: `load agent <name>` or delegate into an isolated sessi
 | `repository-researcher` | Read-only repository exploration and task framing | claude-sonnet-4-6 |
 | `error-analyzer` | Summoned by loop-breaker on repeated tool failures | claude-sonnet-4-6 |
 
-## Skills (13)
+## Skills (18)
 
 | Skill | Purpose |
 |-------|---------|
@@ -98,6 +98,11 @@ Invoke with Goose Summon: `load agent <name>` or delegate into an isolated sessi
 | `grilling` | External (mattpocock/skills) |
 | `skill-creator` | External (anthropics/skills) |
 | `wcag-accessibility-audit` | External (mastepanoski/claude-skills) |
+| `context-budget-manager` | Measure and enforce context and tool-call budget in a Goose session |
+| `context-compaction` | Reduce active context before phase transitions or delegation |
+| `graph-analyzer` | Reconstruct and compare documented, configured, and executed harness graphs |
+| `plugin-authoring` | Design, implement, test, and install Open-Plugins-format Goose plugins |
+| `remediation-verifier` | Verify that a harness remediation achieved its goal without regressions |
 
 ## Recipes
 

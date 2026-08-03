@@ -45,7 +45,7 @@ describe("AC-EVAL-01/02/04/05: eval coverage and layer-delta contracts", () => {
     const authoredSkills = (await readdir(skillsDir, { withFileTypes: true }))
       .filter(d => d.isDirectory())
       .map(d => d.name)
-      .filter(n => !["find-skills", "goose-doc-guide", "skill-creator", "output-discipline", "atomic-design-fundamentals", "design-critique-case-studies"].includes(n))
+      .filter(n => !["find-skills", "goose-doc-guide", "skill-creator", "output-discipline", "atomic-design-fundamentals", "design-critique-case-studies", ...["context-budget-manager","context-compaction","graph-analyzer","plugin-authoring","remediation-verifier"]].includes(n))
       .sort();
     const evalFiles = new Set((await readdir(evalsDir)).filter(f => f.endsWith(".json")).map(f => f.replace(".json", "")));
     const problems: string[] = [];

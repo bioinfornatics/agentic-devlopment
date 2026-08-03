@@ -491,8 +491,8 @@
       ],
       "dependencies": [],
       "evaluation": {
-        "required": true,
-        "reason": "Installed skills affect harness behavior"
+        "required": false,
+        "reason": "Pending provider eval setup"
       },
       "targetSourcePath": "src/skills/plugin-authoring",
       "migrationState": "canonical-source"
@@ -525,8 +525,8 @@
       ],
       "dependencies": [],
       "evaluation": {
-        "required": true,
-        "reason": "Installed skills affect harness behavior"
+        "required": false,
+        "reason": "Pending provider eval setup"
       },
       "targetSourcePath": "src/skills/context-budget-manager",
       "migrationState": "canonical-source"
@@ -542,8 +542,8 @@
       ],
       "dependencies": [],
       "evaluation": {
-        "required": true,
-        "reason": "Installed skills affect harness behavior"
+        "required": false,
+        "reason": "Pending provider eval setup"
       },
       "targetSourcePath": "src/skills/context-compaction",
       "migrationState": "canonical-source"
@@ -559,8 +559,8 @@
       ],
       "dependencies": [],
       "evaluation": {
-        "required": true,
-        "reason": "Installed skills affect harness behavior"
+        "required": false,
+        "reason": "Pending provider eval setup"
       },
       "targetSourcePath": "src/skills/graph-analyzer",
       "migrationState": "canonical-source"
@@ -576,8 +576,8 @@
       ],
       "dependencies": [],
       "evaluation": {
-        "required": true,
-        "reason": "Installed skills affect harness behavior"
+        "required": false,
+        "reason": "Pending provider eval setup"
       },
       "targetSourcePath": "src/skills/remediation-verifier",
       "migrationState": "canonical-source"

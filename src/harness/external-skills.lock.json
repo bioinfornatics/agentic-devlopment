@@ -15,12 +15,12 @@
       "source": {
         "type": "github",
         "repository": "mattpocock/skills",
-        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
         "path": "skills/engineering/domain-modeling"
       },
       "integrity": {
         "algorithm": "sha256-tree-v1",
-        "digest": "937de2a55f08262e10a00591f35fa0c43fb531072d5403f5ca74d27e5ac0fe79"
+        "digest": "8d774870ffd93ad77b07f56bbe59fb76c8f9e246fe49e0181ed65a519fc28929"
       },
       "license": {
         "spdx": "MIT",
@@ -38,12 +38,12 @@
       "source": {
         "type": "github",
         "repository": "mattpocock/skills",
-        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
         "path": "skills/productivity/grill-me"
       },
       "integrity": {
         "algorithm": "sha256-tree-v1",
-        "digest": "b644270312ff5b67aeb042ce80ed357ccdcac43339131abcefc5d3dfe217c605"
+        "digest": "cec05582f13830a7bd63984474b999c806a7b93935ed638a27f32eac1b7f976b"
       },
       "license": {
         "spdx": "MIT",
@@ -63,12 +63,12 @@
       "source": {
         "type": "github",
         "repository": "mattpocock/skills",
-        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
         "path": "skills/engineering/grill-with-docs"
       },
       "integrity": {
         "algorithm": "sha256-tree-v1",
-        "digest": "afbecd14d3f15d4de43b61a9a6237a4a2098569049609e2b026ae81e95e7e236"
+        "digest": "05c1b216a482ea0fd5a5281e96b0f1b5fd5e1c1e9edd572709c71944ef6fd7d6"
       },
       "license": {
         "spdx": "MIT",
@@ -89,12 +89,12 @@
       "source": {
         "type": "github",
         "repository": "mattpocock/skills",
-        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
         "path": "skills/productivity/grilling"
       },
       "integrity": {
         "algorithm": "sha256-tree-v1",
-        "digest": "971312c765cff158d58e07248124c9bead17b654eb512f32708586455ceba86e"
+        "digest": "5ec71b63ca01084807463b85a30fa317b3fbd05330fb6cb67bb92db90467f6ac"
       },
       "license": {
         "spdx": "MIT",
@@ -117,7 +117,7 @@
       },
       "integrity": {
         "algorithm": "sha256-tree-v1",
-        "digest": "ad4f350be137206c6cb509aaaccf80960fd216db6ad6ef8e6f1d8920acb860b6"
+        "digest": "696756c58ebd144a3ce0229c62aa19f5eac1908c152951390de508b57247a819"
       },
       "license": {
         "spdx": "Apache-2.0",

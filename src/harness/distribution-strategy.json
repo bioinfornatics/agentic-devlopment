@@ -20,14 +20,14 @@
           "npx",
           "skills@1.5.20",
           "add",
-          "https://github.com/mattpocock/skills/tree/2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+          "https://github.com/mattpocock/skills/tree/9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
           "--skill",
           "skills/engineering/domain-modeling"
         ]
       },
       "source": {
         "repository": "https://github.com/mattpocock/skills",
-        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
         "path": "skills/engineering/domain-modeling"
       },
       "nativeDistributionGate": {
@@ -72,14 +72,14 @@
           "npx",
           "skills@1.5.20",
           "add",
-          "https://github.com/mattpocock/skills/tree/2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+          "https://github.com/mattpocock/skills/tree/9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
           "--skill",
           "skills/productivity/grill-me"
         ]
       },
       "source": {
         "repository": "https://github.com/mattpocock/skills",
-        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
         "path": "skills/productivity/grill-me"
       },
       "nativeDistributionGate": {
@@ -108,14 +108,14 @@
           "npx",
           "skills@1.5.20",
           "add",
-          "https://github.com/mattpocock/skills/tree/2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+          "https://github.com/mattpocock/skills/tree/9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
           "--skill",
           "skills/engineering/grill-with-docs"
         ]
       },
       "source": {
         "repository": "https://github.com/mattpocock/skills",
-        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
         "path": "skills/engineering/grill-with-docs"
       },
       "nativeDistributionGate": {
@@ -144,14 +144,14 @@
           "npx",
           "skills@1.5.20",
           "add",
-          "https://github.com/mattpocock/skills/tree/2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+          "https://github.com/mattpocock/skills/tree/9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
           "--skill",
           "skills/productivity/grilling"
         ]
       },
       "source": {
         "repository": "https://github.com/mattpocock/skills",
-        "revision": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
         "path": "skills/productivity/grilling"
       },
       "nativeDistributionGate": {
@@ -497,6 +497,102 @@
       "id": "plugin:prevent-catastrophe",
       "kind": "plugin",
       "name": "prevent-catastrophe",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Plugin has no immutable compatible Git repository/source metadata",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:context-budget-manager",
+      "name": "context-budget-manager",
+      "kind": "skill",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:context-compaction",
+      "name": "context-compaction",
+      "kind": "skill",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:graph-analyzer",
+      "name": "graph-analyzer",
+      "kind": "skill",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:plugin-authoring",
+      "name": "plugin-authoring",
+      "kind": "skill",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:remediation-verifier",
+      "name": "remediation-verifier",
+      "kind": "skill",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "plugin:budget-tracker",
+      "kind": "plugin",
+      "name": "budget-tracker",
       "ownership": "internal",
       "distributionType": "embedded-release",
       "candidate": {

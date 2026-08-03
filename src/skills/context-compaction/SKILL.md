@@ -123,3 +123,14 @@ Never discard:
 | Compact mid-reasoning | Finish the current node first |
 | Discard a finding used by a gate | Keep gate evidence until the gate is resolved |
 | Re-inject the archive | Archive is write-only from the active context |
+
+## Self-check
+
+- [ ] Compacted context retains all active acceptance criteria and blocking facts.
+- [ ] Dropped sections are explicitly marked as superseded.
+- [ ] Compacted output fits within the target token budget.
+
+
+## Knowledge orientation
+
+At session start, run `bd prime` to orient on the current backlog state before applying this skill.

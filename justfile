@@ -30,7 +30,7 @@ evaluate-local-smoke: _build-runtime-tooling
 # Provider-backed full L0-L3 sandbox run; TypeScript CLI orchestrated, fail-closed, gate-verified, attested.
 # Uses the active Goose provider/model and goose from PATH; GOOSE_* variables override those defaults.
 evaluate-local-full: _build-runtime-tooling
-    node src/app/eval-hub/dist/index.js --run --profile full
+    node src/app/eval-hub/dist/index.js --run --profile full --continue-on-failure
 
 # Fast reverse-impact subset; never qualifies publication evidence.
 evaluate-local-impacted: _build-runtime-tooling

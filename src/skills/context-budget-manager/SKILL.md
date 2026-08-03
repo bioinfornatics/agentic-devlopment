@@ -123,3 +123,7 @@ on `SessionEnd` for FinOps analysis.
 - [ ] Phase transitions produce a compaction step before the next phase starts.
 - [ ] Remaining turns were estimated before the last costly action.
 - [ ] Stagnation was not retried with the same parameters.
+
+## Knowledge orientation
+
+At session start, run `bd prime` to orient on the current backlog state before applying this skill.

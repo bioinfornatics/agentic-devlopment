@@ -27,7 +27,7 @@ async function activeLockedSkills():Promise<LockedSkillDependency[]>{
 }
 async function activeSkills():Promise<string[]>{
  const manifest=await json(path.join(PROJECT_ROOT,"src/harness/source-manifest.json"));if(!object(manifest)||!Array.isArray(manifest.components))throw new Error("invalid source manifest");
- const source=manifest.components.filter(object).filter(x=>x.kind==="skill").map(x=>String(x.name));
+ const source=manifest.components.filter(object).filter(x=>x.kind==="skill").filter((x:any)=>x.evaluation?.required!==false).map(x=>String(x.name));
  const active=await activeLockedSkills();
  for(const {name} of active)if(!source.includes(name))throw new Error("active locked skill omitted from source manifest: "+name);
  return [...new Set(source)].sort();

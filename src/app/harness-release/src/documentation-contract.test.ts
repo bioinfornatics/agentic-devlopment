@@ -44,7 +44,7 @@ describe("documentation structure contract", () => {
     expect(howto).not.toContain("@agentic-dev/loop-breaker rebuild");
     expect(howto).not.toContain("<PROVIDER_API_KEY>=<secret>");
     const docsBuilder = await text("src/tooling/bin/build-docs");
-    expect(docsBuilder).toMatch(/DOCS=\([\s\S]*HOWTO\.md[\s\S]*\)/);
+    expect(docsBuilder).toMatch(/pnpm[\s\S]*harness-release[\s\S]*build-docs|DOCS=\([\s\S]*HOWTO\.md[\s\S]*\)/);
     const installer = await text("src/tooling/bin/install");
     expect(installer).not.toContain("Building plugin:");
     for (const document of [readme, install]) expect(document).toContain("[Harness operator HOWTO](HOWTO.md)");

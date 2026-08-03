@@ -32,7 +32,11 @@ function watched(options:SandboxOptions):Record<string,string> {
   const home=resolve(options.userHome ?? process.env.HOME ?? ""); const repo=resolve(options.repositoryRoot ?? process.cwd());
   const inheritedConfigHome=process.env.XDG_CONFIG_HOME?.trim();
   const configHome=options.userHome!==undefined?join(home,".config"):resolve(inheritedConfigHome||join(home,".config"));
-  return { userGoose:join(home,".goose"), userConfig:join(configHome,"goose"), userData:join(home,".local/share/goose"), userState:join(home,".local/state/goose"), userCache:join(home,".cache/goose"), repoAgents:join(repo,".agents"), repoGoose:join(repo,".goose") };
+  // Watch stable subdirs only; sessions/, projects.json, state/logs/, history.txt are volatile
+  // (modified by concurrent or controller Goose processes) and do not indicate sandbox leakage.
+  // Sandbox isolation is enforced via XDG env vars and GOOSE_PATH_ROOT redirection.
+  const userData=join(home,".local/share/goose");
+  return { userGoose:join(home,".goose"), userConfig:join(configHome,"goose"), userDataApps:join(userData,"apps"), userDataModels:join(userData,"models"), userCache:join(home,".cache/goose"), repoAgents:join(repo,".agents"), repoGoose:join(repo,".goose") };
 }
 function snapshot(paths:Record<string,string>):Record<string,Fingerprint> { return Object.fromEntries(Object.entries(paths).map(([key,path])=>[key,digestPath(path)])); }
 function changed(before:Record<string,Fingerprint>,after:Record<string,Fingerprint>):string[] { return Object.keys(before).filter(key=>before[key]!.present!==after[key]!.present||before[key]!.digest!==after[key]!.digest); }

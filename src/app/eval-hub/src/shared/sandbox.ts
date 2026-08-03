@@ -22,5 +22,24 @@ export async function createSandboxProcessConfig(input:{sandboxRoot:string;runti
  await Promise.all([xdg.XDG_RUNTIME_DIR,gooseRoot,gooseConfig,path.join(gooseRoot,"data"),path.join(gooseRoot,"state")].map(p=>fs.chmod(p,0o700)));
  const inheritedConfigHome=process.env["XDG_CONFIG_HOME"]?.trim(); const sourceConfigHome=inheritedConfigHome||path.join(process.env["HOME"]??"",".config");
  await seedGooseConfiguration(path.resolve(input.gooseConfigSource??path.join(sourceConfigHome,"goose")),gooseConfig);
- return {projectRoot,runtimeRoot,evidenceRoot,env:{HOME:home,...xdg,GOOSE_PATH_ROOT:gooseRoot,PATH:process.env["PATH"]??"",HARNESS_RUNTIME_ROOT:runtimeRoot,EVAL_EVIDENCE_ROOT:evidenceRoot}};
+ 
+  // Seed OAuth tokens from real config to sandbox config dir
+  const realConfigHome = process.env["XDG_CONFIG_HOME"]?.trim() || path.join(process.env["HOME"]??"", ".config");
+  const realGooseConfig = path.resolve(realConfigHome, "goose");
+  try {
+    const configEntries = await fs.readdir(realGooseConfig, { withFileTypes: true }).catch(() => []);
+    for (const entry of configEntries) {
+      if (entry.isDirectory()) {
+        // Seed provider credential directories (chatgpt_codex/, gemini_oauth/, etc.)
+        const srcDir = path.join(realGooseConfig, entry.name);
+        const dstDir = path.join(gooseConfig, entry.name);
+        await fs.mkdir(dstDir, { recursive: true });
+        const files = await fs.readdir(srcDir).catch(() => [] as string[]);
+        for (const f of files) {
+          await fs.copyFile(path.join(srcDir, f), path.join(dstDir, f)).catch(() => {});
+        }
+      }
+    }
+  } catch { /* best effort */ }
+  return {projectRoot,runtimeRoot,evidenceRoot,env:{HOME:home,...xdg,GOOSE_PATH_ROOT:gooseRoot,PATH:process.env["PATH"]??"",HARNESS_RUNTIME_ROOT:runtimeRoot,EVAL_EVIDENCE_ROOT:evidenceRoot}};
 }

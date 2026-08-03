@@ -427,3 +427,7 @@ jq -r '.hooks | keys[]' hooks/hooks.json
 | Shared mutable state between concurrent sessions | Race conditions on multi-session runs | Use atomic file writes or SQLite with WAL |
 | Calling `bd`, `jq`, or any tool without a guard | Hook crashes if tool is absent | `command -v tool >/dev/null 2>&1 || exit 0` |
 | Misspelling an event name in hooks.json | Rule silently ignored at load time | Validate with `jq -r '.hooks|keys[]' hooks/hooks.json` |
+
+## Knowledge orientation
+
+At session start, run `bd prime` to orient on the current backlog state before applying this skill.
