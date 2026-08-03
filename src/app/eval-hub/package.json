@@ -1,6 +1,6 @@
 {
   "name": "@harness/eval-hub",
-  "version": "0.1.0",
+  "version": "1.2.0",
   "type": "module",
   "license": "CECILL-B",
   "description": "Native TypeScript eval hub — TUI + HTTP API for the harness A/B evaluation pipeline",
