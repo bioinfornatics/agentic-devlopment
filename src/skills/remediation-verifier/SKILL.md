@@ -64,7 +64,7 @@ grep 'harness-manager/dist/loop-transition-guard' src/recipes/loop-engineering.y
 # expected: 2
 
 # Example: FND-005 — no stale tooling refs
-grep -c 'app/tooling/dist' AGENTS.md
+grep -c 'tooling/dist' AGENTS.md
 # expected: 0
 
 # Example: budget-tracker — blocking works
