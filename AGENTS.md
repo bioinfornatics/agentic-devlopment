@@ -124,7 +124,7 @@ Each active plugin injects hook stubs into every session context. Current overhe
 | `loop-breaker` | 2 | ~400 |
 | **Total** | **10 hooks** | **~2 100** |
 
-> ⚠️ SOTA signal: 10 plugins ≈ 40k tokens. Keep active plugin count ≤ 6 and total hook overhead ≤ 5k tokens. See `docs/loop-engineering/MAPPING.md` for the full breakdown.
+> ⚠️ SOTA signal (verified 2026-08): 4 active plugins, 10 hook rules, ~2 100 tokens overhead. Keep active plugin count ≤ 6 and total hook overhead ≤ 5k tokens. See `docs/loop-engineering/MAPPING.md` for the full breakdown.
 
 ## Memory and Manager stages — inline design decision
 
