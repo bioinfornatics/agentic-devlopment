@@ -92,6 +92,8 @@ export class LayeredRunner implements ILayeredRunner {
       const suiteConfig: SuiteConfig = {
         kind, subjects, workspace: layerWs,
         gooseCli:       cfg.gooseCli,
+        ...(cfg.provider ? { provider: cfg.provider } : {}),
+        ...(cfg.model ? { model: cfg.model } : {}),
         workers:        cfg.workers,
         mode:           kind === "skills" ? "with-without" : "layer-delta",
         maxTurns:       cfg.maxTurns,

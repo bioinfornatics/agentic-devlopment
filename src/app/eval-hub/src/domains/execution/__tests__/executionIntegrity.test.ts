@@ -87,6 +87,14 @@ describe("EVAL-INT-02/19 typed effective treatments", () => {
     expect(candidate[candidate.indexOf("--text") + 1]).toBe(baseline[baseline.indexOf("--text") + 1]);
   });
 
+  it("propagates an explicit provider and model override", () => {
+    const pair = buildTreatmentPair({ kind: "agents", subject: "architect", declaredSkills: ["sdd"], declaredAgents: [] });
+    const args = buildGooseInvocation(pair.candidate, envelope.taskPayload, 1, {}, "task", { provider: "chatgpt_codex", model: "gpt-5.5" });
+    expect(args).toContain("--provider");
+    expect(args[args.indexOf("--provider") + 1]).toBe("chatgpt_codex");
+    expect(args[args.indexOf("--model") + 1]).toBe("gpt-5.5");
+  });
+
 describe("EVAL-INT-01/03 invariant repeated schedule", () => {
   it.each([0, -1, 1.5, Number.NaN])("rejects invalid repetition count %s", value => {
     expect(() => validateRepetitionCount(value)).toThrow(/integer.*at least 1/i);

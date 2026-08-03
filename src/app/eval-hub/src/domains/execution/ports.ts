@@ -160,6 +160,8 @@ export interface SuiteConfig {
   readonly subjects:       readonly SubjectName[];
   readonly workspace:      string;
   readonly gooseCli:       string;
+  readonly provider?:       string;
+  readonly model?:          string;
   readonly workers:        number;
   readonly mode:           ComparisonMode;
   readonly maxTurns:       number;
@@ -228,6 +230,8 @@ export interface LayeredConfig {
   readonly layers:             readonly EvalKind[];
   readonly workers:            number;
   readonly gooseCli:           string;
+  readonly provider?:           string;
+  readonly model?:              string;
   readonly maxTurns:           number;
   readonly timeoutMs:          number;
   readonly ambient:            boolean;

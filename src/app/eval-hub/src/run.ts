@@ -11,6 +11,8 @@
  *
  * Options:
  *   --goose-cli <path>         Goose binary (default: "goose")
+ *   --provider <name>           Explicit Goose provider override
+ *   --model <name>              Explicit Goose model override
  *   --layers <l1,l2,l3>        Comma-separated: skills,agents,recipes (default: all)
  *   --subjects <s1,s2>         Comma/space-separated subject filter
  *   --workers <n>              Parallel subjects (default: 3)
@@ -204,6 +206,8 @@ export function buildReleaseContext(parsed: ReleaseCliArgs): ReleaseContext {
 
 export async function startRun(args: string[]): Promise<void> {
   const gooseCli   = opt(args, "--goose-cli", "goose");
+  const provider   = opt(args, "--provider", "").trim() || undefined;
+  const model      = opt(args, "--model", "").trim() || undefined;
   const workers    = optInt(args, "--workers", 3);
   const maxTurns   = optInt(args, "--max-turns", 8);
   const repetitions = Number(opt(args, "--repetitions", "1"));
@@ -306,7 +310,7 @@ export async function startRun(args: string[]): Promise<void> {
 
   // ── Layer/suite state ────────────────────────────────────────────────────────
   const cfg: LayeredConfig = {
-    layers, workers, gooseCli, maxTurns, repetitions, timeoutMs, ambient,
+    layers, workers, gooseCli, ...(provider ? { provider } : {}), ...(model ? { model } : {}), maxTurns, repetitions, timeoutMs, ambient,
     continueOnFail, earlyStopThreshold: threshold, noEarlyStop,
     // Always pass the resolved runId so the runner uses our stable ID.
     layeredRunId: runId,

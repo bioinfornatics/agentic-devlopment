@@ -223,6 +223,9 @@ describe("EVAL-LYR-V2 plan/runPlan flow", () => {
     expect(fake.runPlanCalls.length).toBe(1);
     expect(fake.runCallCount).toBe(0);
 
+    expect(fake.planCalls[0]).not.toHaveProperty("provider");
+    expect(fake.planCalls[0]).not.toHaveProperty("model");
+
     const started   = events.find(e => e.type === "layer.started");
     const completed = events.find(e => e.type === "layer.completed");
     expect(started).toBeTruthy();

@@ -291,8 +291,8 @@ export class SuiteRunner implements ISuiteRunner {
     }>;
   }> {
     const runtime = await this.runtime.identity(cfg.gooseCli, cfg.sandbox);
-    const provider = runtime.provider ?? "unknown";
-    const model = runtime.model ?? "unknown";
+    const provider = cfg.provider ?? runtime.provider ?? "unknown";
+    const model = cfg.model ?? runtime.model ?? "unknown";
     const root = path.join(cfg.workspace, "_integrity-v2", cfg.kind);
     const subjects: IntegrityManifestV2["subjects"][number][] = [];
     const treatments: IntegrityManifestV2["treatments"][number][] = [];
