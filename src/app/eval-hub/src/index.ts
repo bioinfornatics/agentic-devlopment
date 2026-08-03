@@ -3,6 +3,7 @@
  * Eval Hub — entry point.
  *
  * Modes (mutually exclusive flags, first match wins):
+ *   --check-consistency Run repository governance checks
  *   --run             Drive a layered eval (L1→L2→L3)
  *   --report          Build the HTML trend dashboard from history DB
  *   --export-history  Export history DB → src/app/eval-hub/evals/history/runs.json
@@ -19,12 +20,14 @@
  */
 
 const args = process.argv.slice(2);
+const { join } = await import("node:path");
 
 const usage = [
   "",
   "  Usage: node src/app/eval-hub/dist/index.js <mode> [options]",
   "",
   "  Modes:",
+  "    --check-consistency Run repository governance checks",
   "    --benchmark-minimal Validate and print the controlled harness benchmark catalog",
   "    --companion-self-check Print bounded standalone package/runtime identity and exit",
   "    --evaluate-harness-release Verify and evaluate an immutable harness release",
@@ -56,6 +59,17 @@ if (args.includes("--help") || args.includes("-h")) {
   process.exit(0);
 }
 
+// AC-1/AC-2: help mode — side-effect-free, exits 0
+if (args.includes("--help") || args.includes("-h")) {
+  console.log(usage);
+  process.exit(0);
+}
+
+if (args.includes("--check-consistency")) {
+  const { runConsistencyCli } = await import("./domains/governance/cli.js");
+  process.exit(await runConsistencyCli(process.env["PROJECT_ROOT"] ?? process.cwd()));
+}
+
 if (args.includes("--companion-self-check")) {
   console.log(JSON.stringify({
     schema: "eval-hub-companion-self-check-v1",
@@ -77,6 +91,17 @@ if (args.includes("--evaluate-harness-release")) {
   const result = await evaluateHarnessRelease(parseReleaseEvaluationArgs(args));
   if (result.evidence && args.includes("--dry-run")) console.log(JSON.stringify(result.evidence, Object.keys(result.evidence).sort()));
   process.exit(result.exitCode);
+}
+
+if (args.includes("--run") && args.includes("--profile")) {
+  const { runLocalEvaluationProfile, runLocalEvaluationSmoke, runLocalEvaluationFull } = await import("./domains/local-evaluation/index.js");
+  try {
+    await runLocalEvaluationProfile(args, { smoke: runLocalEvaluationSmoke, full: runLocalEvaluationFull });
+    process.exit(0);
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
 }
 
 if (args.includes("--run")) {
