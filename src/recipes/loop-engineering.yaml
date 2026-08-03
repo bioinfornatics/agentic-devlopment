@@ -19,7 +19,7 @@ instructions: |
   Invocation boundary and authoritative guard:
      - One invocation processes zero or one ready build task. If a build is delegated, run exactly one fresh independent verification, then Memory, Manager, and Controller inline, persist exactly one transition, return, and exit. Never select a second build task. The scheduler or user may resume later from Beads.
      - On resume, load counters and budgets from run metadata. Parameters are creation defaults only; never reset persisted loop_iteration, loop_no_progress_count, limits, rework/failure/evidence state, due_at, or transition state.
-     - Before delegation and immediately before persisting the Controller transition, assemble {snapshot, now} from current durable bd show <id> --json fields plus an explicit UTC instant from date -u +%Y-%m-%dT%H:%M:%SZ, then call node src/app/tooling/dist/loop-transition-guard.js on stdin and parse its JSON. Include requested transition, iteration/no-progress counters and limits, rework_count, failure signatures/repetition, changed_evidence, due_at, external dependency/resume condition, next_task, and expected_proof.
+     - Before delegation and immediately before persisting the Controller transition, assemble {snapshot, now} from current durable bd show <id> --json fields plus an explicit UTC instant from date -u +%Y-%m-%dT%H:%M:%SZ, then call node src/app/harness-manager/dist/loop-transition-guard.js on stdin and parse its JSON. Include requested transition, iteration/no-progress counters and limits, rework_count, failure signatures/repetition, changed_evidence, due_at, external dependency/resume condition, next_task, and expected_proof.
      - A guard result with allowed=false is authoritative: do not delegate or replace its transition/reason. A malformed input, nonzero exit, or malformed output safely ABORTs. WAIT persists its resume condition and exits without polling, sleeping, dependency retries, or delegation.
 
   1. Trigger
@@ -63,7 +63,7 @@ instructions: |
 
   7. Controller
      - Load loop-control. Evaluate verdict, global AC coverage, progress, dependencies, permissions, risk, and remaining iteration/time budget.
-     - Choose one requested transition, rebuild the snapshot from just-persisted durable Beads fields with a fresh explicit UTC time, and call node src/app/tooling/dist/loop-transition-guard.js immediately before persistence. Its returned decision, including a denied stop transition/reason, is final and authoritative.
+     - Choose one requested transition, rebuild the snapshot from just-persisted durable Beads fields with a fresh explicit UTC time, and call node src/app/harness-manager/dist/loop-transition-guard.js immediately before persistence. Its returned decision, including a denied stop transition/reason, is final and authoritative.
      - Emit and persist exactly one transition: CONTINUE, REWORK, REPLAN, WAIT, COMPLETE, ESCALATE, or ABORT. It must be the guard-returned transition; never persist an intermediate transition.
      - CONTINUE/REWORK/REPLAN requires one next Beads task, expected proof, and remaining budget.
      - WAIT blocks/defers with an exact resume condition; do not poll.
