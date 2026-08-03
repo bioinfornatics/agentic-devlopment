@@ -293,6 +293,10 @@ export class SuiteRunner implements ISuiteRunner {
     const runtime = await this.runtime.identity(cfg.gooseCli, cfg.sandbox);
     const provider = cfg.provider ?? runtime.provider ?? "unknown";
     const model = cfg.model ?? runtime.model ?? "unknown";
+    // Keep the effective explicit override immutable through execution. The
+    // manifest already records these values; downstream runners must consume
+    // the same resolved identity rather than the pre-override probe result.
+    const effectiveRuntime: GooseRuntimeIdentity = { ...runtime, provider, model };
     const root = path.join(cfg.workspace, "_integrity-v2", cfg.kind);
     const subjects: IntegrityManifestV2["subjects"][number][] = [];
     const treatments: IntegrityManifestV2["treatments"][number][] = [];
@@ -382,7 +386,7 @@ export class SuiteRunner implements ISuiteRunner {
       rubric: defaultRubricDescriptor(),
     };
     const stored = await new EvalIntegrityV2Store(root).createManifest(manifest);
-    return { root, hash: stored.hash, manifest: stored.manifest, runtime, subjects: plannedSubjects };
+    return { root, hash: stored.hash, manifest: stored.manifest, runtime: effectiveRuntime, subjects: plannedSubjects };
   }
 
   private async hashFixtures(files: readonly string[]): Promise<Readonly<Record<string, string>>> {
