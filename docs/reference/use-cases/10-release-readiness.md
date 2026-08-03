@@ -35,8 +35,8 @@ done
 node src/app/kg/dist/cli.js bootstrap --dry-run
 
 # 4. Check consistency (metadata, recipe contracts)
-node src/app/tooling/dist/check-recipe-metadata.js
-node src/app/tooling/dist/check-consistency.js
+node src/app/harness-release/dist/validate-harness-manifests.js
+node src/app/harness-release/dist/validate-harness-manifests.js
 
 # 5. Full test suite
 cd apps && pnpm -r test

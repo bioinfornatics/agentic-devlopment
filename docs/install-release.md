@@ -26,7 +26,7 @@ skills, upserts slash commands, and validates recipes.
 ### Install into a project-local target
 
 ```bash
-node src/app/tooling/dist/install-harness-release.js \
+node src/app/harness-manager/dist/install-harness-release.js \
   install --bundle dist/releases --prefix /path/to/target
 ```
 

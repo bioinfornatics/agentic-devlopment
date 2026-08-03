@@ -38,7 +38,7 @@ For a fresh checkout:
 pnpm --dir src/app install --frozen-lockfile
 just bootstrap-runtime
 goose skills list
-node src/app/tooling/dist/check-consistency.js
+node src/app/harness-release/dist/validate-harness-manifests.js
 ~~~
 
 External resolution needs network access unless a verified cache is supplied.

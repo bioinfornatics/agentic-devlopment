@@ -9,7 +9,7 @@ Node/pnpm/npx, `skills@1.5.20`, Bun 1.3.12, Python 3.12+ (remaining governance a
 ## Validate
 ```bash
 just validate-harness-manifests
-node src/app/tooling/dist/check-consistency.js
+node src/app/harness-release/dist/validate-harness-manifests.js
 ```
 
 ## External skill contribution
@@ -17,8 +17,8 @@ Declare ownership external in `src/harness/source-manifest.json`; pin repository
 
 ```bash
 pnpm --dir src/app --filter @harness/tooling build
-node src/app/tooling/dist/resolve-external-skills.js --staging build/harness/external
-node src/app/tooling/dist/resolve-external-skills.js --staging build/harness/external --cache .cache/harness-skills --offline
+node src/app/harness-release/dist/resolve-external-skills.js --staging build/harness/external
+node src/app/harness-release/dist/resolve-external-skills.js --staging build/harness/external --cache .cache/harness-skills --offline
 ```
 
 The resolver uses isolated HOME/XDG and pinned npx skills. Never replace a reviewed commit with `latest`. Integrity mismatch requires reviewing upstream source, revision, path, and license before updating a digest.
@@ -26,14 +26,14 @@ The resolver uses isolated HOME/XDG and pinned npx skills. Never replace a revie
 ## Build internal packages
 ```bash
 pnpm --dir src/app --filter @harness/tooling build
-node src/app/tooling/dist/build-harness.js --target linux-x86_64 --plugin-build-root /tmp --output build/harness/internal
+node src/app/harness-release/dist/build-harness.js --target linux-x86_64 --plugin-build-root /tmp --output build/harness/internal
 ```
 TypeScript/Bun is compiled in a deterministic clean path. Python is packaged. Shell and PowerShell are validated, permissioned, and packaged. `--skip-compile` is test-only.
 
 ## Assemble and sign
 ```bash
 pnpm --dir src/app --filter @harness/tooling build
-node src/app/tooling/dist/assemble-harness-release.js --internal build/harness/internal --external build/harness/external --output dist/harness/1.0.0/linux-x86_64 --version 1.0.0 --sign-key /secure/release-ed25519.pem
+node src/app/harness-release/dist/assemble-harness-release.js --internal build/harness/internal --external build/harness/external --output dist/harness/1.0.0/linux-x86_64 --version 1.0.0 --sign-key /secure/release-ed25519.pem
 (cd dist/harness/1.0.0/linux-x86_64 && sha256sum -c SHA256SUMS)
 ```
 The bundle includes release.json, SHA256SUMS, CycloneDX SBOM, licenses, provenance, and optional signature. It excludes Eval Hub, apps, src/app/eval-hub/evals/results, node_modules, caches, session databases, WAL/SHM, and mutable plugin data.
@@ -41,10 +41,10 @@ The bundle includes release.json, SHA256SUMS, CycloneDX SBOM, licenses, provenan
 ## Install, verify, rollback, uninstall
 ```bash
 PREFIX="$HOME/.local/share/agentic-development/harness"
-node src/app/tooling/dist/install-harness-release.js install --bundle dist/harness/1.0.0/linux-x86_64 --prefix "$PREFIX"
-node src/app/tooling/dist/install-harness-release.js verify --prefix "$PREFIX"
-node src/app/tooling/dist/install-harness-release.js rollback --prefix "$PREFIX"
-node src/app/tooling/dist/install-harness-release.js uninstall --prefix "$PREFIX" --digest <inactive-digest>
+node src/app/harness-manager/dist/install-harness-release.js install --bundle dist/harness/1.0.0/linux-x86_64 --prefix "$PREFIX"
+node src/app/harness-manager/dist/install-harness-release.js verify --prefix "$PREFIX"
+node src/app/harness-manager/dist/install-harness-release.js rollback --prefix "$PREFIX"
+node src/app/harness-manager/dist/install-harness-release.js uninstall --prefix "$PREFIX" --digest <inactive-digest>
 ```
 Installation performs no network or compilation. It verifies before extraction, uses a partial directory, atomically switches current, and preserves current on failure.
 
@@ -57,9 +57,9 @@ The run records release, manifest, lock, and Goose digests and verifies release 
 
 ## CI and publication
 ```bash
-CI=true node src/app/tooling/dist/ci-harness-release.js --version 0.0.0-test --output /tmp/harness-ci --dry-run-publish
-node src/app/tooling/dist/verify-local-attestation.js --attestation /proof/attestation.json --bindings /proof/bindings.json --profile /proof/profile.json
-CI=true node src/app/tooling/dist/ci-harness-release.js --version 1.0.0 --output /tmp/harness-ci --attestation /proof/attestation.json --bindings /proof/bindings.json --profile /proof/profile.json
+CI=true node src/app/harness-release/dist/ci-harness-release.js --version 0.0.0-test --output /tmp/harness-ci --dry-run-publish
+node src/app/harness-release/dist/verify-local-attestation.js --attestation /proof/attestation.json --bindings /proof/bindings.json --profile /proof/profile.json
+CI=true node src/app/harness-release/dist/ci-harness-release.js --version 1.0.0 --output /tmp/harness-ci --attestation /proof/attestation.json --bindings /proof/bindings.json --profile /proof/profile.json
 ```
 PRs use explicit dry-run mode: they reproducibly build a candidate without proof but can never publish. Every non-dry-run build fails closed unless the attestation is PASS, fresh under the supplied profile's `maxEvidenceAgeMs`, and every current binding matches. The release binding must equal the exact archive digest produced in that invocation; status, Goose, model, corpus, profile, stale, and digest drift are rejected. There is no override flag.
 
