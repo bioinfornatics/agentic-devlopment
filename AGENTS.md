@@ -135,9 +135,8 @@ Stages 04 (Memory) and 05 (Manager) are **intentionally handled inline** in the 
 For skill/agent/recipe changes:
 
 ~~~bash
-node src/app/tooling/dist/generate-tables.js
 for r in loop-engineering implement research verify; do goose recipe validate $r; done
-node src/app/tooling/dist/check-consistency.js
+for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker; do sh src/plugins/$p/tests/test-plugin.sh; done
 node src/app/kg/dist/cli.js pipeline
 ~~~
 
@@ -148,8 +147,7 @@ Recipe eval agents arrays list only in-session agents. Summoned agents are not L
 ~~~bash
 find src/recipes -name '*.yaml' -exec goose recipe validate {} \;
 for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker; do sh src/plugins/$p/tests/test-plugin.sh; done
-node src/app/tooling/dist/check-recipe-metadata.js
-node src/app/tooling/dist/check-consistency.js
+node src/app/harness-release/dist/validate-harness-manifests.js
 node src/app/kg/dist/cli.js bootstrap --dry-run
 ./src/tooling/bin/build-docs
 ~~~
