@@ -573,6 +573,16 @@
       "build": "shell-validated",
       "runtime": "build-only",
       "package": "file"
+    },
+    {
+      "kind": "skill",
+      "name": "plugin-authoring",
+      "path": "src/skills/plugin-authoring",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
     }
   ]
 }

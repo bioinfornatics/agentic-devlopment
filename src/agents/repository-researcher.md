@@ -1,6 +1,7 @@
 ---
 name: repository-researcher
 description: Builds an evidence-backed repository and Beads state map before implementation without changing product files.
+model: ""  # Inherits the invoking session model. Use a premium recipe invocation for frontier-tier work.
 ---
 
 # Repository Researcher

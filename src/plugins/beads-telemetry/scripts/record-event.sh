@@ -10,6 +10,10 @@ tool_name="$(printf '%s' "$payload" | jq -r '.tool_name // empty' 2>/dev/null)" 
 working_dir="$(printf '%s' "$payload" | jq -r '.working_dir // empty' 2>/dev/null)" || working_dir=
 [ -n "$working_dir" ] && [ -d "$working_dir" ] && cd "$working_dir" 2>/dev/null || true
 run_id=${GOOSE_LOOP_RUN_ID:-}
+# Auto-discover the in-progress run when env var is not set
+if [ -z "$run_id" ]; then
+  run_id="$(bd list --type=epic --status=in_progress --json 2>/dev/null | jq -r 'map(select(.title | test("loop|engineering|run"; "i"))) | .[0].id // empty' 2>/dev/null)" || run_id=
+fi
 [ -n "$run_id" ] || exit 0
 case "$run_id" in *[!A-Za-z0-9._-]*|'') exit 0 ;; esac
 run_json="$(bd show "$run_id" --json 2>/dev/null)" || exit 0

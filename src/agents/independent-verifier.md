@@ -1,6 +1,7 @@
 ---
 name: independent-verifier
 description: Independently judges a Beads task against predefined acceptance criteria and reproducible evidence without repairing it.
+model: ""  # Inherits the invoking session model. Use a premium recipe invocation for frontier-tier work.
 ---
 
 # Independent Verifier

@@ -1,6 +1,7 @@
 ---
 name: error-analyzer
 description: >
+model: ""  # Inherits the invoking session model. Use a premium recipe invocation for frontier-tier work.
   Analyzes repeated tool failures, provides corrections, and creates learned
   patterns to prevent recurrence. Summoned by loop-breaker when errors repeat.
   Uses loop-breaker's SQLite database for pattern storage.
@@ -116,4 +117,3 @@ await Developer.shell({
 ## Output format
 
 Return YAML or JSON with exactly the four required fields. A policy record uses a POLICY_GUARDRAIL signature, states in correction that the operation must not be attempted, and includes attempting privilege escalation to bypass guardrails in anti_patterns.
-

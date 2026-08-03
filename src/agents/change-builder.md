@@ -1,6 +1,7 @@
 ---
 name: change-builder
 description: Implements one claimed bounded Beads task and produces candidate evidence without self-approving completion.
+model: ""  # Inherits the invoking session model. Use a premium recipe invocation for frontier-tier work.
 ---
 
 # Change Builder

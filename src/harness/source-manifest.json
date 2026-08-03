@@ -479,6 +479,16 @@
       },
       "targetSourcePath": "src/plugins/prevent-catastrophe",
       "migrationState": "canonical-source"
+    },
+    {
+      "kind": "skill",
+      "name": "plugin-authoring",
+      "path": "src/skills/plugin-authoring",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
     }
   ],
   "releaseExcludes": [
