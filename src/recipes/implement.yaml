@@ -10,7 +10,7 @@ instructions: |
     Builder: isolated, claim-before-write
     Completion authority: independent verifier
 
-  Load the Beads task and confirm it is ready, blockers are closed, contract/ACs/proof/budget are complete, and no other builder owns its files. Ask which tools/skills/checks are required, what failed previously, and what material evidence changed afterward.
+  Load the Beads task and confirm it is ready, blockers are closed, contract/ACs/proof/budget are complete, and no other builder owns its files. Reconstruct and state the task contract in this order: objective, current state, first action, unsatisfied ACs, last attempt/result, next action, expected proof, and remaining budget. If any field is absent or contradictory, update the current description/notes or return REPLAN; do not delegate an ambiguous task. Treat comments as append-only chronology, not as a replacement for the current contract. Ask which tools/skills/checks are required, what failed previously, and what material evidence changed afterward.
 
   The delegated builder must atomically claim the task before any write, record builder_session, implement only the contract, update proportional tests, run declared checks, and persist compact candidate evidence references. If scope is invalid return REPLAN; if a dependency is unavailable return BLOCKED/WAIT; if permission or human judgment is required return ESCALATE. Never set ACCEPTED or COMPLETE.
 

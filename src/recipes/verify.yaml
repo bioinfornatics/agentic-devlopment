@@ -10,7 +10,7 @@ instructions: |
     Verification: independent and read-only
     Criteria source: Beads acceptance contract and governing spec
 
-  Load the task, actual diff, builder_session, candidate evidence, prior verdicts, failure/evidence signatures, and budget. Ask which tools/checks are required, what failed, what was added later, and whether that addition actually exercises the failed criterion.
+  Load the task, actual diff, builder_session, candidate evidence, prior verdicts, failure/evidence signatures, and budget. Reconstruct the current task contract in this order: objective, current state, first action, unsatisfied ACs, last attempt/result, next action, expected proof, and remaining budget. If the contract is absent or contradictory, report REPLAN rather than inferring intent from comments. Treat comments as append-only chronology. Ask which tools/checks are required, what failed, what was added later, and whether that addition actually exercises the failed criterion.
 
   Record verifier_session and require it to differ from builder_session. Run all safe deterministic checks; never repair implementation or rewrite criteria. Persist criterion evidence and exactly one verdict: ACCEPTED, REWORK, REPLAN, BLOCKED, or ESCALATE. Return a recommended controller transition; only the controller may set COMPLETE.
 

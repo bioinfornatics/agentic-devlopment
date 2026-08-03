@@ -29,7 +29,7 @@ instructions: |
      - Use bd set-state for phase=trigger and persist START, WAIT, or REJECT rationale.
 
   2. Planner
-     - Load task-framing and reconstruct spec, prior attempts, evidence signatures, blocked/ready work, and remaining budget.
+     - Load task-framing and reconstruct the current task contract from `bd show <task-id>`: objective, current state, first action, unsatisfied ACs, last attempt/result, next action or resume condition, expected proof, and remaining budget. The contract is title/description/design/AC/notes; comments are append-only chronology. If any field is absent or contradictory, update the task or choose REPLAN/WAIT before delegation. Then load the spec, prior attempts, evidence signatures, blocked/ready work, and remaining budget.
      - Ask phase inquiry: required tools/skills; required falsifying checks; relevant Beads facts/decisions; prior failures; implementation/tests/config/dependencies/evidence added afterward; whether those additions can change the verdict.
      - Delegate repository-researcher only for material unknowns. Parallelize read-only research by disjoint question when useful, then synthesize conflicts.
      - Create only the next bounded Beads child tasks and explicit dependencies. Parallel tasks require no dependency edge and disjoint write sets.

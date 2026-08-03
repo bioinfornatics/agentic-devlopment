@@ -31,6 +31,74 @@ Record selected skill names and a concise rationale in Beads and the role handof
 
 ## Contract schema
 
+Every task must be immediately actionable from its first `bd show`. Treat the task as two layers:
+
+- **Current task contract** — title, description, acceptance criteria, design, and notes. These fields state what is true now, what to do next, and how success is proved.
+- **Append-only chronology** — comments/events. These record attempts and decisions; they never silently replace the current contract.
+
+A task is not ready for delegation when the current contract does not answer, in order: objective, first action, in-scope/out-of-scope work, expected result, proof path, current state, next action, stop/escalation condition, and remaining budget. Update the description or notes before delegating; do not make the builder reconstruct the contract from old comments or conversation context.
+
+Use this description structure for bounded work:
+
+```markdown
+## Objective
+<One observable outcome.>
+
+## Why
+<Minimal context and impact.>
+
+## Scope
+Included:
+- <...>
+
+Excluded:
+- <...>
+
+## First action
+```bash
+<Exact first command or investigation>
+```
+
+## Expected result
+<Artifact, behavior, or decision that must exist.>
+
+## Expected proof
+- `<command>` exits successfully, or
+- `<artifact/reference>` contains <observable fact>.
+
+## Stop / escalation
+Stop and record BLOCKED, WAIT, REPLAN, or ESCALATE when <condition>.
+```
+
+Use this notes structure as a replaceable current-state summary:
+
+```markdown
+## Current state
+<READY | IN_PROGRESS | BLOCKED | WAITING | VERIFICATION_PENDING | COMPLETE> — <one-line status>.
+
+## Last attempt
+<UTC timestamp, action, result, and evidence reference; write "None" when absent.>
+
+## Next action
+<One concrete next action, or the exact resume condition.>
+
+## Risks / unknowns
+<Only unresolved items that can change the next action.>
+
+## Budget
+<Attempts/time remaining and escalation threshold.>
+```
+
+Comments are concise append-only events using `[UTC timestamp] TYPE` with one of `START`, `ATTEMPT`, `RESULT`, `BLOCKED`, `DECISION`, `REWORK`, `ESCALATE`, `COMPLETE`, or `WAIT`. Include `Action`, `Result`, `Evidence`, and `Next` when applicable. Do not put new acceptance criteria, the current objective, or large logs only in comments.
+
+```text
+[2026-08-03T20:11:00Z] ATTEMPT
+Action: <bounded command or change>.
+Result: <one-line outcome>.
+Evidence: <artifact, command exit, or none>.
+Next: <one concrete next action or resume condition>.
+```
+
 ```yaml
 run_id: bead-id
 objective: string
@@ -79,7 +147,7 @@ For parallel planning, create siblings only when no dependency edge exists and t
 
 ## Beads handoff
 
-Persist scope in description/design, ACs in acceptance_criteria, specification in spec_id, budget/role/iteration in metadata, and chronology in comments. Use a child task under the run epic. Add blocking dependencies in executable direction.
+Persist scope in description/design, ACs in acceptance_criteria, specification in spec_id, budget/role/iteration in metadata, and chronology in comments. Use a child task under the run epic. Add blocking dependencies in executable direction. After each material attempt or decision, refresh the current-state notes with the latest result and next action; add a short typed comment for chronology. Do not leave the current state recoverable only from comments.
 
 Return the task ID, contract, observed facts, unresolved unknowns, dependency rationale, expected proof, and suggested role. Do not claim implementation success.
 

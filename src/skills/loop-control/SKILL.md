@@ -11,6 +11,12 @@ Beads is the sole durable control plane. Git and CI retain source and proof arti
 
 Consult `references/beads-control-plane.md` whenever creating, resuming, recovering, or finalizing a run. It defines the canonical run model, metadata, dependencies, evidence references, and recovery inquiry.
 
+## Task readability gate
+
+Before any builder, verifier, or recovery action, read `bd show <task-id>` and reconstruct this eight-field task contract from the current fields (not from conversation history): objective, current state, first action, unsatisfied acceptance criteria, last attempt/result, next action or resume condition, expected proof, and remaining budget. If any field is absent or contradictory, update the task description/notes or choose REPLAN/WAIT; do not delegate an ambiguous task.
+
+The current contract lives in title/description/design/acceptance criteria/notes. Comments are append-only chronology and compact evidence references. A comment may explain how the current state was reached, but does not silently amend the objective, scope, acceptance criteria, or next action. Keep notes as a replaceable current-state summary; use typed UTC comment events (`START`, `ATTEMPT`, `RESULT`, `BLOCKED`, `DECISION`, `REWORK`, `ESCALATE`, `COMPLETE`, `WAIT`) with one-line Action/Result/Evidence/Next fields.
+
 ## Generic governed sequence
 
 Follow the generic stage graph from docs/loop-engineering/diagrams:
