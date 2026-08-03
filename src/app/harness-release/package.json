@@ -1,0 +1,36 @@
+{
+  "name": "@harness/harness-release",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": "./dist/*.js"
+  },
+  "bin": {
+    "build-harness": "./dist/build-harness.js",
+    "validate-harness-manifests": "./dist/validate-harness-manifests.js",
+    "assemble-harness-release": "./dist/assemble-harness-release.js",
+    "resolve-external-skills": "./dist/resolve-external-skills.js",
+    "audit-repository-root": "./dist/audit-repository-root.js",
+    "ci-harness-release": "./dist/ci-harness-release.js",
+    "verify-local-attestation": "./dist/verify-local-attestation.js",
+    "audit-baseline-manifest": "./dist/audit-baseline-manifest.js",
+    "harness-build-docs": "./dist/build-docs.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm run build && vitest run",
+    "cli:build-docs": "node ./dist/build-docs.js"
+  },
+  "dependencies": {
+    "@harness/eval-hub": "workspace:*",
+    "ajv": "^8.17.1",
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}

@@ -252,7 +252,7 @@ describe("AC-RECIPE-03 / HAR-02: slash command registration", () => {
   // "every dev subrecipe path resolves" removed — dev.yaml is an archived recipe, not active.
 
   it("installer derives managed commands from recipe files", async () => {
-    const support = await readFile(join(REPO, "src", "app", "tooling", "src", "install-support.ts"), "utf8");
+    const support = await readFile(join(REPO, "src", "app", "harness-manager", "src", "install-support.ts"), "utf8");
     expect(support).toContain("readdir");
     expect(support).toContain(".yaml");
     expect(support).not.toContain("discover.yaml");

@@ -86,7 +86,7 @@ describe("HAR-02 recipe path consistency", () => {
   });
 
   it("the installer derives slash commands from active recipe files", async () => {
-    const support = await fs.readFile(path.join(PROJECT_ROOT, "src", "app", "tooling", "src", "install-support.ts"), "utf8");
+    const support = await fs.readFile(path.join(PROJECT_ROOT, "src", "app", "harness-manager", "src", "install-support.ts"), "utf8");
     expect(support).toContain("readdir");
     expect(support).toContain('endsWith(".yaml")');
     expect(support).not.toContain("discover.yaml");

@@ -4,7 +4,8 @@ name: Harness tooling tests
 "on":
   pull_request:
     paths:
-      - "src/app/tooling/**"
+      - "src/app/harness-release/**
+      - "src/app/harness-manager/**""
       - "src/app/package.json"
       - "src/app/pnpm-lock.yaml"
       - "src/app/pnpm-workspace.yaml"
@@ -12,7 +13,8 @@ name: Harness tooling tests
   push:
     branches: [main]
     paths:
-      - "src/app/tooling/**"
+      - "src/app/harness-release/**
+      - "src/app/harness-manager/**""
       - "src/app/package.json"
       - "src/app/pnpm-lock.yaml"
       - "src/app/pnpm-workspace.yaml"
@@ -40,6 +42,8 @@ jobs:
       - name: Install workspace dependencies
         run: pnpm --dir src/app install --frozen-lockfile --ignore-scripts
       - name: Type-check tooling
-        run: pnpm --dir src/app --filter @harness/tooling typecheck
+        run: pnpm --dir src/app --filter @harness/harness-release typecheck
+      - run: pnpm --dir src/app --filter @harness/harness-manager typecheck
       - name: Run tooling tests
-        run: pnpm --dir src/app --filter @harness/tooling test
+        run: pnpm --dir src/app --filter @harness/harness-release test
+      - run: pnpm --dir src/app --filter @harness/harness-manager test

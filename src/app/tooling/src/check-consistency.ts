@@ -1,3 +1,0 @@
-#!/usr/bin/env node
-import { resolve } from "node:path"; import { fileURLToPath } from "node:url"; import { checkConsistency } from "./consistency-checks.js";
-export async function main(root=resolve(fileURLToPath(new URL("../../../..",import.meta.url)))){try{const r=await checkConsistency(root);for(const f of r.findings)console.log("  ["+f.level+"] "+f.message);console.log(r.failures?"  "+r.failures+" FAIL(s) — fix before committing.":"  All consistency checks passed ✓");return r.failures?1:0}catch(e){console.error("check-consistency: "+(e instanceof Error?e.message:String(e)));return 1}}if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))process.exitCode=await main();

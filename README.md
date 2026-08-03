@@ -1,4 +1,5 @@
 # Agentic Development Harness — Loop Engineering Pack
+See the [Harness operator HOWTO](HOWTO.md) for reproducible operating commands.
 
 ## Why
 

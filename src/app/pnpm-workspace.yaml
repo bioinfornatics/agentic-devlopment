@@ -2,4 +2,5 @@ packages:
   - "kg"
   - "kg-visualizer"
   - "eval-hub"
-  - "tooling"
+  - "harness-release"
+  - "harness-manager"

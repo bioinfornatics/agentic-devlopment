@@ -58,10 +58,15 @@ jobs:
           run-id: ${{ inputs.evaluation_run_id }}
       - name: Build reproducible pull-request candidate (proof optional, never publishes)
         if: ${{ github.event_name != 'workflow_dispatch' }}
-        run: node src/app/tooling/dist/ci-harness-release.js --version "${{ steps.release-version.outputs.version }}" --output dist/harness-ci --dry-run-publish --skip-tests
+        run: node src/app/harness-release/dist/ci-harness-release.js --version "${{ steps.release-version.outputs.version }}" --output dist/harness-ci --dry-run-publish --skip-tests
       - name: Build candidate and fail closed on current attestation
         if: github.event_name == 'workflow_dispatch'
-        run: node src/app/tooling/dist/ci-harness-release.js --version "${{ steps.release-version.outputs.version }}" --output dist/harness-ci --attestation dist/evaluation-attestation/attestation.json --bindings dist/evaluation-attestation/bindings.json --profile dist/evaluation-attestation/profile.json --skip-tests
+        run: node src/app/harness-release/dist/ci-harness-release.js --version "${{ steps.release-version.outputs.version }}" --output dist/harness-ci --attestation dist/evaluation-attestation/attestation.json --bindings dist/evaluation-attestation/bindings.json --profile dist/evaluation-attestation/profile.json --skip-tests
+      - name: Verify candidate installation through harness manager
+        run: |
+          prefix="$(mktemp -d)"
+          node src/app/harness-manager/dist/install-harness-release.js install --bundle dist/harness-ci/release --prefix "$prefix"
+          node src/app/harness-manager/dist/install-harness-release.js verify --prefix "$prefix"
       - name: Build Eval Hub optional companion
         if: github.event_name == 'workflow_dispatch'
         run: just VERSION="${{ steps.release-version.outputs.version }}" OUTPUT=dist/eval-hub-companion SOURCE_DATE_EPOCH="$(git show -s --format=%ct HEAD)" package-companion

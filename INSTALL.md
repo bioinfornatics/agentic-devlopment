@@ -1,4 +1,5 @@
 # Install the Agentic Development Harness
+See the [Harness operator HOWTO](HOWTO.md) for reproducible operating commands.
 
 This guide installs the Goose + Beads harness from this repository into your local Goose configuration.
 

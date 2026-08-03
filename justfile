@@ -17,20 +17,20 @@ bootstrap-runtime:
     just verify-runtime
 
 _build-runtime-tooling:
-    pnpm --dir src/app --filter @harness/tooling build
+    pnpm --dir src/app --filter @harness/harness-release build
 
 # Bounded no-provider proof that HOME/XDG/project activation remain temporary.
 smoke-sandbox: _build-runtime-tooling
-    node src/app/tooling/dist/local-evaluation-sandbox.js smoke
+    node src/app/eval-hub/dist/index.js --run --profile smoke
 
 # Full deterministic smoke. EVIDENCE must be under dist/evidence or sandbox-export.
 evaluate-local-smoke: _build-runtime-tooling
-    node src/app/tooling/dist/local-evaluation-smoke.js --evidence "${EVIDENCE:-src/app/tooling/dist/evidence/local-smoke.json}"
+    node src/app/eval-hub/dist/index.js --run --profile smoke
 
 # Provider-backed full L0-L3 sandbox run; TypeScript CLI orchestrated, fail-closed, gate-verified, attested.
 # Uses the active Goose provider/model and goose from PATH; GOOSE_* variables override those defaults.
 evaluate-local-full: _build-runtime-tooling
-    node src/app/tooling/dist/local-evaluation-full.js ${EVIDENCE_DIR:+--evidence-dir "$EVIDENCE_DIR"} ${SMOKE_EVIDENCE:+--smoke-evidence "$SMOKE_EVIDENCE"}
+    node src/app/eval-hub/dist/index.js --run --profile full
 
 # Fast reverse-impact subset; never qualifies publication evidence.
 evaluate-local-impacted: _build-runtime-tooling
@@ -41,33 +41,33 @@ evaluate-local-impacted: _build-runtime-tooling
 # Offline attestation verification against current bindings/profile.
 verify-local-evidence: _build-runtime-tooling
     test -f "${ATTESTATION:-}" && test -f "${CURRENT_BINDINGS:-}" && test -f "${PROFILE:-}" || { echo "ATTESTATION, CURRENT_BINDINGS and PROFILE files are required" >&2; exit 2; }
-    node --input-type=module -e 'import fs from "node:fs"; import {verifyLocalEvaluationAttestation} from "./src/app/tooling/dist/local-evaluation-attestation.js"; const j=p=>JSON.parse(fs.readFileSync(p,"utf8")); process.exit(verifyLocalEvaluationAttestation(j(process.env.ATTESTATION),j(process.env.CURRENT_BINDINGS),j(process.env.PROFILE),new Date())?0:1)'
+    node --input-type=module -e 'import fs from "node:fs"; import {verifyLocalEvaluationAttestation} from "@harness/eval-hub/local-evaluation"; const j=p=>JSON.parse(fs.readFileSync(p,"utf8")); process.exit(verifyLocalEvaluationAttestation(j(process.env.ATTESTATION),j(process.env.CURRENT_BINDINGS),j(process.env.PROFILE),new Date())?0:1)'
 
 resolve-runtime: _build-runtime-tooling
     mkdir -p "$(dirname "{{ external_staging }}")"
-    node src/app/tooling/dist/resolve-external-skills.js --lock src/harness/external-skills.lock.json --staging "{{ external_staging }}"
+    node src/app/harness-release/dist/resolve-external-skills.js --lock src/harness/external-skills.lock.json --staging "{{ external_staging }}"
 
 build-runtime: _build-runtime-tooling
-    node src/app/tooling/dist/build-harness.js --target "{{ target }}" --plugin-build-root /tmp --output "{{ internal_staging }}"
+    node src/app/harness-release/dist/build-harness.js --target "{{ target }}" --plugin-build-root /tmp --output "{{ internal_staging }}"
 
 # Validate source and external-lock manifests with the canonical TypeScript validator.
 validate-harness-manifests: _build-runtime-tooling
-    node src/app/tooling/dist/validate-harness-manifests.js
+    node src/app/harness-release/dist/validate-harness-manifests.js
 
 project-runtime: _build-runtime-tooling
-    node src/app/tooling/dist/project-harness-runtime.js --internal "{{ internal_staging }}" --external "{{ external_staging }}" --runtime-root "{{ runtime_root }}"
+    node src/app/harness-manager/dist/project-harness-runtime.js --internal "{{ internal_staging }}" --external "{{ external_staging }}" --runtime-root "{{ runtime_root }}"
 
 activate-runtime: _build-runtime-tooling
-    node src/app/tooling/dist/manage-project-runtime.js activate --runtime-root "{{ runtime_root }}" --project-root .
+    node src/app/harness-manager/dist/manage-project-runtime.js activate --runtime-root "{{ runtime_root }}" --project-root .
 
 verify-runtime: _build-runtime-tooling
-    node src/app/tooling/dist/manage-project-runtime.js verify --runtime-root "{{ runtime_root }}" --project-root .
+    node src/app/harness-manager/dist/manage-project-runtime.js verify --runtime-root "{{ runtime_root }}" --project-root .
 
 rollback-runtime: _build-runtime-tooling
-    node src/app/tooling/dist/manage-project-runtime.js rollback --runtime-root "{{ runtime_root }}" --project-root .
+    node src/app/harness-manager/dist/manage-project-runtime.js rollback --runtime-root "{{ runtime_root }}" --project-root .
 
 clean-runtime: _build-runtime-tooling
-    node src/app/tooling/dist/manage-project-runtime.js clean --runtime-root "{{ runtime_root }}" --project-root .
+    node src/app/harness-manager/dist/manage-project-runtime.js clean --runtime-root "{{ runtime_root }}" --project-root .
 
 # ══════════════════════════════════════════════════════════
 # Release pipeline — assemble, verify, promote
@@ -82,7 +82,7 @@ release_staging := env_var_or_default("RELEASE_STAGING", "dist/releases")
 #   just VERSION=1.0.0 SIGN_KEY=signing.pem release-local
 release-local: _build-runtime-tooling _verify-release-inputs
     if [[ -n "{{ sign_key }}" ]]; then \
-      node src/app/tooling/dist/assemble-harness-release.js \
+      node src/app/harness-release/dist/assemble-harness-release.js \
         --internal    "{{ internal_staging }}" \
         --external    "{{ external_staging }}" \
         --output     "{{ release_output }}" \
@@ -90,7 +90,7 @@ release-local: _build-runtime-tooling _verify-release-inputs
         --target     "{{ target }}" \
         --sign-key   "{{ sign_key }}"; \
     else \
-      node src/app/tooling/dist/assemble-harness-release.js \
+      node src/app/harness-release/dist/assemble-harness-release.js \
         --internal    "{{ internal_staging }}" \
         --external    "{{ external_staging }}" \
         --output     "{{ release_output }}" \
@@ -105,8 +105,8 @@ release-local: _build-runtime-tooling _verify-release-inputs
 verify-release: _build-runtime-tooling
     _tmp=$(mktemp -d); \
     trap 'rm -rf "$_tmp"' EXIT; \
-    node src/app/tooling/dist/install-harness-release.js install --bundle "{{ release_staging }}" --prefix "$_tmp"; \
-    node src/app/tooling/dist/install-harness-release.js verify   --prefix "$_tmp"; \
+    node src/app/harness-manager/dist/install-harness-release.js install --bundle "{{ release_staging }}" --prefix "$_tmp"; \
+    node src/app/harness-manager/dist/install-harness-release.js verify   --prefix "$_tmp"; \
     echo "Release installs and verifies cleanly"
 
 # Install the release archive into user Goose config (~/.agents, ~/.config/goose).
@@ -129,7 +129,7 @@ release-pipeline:
 # Skips tests and publication gate; use for pre-release sanity check.
 #   just VERSION=1.0.0 release-dryrun
 release-dryrun: _build-runtime-tooling _verify-release-inputs
-    CI=true node src/app/tooling/dist/ci-harness-release.js \
+    CI=true node src/app/harness-release/dist/ci-harness-release.js \
       --version         "{{ version }}" \
       --output          dist/harness-dryrun \
       --dry-run-publish \
