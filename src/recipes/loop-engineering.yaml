@@ -53,7 +53,7 @@ instructions: |
      - Gated verification (COMPLETE transition) requires env:reviewed label on the Beads task being verified; a task without env:reviewed is not eligible for COMPLETE.
 
   5. Memory
-     - Persist concise current state, chronology, durable facts, decisions, evidence/artifact references, conflicts, and reusable lessons in Beads comments/events/metadata.
+     - Refresh the replaceable current-state summary in Beads notes: status, last attempt/result, next action or resume condition, risks/unknowns, and remaining budget. Record chronology and compact evidence in typed UTC comments/events (`START`, `ATTEMPT`, `RESULT`, `BLOCKED`, `DECISION`, `REWORK`, `ESCALATE`, `COMPLETE`, `WAIT`); use metadata for counters, sessions, roles, and evidence signatures. Comments never replace the current task contract.
      - Increment loop_iteration exactly once only after an applicable Builder plus fresh Verifier increment completes. Denial, early stop, WAIT, or zero-task invocation does not increment it. After a completed increment, increment loop_no_progress_count for no measurable progress or reset it to zero for measurable progress; otherwise leave it unchanged.
      - Never store raw prompts, secrets, chain-of-thought, or large command output.
 
