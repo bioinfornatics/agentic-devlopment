@@ -18,6 +18,77 @@ describe("EVAL-INT-01/19 invariant user-task boundary", () => {
   );
 });
 
+
+describe("bounded grader attempts and diagnostics", () => {
+  class ScriptedGoose implements IGooseRunner {
+    calls = 0;
+    constructor(private readonly attempts: ReadonlyArray<ReadonlyArray<GooseRawEvent>>) {}
+    async *run(): AsyncGenerator<GooseRawEvent> {
+      const events = this.attempts[this.calls++] ?? [];
+      for (const event of events) yield event;
+    }
+    async version() { return "test"; }
+    async identity() { return { version: "test", provider: "test", model: "test" }; }
+  }
+  const valid = JSON.stringify({ summary: { total: 1, passed: 1, failed: 0, pass_rate: 1 }, expectations: [{ text: "works", passed: true, evidence: "yes" }] });
+  const exit: GooseRawEvent = { type: "exit", code: 0, signal: null };
+
+  it("accepts a finite score without retry", async () => {
+    const goose = new ScriptedGoose([[{ type: "line", stream: "stdout", text: valid }, exit]]);
+    const dir = await (await import("node:fs/promises")).mkdtemp("/tmp/eval-grader-finite-");
+    const result = await new LlmGrader(goose).grade(scenario, "skill_l1", "events", dir, "goose");
+    expect(result.summary.pass_rate).toBe(1);
+    expect(goose.calls).toBe(1);
+  });
+
+  it("retries once when the score is missing", async () => {
+    const goose = new ScriptedGoose([
+      [{ type: "line", stream: "stdout", text: JSON.stringify({ summary: {}, expectations: [] }) }, exit],
+      [{ type: "line", stream: "stdout", text: valid }, exit],
+    ]);
+    const dir = await (await import("node:fs/promises")).mkdtemp("/tmp/eval-grader-retry-");
+    const result = await new LlmGrader(goose).grade(scenario, "skill_l1", "events", dir, "goose");
+    expect(result.summary.pass_rate).toBe(1);
+    expect(goose.calls).toBe(2);
+    const diagnostic = JSON.parse(await (await import("node:fs/promises")).readFile(`${dir}/grader-attempt-1.json`, "utf8"));
+    expect(diagnostic.parseOutcome).toBe("invalid");
+    expect(diagnostic.classification).toBe("malformed_grader_json");
+  });
+
+  it.each([null, "1", true])("rejects non-number pass_rate %j without biasing the score", async passRate => {
+    const invalid = JSON.stringify({ summary: { total: 1, passed: 1, failed: 0, pass_rate: passRate }, expectations: [{ text: "works", passed: true, evidence: "yes" }] });
+    const goose = new ScriptedGoose([
+      [{ type: "line", stream: "stdout", text: invalid }, exit],
+      [{ type: "line", stream: "stdout", text: invalid }, exit],
+    ]);
+    const dir = await (await import("node:fs/promises")).mkdtemp("/tmp/eval-grader-invalid-rate-");
+    const result = await new LlmGrader(goose).grade(scenario, "skill_l1", "events", dir, "goose");
+    expect(result.summary.pass_rate).toBeNull();
+    expect(goose.calls).toBe(2);
+    const diagnostic = JSON.parse(await (await import("node:fs/promises")).readFile(`${dir}/grader-attempt-1.json`, "utf8"));
+    expect(diagnostic).toMatchObject({ parseOutcome: "invalid", classification: "malformed_grader_json" });
+  });
+
+  it("stops immediately on provider usage limit and redacts keyed, bearer, and bare secrets", async () => {
+    const secrets = ["super-secret", "bearer-token-value", "sk-ULTRASECRET123"];
+    const goose = new ScriptedGoose([[
+      { type: "line", stream: "stderr", text: `HTTP 429 usage_limit_reached api_key=${secrets[0]} Authorization: Bearer ${secrets[1]} credential leaked ${secrets[2]}` },
+      { type: "exit", code: 1, signal: null },
+    ]]);
+    const dir = await (await import("node:fs/promises")).mkdtemp("/tmp/eval-grader-rate-");
+    const result = await new LlmGrader(goose).grade(scenario, "skill_l1", "events", dir, "goose");
+    expect(result.summary.pass_rate).toBeNull();
+    expect(result.expectations[0]?.evidence).toContain("grader_runtime_unavailable/provider_rate_limited");
+    expect(goose.calls).toBe(1);
+    const raw = await (await import("node:fs/promises")).readFile(`${dir}/grader-attempt-1.json`, "utf8");
+    for (const secret of secrets) expect(raw).not.toContain(secret);
+    expect(raw).toContain("HTTP 429 usage_limit_reached");
+    expect(raw).toContain("[REDACTED]");
+    const diagnostic = JSON.parse(raw);
+    expect(diagnostic).toMatchObject({ attempt: 1, parseOutcome: "invalid", classification: "provider_rate_limited" });
+    await expect((await import("node:fs/promises")).stat(`${dir}/grader-attempt-2.json`)).rejects.toThrow();
+  });
+});
 class CapturingGoose implements IGooseRunner {
   prompt = "";
   async *run(config: GooseRunConfig): AsyncGenerator<GooseRawEvent> {
@@ -38,4 +109,5 @@ describe("AC-EVAL-03 complete event transcript grading", () => {
     expect(goose.prompt).toContain(early);
     expect(goose.prompt).toContain("events.jsonl transcript (complete");
   });
+
 });

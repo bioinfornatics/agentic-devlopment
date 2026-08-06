@@ -170,6 +170,8 @@ export interface SuiteConfig {
   readonly sandbox?: SandboxProcessConfig;
   readonly continueOnFail: boolean;
   readonly repetitions:    number;
+  /** Optional per-subject eval selection. */
+  readonly evalIdFilter?: Readonly<Record<string, readonly number[]>>;
   readonly releaseContext?: ReleaseContext;
 }
 
@@ -242,6 +244,7 @@ export interface LayeredConfig {
   readonly repetitions?:       number;
   readonly layeredRunId?:      string;
   readonly subjectFilter?:     readonly string[];
+  readonly evalIdFilter?:      Readonly<Record<string, readonly number[]>>;
   readonly releaseContext?:    ReleaseContext;
 }
 

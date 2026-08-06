@@ -447,6 +447,16 @@ describe("AC-EVAL-10 runtime dependency health", () => {
   });
 
 
+  it("does not flag runtime-pattern text inside successful execute_typescript output", () => {
+    const request = JSON.stringify({ message: { role: "assistant", content: [
+      { type: "toolRequest", id: "ts-1", toolCall: { status: "success", value: { name: "execute_typescript", arguments: { code: "return { text: 'DeploymentNotFound in source' };" } } } },
+    ] } });
+    const response = JSON.stringify({ message: { role: "user", content: [
+      { type: "toolResponse", id: "ts-1", toolResult: { status: "success", value: { content: [{ type: "text", text: "DeploymentNotFound in source" }] } } },
+    ] } });
+    expect(inspectRuntimeHealth([request, response])).toEqual({ status: "healthy", diagnostics: [] });
+  });
+
   it("does not flag 'panicked' text inside a successful shell command output (e.g. vitest test names)", () => {
     const request = JSON.stringify({ message: { role: "assistant", content: [
       { type: "toolRequest", id: "shell-1", toolCall: { status: "success", value: { name: "shell", arguments: { command: "pnpm test" } } } },

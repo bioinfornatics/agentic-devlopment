@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import type { NormalizedIntegrityReportStateV2 } from "./domains/persistence/integrityV2Store.js";
+import type { DiagnosticProjection } from "./interpretation.js";
 
 const GOOSE_INTERPRETATION_TIMEOUT_MS = 30_000;
 const GOOSE_INTERPRETATION_MAX_OUTPUT = 16_384;
@@ -24,18 +25,21 @@ export interface CommandRunner {
 
 export function buildGooseInterpretationPrompt(
   reports: readonly NormalizedIntegrityReportStateV2[],
+  diagnostics: readonly DiagnosticProjection[] = [],
 ): string {
+  const evidence = {
+    reports: reports.map(report => ({ manifestHash: report.manifestHash, pairMicro: report.pairMicro, subjectMacro: report.subjectMacro, validPairCount: report.validPairCount, includedSubjectCount: report.includedSubjectCount, excludedPairCounts: report.excludedPairCounts, subjectFailureCounts: report.subjectFailureCounts })),
+    diagnostics,
+  };
   return [
-    "Explain these persisted evaluation metrics cautiously. Do not rescore, infer missing data, or override the deterministic report.",
-    JSON.stringify(reports.map(report => ({
-      manifestHash: report.manifestHash,
-      pairMicro: report.pairMicro,
-      subjectMacro: report.subjectMacro,
-      validPairCount: report.validPairCount,
-      includedSubjectCount: report.includedSubjectCount,
-      excludedPairCounts: report.excludedPairCounts,
-      subjectFailureCounts: report.subjectFailureCounts,
-    }))),
+    "SYSTEM ROLE: You are an evidence-bound evaluation diagnostician. Trust only the supplied persisted evidence below.",
+    "Explain failures and exclusions before successes. Clearly label observed facts separately from hypotheses; a hypothesis is not a cause.",
+    "Mention exact evidence counts, artifact paths, and metrics. Analyze max turns, timeouts, network/provider errors, runtime dependencies, grader invalidity, bootstrap failures, missing artifacts, and unknown causes when present.",
+    "Do not invent missing causes, do not rescore, do not override the deterministic report, and do not claim causality.",
+    "Give a concise actionable conclusion stating whether to rerun affected slots or right-size scenario complexity/turn/time budgets.",
+    "End exactly with: Généré par Goose ... Validation humaine obligatoire.",
+    "Supplied evidence (bounded JSON):",
+    JSON.stringify(evidence),
   ].join("\n");
 }
 
@@ -43,7 +47,14 @@ export function orderedManifestHashes(reports: readonly NormalizedIntegrityRepor
   return [...new Set(reports.map(report => report.manifestHash))];
 }
 
+export interface GooseCliInterpretationRunnerOptions {
+  readonly timeoutMs?: number;
+  readonly maxOutputChars?: number;
+}
+
 export class GooseCliInterpretationRunner implements GooseInterpretationRunner {
+  constructor(private readonly options: GooseCliInterpretationRunnerOptions = {}) {}
+
   async generate(prompt: string, config: { gooseCli: string; provider: string; model: string }): Promise<string> {
     const directory = await fs.mkdtemp(path.join(os.tmpdir(), "eval-hub-interpretation-"));
     const promptPath = path.join(directory, "prompt.txt");
@@ -60,18 +71,20 @@ export class GooseCliInterpretationRunner implements GooseInterpretationRunner {
           clearTimeout(timer);
           callback();
         };
+        const timeoutMs = this.options.timeoutMs ?? GOOSE_INTERPRETATION_TIMEOUT_MS;
+        const maxOutputChars = this.options.maxOutputChars ?? GOOSE_INTERPRETATION_MAX_OUTPUT;
         const timer = setTimeout(() => {
           child.kill("SIGTERM");
-          finish(() => reject(new Error(`Goose interpretation timed out after ${GOOSE_INTERPRETATION_TIMEOUT_MS}ms`)));
-        }, GOOSE_INTERPRETATION_TIMEOUT_MS);
+          finish(() => reject(new Error(`Goose interpretation timed out after ${timeoutMs}ms`)));
+        }, timeoutMs);
         child.stdout.on("data", chunk => {
-          if (stdout.length < GOOSE_INTERPRETATION_MAX_OUTPUT) {
-            stdout += String(chunk).slice(0, GOOSE_INTERPRETATION_MAX_OUTPUT - stdout.length);
+          if (stdout.length < maxOutputChars) {
+            stdout += String(chunk).slice(0, maxOutputChars - stdout.length);
           }
         });
         child.stderr.on("data", chunk => {
-          if (stderr.length < GOOSE_INTERPRETATION_MAX_OUTPUT) {
-            stderr += String(chunk).slice(0, GOOSE_INTERPRETATION_MAX_OUTPUT - stderr.length);
+          if (stderr.length < maxOutputChars) {
+            stderr += String(chunk).slice(0, maxOutputChars - stderr.length);
           }
         });
         child.on("error", error => finish(() => reject(error)));
@@ -125,9 +138,10 @@ export async function generateAndPersistInterpretation(input: {
   model: string;
   runner: GooseInterpretationRunner;
   beads: BeadsValidationAdapter;
+  diagnostics?: readonly DiagnosticProjection[];
 }): Promise<string> {
   if (input.reports.length === 0) throw new Error("No persisted reports are available for Goose interpretation");
-  const text = await input.runner.generate(buildGooseInterpretationPrompt(input.reports), input);
+  const text = await input.runner.generate(buildGooseInterpretationPrompt(input.reports, input.diagnostics), input);
   const rendered = `Généré par Goose (${input.provider}/${input.model})\n${text}\nValidation humaine obligatoire`;
   await input.beads.persist({ taskId: input.taskId, state: "PENDING_HUMAN_VALIDATION", runId: input.runId, manifestHashes: orderedManifestHashes(input.reports), comment: rendered });
   return rendered;

@@ -235,7 +235,7 @@ export function inspectRuntimeHealth(
   // Tools whose output is user/command content, not Goose infrastructure messages.
   const commandTools = new Set([
     "shell", "write", "edit", "tree", "read_image",
-    "list_resources", "read_resource", "analyze", "load_skill",
+    "execute_typescript", "list_resources", "read_resource", "analyze", "load_skill",
   ]);
   const stdoutDiagnostics = allEvents
     .filter(event => event.kind === "response")

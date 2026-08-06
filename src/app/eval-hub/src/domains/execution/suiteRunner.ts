@@ -80,7 +80,10 @@ export class SuiteRunner implements ISuiteRunner {
       subjectHashesRecord[subject] = hash;
       const ws   = path.join(cfg.workspace, subject, hash);
 
-      for (const [evalId, scenarioValue] of subjectScenarios.entries()) {
+      const selectedEvalIds = cfg.evalIdFilter?.[subject] ?? subjectScenarios.map((_, index) => index);
+      for (const evalId of selectedEvalIds) {
+        const scenarioValue = subjectScenarios[evalId];
+        if (scenarioValue === undefined) throw new Error(`evalId ${evalId} out of range for subject ${subject}`);
         const scenario    = scenarioValue as EvalScenario;
         const fixtureHashes = subjectPlan.fixtureHashesByEvalId.get(evalId) ?? {};
         const taskKey       = `${cfg.kind}/${subject}/${evalId}`;
@@ -337,7 +340,10 @@ export class SuiteRunner implements ISuiteRunner {
       const taskPayloads = new Map<number, string>();
       const fixtureHashesByEvalId = new Map<number, Readonly<Record<string, string>>>();
       const subjectFixtureHashes: Record<string, string> = {};
-      for (const [evalId, scenario] of subjectScenarios.entries()) {
+      const selectedEvalIds = cfg.evalIdFilter?.[subject] ?? subjectScenarios.map((_, index) => index);
+      for (const evalId of selectedEvalIds) {
+        const scenario = subjectScenarios[evalId];
+        if (scenario === undefined) throw new Error(`evalId ${evalId} out of range for subject ${subject}`);
         const payload = this.prompt.build(scenario, pair.candidate.id);
         taskPayloads.set(evalId, payload);
         taskPayloadHashes[`${cfg.kind}/${subject}/${evalId}`] = hashUtf8(payload);
@@ -353,7 +359,7 @@ export class SuiteRunner implements ISuiteRunner {
         }
       }
       Object.assign(fixtureHashes, subjectFixtureHashes);
-      subjects.push({ kind: cfg.kind, subject, sourceHash, evalIds: subjectScenarios.map((_, index) => index) });
+      subjects.push({ kind: cfg.kind, subject, sourceHash, evalIds: [...selectedEvalIds].sort((a, b) => a - b) });
       plannedSubjects.set(subject, { sourceHash, taskPayloads, treatments: treatmentPlans, pair, fixtureHashesByEvalId });
     }
 

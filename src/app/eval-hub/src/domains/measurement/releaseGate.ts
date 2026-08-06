@@ -239,7 +239,8 @@ export function buildReleaseProtocolConfig(input: ReleaseProtocolPlanInput): Lay
   if (p.repetitions < 5 || p.noEarlyStop !== true || p.layers.join(",") !== RELEASE_LAYERS.join(","))
     throw new Error("invalid release protocol profile");
   const { runProvenanceId, profile, runtime, release, corpus, goose, provider, model } = input.bindings;
-  return { layers: RELEASE_LAYERS, workers: input.workers, gooseCli: p.gooseBinary, maxTurns: p.maxTurns,
+  return { layers: RELEASE_LAYERS, workers: input.workers, gooseCli: p.gooseBinary,
+    provider: p.provider, model: p.model, maxTurns: p.maxTurns,
     timeoutMs: p.timeoutMs, ambient: false, sandbox, continueOnFail: true,
     earlyStopThreshold: Number.NEGATIVE_INFINITY, noEarlyStop: true, repetitions: Math.max(5, p.repetitions),
     layeredRunId: input.layeredRunId,

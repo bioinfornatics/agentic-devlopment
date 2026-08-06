@@ -14,6 +14,41 @@ import type { EvalScenario } from "../../shared/types.js";
 import { GooseProcessRunner } from "./gooseRunner.js";
 import { analyzeGooseLogs, gooseLogCaptureForWorkspace } from "./gooseLogAnalyzer.js";
 
+const MAX_CAPTURED_OUTPUT = 16_384;
+const RATE_LIMIT_PATTERN = /(?:usage[_ -]?limit[_ -]?reached|rate[_ -]?limit(?:ed)?|too many requests|http\s*429|\b429\b)/i;
+const KEYED_SECRET_PATTERN = /((?:authorization|api[_-]?key|token|secret|password)\s*[:=]\s*)(?:bearer\s+)?[^\s,;]+/gi;
+const BEARER_SECRET_PATTERN = /(\bbearer\s+)[^\s,;]+/gi;
+const OPENAI_STYLE_SECRET_PATTERN = /\bsk-[A-Za-z0-9_-]{8,}\b/g;
+
+function redactSecrets(value: string): string {
+  return value
+    .replace(KEYED_SECRET_PATTERN, "$1[REDACTED]")
+    .replace(BEARER_SECRET_PATTERN, "$1[REDACTED]")
+    .replace(OPENAI_STYLE_SECRET_PATTERN, "[REDACTED]");
+}
+
+function safeCapturedOutput(value: string): string {
+  const bounded = value.length > MAX_CAPTURED_OUTPUT ? value.slice(0, MAX_CAPTURED_OUTPUT) + "\n[truncated]" : value;
+  return redactSecrets(bounded);
+}
+
+function sanitizeForArtifact<T>(value: T): T {
+  // Log analysis is already structurally bounded by gooseLogAnalyzer; redact it
+  // without truncating serialized JSON into an invalid artifact.
+  return JSON.parse(redactSecrets(JSON.stringify(value))) as T;
+}
+
+function isProviderRateLimited(
+  stdout: string,
+  stderr: string,
+  analysis: Awaited<ReturnType<typeof analyzeGooseLogs>>,
+): boolean {
+  if (RATE_LIMIT_PATTERN.test(stdout) || RATE_LIMIT_PATTERN.test(stderr)) return true;
+  return [...analysis.fatalDiagnostics, ...analysis.warnings].some(diagnostic =>
+    diagnostic.code === "provider_rate_limited" || RATE_LIMIT_PATTERN.test(diagnostic.message),
+  );
+}
+
 
 export interface DescriptorV1 {
   readonly id: string;
@@ -62,38 +97,70 @@ export class LlmGrader implements IGrader {
     const promptPath = path.join(runDir, "grading_prompt.txt");
     await fs.writeFile(promptPath, prompt);
 
-    let gradingOutput = "";
-    let processFailed = false;
     const graderRoot = path.join(runDir, ".grader");
     const graderProject = path.join(graderRoot, "project");
     await fs.mkdir(graderProject, { recursive: true });
-    const logCapture = gooseLogCaptureForWorkspace(graderRoot);
-    try {
-      const runtimeArgs = [
-        ...(runtime.provider ? ["--provider", runtime.provider] : []),
-        ...(runtime.model ? ["--model", runtime.model] : []),
-      ];
-      for await (const raw of this.goose.run({
-        gooseCli,
-        args:      ["run", "--instructions", promptPath, ...runtimeArgs, "--no-session", "--max-turns", "1", "--quiet"],
-        env:       { ...(runtime.sandbox?.env ?? {}), XDG_STATE_HOME: logCapture.stateHome, XDG_DATA_HOME: logCapture.stateHome },
-        cwd:       runtime.sandbox ? graderProject : runDir,
-        inheritEnv: !runtime.sandbox,
-        timeoutMs: 120_000,
-      })) {
-        if (raw.type === "exit") { processFailed = raw.code !== 0 || raw.signal !== null; break; }
-        if (raw.stream === "stdout") gradingOutput += raw.text + "\n";
+    const runtimeArgs = [
+      ...(runtime.provider ? ["--provider", runtime.provider] : []),
+      ...(runtime.model ? ["--model", runtime.model] : []),
+    ];
+    let lastResult: GradingResult = this.nullResult(expectations, "grader_runtime_unavailable");
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      let stdout = "";
+      let stderr = "";
+      let processFailed = false;
+      let sawExit = false;
+      let exit: { code: number | null; signal: string | null } | null = null;
+      const logCapture = gooseLogCaptureForWorkspace(graderRoot);
+      try {
+        for await (const raw of this.goose.run({
+          gooseCli,
+          args: ["run", "--instructions", promptPath, ...runtimeArgs, "--no-session", "--max-turns", "1", "--quiet"],
+          env: { ...(runtime.sandbox?.env ?? {}), XDG_STATE_HOME: logCapture.stateHome, XDG_DATA_HOME: logCapture.stateHome },
+          cwd: runtime.sandbox ? graderProject : runDir,
+          inheritEnv: !runtime.sandbox,
+          timeoutMs: 120_000,
+        })) {
+          if (raw.type === "exit") {
+            exit = { code: raw.code, signal: raw.signal };
+            sawExit = true;
+            processFailed = raw.code !== 0 || raw.signal !== null;
+            break;
+          }
+          if (raw.stream === "stdout") stdout += raw.text + "\n";
+          else stderr += raw.text + "\n";
+        }
+      } catch (error) {
+        processFailed = true;
+        stderr += error instanceof Error ? error.message : "grader process threw";
       }
-    } catch { processFailed = true; }
+      const logAnalysis = await analyzeGooseLogs(logCapture.logsRoot, runtime.model);
+      await fs.rm(logCapture.stateHome, { recursive: true, force: true }).catch(() => undefined);
 
-    const logAnalysis = await analyzeGooseLogs(logCapture.logsRoot, runtime.model);
-    await fs.writeFile(path.join(runDir, "goose-grader-log-analysis.json"), JSON.stringify(logAnalysis, null, 2));
-    await fs.rm(logCapture.stateHome, { recursive: true, force: true }).catch(() => undefined);
-    if (processFailed || logAnalysis.fatalDiagnostics.length > 0) {
-      // Grader runtime failures produce a null score, never a synthetic zero.
-      return this.nullResult(expectations, "grader runtime failed; inspect goose-grader-log-analysis.json");
+      if (!sawExit) processFailed = true;
+      const rateLimited = isProviderRateLimited(stdout, stderr, logAnalysis);
+      const parsed = !processFailed && logAnalysis.fatalDiagnostics.length === 0
+        ? this.parseOutput(stdout, expectations)
+        : this.nullResult(expectations, "grader_runtime_unavailable");
+      const parseOutcome = Number.isFinite(parsed.summary.pass_rate) ? "valid" : "invalid";
+      await fs.writeFile(path.join(runDir, `grader-attempt-${attempt}.json`), JSON.stringify({
+        schema: "grader-attempt-diagnostic-v1",
+        attempt,
+        process: { failed: processFailed, exit },
+        output: { stdout: safeCapturedOutput(stdout), stderr: safeCapturedOutput(stderr) },
+        logAnalysis: sanitizeForArtifact(logAnalysis),
+        parseOutcome,
+        classification: rateLimited ? "provider_rate_limited" : processFailed ? "grader_runtime_unavailable" : parseOutcome === "invalid" ? "malformed_grader_json" : "ok",
+      }, null, 2));
+
+      if (rateLimited) {
+        return this.nullResult(expectations, `grader_runtime_unavailable/provider_rate_limited; inspect grader-attempt-${attempt}.json`);
+      }
+      lastResult = parsed;
+      if (parseOutcome === "valid") return parsed;
+      // Only a non-rate-limit transient failure receives one retry.
     }
-    return this.parseOutput(gradingOutput, expectations);
+    return this.nullResult(expectations, "malformed_grader_json after one retry; inspect grader-attempt-1.json and grader-attempt-2.json");
   }
 
   private buildGradingPrompt(scenario: EvalScenario, config: string, output: string): string {
@@ -122,11 +189,25 @@ Required JSON (return ONLY this, nothing else):
   private parseOutput(output: string, expectations: readonly string[]): GradingResult {
     const jsonMatches = output.match(/\{[\s\S]*\}/g);
     if (!jsonMatches) return this.nullResult(expectations, "no JSON in grader output");
-    try {
-      const parsed = JSON.parse(jsonMatches[jsonMatches.length - 1]!) as GradingResult;
-      if (parsed.summary && Array.isArray(parsed.expectations)) return parsed;
-    } catch { /* fall through */ }
-    return this.nullResult(expectations, "JSON parse failed");
+    for (let index = jsonMatches.length - 1; index >= 0; index -= 1) {
+      try {
+        const parsed = JSON.parse(jsonMatches[index]!) as Partial<GradingResult>;
+        const summary = parsed.summary;
+        const rows = parsed.expectations;
+        if (!summary || !Array.isArray(rows) || rows.length !== expectations.length) continue;
+        const passed = rows.filter(row => row && typeof row.passed === "boolean").length;
+        if (passed !== expectations.length) continue;
+        const passedCount = rows.filter(row => row.passed).length;
+        const failedCount = expectations.length - passedCount;
+        const passRate = summary.pass_rate;
+        if (typeof passRate !== "number" || !Number.isFinite(passRate)) continue;
+        return {
+          summary: { total: expectations.length, passed: passedCount, failed: failedCount, pass_rate: passRate },
+          expectations: rows.map((row, rowIndex) => ({ text: typeof row.text === "string" && row.text.length > 0 ? row.text : expectations[rowIndex]!, passed: row.passed, evidence: typeof row.evidence === "string" ? row.evidence : "" })),
+        };
+      } catch { /* try the previous JSON object */ }
+    }
+    return this.nullResult(expectations, "JSON parse or schema validation failed");
   }
 
   /** pass_rate: null — excluded from delta, not penalised. */

@@ -94,6 +94,7 @@ describe("release protocol plan", () => {
   it("forces all three layers, no early stop, five repetitions, and sandbox", () => {
     expect(buildReleaseProtocolConfig({ profile, bindings, sandbox, workers: 2, layeredRunId: "run" })).toMatchObject({
       layers: ["skills", "agents", "recipes"], repetitions: 5, noEarlyStop: true, ambient: false, sandbox,
+      provider: "provider", model: "model",
       releaseContext: { runProvenanceId: "run", bindings: { profile: "p", runtime: "rt", release: "rel", corpus: "corp", goose: "g", provider: "provider", model: "model" } } });
   });
   it("schedules the complete plan through an injected runner without a provider", async () => {

@@ -178,6 +178,12 @@ const passingRunner: FullChildRunner = {
   async run() { return { exitCode: 0, stdout: "ok", stderr: "" }; },
 };
 
+function capturingRunner(capture: { args?: readonly string[]; env?: NodeJS.ProcessEnv }): FullChildRunner {
+  return {
+    async run(_command, args, env) { capture.args = args; capture.env = env; return { exitCode: 0, stdout: "ok", stderr: "" }; },
+  };
+}
+
 const failingRunner: FullChildRunner = {
   async run() { return { exitCode: 1, stdout: "", stderr: "eval-hub failed" }; },
 };
@@ -400,6 +406,105 @@ describe("runLocalEvaluationFull", () => {
     for (const key of ["source", "locks", "runtime", "release", "goose", "evalHub", "provider", "model", "corpus", "profile"]) {
       expect(binJson[key]).toMatch(/^[a-f0-9]{64}$/);
     }
+  });
+
+  it("passes explicit provider and model overrides to eval-hub child", async () => {
+    const repo = makeRepo();
+    const releaseDigest = "3".repeat(64);
+    const bindings = makeBindings({
+      release: releaseDigest,
+      runtime: releaseDigest,
+      goose: sha256Str(GOOSE_RAW),
+      evalHub: "6".repeat(64),
+      corpus: "9".repeat(64),
+    }, PROFILE);
+    const capture: { args?: readonly string[]; env?: NodeJS.ProcessEnv } = {};
+
+    await runLocalEvaluationFull({
+      repositoryRoot: repo,
+      evidenceDir: join(temp(), "evidence"),
+      smokeEvidence: makeSmokeEvidence(bindings),
+      processEnv: { GOOSE_PROVIDER: "anthropic", GOOSE_MODEL: "claude-opus-4-5", GOOSE_CLI: "/usr/local/bin/goose" },
+      operations: makeOperations(releaseDigest, {
+        async gooseVersion() { return GOOSE_RAW; },
+        async evalHubTree() { return bindings.evalHub; },
+        async corpusTree() { return bindings.corpus; },
+      }),
+      runner: capturingRunner(capture),
+      storeLoader: makeStoreLoader(),
+      gateEvaluator: makePassingGate(),
+      now: () => new Date("2026-07-29T11:00:00Z"),
+      sandboxOptions: { tempParent: temp(), userHome: temp() },
+    });
+
+    expect(capture.args).toContain("--provider");
+    expect(capture.args?.[capture.args.indexOf("--provider") + 1]).toBe("anthropic");
+    expect(capture.args).toContain("--model");
+    expect(capture.args?.[capture.args.indexOf("--model") + 1]).toBe("claude-opus-4-5");
+  });
+
+  it("re-reads a mutated provider identifier when reusing the same credential cache source", async () => {
+    const repo = makeRepo();
+    const releaseDigest = "3".repeat(64);
+    const bindings = makeBindings({
+      release: releaseDigest,
+      runtime: releaseDigest,
+      goose: sha256Str(GOOSE_RAW),
+      evalHub: "6".repeat(64),
+      corpus: "9".repeat(64),
+    }, PROFILE);
+    const sandboxParent = temp();
+    const userHome = temp();
+    const tokenPath = join(userHome, ".config/goose/chatgpt_codex/tokens.json");
+    mkdirSync(join(tokenPath, ".."), { recursive: true });
+    writeFileSync(tokenPath, "cached-chatgpt-token");
+    const processEnv: NodeJS.ProcessEnv = {
+      GOOSE_PROVIDER: "anthropic",
+      GOOSE_MODEL: "claude-opus-4-5",
+      GOOSE_CLI: "/usr/local/bin/goose",
+    };
+    const captures: Array<{ args?: readonly string[]; env?: NodeJS.ProcessEnv; seededToken: string | undefined }> = [];
+    const run = async () => {
+      const capture: { args?: readonly string[]; env?: NodeJS.ProcessEnv; seededToken: string | undefined } = { seededToken: undefined };
+      captures.push(capture);
+      await runLocalEvaluationFull({
+        repositoryRoot: repo,
+        evidenceDir: join(temp(), "evidence"),
+        smokeEvidence: makeSmokeEvidence(bindings),
+        processEnv,
+        operations: makeOperations(releaseDigest, {
+          async gooseVersion() { return GOOSE_RAW; },
+          async evalHubTree() { return bindings.evalHub; },
+          async corpusTree() { return bindings.corpus; },
+        }),
+        runner: {
+          async run(command, args, env, cwd, timeoutMs) {
+            capture.seededToken = existsSync(join(env.GOOSE_PATH_ROOT!, "config/chatgpt_codex/tokens.json"))
+              ? readFileSync(join(env.GOOSE_PATH_ROOT!, "config/chatgpt_codex/tokens.json"), "utf8")
+              : undefined;
+            return capturingRunner(capture).run(command, args, env, cwd, timeoutMs);
+          },
+        },
+        storeLoader: makeStoreLoader(),
+        gateEvaluator: makePassingGate(),
+        now: () => new Date("2026-07-29T11:00:00Z"),
+        sandboxOptions: { tempParent: sandboxParent, userHome },
+      });
+    };
+
+    await run();
+    processEnv.GOOSE_PROVIDER = "chatgpt_codex";
+    processEnv.GOOSE_MODEL = "gpt-5-codex";
+    await run();
+
+    expect(captures[0]?.args?.[captures[0].args.indexOf("--provider") + 1]).toBe("anthropic");
+    expect(captures[0]?.env?.GOOSE_PROVIDER).toBe("anthropic");
+    expect(captures[1]?.args?.[captures[1].args.indexOf("--provider") + 1]).toBe("chatgpt_codex");
+    expect(captures[1]?.args?.[captures[1].args.indexOf("--model") + 1]).toBe("gpt-5-codex");
+    expect(captures[1]?.env?.GOOSE_PROVIDER).toBe("chatgpt_codex");
+    expect(captures[1]?.env?.GOOSE_MODEL).toBe("gpt-5-codex");
+    expect(captures[0]?.seededToken).toBeUndefined();
+    expect(captures[1]?.seededToken).toBe("cached-chatgpt-token");
   });
 
   it("fails before provider execution when a mapped OAuth cache is absent", async () => {

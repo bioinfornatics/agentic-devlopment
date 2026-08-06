@@ -466,6 +466,8 @@ export async function runLocalEvaluationFull(
     profiles: {
       release: {
         repetitions: number;
+        provider: string;
+        model: string;
         maxTurns: number;
         timeoutMs: number;
         sandboxRootsRequired: true;
@@ -535,6 +537,8 @@ export async function runLocalEvaluationFull(
 
     // Effective profile: clone with actual provider/model for statistical gate.
     const effectiveProfile = JSON.parse(JSON.stringify(baseProfileRaw)) as typeof baseProfileRaw;
+    effectiveProfile.profiles.release.provider = provider;
+    effectiveProfile.profiles.release.model = model;
     const effectiveProfileDigest = digestLocalEvaluationProfile(effectiveProfile);
 
     // ── 9. Smoke evidence — run/reuse deterministic check ──────────────────
@@ -582,6 +586,8 @@ export async function runLocalEvaluationFull(
       "--max-turns", String(baseProfileRaw.profiles.release.maxTurns),
       "--timeout", String(Math.ceil(baseProfileRaw.profiles.release.timeoutMs / 1000)),
       "--goose-cli", gooSeCli,
+      "--provider", provider,
+      "--model", model,
       "--sandbox-root", sandbox.paths.root,
       "--runtime-root", sandbox.paths.runtime,
       "--evidence-root", sandbox.paths.evidence,

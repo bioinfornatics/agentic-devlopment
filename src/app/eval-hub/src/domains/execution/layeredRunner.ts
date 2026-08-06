@@ -101,6 +101,7 @@ export class LayeredRunner implements ILayeredRunner {
         ambient:        cfg.ambient,
         continueOnFail: cfg.continueOnFail,
         repetitions,
+        ...(cfg.evalIdFilter ? { evalIdFilter: cfg.evalIdFilter } : {}),
         ...(cfg.sandbox ? { sandbox: cfg.sandbox } : {}),
         ...(cfg.releaseContext ? { releaseContext: cfg.releaseContext } : {}),
       };
