@@ -15,6 +15,10 @@
  *   --model <name>              Explicit Goose model override
  *   --layers <l1,l2,l3>        Comma-separated: skills,agents,recipes (default: all)
  *   --subjects <s1,s2>         Comma/space-separated subject filter
+ *   --eval-ids <s:id[,s:a-b]>   Per-subject eval ID filter
+ *   --goose-interpretation     Propose bounded Goose commentary from persisted metrics
+ *   --validation-task <id>    Beads task receiving proposal/decision state
+ *   --human-validation <d>    Persist human decision: APPROVE or BLOCK
  *   --workers <n>              Parallel subjects (default: 3)
  *   --max-turns <n>            Max turns per goose run (default: 8)
  *   --repetitions <n>          Paired repetitions, integer >= 1 (default: 1)
@@ -29,10 +33,18 @@ import path from "node:path";
 import type { EvalKind } from "./shared/types.js";
 import type { LayeredConfig, ReleaseContext } from "./domains/execution/ports.js";
 import type { DomainEvent } from "./shared/events.js";
+import type { NormalizedIntegrityReportStateV2 } from "./domains/persistence/integrityV2Store.js";
 import { LayeredRunner } from "./domains/execution/layeredRunner.js";
 import { EventBus }      from "./shared/eventBus.js";
 import { LAYERED_ROOT }  from "./shared/paths.js";
 import { createSandboxProcessConfig } from "./shared/sandbox.js";
+import { interpretLayerReport, loadPersistedDiagnosticEvidence, projectFailureDiagnostics, type DiagnosticProjection } from "./interpretation.js";
+import {
+  BeadsCliValidationAdapter,
+  GooseCliInterpretationRunner,
+  generateAndPersistInterpretation,
+  persistHumanDecision,
+} from "./gooseInterpretation.js";
 import {
   buildIntegrityArtifactsFromStore,
   persistIntegrityArtifacts,
@@ -135,6 +147,22 @@ function optInt(args: string[], name: string, fallback: number): number {
   return Number.isFinite(v) ? v : fallback;
 }
 
+function parseEvalIdFilter(raw: string): Readonly<Record<string, readonly number[]>> | undefined {
+  if (!raw.trim()) return undefined;
+  const result: Record<string, number[]> = {};
+  for (const entry of raw.split(",")) {
+    const split = entry.lastIndexOf(":");
+    if (split <= 0) throw new Error(`Invalid --eval-ids entry: ${entry}`);
+    const subject = entry.slice(0, split).trim();
+    const spec = entry.slice(split + 1).trim();
+    const ids = spec.split("-").map(Number);
+    if (ids.length === 1 && Number.isInteger(ids[0]) && ids[0]! >= 0) result[subject] = [ids[0]!];
+    else if (ids.length === 2 && ids.every(Number.isInteger) && ids[0]! >= 0 && ids[1]! >= ids[0]!) result[subject] = Array.from({length: ids[1]! - ids[0]! + 1}, (_, i) => ids[0]! + i);
+    else throw new Error(`Invalid --eval-ids range: ${entry}`);
+  }
+  return result;
+}
+
 // ── Release-gate CLI helpers (exported for deterministic unit testing) ─────────
 
 export interface ReleaseCliArgs {
@@ -202,6 +230,63 @@ export function buildReleaseContext(parsed: ReleaseCliArgs): ReleaseContext {
   };
 }
 
+// ── Heartbeat rendering ────────────────────────────────────────────────────────
+
+export interface HeartbeatState {
+  readonly subject: string;
+  readonly evalId: number;
+  readonly repetition: number;
+  readonly config: string;
+  readonly turn: number;
+  readonly startMs: number;
+}
+
+/** Stable identity for one parallel evaluation, including paired repetitions. */
+export function heartbeatKey(state: Pick<HeartbeatState, "subject" | "evalId" | "repetition" | "config">): string {
+  return `${state.subject}\u0000${state.evalId}\u0000${state.repetition}\u0000${state.config}`;
+}
+
+/** Render the live block independently of event collection, for TTY and tests. */
+export function renderHeartbeat(
+  active: ReadonlyMap<string, HeartbeatState>,
+  nowMs: number,
+  tty: boolean,
+  previousLines = 0,
+): { output: string; lineCount: number } {
+  const lines = [...active.values()].map((info) => {
+    const elapsed = Math.round((nowMs - info.startMs) / 1000);
+    const slot = fmtActiveSlot(info.subject, info.config, info.turn, elapsed);
+    return tty ? `${C.dim}  ${SPINNER[spinIdx % SPINNER.length]} ${C.reset}${C.cyan}${slot}${C.reset}` : `  ${slot}`;
+  });
+  if (!tty) return { output: lines.length ? lines.join("\n") + "\n" : "", lineCount: lines.length };
+  // Every block ends with LF, leaving the cursor directly below it. Move to
+  // the first previous line and erase from there to the end of the display;
+  // the replacement may contain more, fewer, or no lines.
+  const clear = previousLines > 0 ? `\x1b[${previousLines}F\x1b[0J` : "";
+  return { output: clear + (lines.length ? lines.join("\n") + "\n" : ""), lineCount: lines.length };
+}
+
+/** Stateful owner of the physical TTY rows used by the live heartbeat. */
+export class HeartbeatBlock {
+  private lineCount = 0;
+
+  constructor(
+    private readonly tty: boolean,
+    private readonly write: (output: string) => void,
+  ) {}
+
+  refresh(active: ReadonlyMap<string, HeartbeatState>, nowMs: number, footer = ""): void {
+    const rendered = renderHeartbeat(active, nowMs, this.tty, this.lineCount);
+    const output = rendered.output + (footer ? footer + "\n" : "");
+    this.lineCount = rendered.lineCount + (footer ? 1 : 0);
+    if (output) this.write(output);
+  }
+
+  clear(nowMs = Date.now()): void {
+    if (this.lineCount > 0) this.refresh(new Map(), nowMs);
+  }
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 export async function startRun(args: string[]): Promise<void> {
@@ -227,8 +312,16 @@ export async function startRun(args: string[]): Promise<void> {
   const resumeId      = flag(args, "--resume") ? opt(args, "--resume", "") : undefined;
   const explicitRunId = opt(args, "--run-id", "") || undefined;
   const jsonOutArg    = opt(args, "--json", "");
+  const gooseInterpretation = flag(args, "--goose-interpretation");
+  const humanDecisionRaw = opt(args, "--human-validation", "").toUpperCase();
+  const humanDecision = humanDecisionRaw === "APPROVE" || humanDecisionRaw === "BLOCK" ? humanDecisionRaw : undefined;
+  if (humanDecisionRaw && !humanDecision) throw new Error("--human-validation must be APPROVE or BLOCK");
+  const validationTaskId = opt(args, "--validation-task", "").trim();
+  if ((gooseInterpretation || humanDecision) && !validationTaskId) throw new Error("--validation-task is required for human validation persistence");
+  if (gooseInterpretation && (!provider || !model)) throw new Error("--goose-interpretation requires explicit --provider and --model");
   const layersRaw   = opt(args, "--layers", "skills,agents,recipes");
   const layers      = layersRaw.split(",").map(s => s.trim()).filter(Boolean) as EvalKind[];
+  const evalIdFilter = parseEvalIdFilter(opt(args, "--eval-ids", ""));
   const subjectsRaw = opt(args, "--subjects", "");
   const subjectFilter = subjectsRaw
     ? subjectsRaw.split(/[, ]+/).map(s => s.trim()).filter(Boolean)
@@ -263,27 +356,38 @@ export async function startRun(args: string[]): Promise<void> {
   console.log();
 
   // ── Event bus — live heartbeat state ────────────────────────────────────────
-  interface ActiveInfo { config: string; turn: number; startMs: number; }
-  const active   = new Map<string, ActiveInfo>();   // subject → live state
-  const scores   = new Map<string, number>();        // "subject:config" → pass_rate
+  const active = new Map<string, HeartbeatState>();
+  const scores = new Map<string, number>();        // "subject:config" → pass_rate
 
   const bus = new EventBus();
   bus.onEvent((ev: DomainEvent) => {
     switch (ev.type) {
-      case "subject.started":
-        active.set(ev.subject, { config: ev.config, turn: 0, startMs: Date.now() });
+      case "subject.started": {
+        const state: HeartbeatState = { subject: ev.subject, evalId: ev.evalId, repetition: ev.repetition, config: ev.config, turn: 0, startMs: Date.now() };
+        active.set(heartbeatKey(state), state);
         break;
-      case "goose.turn":
-        active.get(ev.subject)!?.turn && (active.get(ev.subject)!.turn = ev.turn);
-        // Update turn count safely
-        { const a = active.get(ev.subject); if (a) a.turn = ev.turn; }
+      }
+      case "goose.turn": {
+        // Goose turn events do not carry repetition/run identity. Update every
+        // matching active slot instead of guessing one parallel repetition.
+        for (const [key, state] of active) {
+          if (state.subject === ev.subject && state.evalId === ev.evalId && state.config === ev.config) {
+            active.set(key, { ...state, turn: ev.turn });
+          }
+        }
         break;
+      }
       case "subject.graded":
         if (ev.score !== null) scores.set(`${ev.subject}:${ev.config}`, ev.score);
         break;
-      case "subject.completed":
-        active.delete(ev.subject);
+      case "subject.completed": {
+        const key = [...active.keys()].find((candidate) => {
+          const state = active.get(candidate)!;
+          return state.subject === ev.subject && state.evalId === ev.evalId && state.repetition === ev.repetition && state.config === ev.config;
+        });
+        if (key) active.delete(key);
         break;
+      }
     }
   });
 
@@ -292,20 +396,26 @@ export async function startRun(args: string[]): Promise<void> {
   let layerDone    = 0;
   let layerTotal   = 0;
 
+  const heartbeat = new HeartbeatBlock(isTTY, output => process.stdout.write(output));
+  // CSI 0J is safe only while the owned block is the display tail. Clear before
+  // ordinary output, then immediately restore active rows below that output.
+  const cliLog = (...values: unknown[]): void => {
+    heartbeat.clear();
+    console.log(...values);
+    if (active.size > 0) heartbeat.refresh(active, Date.now());
+  };
+
   const ticker = setInterval(() => {
-    if (active.size === 0) return;
-    const now    = Date.now();
-    const spin   = SPINNER[spinIdx++ % SPINNER.length]!;
+    if (active.size === 0) {
+      heartbeat.clear();
+      return;
+    }
+    const now = Date.now();
     const etaStr = layerDone > 0
       ? C.gray + eta(layerDone, layerTotal, now - layerStartMs) + C.reset
       : "";
-    // One line per active subject, fixed-width columns, left-indented
-    const lines = [...active.entries()].map(([subj, info]) => {
-      const elapsed = Math.round((now - info.startMs) / 1000);
-      const slot    = fmtActiveSlot(subj, info.config, info.turn, elapsed);
-      return `${C.dim}  ${spin} ${C.reset}${C.cyan}${slot}${C.reset}`;
-    });
-    process.stdout.write(lines.join("\n") + etaStr + "\n");
+    spinIdx++;
+    heartbeat.refresh(active, now, etaStr);
   }, 2000);
 
   // ── Layer/suite state ────────────────────────────────────────────────────────
@@ -316,6 +426,7 @@ export async function startRun(args: string[]): Promise<void> {
     layeredRunId: runId,
     ...(sandbox ? { sandbox } : {}),
     ...(subjectFilter ? { subjectFilter } : {}),
+    ...(evalIdFilter ? { evalIdFilter } : {}),
     ...(releaseContext ? { releaseContext } : {}),
   };
 
@@ -324,6 +435,9 @@ export async function startRun(args: string[]): Promise<void> {
   const summary: Array<{
     level: string; kind: string; avgDelta: number | null; n: number;
     elapsedMs: number; skipped: boolean; reason?: string;
+    report?: NormalizedIntegrityReportStateV2 | null;
+    diagnostics?: DiagnosticProjection;
+    diagnosticSlots?: readonly import("./interpretation.js").PersistedSlotEvidence[];
   }> = [];
 
   try {
@@ -335,18 +449,18 @@ export async function startRun(args: string[]): Promise<void> {
         layerDone    = 0;
         layerTotal   = ev.total;
         const bar    = "─".repeat(54);
-        console.log(`\n${C.heading}${bar}${C.reset}`);
-        console.log(
+        cliLog(`\n${C.heading}${bar}${C.reset}`);
+        cliLog(
           `  ${C.bold}${ev.level} ${ev.kind.toUpperCase()}${C.reset}`
           + `  ${C.dim}${ev.total} subjects · ${ev.workers} workers${C.reset}`,
         );
-        console.log(`${C.dim}${bar}${C.reset}`);
+        cliLog(`${C.dim}${bar}${C.reset}`);
         continue;
       }
 
       if (ev.type === "layer.skipped") {
         const reason = ev.reason === "already_done" ? "already done (resume)" : ev.reason;
-        console.log(`  ${C.dim}⏭  ${ev.level ?? ""} ${ev.kind} — ${reason}${C.reset}`);
+        cliLog(`  ${C.dim}⏭  ${ev.level ?? ""} ${ev.kind} — ${reason}${C.reset}`);
         summary.push({ level: ev.level ?? "", kind: ev.kind, avgDelta: null, n: 0, elapsedMs: 0, skipped: true, reason });
         continue;
       }
@@ -373,7 +487,7 @@ export async function startRun(args: string[]): Promise<void> {
 
         // ── "Layer result" line — use persisted projection ──────────────────
         if (reportedDelta === null) {
-          console.log(
+          cliLog(
             `\n  ${C.bold}Layer result:${C.reset}`
             + ` avg Δ = ${C.dim}— no measurable${C.reset}`
             + `  ${C.dim}(${reportedN} subjects · ${fmtMs(ev.durationMs)})${C.reset}`,
@@ -382,7 +496,7 @@ export async function startRun(args: string[]): Promise<void> {
           const sign   = reportedDelta >= 0 ? "+" : "";
           const dcolor = reportedDelta > threshold ? C.green : reportedDelta < 0 ? C.red : C.yellow;
           const note   = reportedDelta <= threshold ? C.yellow + " [no improvement]" + C.reset : "";
-          console.log(
+          cliLog(
             `\n  ${C.bold}Layer result:${C.reset}`
             + ` avg Δ = ${dcolor}${sign}${reportedDelta.toFixed(4)}${C.reset}`
             + `  ${C.dim}(${reportedN} subjects · ${fmtMs(ev.durationMs)})${C.reset}${note}`,
@@ -390,8 +504,8 @@ export async function startRun(args: string[]): Promise<void> {
         }
 
         // ── Print CLI text (always present, carries explicit compat message if null) ─
-        console.log();
-        console.log(bundle.cli);
+        cliLog();
+        cliLog(bundle.cli);
 
         // ── Persist JSON + HTML beside state.json when report is available ──
         if (bundle.report !== null) {
@@ -399,12 +513,16 @@ export async function startRun(args: string[]): Promise<void> {
             baseWs, ev.kind, bundle,
             jsonOutArg ? { jsonTarget: jsonOutArg } : undefined,
           );
-          console.log(`  ${C.dim}Integrity JSON : ${integrityJsonPath(baseWs, ev.kind)}${C.reset}`);
-          console.log(`  ${C.dim}Integrity HTML : ${integrityHtmlPath(baseWs, ev.kind)}${C.reset}`);
+          cliLog(`  ${C.dim}Integrity JSON : ${integrityJsonPath(baseWs, ev.kind)}${C.reset}`);
+          cliLog(`  ${C.dim}Integrity HTML : ${integrityHtmlPath(baseWs, ev.kind)}${C.reset}`);
           if (jsonOutArg) {
-            console.log(`  ${C.dim}Integrity JSON : ${jsonOutArg}${C.reset}`);
+            cliLog(`  ${C.dim}Integrity JSON : ${jsonOutArg}${C.reset}`);
           }
         }
+
+        // Diagnose only persisted, bounded artifacts; this projection never changes report/scoring.
+        const diagnosticSlots = bundle.report === null ? [] : await loadPersistedDiagnosticEvidence(path.join(baseWs, ev.kind), integrityRoot);
+        const diagnostics = bundle.report === null ? undefined : projectFailureDiagnostics(bundle.report, diagnosticSlots);
 
         // ── Summary row — use persisted values, never ev.avgDelta/n ─────────
         summary.push({
@@ -414,6 +532,9 @@ export async function startRun(args: string[]): Promise<void> {
           n:         reportedN,
           elapsedMs: ev.durationMs,
           skipped:   false,
+          report:    bundle.report,
+          ...(diagnostics ? { diagnostics } : {}),
+          ...(diagnosticSlots.length > 0 ? { diagnosticSlots } : {}),
         });
         continue;
       }
@@ -428,12 +549,12 @@ export async function startRun(args: string[]): Promise<void> {
         const prog   = C.gray + `(${ev.doneCount}/${ev.total})` + C.reset;
         const pct    = C.dim + `${Math.round(ev.doneCount * 100 / (ev.total || 1))}%` + C.reset;
         const etaStr = C.gray + eta(ev.doneCount, ev.total, Date.now() - layerStartMs) + C.reset;
-        console.log(`  [${mark}] ${name} ${time}  ${prog} ${pct}${etaStr}`);
+        cliLog(`  [${mark}] ${name} ${time}  ${prog} ${pct}${etaStr}`);
         continue;
       }
 
       if (ev.type === "suite.completed") {
-        console.log(
+        cliLog(
           `\n  ${C.dim}Suite done: ${ev.passed}/${ev.total} subjects · ${fmtMs(ev.durationMs)}${C.reset}`,
         );
         continue;
@@ -442,28 +563,29 @@ export async function startRun(args: string[]): Promise<void> {
       // ── Early stop ────────────────────────────────────────────────────────
       if (ev.type === "early_stop") {
         const deltaStr = ev.avgDelta !== null ? fmtDelta(ev.avgDelta) : C.dim + "—" + C.reset;
-        console.log(
+        cliLog(
           `\n  ${C.warn}⚠  EARLY STOP${C.reset}`
           + `  ${ev.level} avg Δ = ${deltaStr} ≤ threshold ${threshold}`,
         );
         const skipping = ev.skipping as readonly string[];
-        console.log(`     ${C.dim}Skipping: ${skipping.join(", ")}${C.reset}`);
+        cliLog(`     ${C.dim}Skipping: ${skipping.join(", ")}${C.reset}`);
         continue;
       }
     }
   } finally {
     clearInterval(ticker);
+    heartbeat.clear();
   }
 
   // ── Final summary table ──────────────────────────────────────────────────────
   const totalMs  = Date.now() - overall;
   const colW     = [4, 10, 14, 12, 8];   // mark, level+kind, avgDelta, subjects, time
 
-  console.log();
-  console.log(sep);
-  console.log(`  ${C.bold}LAYERED EVAL SUMMARY${C.reset}  ${C.gray}${fmtMs(totalMs)} total${C.reset}`);
-  console.log(sep);
-  console.log(
+  cliLog();
+  cliLog(sep);
+  cliLog(`  ${C.bold}LAYERED EVAL SUMMARY${C.reset}  ${C.gray}${fmtMs(totalMs)} total${C.reset}`);
+  cliLog(sep);
+  cliLog(
     C.dim
     + "  " + "   ".padEnd(colW[0]!)
     + "Layer".padEnd(colW[1]! + colW[2]! - 2)
@@ -472,11 +594,11 @@ export async function startRun(args: string[]): Promise<void> {
     + "Time"
     + C.reset,
   );
-  console.log(C.dim + "  " + "─".repeat(52) + C.reset);
+  cliLog(C.dim + "  " + "─".repeat(52) + C.reset);
 
   for (const r of summary) {
     if (r.skipped) {
-      console.log(
+      cliLog(
         `  ${C.dim}[–] ${r.level} ${r.kind.padEnd(10)} SKIPPED`
         + (r.reason ? `  (${r.reason})` : "") + C.reset,
       );
@@ -487,12 +609,51 @@ export async function startRun(args: string[]): Promise<void> {
       const dlt  = (r.avgDelta !== null ? fmtDelta(r.avgDelta) : C.dim + "—" + C.reset).padEnd(18);  // colored string + padding
       const subj = C.dim + String(r.n).padEnd(colW[3]!) + C.reset;
       const time = C.dim + fmtMs(r.elapsedMs) + C.reset;
-      console.log(`  ${mark} ${C.bold}${lvl}${C.reset} ${dlt} ${subj} ${time}`);
+      cliLog(`  ${mark} ${C.bold}${lvl}${C.reset} ${dlt} ${subj} ${time}`);
     }
   }
 
-  console.log(C.dim + "  " + "─".repeat(52) + C.reset);
-  console.log(`  ${C.dim}Total: ${fmtMs(totalMs)}${C.reset}`);
-  console.log(sep);
-  console.log();
+  cliLog(C.dim + "  " + "─".repeat(52) + C.reset);
+  cliLog(`  ${C.dim}Total: ${fmtMs(totalMs)}${C.reset}`);
+
+  // Interpret only persisted reports captured above; skipped layers have no
+  // report and remain explicitly uninterpreted. This does not alter scoring.
+  cliLog();
+  cliLog(`  ${C.bold}INTERPRETATION${C.reset}`);
+  for (const row of summary) {
+    const lines = interpretLayerReport(
+      `${row.level} ${row.kind}`.trim(),
+      row.report ?? null,
+      row.skipped ? row.reason ?? "not run" : undefined,
+      row.diagnostics,
+      row.diagnosticSlots,
+    );
+    for (const line of lines) cliLog(`  ${line}`);
+  }
+
+  // Optional commentary follows the complete deterministic interpretation and
+  // can never change its statistics. Only persisted report projections enter
+  // the prompt; provider failure is reported without touching those reports.
+  const persistedReports = summary.flatMap(row => row.report ? [row.report] : []);
+  const beads = new BeadsCliValidationAdapter();
+  if (gooseInterpretation) {
+    try {
+      const proposal = await generateAndPersistInterpretation({
+        reports: persistedReports, runId, taskId: validationTaskId,
+        gooseCli, provider: provider!, model: model!,
+        runner: new GooseCliInterpretationRunner(), beads,
+        diagnostics: summary.flatMap(row => row.diagnostics ? [row.diagnostics] : []),
+      });
+      cliLog();
+      for (const line of proposal.split("\n")) cliLog(`  ${line}`);
+    } catch (error) {
+      cliLog(`  ${C.warn}Goose interpretation unavailable; deterministic report remains authoritative: ${error instanceof Error ? error.message : String(error)}${C.reset}`);
+    }
+  }
+  if (humanDecision) {
+    await persistHumanDecision({ decision: humanDecision, reports: persistedReports, runId, taskId: validationTaskId, beads });
+    cliLog(`  Human validation persisted: ${humanDecision} (run ${runId})`);
+  }
+  cliLog(sep);
+  cliLog();
 }
