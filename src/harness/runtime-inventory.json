@@ -1,0 +1,638 @@
+{
+  "schema": "harness-runtime-inventory-v1",
+  "releaseScope": {
+    "includeKinds": [
+      "skill",
+      "agent",
+      "recipe",
+      "plugin",
+      "script"
+    ],
+    "excludePrefixes": [
+      "apps/",
+      "evals/",
+      "dist/",
+      "node_modules/",
+      ".beads/"
+    ],
+    "excludeComponents": [
+      "eval-hub"
+    ],
+    "externalSkillsEvaluated": true
+  },
+  "targets": [
+    {
+      "os": "linux",
+      "arch": "x86_64",
+      "tier": "required"
+    },
+    {
+      "os": "macos",
+      "arch": "arm64",
+      "tier": "planned"
+    },
+    {
+      "os": "windows",
+      "arch": "x86_64",
+      "tier": "planned"
+    }
+  ],
+  "components": [
+    {
+      "kind": "skill",
+      "name": "domain-modeling",
+      "path": null,
+      "ownership": "external",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree",
+      "source": "external-lock"
+    },
+    {
+      "kind": "skill",
+      "name": "evidence-verification",
+      "path": "src/skills/evidence-verification",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "grill-me",
+      "path": null,
+      "ownership": "external",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree",
+      "source": "external-lock"
+    },
+    {
+      "kind": "skill",
+      "name": "grill-with-docs",
+      "path": null,
+      "ownership": "external",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree",
+      "source": "external-lock"
+    },
+    {
+      "kind": "skill",
+      "name": "grilling",
+      "path": null,
+      "ownership": "external",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree",
+      "source": "external-lock"
+    },
+    {
+      "kind": "skill",
+      "name": "interface-quality",
+      "path": "src/skills/interface-quality",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "loop-control",
+      "path": "src/skills/loop-control",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "output-discipline",
+      "path": "src/skills/output-discipline",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "skill-creator",
+      "path": null,
+      "ownership": "external",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree",
+      "source": "external-lock"
+    },
+    {
+      "kind": "script",
+      "name": "skill-creator:eval-viewer/generate_review.py",
+      "path": null,
+      "ownership": "external",
+      "language": "python",
+      "build": "python-package",
+      "runtime": "skill-runtime",
+      "package": "file",
+      "source": "external-lock"
+    },
+    {
+      "kind": "script",
+      "name": "skill-creator:scripts/__init__.py",
+      "path": null,
+      "ownership": "external",
+      "language": "python",
+      "build": "python-package",
+      "runtime": "skill-runtime",
+      "package": "file",
+      "source": "external-lock"
+    },
+    {
+      "kind": "script",
+      "name": "skill-creator:scripts/aggregate_benchmark.py",
+      "path": null,
+      "ownership": "external",
+      "language": "python",
+      "build": "python-package",
+      "runtime": "skill-runtime",
+      "package": "file",
+      "source": "external-lock"
+    },
+    {
+      "kind": "script",
+      "name": "skill-creator:scripts/generate_report.py",
+      "path": null,
+      "ownership": "external",
+      "language": "python",
+      "build": "python-package",
+      "runtime": "skill-runtime",
+      "package": "file",
+      "source": "external-lock"
+    },
+    {
+      "kind": "script",
+      "name": "skill-creator:scripts/improve_description.py",
+      "path": null,
+      "ownership": "external",
+      "language": "python",
+      "build": "python-package",
+      "runtime": "skill-runtime",
+      "package": "file",
+      "source": "external-lock"
+    },
+    {
+      "kind": "script",
+      "name": "skill-creator:scripts/package_skill.py",
+      "path": null,
+      "ownership": "external",
+      "language": "python",
+      "build": "python-package",
+      "runtime": "skill-runtime",
+      "package": "file",
+      "source": "external-lock"
+    },
+    {
+      "kind": "script",
+      "name": "skill-creator:scripts/quick_validate.py",
+      "path": null,
+      "ownership": "external",
+      "language": "python",
+      "build": "python-package",
+      "runtime": "skill-runtime",
+      "package": "file",
+      "source": "external-lock"
+    },
+    {
+      "kind": "script",
+      "name": "skill-creator:scripts/run_eval.py",
+      "path": null,
+      "ownership": "external",
+      "language": "python",
+      "build": "python-package",
+      "runtime": "skill-runtime",
+      "package": "file",
+      "source": "external-lock"
+    },
+    {
+      "kind": "script",
+      "name": "skill-creator:scripts/run_loop.py",
+      "path": null,
+      "ownership": "external",
+      "language": "python",
+      "build": "python-package",
+      "runtime": "skill-runtime",
+      "package": "file",
+      "source": "external-lock"
+    },
+    {
+      "kind": "script",
+      "name": "skill-creator:scripts/utils.py",
+      "path": null,
+      "ownership": "external",
+      "language": "python",
+      "build": "python-package",
+      "runtime": "skill-runtime",
+      "package": "file",
+      "source": "external-lock"
+    },
+    {
+      "kind": "skill",
+      "name": "task-framing",
+      "path": "src/skills/task-framing",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "ui-design",
+      "path": "src/skills/ui-design",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "ux-principles",
+      "path": "src/skills/ux-principles",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "wcag-accessibility-audit",
+      "path": null,
+      "ownership": "external",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree",
+      "source": "external-lock"
+    },
+    {
+      "kind": "agent",
+      "name": "change-builder-premium",
+      "path": "src/agents/change-builder-premium.md",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "agent",
+      "name": "change-builder",
+      "path": "src/agents/change-builder.md",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "agent",
+      "name": "error-analyzer",
+      "path": "src/agents/error-analyzer.md",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "agent",
+      "name": "independent-verifier-premium",
+      "path": "src/agents/independent-verifier-premium.md",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "agent",
+      "name": "independent-verifier",
+      "path": "src/agents/independent-verifier.md",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "agent",
+      "name": "repository-researcher",
+      "path": "src/agents/repository-researcher.md",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "recipe",
+      "name": "implement",
+      "path": "src/recipes/implement.yaml",
+      "ownership": "internal",
+      "language": "yaml",
+      "build": "validate",
+      "runtime": "goose-recipe",
+      "package": "file"
+    },
+    {
+      "kind": "recipe",
+      "name": "loop-engineering",
+      "path": "src/recipes/loop-engineering.yaml",
+      "ownership": "internal",
+      "language": "yaml",
+      "build": "validate",
+      "runtime": "goose-recipe",
+      "package": "file"
+    },
+    {
+      "kind": "recipe",
+      "name": "research",
+      "path": "src/recipes/research.yaml",
+      "ownership": "internal",
+      "language": "yaml",
+      "build": "validate",
+      "runtime": "goose-recipe",
+      "package": "file"
+    },
+    {
+      "kind": "recipe",
+      "name": "verify",
+      "path": "src/recipes/verify.yaml",
+      "ownership": "internal",
+      "language": "yaml",
+      "build": "validate",
+      "runtime": "goose-recipe",
+      "package": "file"
+    },
+    {
+      "kind": "plugin",
+      "name": "beads-telemetry",
+      "path": "src/plugins/beads-telemetry",
+      "ownership": "internal",
+      "language": "mixed",
+      "build": "validate-and-package",
+      "runtime": "goose-plugin",
+      "package": "tree"
+    },
+    {
+      "kind": "script",
+      "name": "beads-telemetry:scripts/record-event.sh",
+      "path": "src/plugins/beads-telemetry/scripts/record-event.sh",
+      "ownership": "internal",
+      "language": "shell",
+      "build": "shell-validated",
+      "runtime": "plugin-runtime",
+      "package": "file"
+    },
+    {
+      "kind": "script",
+      "name": "beads-telemetry:tests/test-plugin.sh",
+      "path": "src/plugins/beads-telemetry/tests/test-plugin.sh",
+      "ownership": "internal",
+      "language": "shell",
+      "build": "shell-validated",
+      "runtime": "build-only",
+      "package": "file"
+    },
+    {
+      "kind": "plugin",
+      "name": "loop-breaker",
+      "path": "src/plugins/loop-breaker",
+      "ownership": "internal",
+      "language": "mixed",
+      "build": "compile-and-package",
+      "runtime": "goose-plugin",
+      "package": "tree"
+    },
+    {
+      "kind": "script",
+      "name": "loop-breaker:scripts/count-failures.sh",
+      "path": "src/plugins/loop-breaker/scripts/count-failures.sh",
+      "ownership": "internal",
+      "language": "shell",
+      "build": "shell-validated",
+      "runtime": "plugin-runtime",
+      "package": "file"
+    },
+    {
+      "kind": "script",
+      "name": "loop-breaker:src/audit.ts",
+      "path": "src/app/loop-breaker/src/audit.ts",
+      "ownership": "internal",
+      "language": "typescript",
+      "build": "bundle",
+      "runtime": "build-only",
+      "package": "file"
+    },
+    {
+      "kind": "script",
+      "name": "loop-breaker:src/counters.ts",
+      "path": "src/app/loop-breaker/src/counters.ts",
+      "ownership": "internal",
+      "language": "typescript",
+      "build": "bundle",
+      "runtime": "build-only",
+      "package": "file"
+    },
+    {
+      "kind": "script",
+      "name": "loop-breaker:src/db/index.ts",
+      "path": "src/app/loop-breaker/src/db/index.ts",
+      "ownership": "internal",
+      "language": "typescript",
+      "build": "bundle",
+      "runtime": "build-only",
+      "package": "file"
+    },
+    {
+      "kind": "script",
+      "name": "loop-breaker:src/db/schema.ts",
+      "path": "src/app/loop-breaker/src/db/schema.ts",
+      "ownership": "internal",
+      "language": "typescript",
+      "build": "bundle",
+      "runtime": "build-only",
+      "package": "file"
+    },
+    {
+      "kind": "script",
+      "name": "loop-breaker:src/guidance.ts",
+      "path": "src/app/loop-breaker/src/guidance.ts",
+      "ownership": "internal",
+      "language": "typescript",
+      "build": "bundle",
+      "runtime": "build-only",
+      "package": "file"
+    },
+    {
+      "kind": "script",
+      "name": "loop-breaker:src/index.ts",
+      "path": "src/app/loop-breaker/src/index.ts",
+      "ownership": "internal",
+      "language": "typescript",
+      "build": "bundle",
+      "runtime": "build-only",
+      "package": "file"
+    },
+    {
+      "kind": "script",
+      "name": "loop-breaker:src/patterns.ts",
+      "path": "src/app/loop-breaker/src/patterns.ts",
+      "ownership": "internal",
+      "language": "typescript",
+      "build": "bundle",
+      "runtime": "build-only",
+      "package": "file"
+    },
+    {
+      "kind": "script",
+      "name": "loop-breaker:tests/test-plugin.sh",
+      "path": "src/app/loop-breaker/tests/test-plugin.sh",
+      "ownership": "internal",
+      "language": "shell",
+      "build": "shell-validated",
+      "runtime": "build-only",
+      "package": "file"
+    },
+    {
+      "kind": "plugin",
+      "name": "loop-gate",
+      "path": "src/plugins/loop-gate",
+      "ownership": "internal",
+      "language": "mixed",
+      "build": "validate-and-package",
+      "runtime": "goose-plugin",
+      "package": "tree"
+    },
+    {
+      "kind": "script",
+      "name": "loop-gate:scripts/gate-reviewed.sh",
+      "path": "src/plugins/loop-gate/scripts/gate-reviewed.sh",
+      "ownership": "internal",
+      "language": "shell",
+      "build": "shell-validated",
+      "runtime": "plugin-runtime",
+      "package": "file"
+    },
+    {
+      "kind": "script",
+      "name": "loop-gate:tests/test-plugin.sh",
+      "path": "src/plugins/loop-gate/tests/test-plugin.sh",
+      "ownership": "internal",
+      "language": "shell",
+      "build": "shell-validated",
+      "runtime": "build-only",
+      "package": "file"
+    },
+    {
+      "kind": "plugin",
+      "name": "prevent-catastrophe",
+      "path": "src/plugins/prevent-catastrophe",
+      "ownership": "internal",
+      "language": "mixed",
+      "build": "validate-and-package",
+      "runtime": "goose-plugin",
+      "package": "tree"
+    },
+    {
+      "kind": "script",
+      "name": "prevent-catastrophe:scripts/guard-shell.sh",
+      "path": "src/plugins/prevent-catastrophe/scripts/guard-shell.sh",
+      "ownership": "internal",
+      "language": "shell",
+      "build": "shell-validated",
+      "runtime": "plugin-runtime",
+      "package": "file"
+    },
+    {
+      "kind": "script",
+      "name": "prevent-catastrophe:tests/test-plugin.sh",
+      "path": "src/plugins/prevent-catastrophe/tests/test-plugin.sh",
+      "ownership": "internal",
+      "language": "shell",
+      "build": "shell-validated",
+      "runtime": "build-only",
+      "package": "file"
+    },
+    {
+      "kind": "skill",
+      "name": "plugin-authoring",
+      "path": "src/skills/plugin-authoring",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "plugin",
+      "name": "budget-tracker",
+      "path": "src/plugins/budget-tracker",
+      "ownership": "internal",
+      "language": "shell",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "context-budget-manager",
+      "path": "src/skills/context-budget-manager",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "context-compaction",
+      "path": "src/skills/context-compaction",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "graph-analyzer",
+      "path": "src/skills/graph-analyzer",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    },
+    {
+      "kind": "skill",
+      "name": "remediation-verifier",
+      "path": "src/skills/remediation-verifier",
+      "ownership": "internal",
+      "language": "markdown",
+      "build": "copy",
+      "runtime": "goose-discovery",
+      "package": "tree"
+    }
+  ]
+}

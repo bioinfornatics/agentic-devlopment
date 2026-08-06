@@ -1,4 +1,0 @@
-focused_exit=0
-typecheck_exit=0
-full_exit=1
-diffcheck_exit=0

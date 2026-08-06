@@ -3,7 +3,7 @@
   "contract": "loop-engineering-active-v1",
   "recipes": {
     "implement": {
-      "source_path": ".goose/recipes/implement.yaml",
+      "source_path": "src/recipes/implement.yaml",
       "phase": "The delegated builder must atomically claim the task before any write",
       "ad001_pattern": "specialist-orchestration-boundary",
       "entry_criteria": [
@@ -47,7 +47,7 @@
       "skills_extension_required": true
     },
     "loop-engineering": {
-      "source_path": ".goose/recipes/loop-engineering.yaml",
+      "source_path": "src/recipes/loop-engineering.yaml",
       "phase": "Trigger -> Planner -> Builder -> Independent Verifier -> Memory -> Manager -> Controller.",
       "ad001_pattern": "orchestration",
       "entry_criteria": [
@@ -65,7 +65,7 @@
           },
           {
             "type": "shell",
-            "command": "python3 -c \"import json; [json.loads(l) for l in open('.beads/issues.jsonl') if l.strip()]\"  # Beads JSONL integrity"
+            "command": "jq -Rce 'select(length > 0) | fromjson' .beads/issues.jsonl >/dev/null  # Beads JSONL integrity"
           }
         ],
         "on_failure": "abort"
@@ -127,7 +127,7 @@
       "skills_extension_required": true
     },
     "research": {
-      "source_path": ".goose/recipes/research.yaml",
+      "source_path": "src/recipes/research.yaml",
       "phase": "This phase delegates to repository-researcher in an isolated read-only session.",
       "ad001_pattern": "specialist-orchestration-boundary",
       "entry_criteria": [
@@ -167,7 +167,7 @@
       "skills_extension_required": true
     },
     "verify": {
-      "source_path": ".goose/recipes/verify.yaml",
+      "source_path": "src/recipes/verify.yaml",
       "phase": "Delegate to independent-verifier in a new isolated session.",
       "ad001_pattern": "specialist-orchestration-boundary",
       "entry_criteria": [

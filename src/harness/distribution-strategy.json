@@ -1,0 +1,609 @@
+{
+  "schema": "harness-distribution-strategy-v1",
+  "networkOptional": true,
+  "candidateBytesAuthoritative": true,
+  "resolver": {
+    "package": "skills",
+    "version": "1.5.20"
+  },
+  "components": [
+    {
+      "id": "skill:domain-modeling",
+      "kind": "skill",
+      "name": "domain-modeling",
+      "ownership": "external",
+      "distributionType": "native-skill-package",
+      "candidate": {
+        "mode": "locked-resolver",
+        "authoritative": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/mattpocock/skills/tree/9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+          "--skill",
+          "skills/engineering/domain-modeling"
+        ]
+      },
+      "source": {
+        "repository": "https://github.com/mattpocock/skills",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+        "path": "skills/engineering/domain-modeling"
+      },
+      "nativeDistributionGate": {
+        "optional": true,
+        "networkRequired": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/mattpocock/skills/tree/2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+          "--skill",
+          "skills/engineering/domain-modeling"
+        ]
+      }
+    },
+    {
+      "id": "skill:evidence-verification",
+      "kind": "skill",
+      "name": "evidence-verification",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:grill-me",
+      "kind": "skill",
+      "name": "grill-me",
+      "ownership": "external",
+      "distributionType": "native-skill-package",
+      "candidate": {
+        "mode": "locked-resolver",
+        "authoritative": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/mattpocock/skills/tree/9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+          "--skill",
+          "skills/productivity/grill-me"
+        ]
+      },
+      "source": {
+        "repository": "https://github.com/mattpocock/skills",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+        "path": "skills/productivity/grill-me"
+      },
+      "nativeDistributionGate": {
+        "optional": true,
+        "networkRequired": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/mattpocock/skills/tree/2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+          "--skill",
+          "skills/productivity/grill-me"
+        ]
+      }
+    },
+    {
+      "id": "skill:grill-with-docs",
+      "kind": "skill",
+      "name": "grill-with-docs",
+      "ownership": "external",
+      "distributionType": "native-skill-package",
+      "candidate": {
+        "mode": "locked-resolver",
+        "authoritative": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/mattpocock/skills/tree/9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+          "--skill",
+          "skills/engineering/grill-with-docs"
+        ]
+      },
+      "source": {
+        "repository": "https://github.com/mattpocock/skills",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+        "path": "skills/engineering/grill-with-docs"
+      },
+      "nativeDistributionGate": {
+        "optional": true,
+        "networkRequired": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/mattpocock/skills/tree/2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+          "--skill",
+          "skills/engineering/grill-with-docs"
+        ]
+      }
+    },
+    {
+      "id": "skill:grilling",
+      "kind": "skill",
+      "name": "grilling",
+      "ownership": "external",
+      "distributionType": "native-skill-package",
+      "candidate": {
+        "mode": "locked-resolver",
+        "authoritative": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/mattpocock/skills/tree/9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+          "--skill",
+          "skills/productivity/grilling"
+        ]
+      },
+      "source": {
+        "repository": "https://github.com/mattpocock/skills",
+        "revision": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+        "path": "skills/productivity/grilling"
+      },
+      "nativeDistributionGate": {
+        "optional": true,
+        "networkRequired": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/mattpocock/skills/tree/2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+          "--skill",
+          "skills/productivity/grilling"
+        ]
+      }
+    },
+    {
+      "id": "skill:interface-quality",
+      "kind": "skill",
+      "name": "interface-quality",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:loop-control",
+      "kind": "skill",
+      "name": "loop-control",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:output-discipline",
+      "kind": "skill",
+      "name": "output-discipline",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:skill-creator",
+      "kind": "skill",
+      "name": "skill-creator",
+      "ownership": "external",
+      "distributionType": "native-skill-package",
+      "candidate": {
+        "mode": "locked-resolver",
+        "authoritative": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/anthropics/skills/tree/b29e7cf65e5cb78a5ac33d582270551bc74a14eb",
+          "--skill",
+          "skills/skill-creator"
+        ]
+      },
+      "source": {
+        "repository": "https://github.com/anthropics/skills",
+        "revision": "b29e7cf65e5cb78a5ac33d582270551bc74a14eb",
+        "path": "skills/skill-creator"
+      },
+      "nativeDistributionGate": {
+        "optional": true,
+        "networkRequired": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/anthropics/skills/tree/b29e7cf65e5cb78a5ac33d582270551bc74a14eb",
+          "--skill",
+          "skills/skill-creator"
+        ]
+      }
+    },
+    {
+      "id": "skill:task-framing",
+      "kind": "skill",
+      "name": "task-framing",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:ui-design",
+      "kind": "skill",
+      "name": "ui-design",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:ux-principles",
+      "kind": "skill",
+      "name": "ux-principles",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:wcag-accessibility-audit",
+      "kind": "skill",
+      "name": "wcag-accessibility-audit",
+      "ownership": "external",
+      "distributionType": "native-skill-package",
+      "candidate": {
+        "mode": "locked-resolver",
+        "authoritative": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/mastepanoski/claude-skills/tree/fbdde8adb5645dd3ab8531200a651c9112472b2b",
+          "--skill",
+          "skills/wcag-accessibility-audit"
+        ]
+      },
+      "source": {
+        "repository": "https://github.com/mastepanoski/claude-skills",
+        "revision": "fbdde8adb5645dd3ab8531200a651c9112472b2b",
+        "path": "skills/wcag-accessibility-audit"
+      },
+      "nativeDistributionGate": {
+        "optional": true,
+        "networkRequired": true,
+        "command": [
+          "npx",
+          "skills@1.5.20",
+          "add",
+          "https://github.com/mastepanoski/claude-skills/tree/fbdde8adb5645dd3ab8531200a651c9112472b2b",
+          "--skill",
+          "skills/wcag-accessibility-audit"
+        ]
+      }
+    },
+    {
+      "id": "agent:change-builder-premium",
+      "kind": "agent",
+      "name": "change-builder-premium",
+      "ownership": "internal",
+      "distributionType": "agent-copy",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      }
+    },
+    {
+      "id": "agent:change-builder",
+      "kind": "agent",
+      "name": "change-builder",
+      "ownership": "internal",
+      "distributionType": "agent-copy",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      }
+    },
+    {
+      "id": "agent:error-analyzer",
+      "kind": "agent",
+      "name": "error-analyzer",
+      "ownership": "internal",
+      "distributionType": "agent-copy",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      }
+    },
+    {
+      "id": "agent:independent-verifier-premium",
+      "kind": "agent",
+      "name": "independent-verifier-premium",
+      "ownership": "internal",
+      "distributionType": "agent-copy",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      }
+    },
+    {
+      "id": "agent:independent-verifier",
+      "kind": "agent",
+      "name": "independent-verifier",
+      "ownership": "internal",
+      "distributionType": "agent-copy",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      }
+    },
+    {
+      "id": "agent:repository-researcher",
+      "kind": "agent",
+      "name": "repository-researcher",
+      "ownership": "internal",
+      "distributionType": "agent-copy",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      }
+    },
+    {
+      "id": "recipe:implement",
+      "kind": "recipe",
+      "name": "implement",
+      "ownership": "internal",
+      "distributionType": "recipe-copy",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      }
+    },
+    {
+      "id": "recipe:loop-engineering",
+      "kind": "recipe",
+      "name": "loop-engineering",
+      "ownership": "internal",
+      "distributionType": "recipe-copy",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      }
+    },
+    {
+      "id": "recipe:research",
+      "kind": "recipe",
+      "name": "research",
+      "ownership": "internal",
+      "distributionType": "recipe-copy",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      }
+    },
+    {
+      "id": "recipe:verify",
+      "kind": "recipe",
+      "name": "verify",
+      "ownership": "internal",
+      "distributionType": "recipe-copy",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      }
+    },
+    {
+      "id": "plugin:beads-telemetry",
+      "kind": "plugin",
+      "name": "beads-telemetry",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Plugin has no immutable compatible Git repository/source metadata",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "plugin:loop-breaker",
+      "kind": "plugin",
+      "name": "loop-breaker",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Plugin has no immutable compatible Git repository/source metadata",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "plugin:loop-gate",
+      "kind": "plugin",
+      "name": "loop-gate",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Plugin has no immutable compatible Git repository/source metadata",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "plugin:prevent-catastrophe",
+      "kind": "plugin",
+      "name": "prevent-catastrophe",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Plugin has no immutable compatible Git repository/source metadata",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:context-budget-manager",
+      "name": "context-budget-manager",
+      "kind": "skill",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:context-compaction",
+      "name": "context-compaction",
+      "kind": "skill",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:graph-analyzer",
+      "name": "graph-analyzer",
+      "kind": "skill",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:plugin-authoring",
+      "name": "plugin-authoring",
+      "kind": "skill",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "skill:remediation-verifier",
+      "name": "remediation-verifier",
+      "kind": "skill",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Internal skill is not a published native skill package",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    },
+    {
+      "id": "plugin:budget-tracker",
+      "kind": "plugin",
+      "name": "budget-tracker",
+      "ownership": "internal",
+      "distributionType": "embedded-release",
+      "candidate": {
+        "mode": "release-copy",
+        "authoritative": true
+      },
+      "exemption": {
+        "owner": "harness-maintainers",
+        "reason": "Plugin has no immutable compatible Git repository/source metadata",
+        "expiresAt": "2027-07-29T00:00:00Z"
+      }
+    }
+  ]
+}

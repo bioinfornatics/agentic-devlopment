@@ -23,7 +23,7 @@ Generic sequence: Trigger → Planner → Builder → independent Verifier → M
 | **Plugin** | Distributes hooks and scripts by domain (`prevent-catastrophe`, `loop-gate`, `beads-telemetry`, `loop-breaker`) |
 | **Hook** | Triggers checks around lifecycle events (PreToolUse, PostToolUse, Stop) |
 | **MCP** | Acts on external systems (Beads Dolt, eval-hub server) |
-| **Memory / KG** | Persists state and learnings (`.knowledge/`, `apps/kg/`) |
+| **Memory / KG** | Persists state and learnings (`.knowledge/`, `src/app/kg/`) |
 | **Beads** | Maintains backlog, dependencies, and states (canonical control plane) |
 | **Tests / evals** | Produce proof (577+ TypeScript tests, 38-protocol eval catalog) |
 | **Human gate** | Retains human judgement (APPROVE/BLOCK at `36ws.5`-style gates) |
@@ -124,7 +124,7 @@ Each active plugin injects hook stubs into every session context. Current overhe
 | `loop-breaker` | 2 | ~400 |
 | **Total** | **10 hooks** | **~2 100** |
 
-> ⚠️ SOTA signal: 10 plugins ≈ 40k tokens. Keep active plugin count ≤ 6 and total hook overhead ≤ 5k tokens. See `docs/loop-engineering/MAPPING.md` for the full breakdown.
+> ⚠️ SOTA signal (verified 2026-08): 5 active plugins, 15 hook rules, ~2 450 tokens overhead. Keep active plugin count ≤ 6 and total hook overhead ≤ 5k tokens. See `docs/loop-engineering/MAPPING.md` for the full breakdown.
 
 ## Memory and Manager stages — inline design decision
 
@@ -135,10 +135,9 @@ Stages 04 (Memory) and 05 (Manager) are **intentionally handled inline** in the 
 For skill/agent/recipe changes:
 
 ~~~bash
-python3 scripts/generate-tables.py
 for r in loop-engineering implement research verify; do goose recipe validate $r; done
-python3 scripts/check-consistency.py
-node apps/kg/dist/cli.js pipeline
+for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker budget-tracker; do sh src/plugins/$p/tests/test-plugin.sh; done
+node src/app/kg/dist/cli.js pipeline
 ~~~
 
 Recipe eval agents arrays list only in-session agents. Summoned agents are not Layer 2 declarations.
@@ -146,12 +145,11 @@ Recipe eval agents arrays list only in-session agents. Summoned agents are not L
 ## Validation
 
 ~~~bash
-find .goose/recipes -name '*.yaml' -exec goose recipe validate {} \;
-for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker; do sh .agents/plugins/$p/tests/test-plugin.sh; done
-python3 scripts/check-recipe-metadata.py
-python3 scripts/check-consistency.py
-node apps/kg/dist/cli.js bootstrap --dry-run
-./scripts/build-docs.sh
+find src/recipes -name '*.yaml' -exec goose recipe validate {} \;
+for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker; do sh src/plugins/$p/tests/test-plugin.sh; done
+node src/app/harness-release/dist/validate-harness-manifests.js
+node src/app/kg/dist/cli.js bootstrap --dry-run
+./src/tooling/bin/build-docs
 ~~~
 
 Goose currently may emit non-fatal OpenTelemetry shutdown panic messages after successful recipe validation; use the validation result/exit code as the gate and report the runtime warning separately.

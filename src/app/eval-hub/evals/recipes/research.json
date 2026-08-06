@@ -1,0 +1,148 @@
+[
+  {
+    "skills": [
+      "task-framing"
+    ],
+    "agents": [],
+    "query": "Research how recipes delegate to agents and propose one bounded improvement.",
+    "max_turns": 40,
+    "difficulty": "normal",
+    "expected_skill_contribution": "Should orchestrate repository-researcher and task-framing without edits.",
+    "baseline_gaps": [
+      ".goose/recipes/",
+      ".agents/"
+    ],
+    "expected_behavior": [
+      "Delegates to repository-researcher.",
+      "Produces facts, inferences, constraints, risks, relevant paths, verification commands, and a task contract.",
+      "Makes no product edits.",
+      "Completes within the recipe turn budget."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    },
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "objective",
+    "delegated_agents": [
+      "repository-researcher"
+    ]
+  },
+  {
+    "skills": [
+      "task-framing"
+    ],
+    "agents": [],
+    "query": "Research an ambiguous defect spanning configuration and runtime behavior.",
+    "max_turns": 40,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "Should reduce uncertainty before proposing implementation.",
+    "baseline_gaps": [
+      "src/",
+      "tests/",
+      ".goose/"
+    ],
+    "expected_behavior": [
+      "Frames the ambiguity explicitly.",
+      "Examines configuration, runtime path, and existing tests selectively.",
+      "Returns a smallest plausible boundary and critical unknowns.",
+      "Does not jump to implementation."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    },
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "objective",
+    "delegated_agents": [
+      "repository-researcher"
+    ]
+  },
+  {
+    "skills": [
+      "task-framing"
+    ],
+    "agents": [],
+    "query": "Research a suspected architecture issue where source evidence conflicts with documentation.",
+    "max_turns": 40,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "Should preserve conflict and avoid silently choosing one source.",
+    "baseline_gaps": [
+      "src/",
+      "docs/",
+      "tests/"
+    ],
+    "expected_behavior": [
+      "Cites both source and documentation evidence.",
+      "Classifies the conflict as unresolved unless runtime evidence resolves it.",
+      "Proposes a research or correction task contract.",
+      "Stops at low information value."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "acceptance_criteria_proven",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls",
+        "delegations",
+        "files_read",
+        "context_tokens",
+        "output_tokens",
+        "wall_time_seconds"
+      ],
+      "loop_metrics": [
+        "iterations",
+        "no_progress_iterations",
+        "transition_correctness",
+        "terminal_condition_correctness"
+      ]
+    },
+    "recipe_source_type": "top_level",
+    "recipe_task_parameter": "objective",
+    "delegated_agents": [
+      "repository-researcher"
+    ]
+  }
+]

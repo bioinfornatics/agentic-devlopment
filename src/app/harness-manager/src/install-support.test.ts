@@ -1,0 +1,44 @@
+import { access, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
+import { afterEach, describe, expect, it } from "vitest";
+const execFileAsync = promisify(execFile);
+import { packageHasBuildScript, upsertSlashCommands } from "./install-support.js";
+const roots: string[] = [];
+afterEach(async () => { await Promise.all(roots.splice(0).map(root => rm(root, { recursive: true, force: true }))); });
+describe("installer support", () => {
+  it("upserts managed commands and preserves external commands", () => { const source = "theme: dark\nslash_commands:\n  - command: external\n    recipe_path: /tmp/external.yaml\n  - command: IMPLEMENT\n    recipe_path: /old.yaml\n"; const output = upsertSlashCommands(source, [{ command: "implement", recipe_path: "/new/implement.yaml" }]); expect(output).toContain("theme: dark"); expect(output).toContain("command: external"); expect(output).toContain("recipe_path: /new/implement.yaml"); expect(output).not.toContain("/old.yaml"); });
+  it("creates commands for an empty config", () => { expect(upsertSlashCommands("", [{ command: "research", recipe_path: "/r.yaml" }])).toContain("command: research"); });
+  it("detects only a string build script and tolerates invalid JSON", async () => { const root = await mkdtemp(join(tmpdir(), "install-support-")); roots.push(root); const file = join(root, "package.json"); await writeFile(file, JSON.stringify({ scripts: { build: "tsc" } })); expect(await packageHasBuildScript(file)).toBe(true); await writeFile(file, JSON.stringify({ scripts: { test: "vitest" } })); expect(await packageHasBuildScript(file)).toBe(false); await writeFile(file, "{"); expect(await packageHasBuildScript(file)).toBe(false); });
+  it("installs into an empty HOME without rebuilding projected plugins", async () => {
+    const root = await mkdtemp(join(tmpdir(), "install-empty-home-")); roots.push(root);
+    const home = join(root, "home"); const xdg = join(root, "xdg-config"); const runtime = join(root, "runtime");
+    for (const path of [".goose/recipes", ".agents/skills/demo", ".agents/agents", ".agents/plugins/demo/scripts"]) await mkdir(join(runtime, path), { recursive: true });
+    await writeFile(join(runtime, ".goose/recipes/implement.yaml"), "title: implement\n");
+    await writeFile(join(runtime, ".agents/skills/demo/SKILL.md"), "---\nname: demo\ndescription: Demo.\n---\n");
+    await writeFile(join(runtime, ".agents/agents/demo.md"), "---\nname: demo\n---\n");
+    await writeFile(join(runtime, ".agents/plugins/demo/scripts/hook.sh"), "#!/bin/sh\n");
+    const installer = resolve(dirname(fileURLToPath(import.meta.url)), "../../../tooling/bin/install");
+    const { stdout } = await execFileAsync("bash", [installer, "--skip-validate", "--no-backup"], { env: { ...process.env, HOME: home, XDG_CONFIG_HOME: xdg, HARNESS_RUNTIME_ROOT: runtime } });
+    for (const path of [join(xdg, "goose/recipes/implement.yaml"), join(home, ".agents/skills/demo/SKILL.md"), join(home, ".agents/agents/demo.md"), join(home, ".agents/plugins/demo/scripts/hook.sh")]) await expect(access(path)).resolves.toBeUndefined();
+    expect(stdout).not.toContain("Building plugin:");
+    await execFileAsync("bash", [installer, "--skip-validate", "--no-backup"], { env: { ...process.env, HOME: home, XDG_CONFIG_HOME: xdg, HARNESS_RUNTIME_ROOT: runtime } });
+    await expect(access(join(home, ".agents/plugins/demo/demo"))).rejects.toThrow();
+  });
+  it("plans default slash commands from runtime recipes without creating the dry-run destination", async () => {
+    const root = await mkdtemp(join(tmpdir(), "install-dry-run-")); roots.push(root);
+    const home = join(root, "home"); const runtime = join(root, "runtime");
+    await mkdir(join(runtime, ".goose", "recipes"), { recursive: true });
+    await mkdir(join(runtime, ".agents", "skills"), { recursive: true });
+    await mkdir(join(runtime, ".agents", "agents"), { recursive: true });
+    await writeFile(join(runtime, ".goose", "recipes", "implement.yaml"), "title: implement\n");
+    const installer = resolve(dirname(fileURLToPath(import.meta.url)), "../../../tooling/bin/install");
+    const xdg = join(root, "xdg-config");
+    const { stdout } = await execFileAsync("bash", [installer, "--dry-run", "--skip-validate"], { env: { ...process.env, HOME: home, XDG_CONFIG_HOME: xdg, HARNESS_RUNTIME_ROOT: runtime } });
+    expect(stdout).toContain("/implement -> " + join(xdg, "goose", "recipes", "implement.yaml"));
+    await expect(access(join(xdg, "goose", "recipes"))).rejects.toThrow();
+  });
+});

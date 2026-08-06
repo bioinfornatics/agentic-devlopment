@@ -13,7 +13,7 @@
 # Replace <repo> with the actual repository URL (ask your team lead).
 git clone <repo>
 cd agentic-devlopment
-./scripts/install.sh
+./src/tooling/bin/install
 
 # Verify installation
 goose skills list | grep -c '|'  # Should show 17+
@@ -72,7 +72,7 @@ bd close <id>         # Mark complete
 
 ### Delegation
 
-Goose agents are discovered automatically from `.agents/agents/`. Active agents:
+Goose agents are discovered automatically from `src/agents/` (source; `.agents/agents/` at runtime). Active agents:
 
 | Name | Role |
 |---|---|

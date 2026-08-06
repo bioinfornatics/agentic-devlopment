@@ -1,0 +1,5 @@
+{
+  "name": "budget-tracker",
+  "version": "1.0.0",
+  "description": "Mechanical tool-call budget enforcement. Counts tool calls per session, tracks output size as a context-growth proxy, and blocks PreToolUse when GOOSE_TOOL_BUDGET is exceeded."
+}

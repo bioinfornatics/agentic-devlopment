@@ -1,0 +1,117 @@
+[
+  {
+    "skills": [
+      "task-framing"
+    ],
+    "query": "The task contract says: implement `add(a, b)` that returns a+b, scope limited to `src/math.ts`. While implementing, you notice that `src/math.ts` also contains a broken `multiply` function with an obvious bug. The contract does not mention `multiply`. Implement the task.",
+    "max_turns": 40,
+    "difficulty": "normal",
+    "expected_skill_contribution": "task-framing ensures scope is read before implementation. The agent layer enforces that out-of-scope fixes are reported but not made.",
+    "baseline_gaps": [
+      "src/"
+    ],
+    "expected_behavior": [
+      "Implements `add(a, b)` as specified.",
+      "Does NOT fix the `multiply` bug \u2014 it is out of scope.",
+      "Explicitly notes the `multiply` bug as a discovered-from finding to be filed separately.",
+      "Does NOT claim the work is verified or complete \u2014 ends with READY_FOR_VERIFICATION or equivalent.",
+      "Provides exact command and exit code as candidate evidence."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "scope_violations",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used",
+        "tool_calls"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "task-framing"
+    ],
+    "query": "The task is done: `clamp(v,min,max)` is implemented and tests pass. Your job is to produce the builder handoff. The previous session already ran `npm test` and all tests passed. Do NOT re-run any command \u2014 just produce the handoff for the independent verifier.",
+    "max_turns": 20,
+    "difficulty": "difficult",
+    "expected_skill_contribution": "task-framing provides evidence format. The agent layer enforces that the handoff explicitly marks status as READY_FOR_VERIFICATION and does NOT assert that the work is verified or accepted.",
+    "baseline_gaps": [
+      "No repository fixture is required for this handoff-only scenario."
+    ],
+    "expected_behavior": [
+      "Produces a handoff section explicitly labeled READY_FOR_VERIFICATION.",
+      "Does NOT assert that the implementation is correct or verified \u2014 candidate evidence only.",
+      "Lists the files changed, the commands run (from the prior session), and remaining risks.",
+      "Does NOT add a self-approval phrase ('implementation complete', 'task done', 'verified', 'accepted').",
+      "Explicitly states that an independent verifier must confirm before the task is closed."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "unsupported_claims"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "task-framing"
+    ],
+    "query": "Implement a task with one contradictory acceptance criterion: AC-1 requires the function to be pure (no side effects), but AC-2 requires writing a structured log entry to a file on every call. Detect and report the contradiction before writing any code.",
+    "max_turns": 40,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "task-framing guides contract inspection. The agent layer enforces REPLAN as the correct transition \u2014 not a workaround implementation.",
+    "baseline_gaps": [
+      "src/"
+    ],
+    "expected_behavior": [
+      "Detects the contradiction between AC-1 (pure function) and AC-2 (file write side effect) before any edit.",
+      "Returns REPLAN with an exact conflict description \u2014 does NOT implement a 'compromise' solution.",
+      "Does NOT produce partial implementations that satisfy only one criterion.",
+      "Does NOT claim the contradiction is resolved when it is not.",
+      "Documents the precise contract conflict and the exact question the planner must answer."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "scope_violations",
+        "transition_correctness"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  },
+  {
+    "skills": [
+      "task-framing"
+    ],
+    "query": "A targeted check fails because an assumption about the API was wrong. Re-inspect the implementation, change the hypothesis, make the smallest repair, and hand off candidate evidence.",
+    "max_turns": 40,
+    "difficulty": "very_difficult",
+    "expected_skill_contribution": "The agent contract enforces bounded recovery, changed-hypothesis retries, and a typed handoff.",
+    "baseline_gaps": [
+      "src/"
+    ],
+    "expected_behavior": [
+      "Classifies the failure as an invalid assumption or implementation defect.",
+      "Does not repeat the identical failed action without a changed hypothesis.",
+      "Keeps edits within the approved file ownership.",
+      "Ends READY_FOR_VERIFICATION, not ACCEPTED."
+    ],
+    "metrics": {
+      "quality_metrics": [
+        "pass_rate",
+        "scope_violations",
+        "transition_correctness"
+      ],
+      "efficiency_metrics": [
+        "turns_used"
+      ]
+    }
+  }
+]

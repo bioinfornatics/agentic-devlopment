@@ -1,0 +1,1 @@
+{"name":"kg","kind":"standalone-app","entrypoint":"src/cli.ts","targets":["node22"],"outputs":[{"runtimePath":"bin/kg","packageProfile":"development-tool","source":"dist/cli.js"}]}

@@ -38,3 +38,26 @@ test-results/
 *.db-shm
 
 .vite/
+/build/
+/.agents
+/.goose
+/src/app/*/node_modules/
+/src/app/*/dist/
+/src/plugins/*/node_modules/
+/src/plugins/*/bin/
+/src/plugins/*/data/*.db*
+/.artifacts/
+/.run/
+/node_modules/
+/package.json
+/package-lock.json
+/pnpm-lock.yaml
+/CONTEXT.md
+/src/app/node_modules/
+.agents.old/
+.goose.old/
+evals.old/
+.artifacts/
+.run/
+apps/
+.pytest_cache/

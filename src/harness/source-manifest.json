@@ -1,0 +1,601 @@
+{
+  "schema": "harness-source-manifest-v1",
+  "project": {
+    "repository": "https://github.com/bioinfornatics/agentic-devlopment",
+    "revisionPolicy": "release-commit"
+  },
+  "resolver": {
+    "name": "skills",
+    "package": "skills",
+    "version": "1.5.20"
+  },
+  "components": [
+    {
+      "id": "skill:domain-modeling",
+      "kind": "skill",
+      "name": "domain-modeling",
+      "ownership": "external",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "currentRuntimePath": null,
+      "targetSourcePath": null,
+      "migrationState": "external-lock-only"
+    },
+    {
+      "id": "skill:evidence-verification",
+      "kind": "skill",
+      "name": "evidence-verification",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/evidence-verification",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:grill-me",
+      "kind": "skill",
+      "name": "grill-me",
+      "ownership": "external",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [
+        "skill:grilling"
+      ],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "currentRuntimePath": null,
+      "targetSourcePath": null,
+      "migrationState": "external-lock-only"
+    },
+    {
+      "id": "skill:grill-with-docs",
+      "kind": "skill",
+      "name": "grill-with-docs",
+      "ownership": "external",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [
+        "skill:grilling",
+        "skill:domain-modeling"
+      ],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "currentRuntimePath": null,
+      "targetSourcePath": null,
+      "migrationState": "external-lock-only"
+    },
+    {
+      "id": "skill:grilling",
+      "kind": "skill",
+      "name": "grilling",
+      "ownership": "external",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "currentRuntimePath": null,
+      "targetSourcePath": null,
+      "migrationState": "external-lock-only"
+    },
+    {
+      "id": "skill:interface-quality",
+      "kind": "skill",
+      "name": "interface-quality",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/interface-quality",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:loop-control",
+      "kind": "skill",
+      "name": "loop-control",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/loop-control",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:output-discipline",
+      "kind": "skill",
+      "name": "output-discipline",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/output-discipline",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:skill-creator",
+      "kind": "skill",
+      "name": "skill-creator",
+      "ownership": "external",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "currentRuntimePath": null,
+      "targetSourcePath": null,
+      "migrationState": "external-lock-only"
+    },
+    {
+      "id": "skill:task-framing",
+      "kind": "skill",
+      "name": "task-framing",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/task-framing",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:ui-design",
+      "kind": "skill",
+      "name": "ui-design",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/ui-design",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:ux-principles",
+      "kind": "skill",
+      "name": "ux-principles",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/skills/ux-principles",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:wcag-accessibility-audit",
+      "kind": "skill",
+      "name": "wcag-accessibility-audit",
+      "ownership": "external",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "currentRuntimePath": null,
+      "targetSourcePath": null,
+      "migrationState": "external-lock-only"
+    },
+    {
+      "id": "agent:change-builder-premium",
+      "kind": "agent",
+      "name": "change-builder-premium",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/agents/change-builder-premium.md",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "agent:change-builder",
+      "kind": "agent",
+      "name": "change-builder",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/agents/change-builder.md",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "agent:error-analyzer",
+      "kind": "agent",
+      "name": "error-analyzer",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/agents/error-analyzer.md",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "agent:independent-verifier-premium",
+      "kind": "agent",
+      "name": "independent-verifier-premium",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/agents/independent-verifier-premium.md",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "agent:independent-verifier",
+      "kind": "agent",
+      "name": "independent-verifier",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/agents/independent-verifier.md",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "agent:repository-researcher",
+      "kind": "agent",
+      "name": "repository-researcher",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/agents/repository-researcher.md",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "recipe:implement",
+      "kind": "recipe",
+      "name": "implement",
+      "ownership": "internal",
+      "packagePolicy": "file",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/recipes/implement.yaml",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "recipe:loop-engineering",
+      "kind": "recipe",
+      "name": "loop-engineering",
+      "ownership": "internal",
+      "packagePolicy": "file",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/recipes/loop-engineering.yaml",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "recipe:research",
+      "kind": "recipe",
+      "name": "research",
+      "ownership": "internal",
+      "packagePolicy": "file",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/recipes/research.yaml",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "recipe:verify",
+      "kind": "recipe",
+      "name": "verify",
+      "ownership": "internal",
+      "packagePolicy": "file",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/recipes/verify.yaml",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "plugin:beads-telemetry",
+      "kind": "plugin",
+      "name": "beads-telemetry",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/plugins/beads-telemetry",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "plugin:loop-breaker",
+      "kind": "plugin",
+      "name": "loop-breaker",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/plugins/loop-breaker",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "plugin:loop-gate",
+      "kind": "plugin",
+      "name": "loop-gate",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/plugins/loop-gate",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "plugin:prevent-catastrophe",
+      "kind": "plugin",
+      "name": "prevent-catastrophe",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "covered by integration contracts"
+      },
+      "targetSourcePath": "src/plugins/prevent-catastrophe",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:plugin-authoring",
+      "kind": "skill",
+      "name": "plugin-authoring",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "Pending provider eval setup"
+      },
+      "targetSourcePath": "src/skills/plugin-authoring",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "plugin:budget-tracker",
+      "kind": "plugin",
+      "name": "budget-tracker",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": true,
+        "reason": "Installed skills affect harness behavior"
+      },
+      "targetSourcePath": "src/plugins/budget-tracker",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:context-budget-manager",
+      "kind": "skill",
+      "name": "context-budget-manager",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "Pending provider eval setup"
+      },
+      "targetSourcePath": "src/skills/context-budget-manager",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:context-compaction",
+      "kind": "skill",
+      "name": "context-compaction",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "Pending provider eval setup"
+      },
+      "targetSourcePath": "src/skills/context-compaction",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:graph-analyzer",
+      "kind": "skill",
+      "name": "graph-analyzer",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "Pending provider eval setup"
+      },
+      "targetSourcePath": "src/skills/graph-analyzer",
+      "migrationState": "canonical-source"
+    },
+    {
+      "id": "skill:remediation-verifier",
+      "kind": "skill",
+      "name": "remediation-verifier",
+      "ownership": "internal",
+      "packagePolicy": "tree",
+      "targets": [
+        "linux-x86_64"
+      ],
+      "dependencies": [],
+      "evaluation": {
+        "required": false,
+        "reason": "Pending provider eval setup"
+      },
+      "targetSourcePath": "src/skills/remediation-verifier",
+      "migrationState": "canonical-source"
+    }
+  ],
+  "releaseExcludes": [
+    "src/app/eval-hub",
+    "apps",
+    "evals",
+    "dist",
+    ".beads",
+    "node_modules",
+    "session-db",
+    "caches"
+  ],
+  "pathSemantics": {
+    "currentRuntimePath": "Optional only during pre-migration compatibility; absent after canonical migration.",
+    "targetSourcePath": "Canonical editable source for internal components; null for external lock-only components.",
+    "runtimePath": "Generated path declared by source-layout runtimePaths and package outputs."
+  }
+}

@@ -7,4 +7,4 @@
 | Harness source, recipe, or skill quality review | harness-review.yaml | Harness-specific quality review with Beads and workflow hygiene. |
 | CI JSON documentation wrapper | harness-review.yaml (output_format=json, scope=docs) | Machine-readable wrapper around documentation review expectations. |
 
-These recipes have distinct phases in .specs/harness/recipe-workflow-metadata.json. Future merge or deprecation must update recipe YAML, evals, AC-RECIPE wiring, generated docs, and this table together.
+These recipes have distinct phases in .specs/harness/recipe-workflow-metadata.json. Future merge or deprecation must update recipe YAML, Eval Hub definitions under `src/app/eval-hub/evals/`, AC-RECIPE wiring, generated docs, and this table together.

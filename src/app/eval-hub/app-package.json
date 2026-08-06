@@ -1,0 +1,10 @@
+{
+  "name": "eval-hub",
+  "kind": "companion-skill",
+  "entrypoint": "src/index.ts",
+  "targets": ["linux-x86_64"],
+  "outputs": [
+    {"runtimePath": ".agents/skills/eval-hub", "packageProfile": "optional-companion", "source": "companion/skill"},
+    {"runtimePath": "bin/eval-hub", "packageProfile": "optional-companion", "source": "dist/eval-hub"}
+  ]
+}

@@ -64,7 +64,7 @@ Un Δ ≥ 0 à L1 mais = 0 à L2 signifie : **les skills apportent de la valeur,
 ### 4.1 Vérifier `state.json`
 
 ```bash
-cat dist/evals/layered/<TS>/state.json | python3 -m json.tool
+jq . dist/evals/layered/<TS>/state.json
 ```
 
 Chercher : `status`, `avgDelta`, `n`, `excludedPairCounts`.
@@ -72,8 +72,8 @@ Chercher : `status`, `avgDelta`, `n`, `excludedPairCounts`.
 ### 4.2 Compter les exclusions et identifier leur type
 
 ```bash
-cat dist/evals/layered/<TS>/agents/_integrity-v2/agents/report-state.json \
-  | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['excludedPairCounts'])"
+jq '.excludedPairCounts' \
+  dist/evals/layered/<TS>/agents/_integrity-v2/agents/report-state.json
 ```
 
 | Code d'exclusion | Signification | Action |
@@ -88,23 +88,16 @@ cat dist/evals/layered/<TS>/agents/_integrity-v2/agents/report-state.json \
 
 ```bash
 for f in dist/evals/layered/<TS>/agents/_integrity-v2/agents/terminals/*.json; do
-  python3 -c "import json; d=json.load(open('$f')); \
-    print(d['subject'], 'eval', d['evalId'], d['side'], \
-    d['status'], d.get('exclusion') or d.get('grading',{}).get('score','?'))"
+  jq -r '[.subject, "eval", .evalId, .side, .status,
+    (.exclusion // .grading.score // "?")] | @tsv' "$f"
 done
 ```
 
 ### 4.4 Pour chaque candidat échoué, lire `execution-result.json`
 
 ```bash
-cat dist/evals/layered/<TS>/agents/<subject>/<hash>/eval-0/repetition-0/candidate/execution-result.json \
-  | python3 -c "
-import sys,json; d=json.load(sys.stdin)
-print('status:', d['status'])
-print('failureReason:', d.get('failureReason'))
-act = d['treatmentActivation']
-print('activation:', act['status'], '— failedAgents:', act['failedAgents'])
-"
+jq -r '"status: \(.status)\nfailureReason: \(.failureReason // null)\nactivation: \(.treatmentActivation.status) — failedAgents: \(.treatmentActivation.failedAgents | @json)"' \
+  dist/evals/layered/<TS>/agents/<subject>/<hash>/eval-0/repetition-0/candidate/execution-result.json
 ```
 
 ### 4.5 Vérifier le timing pour détecter `maxTurnsReached`
@@ -146,11 +139,8 @@ cat dist/evals/layered/<TS>/agents/<subject>/<hash>/eval-0/agent_l2/run-1/timing
 ```bash
 # Comparer les scores par eval_id et sujet
 for f in dist/evals/layered/<TS>/agents/_integrity-v2/agents/terminals/*.json; do
-  python3 -c "
-import json; d=json.load(open('$f'))
-g = d.get('grading', {})
-print(d['subject'], 'eval', d['evalId'], d['side'], g.get('score','N/A'), g.get('outcomes',''))
-"
+  jq -r '[.subject, "eval", .evalId, .side,
+    (.grading.score // "N/A"), (.grading.outcomes // "" | tostring)] | @tsv' "$f"
 done | sort
 ```
 
@@ -163,7 +153,7 @@ Chercher : est-ce que tous les evalIds ont le même score ? Si oui → grader ou
 **Impact** : La session s'est arrêtée avant de terminer. Le score reflète un travail incomplet.
 
 **Actions** :
-- Augmenter `maxTurns` dans `evals/agents/<subject>.json`.
+- Augmenter `maxTurns` dans `src/app/eval-hub/evals/agents/<subject>.json`.
 - Vérifier dans `goose-log-analysis.json` les `warnings` de type `runtime_error` — présence de boucles d'outil ou de logs anormaux.
 
 ### Pattern D — Grand CI avec Δ = 0
@@ -195,30 +185,33 @@ Chercher : est-ce que tous les evalIds ont le même score ? Si oui → grader ou
 
 ```bash
 # Run de base (tous les layers)
-node apps/eval-hub/dist/index.js kind=agents subjects=change-builder,error-analyzer,independent-verifier,repository-researcher mode=layer-delta repetitions=3 maxTurns=40 timeoutMs=900000 ambient=true
+node src/app/eval-hub/dist/index.js kind=agents subjects=change-builder,error-analyzer,independent-verifier,repository-researcher mode=layer-delta repetitions=3 maxTurns=40 timeoutMs=900000 ambient=true
 
 # Résumé rapide d'un run
-python3 -c "
-import json, sys
-d = json.load(open('dist/evals/layered/<TS>/state.json'))
-for name, layer in d['layers'].items():
-    print(f'{name}: status={layer[\"status\"]} Δ={layer[\"avgDelta\"]:+.4f} n={layer[\"n\"]} excluded={layer[\"report\"].get(\"excludedPairCounts\",{})}')
-"
+jq -r '.layers | to_entries[] |
+  [.key, .value.status, .value.avgDelta, .value.n,
+   (.value.report.excludedPairCounts // {} | tojson)] | @tsv' \
+  dist/evals/layered/<TS>/state.json \
+  | while IFS="$(printf '\t')" read -r name status delta n excluded; do
+      printf '%s: status=%s Δ=%+.4f n=%s excluded=%s\n' \
+        "$name" "$status" "$delta" "$n" "$excluded"
+    done
 
 # Lister toutes les paires avec leur score
 for f in dist/evals/layered/<TS>/agents/_integrity-v2/agents/terminals/*.json; do
-  python3 -c "import json; d=json.load(open('$f')); g=d.get('grading',{}); print(d['subject'],d['evalId'],d['side'],d['status'],g.get('score','exclu'),d.get('exclusion'))"
+  jq -r '[.subject, .evalId, .side, .status,
+    (.grading.score // "exclu"), (.exclusion // null)] | @tsv' "$f"
 done
 
 # Taux de pass par eval par sujet
-python3 -c "
-import json, glob
-for f in glob.glob('dist/evals/layered/<TS>/agents/*/*/eval-*/agent_l2/run-1/grading.json'):
-    parts = f.split('/')
-    subj, eval_id = parts[-6], parts[-3]
-    d = json.load(open(f))
-    print(subj, eval_id, 'candidate:', d['summary'])
-"
+for f in dist/evals/layered/<TS>/agents/*/*/eval-*/agent_l2/run-1/grading.json; do
+  relative=${f#dist/evals/layered/<TS>/agents/}
+  subject=${relative%%/*}
+  relative=${relative#*/}; relative=${relative#*/}
+  eval_id=${relative%%/*}
+  jq -r --arg subject "$subject" --arg eval_id "$eval_id" \
+    '[$subject, $eval_id, "candidate:", (.summary | tostring)] | @tsv' "$f"
+done
 ```
 
 ---
@@ -241,9 +234,9 @@ for f in glob.glob('dist/evals/layered/<TS>/agents/*/*/eval-*/agent_l2/run-1/gra
 
 ## 9. Liens
 
-- Source : `apps/eval-hub/src/domains/execution/executionIntegrity.ts` — mécanisme `inspectTreatmentActivation`
-- Architecture : `apps/eval-hub/ARCHITECTURE.md`
-- Evals definitions : `evals/agents/`, `evals/skills/`, `evals/recipes/`
+- Source : `src/app/eval-hub/src/domains/execution/executionIntegrity.ts` — mécanisme `inspectTreatmentActivation`
+- Architecture : `src/app/eval-hub/ARCHITECTURE.md`
+- Evals definitions : `src/app/eval-hub/evals/agents/`, `src/app/eval-hub/evals/skills/`, `src/app/eval-hub/evals/recipes/`
 - Rapport HTML : `dist/evals/layered/<TS>/integrity-report-agents.html`
 
 ---
@@ -255,7 +248,7 @@ for f in glob.glob('dist/evals/layered/<TS>/agents/*/*/eval-*/agent_l2/run-1/gra
 **Exemple observé :** IV eval-0 baseline → `turnsUsed: 137`, `maxTurns: 40`  
 → root session ~40 turns + sub-agents collectivement ~97 turns
 
-`maxTurnsReached: true` se déclenche à `turns >= maxTurns` (root boundary), mais le stream continue depuis les sous-sessions en vol. Ce comportement est documenté dans `apps/eval-hub/REVIEW.md §2.1`.
+`maxTurnsReached: true` se déclenche à `turns >= maxTurns` (root boundary), mais le stream continue depuis les sous-sessions en vol. Ce comportement est documenté dans `src/app/eval-hub/REVIEW.md §2.1`.
 
 **Interprétation :** ce n'est pas un bug fonctionnel. Ne pas confondre avec une session bloquée. Si la qualité du run est acceptable (grading non-null), ignorer cet artefact.
 

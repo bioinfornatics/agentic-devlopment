@@ -24,28 +24,28 @@ When release is blocked, run these checks directly:
 
 ```bash
 # 1. Recipe validation
-find .goose/recipes -name '*.yaml' -exec goose recipe validate {} \;
+find src/recipes -name '*.yaml' -exec goose recipe validate {} \;
 
 # 2. Plugin tests
 for p in prevent-catastrophe loop-gate beads-telemetry loop-breaker; do
-  sh .agents/plugins/$p/tests/test-plugin.sh
+  sh src/plugins/$p/tests/test-plugin.sh
 done
 
 # 3. KG bootstrap dry-run
-node apps/kg/dist/cli.js bootstrap --dry-run
+node src/app/kg/dist/cli.js bootstrap --dry-run
 
 # 4. Check consistency (metadata, recipe contracts)
-python3 scripts/check-recipe-metadata.py
-python3 scripts/check-consistency.py
+node src/app/harness-release/dist/validate-harness-manifests.js
+node src/app/harness-release/dist/validate-harness-manifests.js
 
 # 5. Full test suite
 cd apps && pnpm -r test
 
-# 6. Python corpus tests
-python3 -m pytest scripts/tests/ -q
+# 6. TypeScript tooling and corpus tests
+pnpm --dir src/app --filter @harness/tooling test
 
 # 7. Docs build
-./scripts/build-docs.sh
+./src/tooling/bin/build-docs
 ```
 
 ## Release phases

@@ -1,0 +1,73 @@
+version: "1.0.0"
+title: "Independent Beads Verification"
+description: "Verify one built Beads task in a fresh isolated session against predefined criteria."
+instructions: |
+  ## AD-001 pattern: Specialist orchestration boundary
+  Delegate to independent-verifier in a new isolated session. Load skill evidence-verification before delegation and load skill loop-control when recommending recovery. Do not verify in the builder session.
+
+  First visible output before tools:
+    Run/task: <run_id>/<task_id>
+    Verification: independent and read-only
+    Criteria source: Beads acceptance contract and governing spec
+
+  Load the task, actual diff, builder_session, candidate evidence, prior verdicts, failure/evidence signatures, and budget. Reconstruct the current task contract in this order: objective, current state, first action, unsatisfied ACs, last attempt/result, next action, expected proof, and remaining budget. If the contract is absent or contradictory, report REPLAN rather than inferring intent from comments. Treat comments as append-only chronology. Ask which tools/checks are required, what failed, what was added later, and whether that addition actually exercises the failed criterion.
+
+  Record verifier_session and require it to differ from builder_session. Run all safe deterministic checks; never repair implementation or rewrite criteria. Refresh notes with the verification status and next action, then add a typed UTC comment (`RESULT`, `REWORK`, `BLOCKED`, or `ESCALATE`) with Action/Result/Evidence/Next. Persist criterion evidence and exactly one verdict: ACCEPTED, REWORK, REPLAN, BLOCKED, or ESCALATE. Return a recommended controller transition; only the controller may set COMPLETE.
+
+  Skill contract for every delegate: propagate the role's mandatory baseline skill names and any objective-driven dynamic skill candidates from task metadata, the governing spec, repository instructions, the objective, risks, and proof needs. Require loading by name only and only when materially relevant; never preload all skills. Require selected names and concise rationale in Beads and the handoff. A missing mandatory skill blocks the role; a missing optional or dynamic skill is documented and blocks or escalates only when the objective cannot still be completed safely and proved. Preserve the delegate's freedom of method inside scope, acceptance criteria, and guardrails.
+prompt: |
+  Independently verify Beads task {{ task_id }} in run {{ run_id }}.
+  Additional controller context: {{ context }}
+parameters:
+  - key: run_id
+    input_type: string
+    requirement: optional
+    default: ""
+    description: "Parent Beads run epic"
+  - key: task_id
+    input_type: string
+    requirement: required
+    description: "Built Beads task to verify"
+  - key: context
+    input_type: string
+    requirement: optional
+    default: ""
+    description: "Additional bounded controller context"
+extensions:
+  - type: platform
+    name: summon
+  - type: platform
+    name: skills
+  - type: builtin
+    name: developer
+settings:
+  max_turns: 25
+retry:
+  max_retries: 2
+  checks:
+    - type: shell
+      command: "test -f .beads/issues.jsonl"
+    - type: shell
+      command: "bd list --json >/dev/null"
+  on_failure: abort
+session:
+  max_tool_repetitions: 5
+response:
+  json_schema:
+    type: object
+    properties:
+      run_id: {type: string}
+      task_id: {type: string}
+      verifier_session: {type: string}
+      verdict:
+        type: string
+        enum: [ACCEPTED, REWORK, REPLAN, BLOCKED, ESCALATE]
+      rationale: {type: string}
+      evidence:
+        type: array
+        items: {type: object}
+      defects:
+        type: array
+        items: {type: string}
+      recommended_transition: {type: string}
+    required: [run_id, task_id, verifier_session, verdict, rationale, evidence, defects, recommended_transition]

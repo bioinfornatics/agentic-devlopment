@@ -1,4 +1,5 @@
 # Agentic Development Harness — Loop Engineering Pack
+See the [Harness operator HOWTO](HOWTO.md) for reproducible operating commands.
 
 ## Why
 
@@ -21,19 +22,12 @@ Premium variants (`change-builder-premium`, `independent-verifier-premium`) acti
 
 The orchestration itself is not represented as another persona. It is implemented through **recipes**, **skills**, **hooks**, persistent state, budgets, evidence, and explicit transition decisions.
 
-## How
-
-The default controlled loop is:
+## The loop
 
 ```text
-Trigger
-  -> Research
-  -> Frame one bounded task
-  -> Build
-  -> Collect deterministic evidence
-  -> Verify independently
-  -> Persist state
-  -> Decide: CONTINUE | REPLAN | WAIT | COMPLETE | ESCALATE | ABORT
+Trigger → Research → Frame one bounded task → Build
+  → Collect deterministic evidence → Verify independently
+  → Persist state → Decide: CONTINUE | REPLAN | WAIT | COMPLETE | ESCALATE | ABORT
 ```
 
 ```mermaid
@@ -63,8 +57,6 @@ Layer 1: SKILLS         Reusable methods and decision rules
 Layer 0: GOOSE          Runtime, tools, sessions, extensions and subagents
 ```
 
-### Responsibility mapping
-
 | Mechanism      | Responsibility                                                                 |
 |----------------|--------------------------------------------------------------------------------|
 | **Agent**      | Isolated execution context with a specific permission or independence boundary |
@@ -76,193 +68,132 @@ Layer 0: GOOSE          Runtime, tools, sessions, extensions and subagents
 | **State**      | Durable iteration status, decisions, budgets and evidence references           |
 | **Controller** | Transition logic implemented by the loop recipe and loop-control skill         |
 
-## Repository structure
-
-```text
-.agents/
-├── agents/
-│   ├── repository-researcher.md
-│   ├── change-builder.md
-│   └── independent-verifier.md
-├── skills/
-│   ├── task-framing/
-│   │   └── SKILL.md
-│   ├── evidence-verification/
-│   │   └── SKILL.md
-│   ├── loop-control/
-│   │   └── SKILL.md
-│   ├── interface-quality/
-│   │   └── SKILL.md
-│   ├── ui-design/
-│   │   └── SKILL.md
-│   ├── ux-principles/
-│   │   └── SKILL.md
-│   └── wcag-accessibility-audit/
-│       └── SKILL.md
-└── plugins/
-    └── loop-engineering/
-        ├── plugin.json
-        ├── hooks/
-        │   └── hooks.json
-        └── scripts/
-            ├── guard-shell.sh
-            └── record-event.sh
-
-.goose/
-└── recipes/
-    ├── research.yaml
-    ├── implement.yaml
-    ├── verify.yaml
-    └── loop-engineering.yaml
-```
-
-<!-- BEGIN GENERATED: agents-table -->
 ## Named agents (6)
 
-Named agents in `.agents/agents/` — invoke with Goose Summon natural language:
-`load agent <name>` (in-session) or `delegate task bd-xxx and into those task load agent <name>` (isolated).
+Invoke with Goose Summon: `load agent <name>` or delegate into an isolated session.
 
 | Agent | Role | Model |
 |-------|------|-------|
-| `change-builder` | Implements one claimed bounded Beads task and produces candidate evidence withou | claude-sonnet-4-6 |
-| `change-builder-premium` | Premium implementation agent invoked after 2+ rework cycles. | gpt-5.6-sol |
-| `error-analyzer` |  | claude-sonnet-4-6 |
-| `independent-verifier` | Independently judges a Beads task against predefined acceptance criteria and rep | claude-sonnet-4-6 |
-| `independent-verifier-premium` | Premium verification agent invoked after 2+ rework cycles. | gpt-5.6-sol |
-| `repository-researcher` | Builds an evidence-backed repository and Beads state map before implementation w | claude-sonnet-4-6 |
-<!-- END GENERATED: agents-table -->
+| `change-builder` | Bounded implementation agent with explicit scope | claude-sonnet-4-6 |
+| `change-builder-premium` | Premium builder invoked after 2+ rework cycles | gpt-5.6-sol |
+| `independent-verifier` | Independent verification against acceptance criteria | claude-sonnet-4-6 |
+| `independent-verifier-premium` | Premium verifier invoked after 2+ rework cycles | gpt-5.6-sol |
+| `repository-researcher` | Read-only repository exploration and task framing | claude-sonnet-4-6 |
+| `error-analyzer` | Summoned by loop-breaker on repeated tool failures | claude-sonnet-4-6 |
 
-<!-- BEGIN GENERATED: skills-table -->
-## Skills (12)
+## Skills (18)
 
 | Skill | Purpose |
 |-------|---------|
-| `domain-modeling` | Build and sharpen a project's domain model. |
-| `evidence-verification` | Evaluate engineering work against predefined acceptance criteria using reproducible eviden |
-| `grill-me` | A relentless interview to sharpen a plan or design. |
-| `grill-with-docs` | A relentless interview to sharpen a plan or design, which also creates docs (ADR's and glo |
-| `grilling` | Grill the user relentlessly about a plan, decision, or idea. |
-| `interface-quality` | Shared quality floor for UI evaluation: evidence labeling, anti-generic patterns, and stru |
-| `loop-control` | Govern a Beads-backed engineering loop with explicit progress, budgets, dependencies, and |
-| `output-discipline` | Keep tool outputs within token budget. |
-| `task-framing` | Convert an engineering objective into the smallest independently verifiable Beads task contract. |
-| `ui-design` | Evaluate visual design decisions: design system token compliance, visual hierarchy, spacin |
-| `ux-principles` | Evaluate user experience: journey completion, interaction state coverage (loading, empty, |
-| `wcag-accessibility-audit` | Formal WCAG 2. |
-<!-- END GENERATED: skills-table -->
+| `task-framing` | Convert an engineering objective into the smallest independently verifiable Beads task contract |
+| `evidence-verification` | Evaluate work against acceptance criteria using reproducible evidence |
+| `loop-control` | Govern a Beads-backed engineering loop with budgets, dependencies, and transitions |
+| `output-discipline` | Keep tool outputs within token budget |
+| `interface-quality` | Shared quality floor for UI evaluation |
+| `ui-design` | Visual design: token compliance, hierarchy, spacing |
+| `ux-principles` | Journey completion, interaction state coverage |
+| `domain-modeling` | External (mattpocock/skills) |
+| `grill-me` | External (mattpocock/skills) |
+| `grill-with-docs` | External (mattpocock/skills) |
+| `grilling` | External (mattpocock/skills) |
+| `skill-creator` | External (anthropics/skills) |
+| `wcag-accessibility-audit` | External (mastepanoski/claude-skills) |
+| `context-budget-manager` | Measure and enforce context and tool-call budget in a Goose session |
+| `context-compaction` | Reduce active context before phase transitions or delegation |
+| `graph-analyzer` | Reconstruct and compare documented, configured, and executed harness graphs |
+| `plugin-authoring` | Design, implement, test, and install Open-Plugins-format Goose plugins |
+| `remediation-verifier` | Verify that a harness remediation achieved its goal without regressions |
 
 ## Recipes
 
-| Recipe             | Purpose                                                                                          |
-|--------------------|--------------------------------------------------------------------------------------------------|
-| `research`         | Delegate read-only repository and failure research; return a bounded task contract               |
-| `implement`        | Claim one ready Beads child task, delegate bounded writes, and collect candidate evidence        |
-| `verify`           | Delegate independent read-only verification and persist criterion evidence plus verdict          |
-| `loop-engineering` | Control Trigger → Planner → Builder → Verifier → Memory → Manager → Controller using Beads state |
-
-## Loop decisions
-
-Each iteration must end with exactly one typed decision:
-
-| Decision   | Meaning                                                                           |
-|------------|-----------------------------------------------------------------------------------|
-| `CONTINUE` | A justified next bounded task exists                                              |
-| `REPLAN`   | Current assumptions or task decomposition are invalid                             |
-| `WAIT`     | Progress depends on an external gate or event                                     |
-| `COMPLETE` | All acceptance criteria are supported by evidence                                 |
-| `ESCALATE` | A human decision, permission or risk acceptance is required                       |
-| `ABORT`    | A budget, safety limit, impossibility or repeated stagnation requires termination |
-
-Completion must never be accepted solely because the builder reports that the work is done.
-
-## Stop and escalation conditions
-
-The loop must stop or escalate when at least one of these conditions applies:
-
-- all acceptance criteria are proven;
-- the maximum iteration, duration, or token budget is reached;
-- the same failure repeats without a materially different hypothesis;
-- no measurable progress occurs across consecutive iterations;
-- required evidence cannot be produced;
-- a destructive or privileged action requires approval;
-- constraints conflict or the objective is impossible under the current conditions.
-
-## Loop state x Harness
-
-| Étape             | Diagramme         | Recipe                                      | Agent                                      | Skill                                                                        | Plugin                                                    |
-|-------------------|-------------------|---------------------------------------------|--------------------------------------------|------------------------------------------------------------------------------|-----------------------------------------------------------|
-| **00 Trigger**    | `trigger.puml`    | `loop-engineering.yaml` (entrée)            | —                                          | —                                                                            | `loop-engineering` (SessionStart, UserPromptSubmit hooks) |
-| **01 Planner**    | `planner.puml`    | `research.yaml` (sous-boucle)               | `repository-researcher` (lecture seule)    | `task-framing` (décomposition contrat)                                       | —                                                         |
-| **02 Builder**    | `builder.puml`    | `implement.yaml` (sous-boucle)              | `change-builder` (session isolée)          | `task-framing` (restate contract)                                            | `loop-engineering` + `prevent-catastrophe` (guard-shell)  |
-| **03 Verifier**   | `verifier.puml`   | `verify.yaml` (sous-boucle)                 | `independent-verifier` (session ≠ builder) | `evidence-verification` (verdicts typés)                                     | `loop-engineering` (guard-shell)                          |
-| **04 Memory**     | `memory.puml`     | —                                           | ⚠️ **aucun agent dédié**                   | `loop-control` (beads-control-plane.md)                                      | `beads-telemetry` (PostToolUse hooks)                     |
-| **05 Manager**    | `manager.puml`    | —                                           | ⚠️ **aucun agent dédié**                   | `loop-control` (priorité, no-progress)                                       | —                                                         |
-| **06 Controller** | `controller.puml` | `loop-engineering.yaml` (décisions finales) | —                                          | `loop-control` (6 transitions: CONTINUE/REPLAN/WAIT/COMPLETE/ESCALATE/ABORT) | —                                                         
-
+| Recipe | Purpose |
+|--------|---------|
+| `loop-engineering` | Full loop orchestrator (Trigger → Planner → Builder → Verifier → Controller) |
+| `research` | Read-only repository research; returns a bounded task contract |
+| `implement` | Claim one Beads task, delegate bounded writes, collect evidence |
+| `verify` | Independent read-only verification with typed verdict |
 
 ## Installation
 
-### Project-local installation
-
-Copy the directories into the target repository while preserving hidden paths:
+> **This is the top-level entry point.** Detailed steps are in [HOWTO.md](HOWTO.md) and [INSTALL.md](INSTALL.md).
 
 ```bash
-cp -a .agents /path/to/project/
-cp -a .goose /path/to/project/
+# One-shot: build + assemble + verify release archive
+just VERSION=1.0.0 release-pipeline
+
+# Install into your user Goose config (~/.agents + ~/.config/goose)
+just install-release
+
+# Preview only (dry-run)
+just INSTALL_FLAGS='--dry-run' install-release
 ```
 
-### User-level installation
+See [docs/install-reference.md](docs/install-reference.md) for install flags and project-local targets.
+
+## Quick start
 
 ```bash
-mkdir -p ~/.agents/agents ~/.agents/skills ~/.agents/plugins
-mkdir -p ~/.config/goose/recipes
+# 1. Bootstrap the runtime from source
+just bootstrap-runtime
+just verify-runtime
 
-cp -a .agents/agents/. ~/.agents/agents/
-cp -a .agents/skills/. ~/.agents/skills/
-cp -a .agents/plugins/. ~/.agents/plugins/
-cp -a .goose/recipes/. ~/.config/goose/recipes/
+# 2. Run the full loop
+goose run --recipe loop-engineering \
+  --params objective="Implement the requested change" \
+  --params max_iterations=8
+
+# 3. Run an isolated phase
+goose run --recipe research \
+  --params objective="Map the affected components"
 ```
 
 ## Validation
 
-Validate each recipe with the installed Goose CLI:
-
 ```bash
-goose recipe validate .goose/recipes/research.yaml
-goose recipe validate .goose/recipes/implement.yaml
-goose recipe validate .goose/recipes/verify.yaml
-goose recipe validate .goose/recipes/loop-engineering.yaml
+# Validate all recipes
+find src/recipes -name '*.yaml' -print -exec goose recipe validate {} \;
+
+# Validate runtime projection
+just verify-runtime
 ```
 
-Validate all recipes:
+## Decisions and stop conditions
 
-```bash
-find .goose/recipes -name '*.yaml' -print -exec goose recipe validate {} \;
-```
+Every iteration ends with exactly one typed decision:
 
-Check custom-agent frontmatter:
+| Decision   | Meaning |
+|------------|---------|
+| `CONTINUE` | A justified next bounded task exists |
+| `REPLAN`   | Current assumptions or task decomposition are invalid |
+| `WAIT`     | Progress depends on an external gate or event |
+| `COMPLETE` | All acceptance criteria are supported by evidence |
+| `ESCALATE` | A human decision, permission or risk acceptance is required |
+| `ABORT`    | A budget, safety limit, impossibility or repeated stagnation |
 
-```bash
-find .agents/agents -name '*.md' -maxdepth 1 -print
-```
+The loop must stop or escalate when:
+- all acceptance criteria are proven by evidence
+- a maximum iteration, duration, or token budget is reached
+- the same failure repeats without a materially different hypothesis
+- no measurable progress occurs across consecutive iterations
+- required evidence cannot be produced
+- a destructive or privileged action requires approval
+- constraints conflict or the objective is impossible under current conditions
 
-## Example execution
+*Completion must never be accepted solely because the builder reports that the work is done.*
 
-Run the complete loop:
+## Loop state × Harness
 
-```bash
-goose run --recipe loop-engineering \
-  --params objective="Implement the requested change" \
-  --params max_iterations=8
-```
+| Step | Recipe | Agent | Skill |
+|------|--------|-------|-------|
+| 00 Trigger | `loop-engineering.yaml` (entry) | — | — |
+| 01 Planner | `research.yaml` | `repository-researcher` | `task-framing` |
+| 02 Builder | `implement.yaml` | `change-builder` | `task-framing` |
+| 03 Verifier | `verify.yaml` | `independent-verifier` | `evidence-verification` |
+| 04 Memory | inline | — | `loop-control` |
+| 05 Manager | inline | — | `loop-control` |
+| 06 Controller | `loop-engineering.yaml` | — | `loop-control` |
 
-Run an isolated phase:
-
-```bash
-goose run --recipe research \
-  --params objective="Map the affected components" \
-  --params run_id="<optional-beads-run-id>"
-```
+Memory and Manager run inline (no dedicated agents) to reduce latency and token cost.
 
 ## Integration with a larger harness
 
@@ -271,17 +202,15 @@ This pack can be merged into a broader Agentic Development Harness using Beads, 
 Recommended mapping:
 
 ```text
-Intent -> Spec/AC -> Beads task -> Loop Engineering -> Evidence -> Memory/Handoff
+Intent → Spec/AC → Beads task → Loop Engineering → Evidence → Memory/Handoff
 ```
 
-In a larger harness:
-
-- keep **Beads** as the durable work and dependency control plane;
-- keep specifications and acceptance criteria as the source of intent;
-- use the core loop agents (researcher, builder, verifier) where isolation or independent verification is useful;
-- express domain expertise through skills;
-- use recipes for orchestration;
-- keep deterministic verification outside the model whenever possible.
+- keep **Beads** as the durable work and dependency control plane
+- keep specifications and acceptance criteria as the source of intent
+- use core loop agents (researcher, builder, verifier) where isolation or independent verification is required
+- express domain expertise through skills
+- use recipes for orchestration
+- keep deterministic verification outside the model whenever possible
 
 ## Design principles
 
@@ -290,22 +219,34 @@ In a larger harness:
 3. **State outside conversation.** Durable decisions and progress must survive session compaction or restart.
 4. **One bounded change per build iteration.** Reduce blast radius and simplify verification.
 5. **Explicit terminal states.** Every loop must be able to complete, escalate, wait, or abort.
-6. **Improve the loop deliberately.** Update skills, recipes, and guards only from observed evidence, not from uncontrolled self-modification.
+6. **Improve the loop deliberately.** Update skills, recipes, and guards only from observed evidence.
 
-## Evaluation strategy
+## Evaluation
 
-The bundled `evals/` suite targets this minimal architecture directly:
-**4 agents, 7 skills, and 4 recipes** (53 graded scenarios total).
+The `src/app/eval-hub/` suite covers **4 agents, 7 skills, 4 recipes** (53 graded scenarios).
+Component count is not a success metric — the preferred configuration is the smallest one that meets the quality gate and lies on the quality/cost Pareto frontier.
 
-It includes component scenarios and architecture-ablation benchmarks
-against a larger harness. Component count is not a success metric;
-the preferred configuration is the smallest one that meets the quality
-gate and lies on the quality/cost Pareto frontier.
+See [`src/app/eval-hub/evals/README.md`](src/app/eval-hub/evals/README.md).
 
-See [`evals/README.md`](evals/README.md).
-## License / ownership
+## Release pipeline
 
-This pack is a local operational configuration. Adapt it to the governance, security, and delivery constraints of each project.
-## Optional Eval Hub companion
+```bash
+just VERSION=1.0.0 release-pipeline   # bootstrap → assemble → verify
+just VERSION=1.0.0 release-dryrun     # CI dry-run (reproducibility check)
+just install-release                  # install to user config
+just INSTALL_FLAGS='--dry-run' install-release   # preview
+```
 
-Eval Hub is distributed separately from the core harness as an optional Bun-packaged application plus the `eval-hub` Agent Skill. See `docs/specs/eval-hub-skill-package.md` and `companions/eval-hub/skill/SKILL.md`. The core release remains evaluator-independent.
+See [docs/harness-release-lifecycle.md](docs/harness-release-lifecycle.md) for the full reference.
+
+## Development source vs runtime
+
+Edit harness assets only under `src/agents`, `src/skills`, `src/recipes`, `src/plugins`, and `src/app`.
+Root `.agents` and `.goose` are generated runtime projections — never edit them directly.
+
+Bootstrap: `just bootstrap-runtime` · Verify: `just verify-runtime`
+See [docs/migration/source-runtime-separation.md](docs/migration/source-runtime-separation.md).
+
+## License
+
+This pack is a local operational configuration. Adapt it to the governance, security, and delivery constraints of your project.

@@ -1,0 +1,6 @@
+packages:
+  - "kg"
+  - "kg-visualizer"
+  - "eval-hub"
+  - "harness-release"
+  - "harness-manager"

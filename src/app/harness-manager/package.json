@@ -1,0 +1,37 @@
+{
+  "name": "@harness/harness-manager",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": "./dist/*.js"
+  },
+  "bin": {
+    "project-harness-runtime": "./dist/project-harness-runtime.js",
+    "manage-project-runtime": "./dist/manage-project-runtime.js",
+    "install-harness-release": "./dist/install-harness-release.js",
+    "install-eval-hub-companion": "./dist/install-eval-hub-companion.js",
+    "loop-transition-guard": "./dist/loop-transition-guard.js",
+    "find-spec-deviations": "./dist/find-spec-deviations.js",
+    "beads-readonly-evidence": "./dist/beads-readonly-evidence.js",
+    "generate-tables": "./dist/generate-tables.js",
+    "install-support": "./dist/install-support.js",
+    "harness-install": "./dist/install.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm run build && vitest run",
+    "cli:install": "node ./dist/install.js"
+  },
+  "dependencies": {
+    "@harness/eval-hub": "workspace:*",
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0",
+    "@harness/harness-release": "workspace:*"
+  }
+}

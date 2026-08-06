@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "local-harness-evaluation-evidence.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "profileVersion",
+    "profile",
+    "status",
+    "releaseDigest",
+    "bindings",
+    "population",
+    "layers",
+    "startedAt",
+    "completedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "profileVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+[.][0-9]+[.][0-9]+$"
+    },
+    "profile": {
+      "enum": [
+        "smoke",
+        "release"
+      ]
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "fail",
+        "aborted"
+      ]
+    },
+    "releaseDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "locks",
+        "runtime",
+        "release",
+        "goose",
+        "evalHub",
+        "provider",
+        "model",
+        "corpus",
+        "profile"
+      ],
+      "properties": {
+        "source": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "locks": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "runtime": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "release": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "goose": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "evalHub": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "provider": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "model": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "corpus": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "profile": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "population": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "component",
+          "disposition"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "skill",
+              "agent",
+              "recipe"
+            ]
+          },
+          "component": {
+            "type": "string",
+            "minLength": 1
+          },
+          "disposition": {
+            "enum": [
+              "covered",
+              "exempt"
+            ]
+          },
+          "exemption": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "owner",
+              "reason",
+              "expiresAt"
+            ],
+            "properties": {
+              "type": {
+                "enum": [
+                  "unsupported-provider",
+                  "non-behavioral",
+                  "premium-variant"
+                ]
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "expiresAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "layer",
+          "executed",
+          "repetitions",
+          "validPairs",
+          "exclusions",
+          "delta",
+          "confidenceInterval95"
+        ],
+        "properties": {
+          "layer": {
+            "enum": [
+              "L0",
+              "L1",
+              "L2",
+              "L3"
+            ]
+          },
+          "executed": {
+            "type": "boolean"
+          },
+          "repetitions": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "validPairs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "exclusions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "reason"
+              ],
+              "properties": {
+                "reason": {
+                  "enum": [
+                    "contamination",
+                    "unmatched-pair",
+                    "non-treatment-mismatch",
+                    "infrastructure"
+                  ]
+                }
+              }
+            }
+          },
+          "delta": {
+            "type": "number"
+          },
+          "confidenceInterval95": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "items": false,
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
